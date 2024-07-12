@@ -1,0 +1,257 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   rebillReport.component.html                                         */
+/*  DESCRIPCION         :   Reporte de Refacturación                                            */
+/*  AUTOR               :   MATERIAGRIS - FRANCISCO AQUIÑO RAMIREZ                              */
+/*  FECHA               :   01/11/2023                                                          */
+/*  VERSION             :   1.0                                                                 */
+/*************************************************************************************************/-->
+
+<title></title>
+<!-- Ignite UI for jQuery Required Combined CSS Files -->
+<!-- <link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" /> -->
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css"
+      rel="stylesheet" />
+
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+<!-- Ignite UI for jQuery Required Combined JavaScript Files -->
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid ">
+            <div class="container-fluid">
+                <div class="header-content">
+                    <div class="containt-item">
+                        <div class="header-item">
+                            <span class="title">REPORTE REFACTURACIÓN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter">
+                    <div class="card">
+                        <div class="card-body"
+                             [formGroup]="filterForm">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <span>RAMO</span>
+                                    <select formControlName="nBranch"
+                                            class="minimal"
+                                            (change)="SelectBranch()">
+                                        <option value="0"
+                                                class="d-none"
+                                                selected>Seleccionar</option>
+                                        <option *ngFor="let item of ListaRamoPay"
+                                                value="{{item.nBranch}}">
+                                            {{item.sDescript}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="selectedType == 'opentype'"
+                                     class="col-sm-2">
+                                    <span>MASIVOS</span>
+                                    <select formControlName="nParameter"
+                                            (change)="seleccionRamo()"
+                                            class="minimal"
+                                            required>
+                                        <option value="0"
+                                                class="d-none"
+                                                selected>Seleccionar</option>
+                                        <option *ngFor="let item of ListParameter"
+                                                value="{{item.nParameter}}">
+                                            {{item.sDes_para}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>PRODUCTO</span>
+                                    <select formControlName="nProduct"
+                                            class="minimal">
+                                        <option value="0"
+                                                class="d-none"
+                                                selected>Seleccionar</option>
+                                        <option *ngFor="let item of ListaProducto"
+                                                value="{{item.nParameter}}">
+                                            {{item.sDes_para}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span class="w-50">PÓLIZA</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           maxlength="20"
+                                           oninput="this.value=this.value.slice(0,this.maxLength)"
+                                           formControlName="idPoliza"
+                                           placeholder="Ingrese la Póliza">
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color ml-auto"
+                                            (click)="onConsultar()">
+                                        <span>CONSULTAR</span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-2"
+                                     *ngIf="selectedExp == 'opentype'">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color ml-auto"
+                                            (click)="onExportar()">
+                                        <span>EXPORTAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <span>TIPO DOCUMENTO</span>
+                                    <select formControlName="nTipDocu"
+                                            class="minimal"
+                                            (change)="selectTipo()">
+                                        <option value="0"
+                                                class="d-none"
+                                                selected>Seleccionar</option>
+                                        <option *ngFor="let item of listarTipDocu"
+                                                value="{{item.nParameter}}">
+                                            {{item.sDes_para}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span class="w-50">DOCUMENTO</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           formControlName="idCliDocument"
+                                           placeholder="Ingrese el Documento">
+                                </div>
+                                <div class="col-sm-2">
+                                    <span class="w-50">COMPROBANTE</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           maxlength="15"
+                                           oninput="this.value=this.value.slice(0,this.maxLength)"
+                                           formControlName="idComprobante"
+                                           placeholder="Ingrese el Comprobante">
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>FECHA INICIO</span>
+                                    <input type="text"
+                                           formControlName="startDate"
+                                           #dp="bsDatepicker"
+                                           [bsConfig]="bsConfig"
+                                           bsDatepicker
+                                           readonly>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>FECHA FIN</span>
+                                    <input type="text"
+                                           formControlName="endDate"
+                                           #dp="bsDatepicker"
+                                           [bsConfig]="bsConfig"
+                                           bsDatepicker
+                                           readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-container"
+                     style="overflow: auto">
+                    <div class="grid form-group">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="grid-title">
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Ramo</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Producto</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Póliza</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Comprobante nuevo</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Fecha comprobante nuevo</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Cliente</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Comprobante origen</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Fecha comprobante origen</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Monto comp.</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Nota de crédito</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Usuario</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;">Fecha refacturación</td>
+                                        <td class="grid-title-item"
+                                            style="width: auto;"
+                                            *ngIf="selectedPermiso == 'opentype'">Motivo</td>
+                                    </tr>
+                                </thead>
+                                <ng-container
+                                              *ngIf="processHeaderList!=null && processHeaderList.length>0; then showGrid else hideGrid">
+                                </ng-container>
+                            </table>
+                            <ng-template #hideGrid>
+                                <tbody>
+                                    <tr style="text-align: center;">
+                                        <td colspan="19">No se encontraron registros.</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                            <ng-template #showGrid>
+                                <tbody *ngFor="let item of listToShow">
+                                    <tr>
+                                        <td>{{item.RAMO}}</td>
+                                        <td>{{item.PRODUCTO}}</td>
+                                        <td>{{item.NPOLICY}}</td>
+                                        <td>{{item.COMPROBANTE_NUEVO}}</td>
+                                        <td>{{item.FECHA_COMPROBANTE_NUEVO}}</td>
+                                        <td>{{item.SCLIENAME}}</td>
+                                        <td>{{item.COMPROBANTE_ORIGEN}}</td>
+                                        <td>{{item.FECHA_COMPROBANTE_ORIGEN}}</td>
+                                        <td align="center">{{item.MONTO_COMPROBANTE | currency:' '}}</td>
+                                        <td>{{item.NOTA_CREDITO}}</td>
+                                        <td>{{item.USUARIO}}</td>
+                                        <td>{{item.FECHA_REFACTURACION}}</td>
+                                        <td *ngIf="selectedPermiso == 'opentype'">{{item.MOTIVO}}</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showPagination">
+                </ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+                <div [hidden]="!isLoading"
+                     class="loadingScreen">
+                    <div style="display:flex;height: 100%;width:100%">
+                        <i style="margin:auto;font-size: 50px"
+                           class="fa fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

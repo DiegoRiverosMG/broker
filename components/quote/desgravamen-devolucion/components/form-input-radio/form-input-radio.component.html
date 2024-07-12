@@ -1,0 +1,13 @@
+<div class="form-input-radio">
+  <label><span>{{label}}:</span></label>
+  <ng-template ngFor let-item [ngForOf]="items">
+    <label>
+      <span>
+        <input class="t-radio" type="radio" name="radio-{{name}}" 
+          [value]="item.codigo" 
+          [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)"
+          (change)="onSelectItem();"/> {{item.valor}}
+      </span>
+    </label>
+  </ng-template>
+</div>

@@ -1,0 +1,119 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <!-- <navmenusctr></navmenusctr> -->
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">REPORTES DE PROVISIÓN DE COMISIONES</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>RAMO</span>
+                                <select class="minimal" (change)="ChangeRamo()" [(ngModel)]="SelectedBranchId" >
+                                    <option *ngFor="let item of branchTypeList" value="{{item.NBRANCH}}">
+                                        {{item.SDESCRIPT}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>FECHA INICIO </span>
+                                <input type="text"
+                                       #dp="bsDatepicker"
+                                       [bsConfig]="bsConfig"
+                                       bsDatepicker
+                                       [(bsValue)]="bsValueIni"
+                                       value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                       [(maxDate)]="bsValueFinMax">
+                            </div>
+                            <div class="col-sm-4">
+                                <span>FECHA FIN </span>
+                                <input type="text"
+                                       #dp="bsDatepicker"
+                                       [bsConfig]="bsConfig"
+                                       bsDatepicker
+                                       [(bsValue)]="bsValueFin"
+                                       value="{{ bsValueFin | date:'dd/MM/yyyy' }}"
+                                       [(maxDate)]="bsValueFinMax">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <span>&nbsp;</span>
+                                <span><div><input type="checkbox" disabled="" checked="">COMISIONES</div></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span>&nbsp;</span>
+                                <button class="full-color"
+                                        (click)="ProcessReportsComisiones()"
+                                        [disabled]="">
+                                    <span>GENERAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">ID</td>
+                                    <td class="grid-title-item">RAMO</td>
+                                    <td class="grid-title-item">INICIO</td>
+                                    <td class="grid-title-item">FIN</td>
+                                    <td class="grid-title-item">USUARIO</td>
+                                    <td class="grid-title-item">ESTADO</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="reporteProvicomisionesResults==null || reporteProvicomisionesResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td>{{ item.NIDREPORT }}</td>
+                                    <td>{{ item.SBRANCH_NAME }}</td>
+                                    <td>{{ item.DINIREP | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.DFINREP | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.SUSERNAME }}</td>
+                                    <td class="text-center">
+                                        <img *ngIf="item.NSTATUSPROC == 1" src="assets/icons/loadingtc.gif" title="Cargando" alt="Cargando" />
+                                        <img *ngIf="item.NSTATUSPROC == 2" src="assets/icons/verifyct.png" title="Finalizado" alt="Finalizado" />
+                                        <img *ngIf="item.NSTATUSPROC == 3" src="assets/icons/incorrecttc.png" title="Incorrecto" alt="Incorrecto" />
+                                        <img *ngIf="item.NSTATUSPROC == 4" src="assets/icons/warntc.png" title="Reporte sin datos" alt="Reporte sin datos"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div [hidden]="!isLoading"
+                 class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px"
+                       class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

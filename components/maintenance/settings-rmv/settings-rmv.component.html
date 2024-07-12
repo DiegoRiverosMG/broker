@@ -1,0 +1,112 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="containt-item">
+                <div class="header-content">
+                    <div class="header-item">
+                        <span class="title">AJUSTES DE RMV</span>
+                    </div>
+                </div>
+           </div>
+           <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>RAMO(*)</span>
+                                <select class="minimal" [(ngModel)]="filters.NBRANCH">
+                                    <option value="0">SELECCIONAR</option>
+                                    <option *ngFor="let branch of branchList" value="{{branch.NBRANCH}}">{{branch.SDESCRIPT}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>TIPO DE TRANSACCIÓN (*)</span>
+                                <select class="minimal" [(ngModel)]="filters.NTYPE_TRANSAC">
+                                    <option value="0">TODOS</option>
+                                    <option *ngFor="let trans of transactionList" value="{{trans.NTYPE_TRANSAC}}">{{trans.SDESCRIPT}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>TIPO DE TRABAJADOR (*)</span>
+                                <select class="minimal" [(ngModel)]="filters.NMODULEC">
+                                    <option value="0">TODOS</option>
+                                    <option *ngFor="let riesgo of riesgosList" value="{{riesgo.NMODULEC}}">{{riesgo.SDESCRIPT}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button class="full-color pull-right" (click)="search()"><span>Buscar</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Ramo</td>
+                                    <td class="grid-title-item">Tipo de Transacción</td>
+                                    <td class="grid-title-item">Tipo de Trabajador</td>
+                                    <td class="grid-title-item">Porcentaje</td>
+                                    <td class="grid-title-item">Valor</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="parameterListToShow.length == 0">
+                                <tr>
+                                    <td colspan="11">No se encontraron registros</td>
+                                </tr>
+                            </tbody>
+                            <tbody *ngIf="parameterListToShow.length != 0">
+                                <tr *ngFor="let param of parameterListToShow">
+                                    <td>{{param.RAMO}}</td>
+                                    <td>{{param.TIPO_TRANSACCION}}</td>
+                                    <td>{{param.TIPO_TRABAJADOR}}</td>
+                                    <td>{{param.PORCENTAJE | number: "1.2-2" }} %</td>
+                                    <td>{{param.PORCENTAJE_RMV }}</td>
+                                    <td>
+                                        <a>
+                                            <img src="assets/icons/editar.png" title="Editar" alt="Editar" style="cursor: pointer;" (click)="editPorcentaje(param)"/>
+                                        </a>
+                                        <a>
+                                            <img src="assets/icons/see.svg" alt=""
+                                                style="cursor: pointer;height: 24px;margin-left: 10px" (click)="historialPorcentaje(param)">
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+                            <div class="col-sm-10">
+                                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                </ngb-pagination>
+                            </div>
+                            <div class="col-sm-2">
+                                <span style="display: inline-block;">Mostrar: </span>
+                                <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                                    style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+</div>

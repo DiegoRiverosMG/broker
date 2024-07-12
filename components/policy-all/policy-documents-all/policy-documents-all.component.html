@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <!--  -->
+
+    <div class="col-sm-12 mt-3" *ngIf="codTransac != 6 && codTransac != 7">
+        <div class="card">
+
+            <div class="col-sm-12 mt-3">
+                <h5>Documentos de la póliza</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td class="col">Documento</td>
+                            <td class="col">Descargar</td>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="generadosList!=null && generadosList.length>0">
+                        <tr *ngFor="let item of generadosList">
+                            <td><span>{{ item | fileName }}</span></td>
+                            <td><span class="text-center"><a (click)="downloadFile(item)"><img
+                                            src="assets/icons/download2.png" title="Descargar" style="cursor:pointer;"
+                                            alt="Descargar" /></a></span></td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="generadosList==null || generadosList.length==0">
+                        <tr>
+                            <td colspan="2" class="col-sm text-center"><span>No se encontraron archivos</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="reference.close()">Regresar</button>
+</div>

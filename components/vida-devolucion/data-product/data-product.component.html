@@ -1,0 +1,1206 @@
+<div class="container-fluid">
+    <div class="row">
+      <div
+        class="col-md-12 body content-product-data"
+        [class.isSupport]="!currentUser.comercial"
+      >
+        <!-- #1 -->
+        <div class="d-flex content-product">
+          <!-- DATOS DE PRODUCTO -->
+  
+          <div class="Container_Data_Tabla">
+            <div class="new-div">
+              <div class="row mx-0 my-0 py-0" style="justify-content: center">
+                <div class="datos-product" style="width: 395px">
+                  <h5 class="datos-product__title my-0 mb-2">
+                    Datos del producto
+                  </h5>
+                  <div class="detail-product mb-2">
+                    <div class="fila">
+                      <span>Cobertura de protección por fallecimiento</span>
+                      <span
+                        >{{ quotationSummary$?.moneda }}
+                        {{ quotationSummary$?.capital | number : "1.2-2" }}</span
+                      >
+                    </div>
+                    <div class="fila">
+                      <span>Frecuencia</span>
+                      <span>{{ quotationSummary$?.frecuenciaPago }}</span>
+                    </div>
+                    <div class="fila">
+                      <span>Periodo</span>
+                      <span>{{ quotationSummary$?.cantidadAnios }} años</span>
+                    </div>
+                    <div class="fila">
+                      <span>Porcentaje de devolución</span>
+                      <span>{{ quotationSummary$?.porcentajeRetorno }}%</span>
+                    </div>
+                    <div class="fila">
+                      <span>Cobertura de devolución de primas</span>
+                      <span
+                        >{{ quotationSummary$?.moneda }}
+                        {{
+                          quotationSummary$?.primaPorcentajeRetorno
+                            | number : "1.2-2"
+                        }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="content-grid2">
+                    <div>
+                      <h5 class="datos-product__title my-0">Primer pago</h5>
+                      <div class="data_cuota">
+                        <span>
+                          {{ quotationSummary$?.moneda }}
+                          {{ quotationSummary$?.primaInicial | number : "1.2-2" }}
+                        </span>
+                        <span>
+                          La cuota inicial se calcula desde la fecha de
+                          contratación hasta el último día del mes.
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 class="datos-product__title my-0">
+                        Pago {{ quotationSummary$?.frecuenciaPago }}(*)
+                      </h5>
+                      <div class="data_cuota">
+                        <span
+                          >{{ quotationSummary$?.moneda }}
+                          {{ quotationSummary$?.primaMensual | number : "1.2-2" }}
+                        </span>
+                        <span>
+                          (*)Pago a realizar desde el segundo periodo.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Tabla Beneficiarios -->
+            <!-- <div *ngIf="beneficiariesSelectedQuotation$.length"
+                 class="TablaContainer">
+              <p>Beneficiarios:</p><br>
+              <table class="table-u">
+                <thead>
+                  <tr>
+                    <th>DNI</th>
+                    <th>Nombre y Apellido</th>
+                    <th>Parentesco</th>
+                    <th>Asignación (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="!beneficiariesSelectedQuotation$.length">
+                    <tr>
+                      <td colspan="4">No hay información para mostrar</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="beneficiariesSelectedQuotation$.length">
+                    <tr *ngFor="
+                    let data of beneficiariesSelectedQuotation$;
+                    let index = index
+                  ">
+                      <td>{{ data.numeroDocumento }}</td>
+                      <td>
+                        {{ data.nombres.substr(0,finprimernombre) }} {{ data.apellidoPaterno }}
+                      </td>
+                      <td>{{ data.parentesco }}</td>
+                      <td>{{ data.porcentajeParticipacion }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div> -->
+          </div>
+  
+          <!-- Si la prima es >=$1500 (1) -->
+          <!-- FAMILIARES -->
+          <ng-container *ngIf="ammountParseDolar >= 1500">
+            <div
+              class="new-div"
+              *ngIf="
+                score.primaAlta || score.pep || scoring?.calificacion == 'ALTO'
+              "
+            >
+              <div
+                style="display: flex; justify-content: center; margin-top: 50px"
+              >
+                <h2 class="subtitle">
+                  Familiares de 1° o 2° grado de consanguinidad
+                </h2>
+              </div>
+  
+              <!-- PARA SOPORTE COMERCIAL -->
+              <div class="div-soporte">
+                <button
+                  class="btn-primary-u btnnew"
+                  (click)="showModalFamily()"
+                  *ngIf="currentUser.comercial && estadoProspecto.idEstado != 3"
+                >
+                  <img
+                    alt=""
+                    src="assets/icons/add.png"
+                    class="img-excel"
+                    style="margin-right: 5px"
+                  />Agregar Familiar
+                </button>
+                <table class="tbl table-u">
+                  <thead class="tbl__head">
+                    <tr class="tbl__head--row">
+                      <th class="tbl__head--row-col">DNI</th>
+                      <th class="tbl__head--row-col">Nombres</th>
+                      <th class="tbl__head--row-col">Apellido paterno</th>
+                      <th class="tbl__head--row-col">Apellido materno</th>
+                      <th class="tbl__head--row-col">Parentesco</th>
+                      <th
+                        class="tbl__head--row-col"
+                        *ngIf="
+                          currentUser.comercial && estadoProspecto.idEstado != 3
+                        "
+                      >
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!listFamily?.length">
+                    <tr class="tbl__body--row">
+                      <td class="tbl__body--row-col" colspan="5">
+                        No se encontró información para mostrar
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody
+                    class="tbl__body"
+                    *ngFor="let data of listFamily; let i = index"
+                  >
+                    <tr class="tbl__body--row">
+                      <td class="tbl__body--row-col">
+                        {{ data.dni }}
+                      </td>
+                      <td class="tbl__body--row-col">
+                        {{ data.nombres }}
+                      </td>
+                      <td class="tbl__body--row-col">
+                        {{ data.apellidoPaterno }}
+                      </td>
+                      <td class="tbl__body--row-col">
+                        {{ data.apellidoMaterno }}
+                      </td>
+  
+                      <td class="tbl__body--row-col">
+                        {{ getParentescoDescription(data.parentesco) }}
+                      </td>
+                      <ng-container *ngIf="estadoProspecto.idEstado != 3">
+                        <td
+                          class="tbl__body--row-col"
+                          *ngIf="currentUser.comercial"
+                        >
+                          <button class="btn-drop" (click)="removeFamily(i)">
+                            <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                            Eliminar
+                          </button>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+  
+        <ng-container *ngIf="ammountParseDolar >= 1500">
+          <!-- #2 -->
+          <div
+            class="content-score"
+            *ngIf="
+              score.primaAlta || score.pep || scoring?.calificacion == 'ALTO'
+            "
+          >
+            <div class="content-score-sub">
+              <h2 class="subtitle">
+                {{
+                  currentUser.soporte
+                    ? "Adjuntar documentos"
+                    : "Documentos adjuntos"
+                }}
+              </h2>
+              <!-- tabla -->
+  
+              <!-- PARA SOPORTE COMERCIAL -->
+              <div class="div-table-so">
+                <table class="tbl table-so table-u" [formGroup]="formAttachments">
+                  <thead class="tbl__head">
+                    <tr class="tbl__head--row">
+                      <th class="tbl__head--row-col">Tipo</th>
+                      <th class="tbl__head--row-col">Nombre del archivo</th>
+                      <th class="tbl__head--row-col" colspan="2">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="tbl__body" formArrayName="files">
+                    <tr
+                      class="tbl__body--row td-row"
+                      *ngFor="
+                        let form of listAttachments.controls;
+                        let index = index
+                      "
+                      [formGroup]="form"
+                    >
+                      <td class="tbl__body--row-col">
+                        {{ form.get("fileType").value }}
+                      </td>
+                      <td class="tbl__body--row-col">
+                        {{ form.get("fileName").value || "-" }}
+                      </td>
+                      <ng-container
+                        *ngIf="
+                          !form.get('uploaded').value &&
+                          estadoProspecto.idEstado != 3
+                        "
+                      >
+                        <td class="tbl__body--row-col">
+                          <div *ngIf="!form.get('fileName').value">
+                            <input
+                              [attr.id]="'upload-file-modal' + index"
+                              type="file"
+                              formControlName="routeFile"
+                              (change)="attachFile($event, index)"
+                              hidden
+                            />
+                            <label
+                              class="lbl-file"
+                              [attr.for]="'upload-file-modal' + index"
+                              title="Adjuntar"
+                            >
+                              <i
+                                class="fa fa-upload fa-lg fa-ad"
+                                aria-hidden="true"
+                              ></i
+                              >Adjuntar archivo</label
+                            >
+                          </div>
+                          <a
+                            (click)="removeAttachment(index)"
+                            *ngIf="form.get('fileName').value"
+                            title="Eliminar"
+                            class="button-action"
+                          >
+                            <i class="fa fa-trash fa-lg mr-2"></i>
+                            Eliminar
+                          </a>
+                        </td>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="
+                          !!form.get('uploaded').value ||
+                          estadoProspecto.idEstado == 3
+                        "
+                      >
+                        <td>
+                          <a
+                            (click)="downloadFile(form)"
+                            title="Descargar"
+                            *ngIf="form.get('file').valid"
+                            class="button-action"
+                          >
+                            <i class="fa fa-download fa-lg mr-2"></i>
+                            Descargar
+                          </a>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+  
+              <!-- Por defecto -->
+              <!-- <div class="content-indication" *ngIf="currentUser.comercial">
+                <label class="indication"
+                  >Los documentos serán adjuntados por las áreas correspondientes
+                  para continuar con la compra.</label
+                >
+              </div> -->
+            </div>
+  
+            <!-- Gerente comercial - Bajar Score -->
+            <section>
+              <!-- <div class="content-buttonsc">
+                <button
+                  class="btn-primary-u purple btn-bs"
+                  [disabled]="!bajaScore"
+                >
+                  Bajar Score
+                </button>
+              </div> -->
+              <div class="button-ar" *ngIf="false">
+                <button class="btn-primary-u orange ps-button-max-width">
+                  <!-- <ng-container>
+                    <img alt=""
+                         src="assets/icons/check.png"
+                         class="img"
+                         style="margin-right: 10px" />Aprobar y Bajar Score
+                  </ng-container> -->
+                  <!-- <ng-container>
+                    Enviar correo al Gerente General
+                    <img src="assets/icons/Union.png"
+                         class="img-excel ml-3" />
+                  </ng-container> -->
+                </button>
+  
+                <!-- <button class="btn-secondary-u ps-button-max-width orange"
+                        (click)="rechazarGC()">
+                  <img alt=""
+                       src="assets/icons/rechazar.png"
+                       class="img" />
+                  Rechazar
+                </button> -->
+              </div>
+            </section>
+            <!-- Indicación de score alto-->
+            <!-- <div class="content-indication-red">
+              <label class="indication-two-red">
+                El Score sobrepasó el valor máximo permitido.
+              </label>
+            </div> -->
+          </div>
+  
+          <!-- SCORING -->
+          <div
+            class="content-scoring"
+            [class.apply-min-width]="
+              (!score.pep && !score.primaAlta) ||
+              (stateTypeValue == 3 && currentUser.soporte)
+            "
+          >
+            <ng-container
+              *ngIf="
+                (score.pep || score.primaAlta) &&
+                (currentUser.soporte || currentUser.analista)
+              "
+            >
+              <div style="display: flex; justify-content: center" class="mt-4">
+                <div
+                  class="sub-container1"
+                  style="
+                    text-align: center;
+                    margin-top: 0px;
+                    width: 270px;
+                    height: 150px;
+                  "
+                >
+                  <div style="width: 100%">
+                    <h3 class="sub-title" style="font-size: 22px">
+                      Score del indicador
+                    </h3>
+                    <div
+                      class="label"
+                      style="
+                        font-size: 35px;
+                        font-weight: bold;
+                        color: rgba(0, 0, 0, 0.6);
+                      "
+                    >
+                      {{ score?.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+  
+            <div class="content-indication-gc mb-3" *ngIf="currentUser.comercial">
+              <!-- <label class="indication-two">Si deseas Aprobar o Rechazar la compra, dé clic en uno de los
+                    botones respectivos.</label> -->
+              <label
+                class="indication-two"
+                *ngIf="
+                  score.primaAlta &&
+                  estadoProspecto.idEstado != 3 &&
+                  estadoProspecto.idEstado == 2
+                "
+              >
+                Si desea continuar con la compra, envíe un correo a Soporte
+                Comercial dando clic en el siguiente botón.
+              </label>
+              <label
+                class="indication-two"
+                *ngIf="
+                  (score.primaAlta || score.pep) && estadoProspecto.idEstado == 3
+                "
+              >
+                Se realizaron todas las autorizaciones del caso. Ahora puede
+                proceder con la venta.
+              </label>
+              <label
+                class="indication-two is-pep"
+                style="margin-bottom: 1rem"
+                *ngIf="score.pep"
+              >
+                El cliente es PEP
+              </label>
+              <!-- <label class="indication-two">
+                    Si los datos están conformes, envíe un correo al Gerente General
+                    de Protecta Security dando clic en el siguiente botón.
+                  </label> -->
+            </div>
+          </div>
+        </ng-container>
+        <!--   CONFIGURAR BENEFICIARIOS -->
+        <ng-container>
+          <div class="link-container ml-4">
+            <div
+              class="table-responsive TableMargin div-tableban"
+              id="table-scroll"
+              style="margin-top: 30px"
+            >
+              <table class="table-u">
+                <thead>
+                  <tr>
+                    <th>DNI</th>
+                    <th>Nombre completo</th>
+                    <th>Parentesco</th>
+                    <th>Asignación(%)</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container
+                    *ngIf="!showbeneficiariesSelectedQuotation$.length"
+                  >
+                    <tr>
+                      <td colspan="5">No hay información para mostrar</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container>
+                    <tr
+                      *ngFor="
+                        let data of showbeneficiariesSelectedQuotation$;
+                        let index = index
+                      "
+                    >
+                      <td>{{ data.numeroDocumento }}</td>
+                      <td>
+                        {{ data.nombres.substr(0, finprimernombre) }}
+                        {{ data.apellidoPaterno }}
+                      </td>
+                      <td>{{ data.parentesco }}</td>
+                      <td>{{ data.porcentajeParticipacion }}</td>
+                      <!-- CAMBIO BOTONES -->
+                      <td style="max-width: 120px">
+                        <button
+                          class="btn-action fit editBtn"
+                          title="Ver resumen"
+                          style="background-color: #553d81; color: white"
+                          (click)="editBeneficiary(data)"
+                        >
+                          <i class="fa fa-pencil" style="color: white"></i>
+                          Editar
+                        </button>
+                        <button
+                          class="btn-action fit editBtn"
+                          style="background: white; border: 1px solid"
+                          (click)="removeBeneficiary(data)"
+                        >
+                          <i class="fa fa-trash"></i>
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+  
+        <!-- #4 -->
+        <ng-container *ngIf="estadoProspecto?.idEstado == 3 && typeClients == 0">
+          <div class="link-container ml-4">
+            <h2
+              class="subtitle mb-5"
+              style="margin-top: 3rem; display: flex; justify-content: center"
+            >
+              Link para completar la compra
+            </h2>
+            <div style="display: flex">
+              <form [formGroup]="form" style="display: flex">
+                <input
+                  type="text"
+                  class="input-u input-link"
+                  formControlName="link"
+                  #userinput
+                  readonly
+                />
+                <button
+                  class="btn-submit btn-primary-u purple button-link"
+                  (click)="copy(userinput)"
+                  value="click to copy"
+                >
+                  <small class="copied" @fade *ngIf="isCopied">Copiado!</small>
+                  <img
+                    alt=""
+                    src="assets/icons/copy-link.png"
+                    class="img-excel"
+                  />
+                </button>
+              </form>
+            </div>
+            <div class="mt-4">
+              <button
+                class="btn-submit btn-primary-u purple"
+                style="width: 200px"
+                (click)="sendEmail()"
+              >
+                Enviar por correo
+                <img
+                  alt=""
+                  src="assets/icons/Union.png"
+                  class="img-excel"
+                  style="margin-left: 10px"
+                />
+              </button>
+            </div>
+          </div>
+        </ng-container>
+  
+        <ng-container *ngIf="estadoProspecto?.idEstado == 3 && typeClients == 1">
+          <div class="link-container ml-4">
+            <h2
+              class="subtitle mb-5"
+              style="margin-top: 3rem; display: flex; justify-content: center"
+            >
+            Links para completar la compra
+            </h2>
+            <div  style="    display: flex;
+            flex-direction: column;
+            align-items: center;" class="row">
+              <p class="sub-title-a" style="padding-bottom: 20px;">LINK PARA EL ASEGURADO</p>
+              <form [formGroup]="formLinkContratante" style="display: flex">
+  
+                <input
+                  name="userinputlinkAsegurado"
+                  type="text"
+                  class="input-u input-link"
+                  formControlName="linkAsegurado"
+                  #userinputlinkAsegurado
+                  readonly
+                />
+                <button
+                  class="btn-submit btn-primary-u purple button-link"
+                  (click)="copy(userinputlinkAsegurado)"
+                  value="click to copy"
+                >
+                  <small class="copied" @fade *ngIf="isCopiedAsegurado">Copiado!</small>
+                  <img
+                    alt=""
+                    src="assets/icons/copy-link.png"
+                    class="img-excel"
+                  />
+                </button>
+              </form>
+            </div>
+            <div class="row" style="display: flex;
+            flex-direction: column;
+            align-items: center;">
+              <p class="sub-title-a" style="padding-bottom: 20px;padding-top: 20px">LINK PARA EL CONTRATANTE</p>
+  
+              <form [formGroup]="formLinkContratante" style="display: flex">
+  
+                <input
+                  name="userinputlinkContratante"
+                  type="text"
+                  class="input-u input-link"
+                  formControlName="linkContratante"
+                  #userinputlinkContratante
+                  readonly
+                />
+                <button
+                  class="btn-submit btn-primary-u purple button-link"
+                  (click)="copy(userinputlinkContratante)"
+                  value="click to copy"
+                >
+                  <small class="copied" @fade *ngIf="isCopiedContratante">Copiado!</small>
+                  <img
+                    alt=""
+                    src="assets/icons/copy-link.png"
+                    class="img-excel"
+                  />
+                </button>
+              </form>
+            </div>
+            <div class="mt-4">
+              <button
+                class="btn-submit btn-primary-u purple"
+                style="width: 400px"
+                (click)="sendEmail()"
+              >
+              Enviar por correo al contratante y al asegurado
+                <img
+                  alt=""
+                  src="assets/icons/Union.png"
+                  class="img-excel"
+                  style="margin-left: 10px"
+                />
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+  
+      <!-- ACTIONS -->
+      <div class="content-actions" *ngIf="estadoProspecto.idEstado != 3">
+        <button
+          class="btn-primary-u orange ps-button-max-width"
+          (click)="openModalUpdateState(1)"
+          [disabled]="listAttachments.invalid || listFamily.invalid"
+          *ngIf="
+            (score.primaAlta || score.pep || scoring?.calificacion == 'ALTO') &&
+            currentUser.comercial &&
+            estadoProspecto.idEstado != 7 &&
+            estadoProspecto.idEstado == 2
+          "
+        >
+          Solicitar revisión a Soporte
+        </button>
+        <button
+          class="btn-primary-u orange ps-button-max-width"
+          (click)="openModalUpdateState(2)"
+          [disabled]="listAttachments.invalid || listFamily.invalid"
+          *ngIf="
+            currentUser.soporte &&
+            score.pep &&
+            stateTypeValue != 3 &&
+            estadoProspecto.idEstado != 7
+          "
+        >
+          Solicitar aprobación a Riesgos
+        </button>
+        <button
+          class="btn-primary-u orange ps-button-max-width"
+          (click)="openModalUpdateState(3)"
+          [disabled]="listAttachments.invalid || listFamily.invalid"
+          *ngIf="
+            currentUser.soporte && scoring?.calificacion == 'ALTO' && !score.pep
+          "
+        >
+          Solicitar aprobación al Gerente Comercial
+        </button>
+  
+        <ng-container
+          *ngIf="
+            currentUser.analista ||
+            currentUser.gerenteGeneral ||
+            currentUser.gerenteComercial
+          "
+        >
+          <button
+            class="button secondary fit orange mr-3"
+            (click)="openModalUpdateState(10)"
+          >
+            <i class="fa fa-times" aria-hidden="true"></i>
+            Rechazar
+          </button>
+          <button
+            class="button primary fit orange"
+            (click)="openModalUpdateState(7)"
+            [disabled]="listAttachments.invalid || listFamily.invalid"
+          >
+            <i class="fa fa-check" aria-hidden="true"></i>
+            {{ currentUser.analista ? "Aprobar y enviar a soporte" : "Aprobar" }}
+          </button>
+        </ng-container>
+  
+        <ng-container
+          *ngIf="
+            currentUser.soporte &&
+            score.primaAlta &&
+            !score.pep &&
+            scoring?.calificacion != 'ALTO' &&
+            estadoProspecto.idEstado == 5
+          "
+        >
+          <button
+            class="button primary orange fit"
+            (click)="openModalUpdateState(0)"
+            [disabled]="listAttachments.invalid || listFamily.invalid"
+          >
+            Aprobar y enviar al asesor
+          </button>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            currentUser.soporte && estadoProspecto.idEstado == 7 && score.pep
+          "
+        >
+          <button
+            class="button primary orange fit"
+            (click)="openModalUpdateState(4)"
+            [disabled]="listAttachments.invalid || listFamily.invalid"
+          >
+            Enviar correo al gerente general
+          </button>
+        </ng-container>
+      </div>
+      <div class="divider"></div>
+      <!-- COMMENTS -->
+      <ng-content></ng-content>
+    </div>
+  </div>
+  
+  <!-- Modal de confirmacion de Gerente comercial -->
+  <ng-template #modalConfirmar>
+    <div class="content-modal-u">
+      <div class="modal-u mfb" style="width: 440px px">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Rechazar solicitud</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div
+          class="modal__body"
+          style="text-align: center; margin-top: 1.5rem; margin-bottom: 2.5rem"
+        >
+          <span>¿Estás seguro(a) que desea rechazar esta solicitud?</span>
+        </div>
+        <div class="modal__footer" style="grid-gap: 1rem">
+          <button class="btn-primary-u orange ps-button-max-width">
+            Aceptar
+          </button>
+          <button
+            class="btn-secondary-u orange ps-button-max-width"
+            (click)="closeModals()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  <ng-template #modalConfirmarAceptar>
+    <div class="content-modal-u">
+      <div class="modal-u mfb" style="width: 440px px">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Aceptar solicitud</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div
+          class="modal__body"
+          style="text-align: center; margin-top: 1.5rem; margin-bottom: 2.5rem"
+        >
+          <span>¿Estás seguro(a) que desea bajar score?</span>
+        </div>
+        <div class="modal__footer" style="grid-gap: 1rem">
+          <button class="btn-primary-u orange ps-button-max-width">
+            Aceptar
+          </button>
+          <button
+            class="btn-secondary-u ps-button-max-width orange"
+            (click)="closeModals()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  <ng-template #modalMessage>
+    <div class="content-modal-u">
+      <section class="modal-u mm">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Mensaje</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="paragraph">
+            {{ message }}
+          </p>
+        </div>
+        <div class="modal__footer">
+          <button class="button primary fit orange" (click)="closeModals()">
+            Aceptar
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  
+  <ng-template #modalConfirmUpdateState>
+    <div class="content-modal-u">
+      <section class="modal-u">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Mensaje de confirmación</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="paragraph text-center">
+            {{ message }}
+          </p>
+        </div>
+        <div class="modal__footer">
+          <button
+            class="button secondary fit orange mr-3"
+            (click)="closeModals()"
+          >
+            Cancelar
+          </button>
+          <button class="button primary fit orange" (click)="updateState()">
+            Aceptar
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  
+  <ng-template #modalFamily>
+    <div class="content-modal-u">
+      <section class="modal-u mf">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Datos del familiar</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <form class="modal__body form" [formGroup]="formFamily">
+          <label
+            for="mf-dni"
+            class="placeholder-u"
+            aria-placeholder="Número de documento"
+          >
+            <input
+              type="text"
+              id="mf-dni"
+              class="input-u"
+              formControlName="dni"
+              [minlength]="8"
+              [maxlength]="8"
+              (blur)="getDocumentInformation(formFamily)"
+            />
+          </label>
+          <label
+            for="mf-nombres"
+            class="placeholder-u"
+            aria-placeholder="Nombres"
+          >
+            <input
+              type="text"
+              id="mf-nombres"
+              class="input-u"
+              formControlName="nombres"
+            />
+          </label>
+          <label
+            for="mf-apepat"
+            class="placeholder-u"
+            aria-placeholder="Apellido paterno"
+          >
+            <input
+              type="text"
+              id="mf-apepat"
+              class="input-u"
+              formControlName="apellidoPaterno"
+            />
+          </label>
+          <label
+            for="mf-apemat"
+            class="placeholder-u"
+            aria-placeholder="Apellido materno"
+          >
+            <input
+              type="text"
+              id="mf-apemat"
+              class="input-u"
+              formControlName="apellidoMaterno"
+            />
+          </label>
+          <label class="placeholder-u" aria-placeholder="Parentesco">
+            <select class="input-u" formControlName="parentesco">
+              <option [value]="null" disabled selected hidden>SELECCIONE</option>
+              <option
+                *ngFor="let data of parameters$?.parentescos"
+                [value]="data.id"
+              >
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+        </form>
+        <small class="has-error">
+          {{ formFamilyErrorMessage }}
+        </small>
+        <div class="modal__footer">
+          <button
+            class="button secondary fit orange mr-3"
+            (click)="closeModals()"
+          >
+            Cancelar
+          </button>
+          <button
+            class="button primary fit orange"
+            [disabled]="formFamily.invalid"
+            (click)="addOrEditFamily()"
+          >
+            Agregar
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <ng-template #modalBeneficiary>
+    <div class="content-modal-u">
+      <div class="modal-u mfb">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Datos del beneficiario</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <form class="modal__body form-beneficiary" [formGroup]="formBeneficiary">
+          <!-- DOCUMENTO -->
+          <div class="fb-group fb-document">
+            <label for="fb-document-type" class="placeholder-u inside">
+              <select
+                id="fb-document-type"
+                class="input-u"
+                formControlName="idTipoDocumento"
+              >
+                <option value="2">DNI</option>
+                <option value="4">CE</option>
+              </select>
+            </label>
+            <label
+              for="fb-document-number"
+              class="placeholder-u inside"
+              [class.placeholder-active-u]="fbe['numeroDocumento'].value"
+              aria-placeholder="Número de Documento"
+            >
+              <input
+                type="text"
+                id="fb-document-number"
+                class="input-u"
+                [maxlength]="documentNumberCharacterLimit.max"
+                formControlName="numeroDocumento"
+                (blur)="getDocumentInfo()"
+              />
+            </label>
+          </div>
+  
+          <!-- NACIONALIDAD -->
+          <label
+            class="placeholder-u inside select"
+            [class.placeholder-active-u]="fbe['nacionalidad'].value"
+            aria-placeholder="Nacionalidad"
+          >
+            <select class="input-u" formControlName="idNacionalidad">
+              <option [value]="null" disabled selected hidden>
+                NACIONALIDAD
+              </option>
+              <option
+                *ngFor="let item of parameters$?.nacionalidades"
+                [value]="item.id"
+              >
+                {{ item.descripcion }}
+              </option>
+            </select>
+          </label>
+  
+          <!-- NOMBRES -->
+          <label
+            for="fb-names"
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="fbe['nombres'].value"
+            aria-placeholder="Nombre"
+          >
+            <input
+              type="text"
+              id="fb-names"
+              class="input-u"
+              formControlName="nombres"
+            />
+          </label>
+  
+          <!-- DEPARTAMENTO -->
+          <!-- <label class="placeholder-u inside select"
+                 [class.placeholder-active-u]="fbe['department'].value"
+                 aria-placeholder="Departamento">
+            <select class="input-u"
+                    formControlName="department">
+              <option [value]="null"
+                      disabled
+                      selected
+                      hidden>
+                Departamento
+              </option>
+              <option *ngFor="let item of departments$"
+                      [value]="item.id">
+                {{ item.descripcion }}
+              </option>
+            </select>
+          </label> -->
+  
+          <!-- APELLIDO PATERNO -->
+          <label
+            for="fb-lastname"
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="fbe['apellidoPaterno'].value"
+            aria-placeholder="Apellido Paterno"
+          >
+            <input
+              type="text"
+              id="fb-lastname"
+              class="input-u"
+              formControlName="apellidoPaterno"
+            />
+          </label>
+  
+          <!-- PROVINCIA -->
+          <!-- <label class="placeholder-u inside select"
+                 [class.placeholder-active-u]="fbe['province'].value"
+                 aria-placeholder="Provincia">
+            <select class="input-u"
+                    formControlName="province">
+              <option [value]="null"
+                      disabled
+                      selected
+                      hidden>Provincia</option>
+              <option *ngFor="let item of provinces$"
+                      [value]="item.idProvincia">
+                {{ item.provincia }}
+              </option>
+            </select>
+          </label> -->
+  
+          <!-- APELLIDO MATERNO -->
+          <label
+            for="fb-lastname2"
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="fbe['apellidoMaterno'].value"
+            aria-placeholder="Apellido Materno"
+          >
+            <input
+              type="text"
+              id="fb-lastname2"
+              class="input-u"
+              formControlName="apellidoMaterno"
+            />
+          </label>
+  
+          <!-- DISTRITO -->
+          <!-- <label class="placeholder-u inside select"
+                 [class.placeholder-active-u]="fbe['district'].value"
+                 aria-placeholder="Distrito">
+            <select class="input-u"
+                    formControlName="district">
+              <option [value]="null"
+                      disabled
+                      selected
+                      hidden>Distrito</option>
+              <option *ngFor="let item of districts$"
+                      [value]="item.idDistrito">
+                {{ item.distrito }}
+              </option>
+            </select>
+          </label> -->
+  
+          <!-- FECHA DE NACIMIENTO -->
+          <label
+            for="fb-birthdate"
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="fbe['fechaNacimiento'].value"
+            aria-placeholder="Fecha de Nacimiento"
+          >
+            <input
+              type="text"
+              id="fb-birthdate"
+              class="input-u"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="bsConfigBirthdate"
+              [readonly]="true"
+              formControlName="fechaNacimiento"
+            />
+          </label>
+  
+          <label
+            class="placeholder-u inside select"
+            [class.placeholder-active-u]="fbe['sexo'].value"
+            aria-placeholder="Género"
+          >
+            <select class="input-u" formControlName="idSexo">
+              <option [value]="null" disabled selected hidden>SEXO</option>
+              <option value="1">Femenino</option>
+              <option value="2">Masculino</option>
+              <option value="3">No informado</option>
+            </select>
+          </label>
+  
+          <!-- PARENTESCO -->
+          <label
+            for="fb-relationship"
+            class="placeholder-u inside select"
+            [class.placeholder-active-u]="fbe['parentesco'].value"
+            aria-placeholder="Parentesco"
+          >
+            <select
+              id="fb-relationship"
+              class="input-u"
+              formControlName="idParentesco"
+            >
+              <option value="null" selected disabled hidden>PARENTESCO</option>
+              <option
+                *ngFor="let data of parameters$?.parentescos"
+                [value]="data.id"
+              >
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+  
+          <!-- ASIGNACION -->
+          <label
+            for="fb-assignment"
+            class="placeholder-u inside select"
+            [class.placeholder-active-u]="fbe['porcentajeParticipacion'].value"
+            aria-placeholder="Asignación (%)"
+          >
+            <select
+              id="fb-assignment"
+              class="input-u"
+              formControlName="porcentajeParticipacion"
+            >
+              <option value="null" selected disabled hidden>ASIGNACIÓN</option>
+              <option *ngFor="let n of percents" [value]="n">{{ n }}%</option>
+            </select>
+          </label>
+        </form>
+        <div class="modal__footer">
+          <button
+            class="btn-primary-u purple mfb-btn"
+            [disabled]="formBeneficiary.invalid || beneficiaryExist"
+            (click)="submitBeneficiary()"
+          >
+            {{ editMode ? "Actualizar" : "Agregar" }}
+          </button>
+        </div>
+        <ng-container *ngIf="beneficiaryExist">
+          <small class="has-error">
+            El beneficiario ya existe, ingrese otro beneficiario
+          </small>
+        </ng-container>
+        <ng-container *ngIf="clientIsBeneficiary">
+          <small class="has-error"> El cliente no puede ser beneficiario </small>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+  

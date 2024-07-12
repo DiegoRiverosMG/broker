@@ -1,0 +1,256 @@
+@import "../../sctr.component.css";
+.row-title-principal {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.row-title-principal {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.title-princial {
+  height: auto;
+  width: 100%;
+  color: #5f5f5f;
+  font-family: "Bliss Pro";
+  font-size: 37px !important;
+  font-weight: 800;
+  text-align: center;
+  margin-top: 29px;
+  text-transform: none;
+}
+.title-princial-gray {
+  color: #2b0d61;
+  font-size: 37px !important;
+  font-family: "Bliss Pro";
+}
+
+.sub-title-princial {
+  margin-top: 10px;
+}
+
+.sub-title-secondary {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.text-descripcion {
+  height: auto;
+  text-transform: none !important;
+  width: 100%;
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.main-wish {
+  text-transform: none !important;
+  width: 100%;
+  color: #5f5f5f;
+  font-family: "Bliss Pro";
+  font-size: 30px !important;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.radio-margin {
+  margin-right: 14px;
+}
+
+.main-wish-subtitle {
+  text-transform: none !important;
+  width: 100%;
+  color: #5f5f5f;
+  font-family: "Bliss Pro";
+  font-size: 20px !important;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.btn-compra {
+  height: 36px !important;
+  width: 240px !important;
+  border-radius: 8px;
+  background-color: #ff6e00;
+
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+  text-align: center;
+  margin: 0 auto;
+  border: 0;
+}
+
+.btn-secundary {
+  height: 36px !important;
+  width: 240px !important;
+  border-radius: 8px;
+  border-color: #81769d;
+  color: white;
+  background-color: #81769d;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+  text-align: center;
+  margin: 0 auto;
+  border: 0;
+}
+
+.div-btn {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+::placeholder {
+  color: rgb(146, 138, 163);
+}
+
+.filter {
+  width: 100%;
+  margin: 0px auto;
+  /* border-bottom: 1px solid rgb(84, 61, 129); */
+}
+
+.filter .filter-row {
+  display: flex;
+}
+
+:host ::ng-deep .filter select,
+:host ::ng-deep select#ChannelSalesSelect {
+  height: 36px;
+}
+
+.filter .filter-row .filter-row-cell span {
+  width: 75%;
+  color: #2b0d61;
+  display: block;
+  font-size: 13px;
+  font-weight: 300;
+  height: 24px;
+  line-height: 24px;
+}
+
+.filter .filter-row .filter-row-cell input[type="text"] {
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 98%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 32px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.filter .filter-row .filter-row-cell input[type="date"] {
+  border: none;
+  border-radius: 2px;
+  padding: 6px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 45px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.grid {
+  width: 75%;
+  margin: 20px auto;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.grid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.my-pagination /deep/ .ngx-pagination .current {
+  background: #553d81;
+}
+
+.grid table tr td {
+  padding: 5px 5px;
+  text-align: center;
+  color: #2b0d61 !important;
+}
+
+.col-sm-12 {
+  padding-right: 0px;
+}
+
+.col-client-w {
+  text-align: left;
+}
+
+.grid table tr:hover {
+  background-color: #d8d8d8;
+}
+.grid table .grid-title td {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 12px;
+  background: #553d81;
+  color: #fff !important;
+}
+
+.grid table tr td button {
+  border: none;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 2px;
+  background: rgb(169, 157, 192);
+  color: #fff;
+  margin: 0 2px;
+  height: 30px;
+  width: 25px;
+  font-family: "Bliss Pro";
+}
+
+.grid table tr .flex {
+  display: flex;
+  justify-content: center;
+}
+
+.bs-datepicker-head,
+.bs-datepicker-head,
+.bs-datepicker button:active,
+.bs-datepicker-body table td span.selected,
+.bs-datepicker-body table td.selected span,
+.bs-datepicker-body table td span[class*="select-"]:after,
+.bs-datepicker-body table td[class*="select-"] span:after,
+.bs-datepicker-body table td.active-week span:hover {
+  background-color: #ff6e00c2 !important;
+}
+
+.bs-datepicker-body table td.week span {
+  background-color: #ff6e00c2 !important;
+}
+.section_navmenu {
+  max-width: 20%;
+  padding-right: 0 !important;
+}
+.main_body {
+  padding-left: 0 !important;
+}

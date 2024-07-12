@@ -1,0 +1,36 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <nav-menu *ngIf="system == 1"></nav-menu>
+        <navmenusctr *ngIf="system == 2"></navmenusctr>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Mis Productos</span>
+                    </div>
+                </div>
+                <p class="eps-title">{{lblProducto}}<span>{{lblFecha}}</span></p>
+            </div>
+            <div *ngFor="let item of productList"
+                 class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="assets/images/demo.jpg"
+                                     alt="Demo" />
+                            </div>
+                            <div class="col-md-8">
+                                <h4>{{item.SNAME}}</h4>
+                                <p>{{item.SDESCRIPTION}}</p>
+                                <button (click)="goToPanel(item)">Ir a mi panel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

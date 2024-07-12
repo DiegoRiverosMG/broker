@@ -1,0 +1,175 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                    <span class="title">Bandeja</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <span>TIPO PRODUCTO</span>
+                                        <select [(ngModel)]="InputsBandeja.NPRODUCT" class="minimal">
+                                            <option *ngFor="let item of productTypeList" value="{{item.COD_PRODUCT}}">
+                                                {{item.DES_PRODUCT}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <span>ESTADO</span>
+                                        <select [(ngModel)]="InputsBandeja.NSTATE" class="minimal">
+                                            <option value="" selected>Todos</option>
+                                            <option *ngFor="let item of statusList" value="{{item.Id}}">
+                                                {{item.Name}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <span>NRO. COTIZACIÓN</span>
+                                        <input [(ngModel)]="InputsBandeja.NID_COTIZACION" type="text"
+                                            placeholder="Número de Cotización" (paste)="onPaste($event)"
+                                            (keyup)="quotationNumberChanged($event)"
+                                            (keypress)="quotationNumberPressed($event)" (keyup.enter)="firstSearch()"
+                                            maxlength="10" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>DESDE</span>
+                                <input id="fechaEfecto" type="text" #bsDatepicker placeholder="dd/mm/yyyy"
+                                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                    value="{{ bsValueIni.toString() | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                    [disabled]="stateSearch" />
+                                <ng-container [ngSwitch]="valueErrorDate">
+                                    <span class="mensaje-error-control" *ngSwitchCase="'required'">La fecha de efecto es
+                                        requerida</span>
+                                    <span class="mensaje-error-control" *ngSwitchCase="'badFormat'">Formato de fecha
+                                        incorrecta</span>
+                                                <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                            </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>HASTA</span>
+                                <input id="fechaEfecto" type="text" #bsDatepicker placeholder="dd/mm/yyyy"
+                                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueFin"
+                                    value="{{ bsValueFin.toString() | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                    [disabled]="stateSearch" />
+                                <ng-container [ngSwitch]="valueErrorDate">
+                                    <span class="mensaje-error-control" *ngSwitchCase="'required'">La fecha de efecto es
+                                        requerida</span>
+                                    <span class="mensaje-error-control" *ngSwitchCase="'badFormat'">Formato de fecha
+                                        incorrecta</span>
+                                                <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                            </ng-container>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row pull-right">
+                                    <button (click)="searchProcess()" class="full-color">
+                                        <span>Buscar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item">Cotización</td>
+                                    <td class="grid-title-item">Producto</td>
+                                    <td class="grid-title-item">Contratante</td>
+                                    <td class="grid-title-item">Prima Mínima</td>
+                                    <td class="grid-title-item">Nro. Trabajadores</td>
+                                    <td class="grid-title-item">Planilla</td>
+                                    <td class="grid-title-item">Broker</td>
+                                    <td *ngIf="profile!=134 && codProducto==3" class="grid-title-item">Segmento</td>
+                                    <td *ngIf="profile!=134 && codProducto==3" class="grid-title-item">SLA</td>
+                                    <td class="grid-title-item">Estado</td>
+                                    <td class="grid-title-item">Fecha Aprobación</td>
+                                    <td class="grid-title-item">Opciones</td>
+                            </tr>
+                        </thead>
+
+                        <div *ngIf="existResults; then showGrid else hideGrid"></div>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr>
+                            <td  [attr.colspan]="profile == 134  ? 10 : 12">No se encontraron registros</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td>{{ item.NUM_COTIZACION}}</td>
+                                    <td>{{ item.NOMBRE_PRODUCT }}</td>
+                                    <td>{{ item.NOMBRE_CONTRATANTE }}</td>
+                                    <td>{{ item.PRIMA_MINIMA | prettyNumber:2}}</td>
+                                    <td>{{ item.NOM_TOTAL_TRAB }}</td>
+                                    <td>{{ item.PLANILLA | prettyNumber:2}}</td>
+                                    <td>{{ item.CLIENT_BROKER }}</td>
+                                    <td *ngIf="profile!=134 && codProducto==3" title="{{item.SCLIENT_SEG}}">{{ item.SDESCRIPT_SEG }}</td>
+                                    <td *ngIf="profile!=134 && codProducto==3">{{item.NTIEMPO_TOTAL_SLA }}</td>
+                                    <td>{{ item.DES_ESTADO}}</td>
+                                    <td>{{ item.FECHA_APROBACION }}</td>
+                                    <td style="display: flex;">
+                                    <a (click)="openDetails(item)"><img alt="Ver detalles" src="assets/icons/see.svg"
+                                            style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+            </div>
+            <div *ngIf="existResults" class="row" style="display:flex">
+                <div class="col-sm-10">
+                    <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                        [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                        <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                        <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                    </ngb-pagination>
+                </div>
+                <div class="col-sm-2">
+                    <span style="display: inline-block;">Mostrar: </span>
+                    <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                        style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+                        </div>
+                        </div>
+
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

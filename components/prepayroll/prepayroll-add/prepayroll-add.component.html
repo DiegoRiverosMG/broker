@@ -1,0 +1,710 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Nuevas Pre Planillas</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <div class="header-item right-item">
+              <a class="regresar" href="broker/prepayroll">
+                <img
+                  alt=""
+                  class="ico-regresar"
+                  src="assets/icons/arrow-left.png"
+                />
+                <span>Regresar a mis Pre planillas</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="showFiltrosEnviar">
+          <div class="form-group row ">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="spantitlecertificado">ESPECIES VALORADAS</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right btn-grupo">
+                <button (click)="onBuscarEspecies()" class="btn-planilla">
+                  <span>Buscar</span>
+                </button>
+                <button
+                  (click)="onAgregarAPreplanilla()"
+                  [ngClass]="{ deshabilitado: bBloqueo }"
+                  class="btn-planilla"
+                >
+                  <span>Incluir en Pre Planilla</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row ">
+            <div class="col-lg-3">
+              <label for="" class="label-datos-liquidacion">CANAL</label>
+              <select
+                (change)="onChangeCanal($event.target.value)"
+                [(ngModel)]="canalSelected"
+              >
+                <option value="0">--SELECCIONAR--</option>
+                <option
+                  *ngFor="let canal of canales"
+                  value="{{ canal.nchannel }}"
+                  >{{ canal.sdescript }}</option
+                >
+              </select>
+            </div>
+            <div class="col-lg-3">
+              <label for="" class="label-datos-liquidacion"
+                >PUNTO DE VENTA</label
+              >
+              <select
+                (change)="onChangePuntoVenta($event.target.value)"
+                [(ngModel)]="puntoVentaSelected"
+              >
+                <option value="0" selected>--SELECCIONAR--</option>
+                <option
+                  *ngFor="let puntoVenta of puntosVenta"
+                  value="{{ puntoVenta.nnumpoint }}"
+                  >{{ puntoVenta.sdescript }}</option
+                >
+              </select>
+            </div>
+            <div class="col-lg-3">
+              <!--<div class="col-lg-3">
+              <label class="label-filtros">NRO. ESPECIE VALORADA</label>
+              <input type="text"
+                     placeholder="Número de especie valorada"
+                     class="form-control" />
+            </div>-->
+            </div>
+            <div class="col-lg-3"></div>
+          </div>
+
+          <div class="form-group row ">
+            <div class="table-responsive">
+              <div class="payroll-content">
+                <div class="result-content">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr class="tr-title">
+                          <td class="td-tittle">
+                            <input
+                              type="checkbox"
+                              [(ngModel)]="selectEspeciesAll"
+                              (change)="selectAllEspecies()"
+                            />
+                          </td>
+                          <td class="td-tittle">#</td>
+                          <td class="td-tittle">Nro. Especie</td>
+                          <td class="td-tittle">Tipo</td>
+                        </tr>
+                      </thead>
+                      <tbody
+                        *ngFor="let item of listaEspecies; let index = index"
+                      >
+                        <tr>
+                          <td>
+                            <input
+                              type="checkbox"
+                              [(ngModel)]="item.selected"
+                              (change)="checkIfAllSelected(item)"
+                            />
+                            <!--(change)="checkIfAllSelected();"-->
+                          </td>
+                          <td>{{ index + 1 }}</td>
+                          <td>{{ item.npolesP_COMP }}</td>
+                          <td>{{ item.ntippoldes }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row ">
+          <div class="col-lg-7">
+            <div class="float-left">
+              <span class="spantitlecertificado"
+                >GENERACIÓN DE PRE PLANILLAS</span
+              >
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="float-right btn-grupo">
+              <button
+                (click)="onQuitarDePreplanilla()"
+                [ngClass]="{ deshabilitado: bBloqueo }"
+                *ngIf="showbtnEliminardePrePlanilla"
+                class="btn-planilla"
+              >
+                <img
+                  alt=""
+                  src="assets/icons/delete.png"
+                  style="display: inline;"
+                />
+                <span style="display: inline;">Eliminar de Pre Planilla</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" [ngClass]="{ deshabilitado: bBloqueo }">
+          <div class="table-responsive">
+            <div class="payroll-content">
+              <div class="result-content">
+                <table>
+                  <thead>
+                    <tr class="tr-title">
+                      <td class="td-tittle" *ngIf="showCheckbox">
+                        <input
+                          type="checkbox"
+                          [(ngModel)]="selectAllPreplanilla"
+                          (change)="selectAllEspeciesPreplanilla()"
+                        />
+                      </td>
+                      <td class="td-tittle">#</td>
+                      <td class="td-tittle">Nro. Especie</td>
+                      <td class="td-tittle">Tipo</td>
+                      <td class="td-tittle">Precio</td>
+                      <td class="td-tittle">Placa</td>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let item of listaSelected; let index = index">
+                    <tr>
+                      <td *ngIf="showCheckbox">
+                        <input
+                          type="checkbox"
+                          [(ngModel)]="item.selected"
+                          (change)="checkIfAllSelectedPlanilla(item)"
+                        />
+                      </td>
+                      <td>{{ index + 1 }}</td>
+                      <td>{{ item.npolesP_COMP }}</td>
+                      <td>{{ item.ntippoldes }}</td>
+                      <td class="text-right">
+                        <input
+                          type="text"
+                          class="input-grid"
+                          [(ngModel)]="item.precio"
+                          (keypress)="soloNumeros($event)"
+                          maxlength="3"
+                          (blur)="calcularTotal()"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          class="input-grid mayuscula"
+                          [(ngModel)]="item.placa"
+                          (keypress)="soloNumerosLetras($event)"
+                          maxlength="8"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Fin de Grid-->
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <div class="float-left">
+              <span class="title-count"
+                >Cantidad de SOATS en Pre Planilla:</span
+              >
+              <span class="span-count">{{ cantidadEspecies }}</span>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="float-right">
+              <span class="title-count">Importe total de Pre Planilla:</span>
+              <span class="span-amount">S/. {{ totalPreplanilla }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="generate-content">
+          <div
+            class="form-group row text-center"
+            *ngIf="showbtnGenerarPlanilla"
+          >
+            <div class="col-lg-4 col-sm-12 text-center">
+              <button
+                *ngIf="bMostrarButtons"
+                (click)="confirmarMedioPago('1')"
+                class="full-color large"
+              >
+                <span>Pagar con Visa</span>
+              </button>
+            </div>
+            <div class="col-lg-4 col-sm-12 text-center">
+              <button
+                *ngIf="bMostrarButtons"
+                (click)="confirmarMedioPago('2')"
+                class="full-color large"
+              >
+                <span>Pagar con Cup&oacute;n</span>
+              </button>
+            </div>
+            <div class="col-lg-4 col-sm-12 text-center">
+              <button
+                *ngIf="bMostrarButtons"
+                (click)="confirmarMedioPago('3', true)"
+                class="full-color large"
+              >
+                <span>Pagar con Voucher</span>
+              </button>
+            </div>
+            <!--<div *ngIf="bMostrarButtons">
+                <div class="btn-group" role="group" aria-label="Basic example">                                
+               
+                </div>
+              </div>-->
+          </div>
+        </div>
+        <div *ngIf="!bMostrarButtons">
+          <div class="btn-visa"></div>
+          <div *ngIf="bMostrarButtonPE" class="btn-pago-efectivo">
+            <a (click)="pagarConPagoEfectivo()">
+              <img
+                alt=""
+                src="assets/images/logo_pagoefectivo_112x52.png"
+                alt="PagoEfectivo"
+              />
+            </a>
+          </div>
+        </div>
+
+        <div *ngIf="bLoading" class="loading">
+          <img alt="" src="assets/icons/loading.gif" />
+          <p>Por favor espere unos segundos...</p>
+        </div>
+        <div *ngIf="showDatosLiquidacion">
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <span class="spantitlecertificado">DATOS DE LIQUIDACIÓN</span>
+            </div>
+          </div>
+          <div *ngIf="showFiltrosLiquidacion">
+            <div class="form-group row ">
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion"
+                  >TIPO DE MONEDA</label
+                >
+                <app-currencytype
+                  (evResultCurrencyType)="onVotedCurrentType($event)"
+                ></app-currencytype>
+              </div>
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion">IMPORTE</label>
+                <input
+                  type="text"
+                  id="NAMOUNT"
+                  (keypress)="
+                    this.utilityService._kpImporte(
+                      $event,
+                      prepayrollPaymentAdd.NAMOUNT
+                    )
+                  "
+                  name="NAMOUNT"
+                  #NAMOUNT="ngModel"
+                  required
+                  autofocus
+                  class="form-control"
+                  [(ngModel)]="prepayrollPaymentAdd.NAMOUNT"
+                  placeholder="Ingresa el importe"
+                />
+              </div>
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion"
+                  >TIPO DE PAGO</label
+                >
+                <app-paymenttype
+                  (evResultPaymentType)="onVotedParentPaymentType($event)"
+                  required
+                  autofocus
+                ></app-paymenttype>
+              </div>
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion">BANCO</label>
+                <app-bank
+                  (evResultBank)="onVotedParentBank($event)"
+                  (evResultAccountBank)="onVotedParentAccountBank($event)"
+                ></app-bank>
+              </div>
+            </div>
+            <div class="form-group row ">
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion"
+                  >NRO. DE OPERACIÓN</label
+                >
+                <input
+                  type="text"
+                  id="SOPERATION_NUMBER"
+                  name="SOPERATION_NUMBER"
+                  maxlength="10"
+                  class="form-control"
+                  [(ngModel)]="prepayrollPaymentAdd.SOPERATIONNUMBER"
+                  placeholder="Ingresa el número de operación"
+                  #SOPERATIONNUMBER="ngModel"
+                  required
+                  autofocus
+                />
+              </div>
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion"
+                  >FECHA DE OPERACIÓN</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  [bsConfig]="bsConfig"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [(bsValue)]="bsValueFecOp"
+                  value="{{ bsValueFecOp | date: 'dd/MM/yyyy' }}"
+                />
+              </div>
+              <div class="col-lg-3">
+                <label for="" class="label-datos-liquidacion">REFERENCIA</label>
+                <input
+                  type="text"
+                  id="SREFERENCE"
+                  name="SREFERENCE"
+                  class="form-control"
+                  [(ngModel)]="prepayrollPaymentAdd.SREFERENCE"
+                  placeholder="Ingresa la referencia"
+                  #SREFERENCE="ngModel"
+                  required
+                  autofocus
+                />
+              </div>
+            </div>
+            <div class="form-group row ">
+              <div class="col-md-12">
+                <div class="float-left btn-grupo">
+                  <button
+                    (click)="AgregarDatosLiquidacion()"
+                    class="full-color btn-planilla"
+                  >
+                    <span>Agregar</span>
+                  </button>
+                  <button
+                    (click)="QuitarDatosLiquidacion()"
+                    class="btn-planilla"
+                  >
+                    <span>Eliminar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- </form> -->
+
+          <div class="form-group row ">
+            <div class="table-responsive">
+              <div class="payroll-content">
+                <div class="result-content">
+                  <table class="grid-content-data-table">
+                    <thead>
+                      <tr class="data-table-title-tr">
+                        <td class="data-table-tr-td data-table-title-td">
+                          <span class="tittle-label">#</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-radio"
+                          *ngIf="showCheckbox"
+                        >
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="selectedAllPayment"
+                            (change)="selectAllPayment()"
+                          />
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Tipo de pago</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Importe</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Moneda</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Banco</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Operación</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Referencia</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span class="tittle-label">Fecha</span>
+                        </td>
+                      </tr>
+                    </thead>
+
+                    <tbody
+                      *ngFor="
+                        let result of listprepayrollPaymentAdd;
+                        let index = index
+                      "
+                    >
+                      <tr>
+                        <td>{{ index + 1 }}</td>
+                        <td *ngIf="showCheckbox">
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="result.selected"
+                            (change)="checkIfAllSelectedPayment()"
+                          />
+                        </td>
+                        <td>{{ result.nidpaidtypetext }}</td>
+                        <td>{{ result.amount }}</td>
+                        <td>{{ result.ncurrencytext }}</td>
+                        <td>{{ result.nbanktext }}</td>
+                        <td>{{ result.operationnumber }}</td>
+                        <td>{{ result.reference }}</td>
+                        <td>{{ result.operationdate }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row ">
+            <div class="col-lg-12">
+              <span class="spantitlecertificado">IMPORTE DE LIQUIDACIÓN</span>
+            </div>
+          </div>
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Total del importe a liquidar:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount">{{ totalPreplanilla }}</span>
+                <span class="type-money-span">Nuevos Soles</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Total del importe declarado:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount">{{ totaldeclarado }} </span>
+                <span class="type-money-span">Nuevos Soles</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Diferencia de pago pendiente:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount"
+                  >{{ totalPreplanilla - totaldeclarado }}
+                </span>
+                <span class="type-money-span">Nuevos Soles</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row totales">
+            <div class="col-md-12" *ngIf="showbtnGrabarTodo">
+              <div class="float-right btn-grupo">
+                <button (click)="CancelaryRegresar()" class="btn-planilla">
+                  <span>Cancelar</span>
+                </button>
+                <button class="full-color btn-planilla" (click)="grabarTodo()">
+                  <img
+                    alt=""
+                    src="assets/icons/grabar_todo.png"
+                    style="display: inline;"
+                  />
+                  <span style="display: inline;">Grabar todo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modales-->
+<div
+  bsModal
+  #modalConfirmacion="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #553D81;color: white;">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Confirmación Usuario
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ mensajeConfirmacion }}</p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="full-color"
+              (click)="confirmarAccion()"
+            >
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%;" (click)="cerrarConfirmacion()">
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-modal #modalResultadoPE [close]="false">
+  <div class="m-body">
+    <div class="frame-result"></div>
+    <div class="botones">
+      <button class="btn-orange" (click)="finalizarPE()">Finalizar</button>
+    </div>
+  </div>
+</app-modal>
+
+<div
+  bsModal
+  #childModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #553D81;color: white;">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <button
+              style="min-width: 100%;"
+              class="full-color"
+              (click)="aceptarmsginfo()"
+            >
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalCerrar="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #553D81;color: white;">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <button
+              style="min-width: 100%;"
+              class="full-color"
+              (click)="aceptarCerrar()"
+            >
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

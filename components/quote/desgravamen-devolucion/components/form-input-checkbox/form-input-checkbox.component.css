@@ -1,0 +1,9 @@
+.form-input-checkbox {
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.form-input-checkbox span {
+  margin-top: 0.7em;
+  display: block;
+}

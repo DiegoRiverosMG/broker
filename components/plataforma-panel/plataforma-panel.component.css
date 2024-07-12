@@ -1,0 +1,503 @@
+.div-grafica {
+  max-width: 850px !important;
+}
+
+.row-title-principal {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.btn-compra {
+  height: 36px !important;
+  width: 100% !important;
+  border-radius: 8px;
+  background-color: #ff6e00;
+
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+  text-align: center;
+  margin: 0 auto;
+  border: 0;
+}
+
+.select-formulario-graph {
+  height: 33px !important;
+}
+
+.body-graph {
+  max-height: 470px;
+}
+
+.title-princial {
+  height: auto;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 10px;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.text-descripcion {
+  height: auto;
+  width: 100%;
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.text-descripcion p {
+  height: 48px;
+  width: 662px;
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;
+  margin-top: 0px;
+}
+
+.rectangle {
+  margin-top: 14px;
+  /* min-height: 510px; */
+  width: 100%;
+  border: 1px solid #d5cfdf;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 2%;
+}
+
+.title-rectangle {
+  min-height: 40px;
+  width: 100%;
+  color: #ff6e00;
+  font-family: "Bliss Pro";
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: center;
+  padding: 2px 12px;
+}
+
+.cabera {
+  text-align: center;
+  margin-bottom: 13px;
+  margin-top: 16px;
+}
+
+.content-rectagle-score {
+  margin-top: -4px !important;
+}
+
+.face-score {
+  height: 50px;
+}
+
+.center-anio {
+  float: none;
+  margin: 0 auto;
+}
+
+.content-rectagle {
+  width: 100%;
+  min-height: 121px;
+  margin-top: 26px;
+  text-align: center;
+}
+
+.rectangle-copy-left,
+.rectangle-copy-rigth {
+  height: 80px;
+  border: 1px solid #aa9ec0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  display: inline-grid;
+  display: -ms-inline-grid;
+  width: 20% !important;
+  /* padding-top: 22px; */
+  /* padding-bottom: 22px; */
+  margin-left: 10px;
+}
+
+.rectangle-footer {
+  width: 100%;
+  padding: 15px 53px;
+}
+
+.rectangle-copy-parrafo-ini {
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  text-align: center;
+}
+
+.rectangle-copy-parrafo-ie {
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  text-align: center;
+  margin-top: 57px;
+}
+
+.rectangle-copy-parrafo {
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  text-align: center;
+  margin-top: 57px;
+  display: contents;
+}
+
+.rectangle-copy-parrafo-pa {
+  color: #48903b;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  text-align: center;
+  margin-top: 57px;
+  display: contents;
+}
+
+.rectangle-copy-numero {
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 47px;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.rectangle-copy-numero-pa {
+  color: #48903b;
+  font-family: "Bliss Pro";
+  font-size: 47px;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.rectangle-footer-parrafo {
+  margin-top: 9px;
+  height: 16px;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 16px;
+  text-align: center;
+}
+
+.container-historial-venta {
+  width: 100%;
+  border: 1px solid #d5cfdf;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding-top: 29px;
+  padding-bottom: 47px;
+}
+
+.header-historial-venta {
+  text-align: center;
+}
+
+.contenido-historial-venta {
+  min-height: 50px;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: center;
+  margin-top: 14px;
+}
+
+.footer-historial-venta {
+  text-align: center;
+  padding: 2px 30%;
+}
+
+@media only screen and (max-width: 576px) {
+  .title-princial {
+    font-size: 14px;
+    display: inline;
+    padding: 0px 0px;
+    text-align: center;
+    text-align: justify;
+  }
+  .text-descripcion {
+    font-size: 14px;
+    display: inline;
+    padding: 0px 0px;
+    text-align: justify;
+  }
+  .footer-historial-venta {
+    padding: 0px 30px;
+  }
+  .btn-historial {
+    height: 46px;
+    width: 100%;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .title-princial {
+    font-size: 20px;
+    display: inline;
+    padding: 0px 0px;
+    text-align: center;
+    text-align: justify;
+  }
+  .text-descripcion {
+    font-size: 14px;
+    padding: 0px 0px;
+    text-align: justify;
+    width: 50%;
+  }
+  .footer-historial-venta {
+    padding: 0px 30px;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .title-princial {
+    font-size: 28px;
+    display: inline;
+    padding: 0px 0px;
+    text-align: center;
+    text-align: justify;
+  }
+  .text-descripcion {
+    font-size: 15px;
+    padding: 0px 0px;
+    text-align: justify;
+    display: inline;
+  }
+  .footer-historial-venta {
+    padding: 0px 30px;
+  }
+}
+
+.img-help {
+  margin-bottom: 3px !important;
+  margin-left: 3px !important;
+}
+
+.fila {
+  padding: 5px;
+}
+
+.semaforobase {
+  height: 67px;
+  width: 67px;
+  padding: 5px;
+  border: 3px solid gray;
+  border-radius: 300px;
+  float: left;
+}
+
+.luzverde {
+  margin-left: 9px;
+  background-color: green;
+  opacity: 1;
+}
+
+.luzambar {
+  margin-left: 5px;
+  background-color: #ffbf00;
+  opacity: 0.1;
+}
+
+.luzroja {
+  margin-left: 5px;
+  background-color: red;
+  opacity: 0.1;
+}
+
+.container-semaforo {
+  width: 100%;
+  border: 1px solid #d5cfdf;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.title-salepoint {
+  min-height: 40px;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 20px;
+  font-weight: bold;
+  text-align: right;
+  padding: 2px 12px;
+  margin-top: 8px;
+}
+
+.container-selectpv {
+  width: 100%;
+  border: 1px solid #d5cfdf;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding-top: 16px;
+  padding-bottom: 11px;
+}
+
+.row-title-secondary {
+  height: 66px;
+}
+
+.rectangle-light {
+  height: 79px;
+  border: 1px solid #aa9ec0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  display: -ms-inline-grid;
+  width: 232px !important;
+  padding-top: 5px;
+  display: inline-block;
+}
+
+.cabera-light {
+  text-align: center;
+  margin-bottom: -4px;
+  margin-top: 15px;
+}
+
+.rectangle-light-box {
+  height: 119px;
+  border-radius: 6px;
+  display: inline-grid;
+  display: -ms-inline-grid;
+  width: 76% !important;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-left: 10px;
+}
+
+.text-danger {
+  color: red !important;
+}
+
+.text-success {
+  color: green !important;
+}
+
+.rectangle-light-box-danger {
+  border: 1px solid red;
+}
+
+.rectangle-light-box-success {
+  border: 1px solid green;
+}
+
+.rectangle-light-box-parrafo {
+  font-family: "Bliss Pro";
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  display: contents;
+}
+
+.saldos {
+  color: #2b0d61;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.btngrafica {
+  background-color: #553d81;
+}
+
+.radiografica {
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.contenedor-principal {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  perspective: 1500px;
+}
+
+#contenedor-secundario {
+  width: 100%;
+  padding: 20px;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+/* dddddd  */
+/* #contenedor-sidebar {
+  min-width: 278px;
+  max-width: 278px;
+  transition: all 0.6s cubic-bezier(0.945, 0.02, 0.27, 0.665);
+  transform-origin: bottom left;
+}
+
+#contenedor-sidebar.active {
+  margin-left: -250px;
+  transform: rotateY(100deg);
+}
+
+#contenedor-sidebar .sidebar-header {
+  padding: 20px;
+  background: #6d7fcc;
+} */
+
+/* #contenedor-sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#contenedor-sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#contenedor-sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+#contenedor-sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#contenedor-sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+} */

@@ -1,0 +1,248 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   SCHEDULE-MAINTENCE.COMPONENT.HTML                                    */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   06-10-2022                                                           */
+/*  VERSIÓN             :   1.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/***********************************************************************************************-->
+
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+
+<div class="row m-2">
+    <div class="col-lg-12">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title ml-3">MANTENIMIENTO DE HORARIOS</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2" [formGroup]="filterForm">
+                <div class="col-lg-2">
+                    <span>ORIGEN</span>
+                    <select class="form-control" (change)="seleccionarOrigen($event.target.value)" formControlName="NNUMORI">
+                        <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <span>TIPO EJECUCIÓN</span>
+                    <select class="form-control" formControlName="NTIPEJE">
+                        <option value="" disabled selected>SELECCIONE TIPO EJECUCIÓN</option>
+                        <option value="INTERFAZ">INTERFAZ</option>
+                        <option value="BLOQUE">BLOQUE</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <span>RAMO</span>
+                    <select class="form-control" formControlName="NBRANCH">
+                        <option value="0">TODOS</option>
+                        <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <span>INTERFAZ</span>
+                    <select class="form-control" formControlName="NCODGRU">
+                        <option value="0">TODOS</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2">
+                    <span>&nbsp;</span>
+                    <button class="full-color" (click)="addRow()">
+                        <span>AGREGAR HORARIO</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">NNUNTAREA</td>
+                                    <td class="grid-title-item text-center">SPROCEDI</td>
+                                    <td class="grid-title-item text-center">NCODGRU</td>
+                                    <td class="grid-title-item text-center">NBRANCH</td>
+                                    <td class="grid-title-item text-center">SHORAEJE</td>
+                                    <td class="grid-title-item text-center">LUNES</td>
+                                    <td class="grid-title-item text-center">MARTES</td>
+                                    <td class="grid-title-item text-center">MIÉRCOLES</td>
+                                    <td class="grid-title-item text-center">JUEVES</td>
+                                    <td class="grid-title-item text-center">VIERNES</td>
+                                    <td class="grid-title-item text-center">SÁBADO</td>
+                                    <td class="grid-title-item text-center">DOMINGO</td>
+                                    <td class="grid-title-item text-center">ACCIÓN</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="horarios==null || horarios.length==0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="13">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of horarios" style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NNUNTAREA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SPROCEDI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NCODGRU }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputNBRANCH">
+                                            {{ item.NBRANCH }}
+                                        </ng-container>
+                                        <ng-template #inputNBRANCH>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.NBRANCH" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSHORAEJE">
+                                            {{ item.SHORAEJE }}
+                                        </ng-container>
+                                        <ng-template #inputSHORAEJE>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SHORAEJE" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSLUN">
+                                            {{ item.SLUN }}
+                                        </ng-container>
+                                        <ng-template #inputSLUN>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SLUN" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSMAR">
+                                            {{ item.SMAR }}
+                                        </ng-container>
+                                        <ng-template #inputSMAR>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SMAR" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSMIE">
+                                            {{ item.SMIE }}
+                                        </ng-container>
+                                        <ng-template #inputSMIE>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SMIE" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSJUE">
+                                            {{ item.SJUE }}
+                                        </ng-container>
+                                        <ng-template #inputSJUE>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SJUE" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSVIE">
+                                            {{ item.SVIE }}
+                                        </ng-container>
+                                        <ng-template #inputSVIE>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SVIE" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSSAB">
+                                            {{ item.SSAB }}
+                                        </ng-container>
+                                        <ng-template #inputSSAB>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SSAB" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else inputSDOM">
+                                            {{ item.SDOM }}
+                                        </ng-container>
+                                        <ng-template #inputSDOM>
+                                            <input type="text" nz-input [(ngModel)]="editCache[item.NNUNTAREA].data.SDOM" />
+                                        </ng-template>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <div class="editable-row-operations">
+                                            <ng-container *ngIf="!editCache[item.NNUNTAREA].edit; else saveSCHEDULE">
+                                                <a (click)="startEdit(item.NNUNTAREA)">
+                                                    <img src="./assets/icons/editar.png" title="Editar" />
+                                                </a>
+                                            </ng-container>
+                                            <ng-template #saveSCHEDULE>
+                                                <a class="m-1" (click)="saveEdit(item.NNUNTAREA)">
+                                                    <img src="./assets/icons/benefits.png" title="Guardar" />
+                                                </a>
+                                                <a class="m-1" (click)="cancelEdit(item.NNUNTAREA)">
+                                                    <img src="./assets/icons/close_modal.png" title="Cancelar" />
+                                                </a>
+                                            </ng-template>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <span class="titleN">Listado de Servicios</span>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+            <div class="row m-2">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-2">
+                    <select class="form-control" [(ngModel)]="servicio.SSERVICIO">
+                        <option value="null" disabled selected>SELECCIONE SERVICIO</option>
+                        <option *ngFor="let item of servicios" value="{{ item.SDESCRIPT3 }}">{{ item.SDESCRIPT3 }}</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <button class="full-color" (click)="estadoServicio(servicio)">
+                        <span>Estado</span>
+                    </button>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+            <div class="row m-2">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-2">
+                    <button class="full-color" (click)="iniciarServicio(servicio)">
+                        <span>Play</span>
+                    </button>
+                </div>
+                <div class="col-lg-2">
+                    <button class="full-color" (click)="detenerServicio(servicio)">
+                        <span>Stop</span>
+                    </button>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   REQUEST-REPORTE-RECIBO.COMPONENT.HTML                                */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   19-12-2022                                                           */
+/*  VERSIÓN             :   1.0 - REPORTE DE RECIBOS                                             */
+/************************************************************************************************-->
+
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">MONITOREO DE REPORTES DE RECIBOS</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <span>RAMO (*)</span>
+                <input type="text" />
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA DE INICIO (*)</span>
+                <input type="text" />
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA DE FIN (*)</span>
+                <input type="text" />
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">ESTADO</td>
+                                    <td class="grid-title-item text-center">ID. REPORTE</td>
+                                    <td class="grid-title-item text-center">ID. RAMO</td>
+                                    <td class="grid-title-item text-center">RAMO</td>
+                                    <td class="grid-title-item text-center">USUARIO</td>
+                                    <td class="grid-title-item text-center">FECHA INICIO PRODUCCIÓN</td>
+                                    <td class="grid-title-item text-center">FECHA FIN PRODUCCIÓN</td>
+                                    <td class="grid-title-item text-center">DESCARGA</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid1 else showGrid1"></ng-container>
+                        </table>
+                        <ng-template #hideGrid1>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid1>
+                            <tbody *ngFor="let item of listToShow" style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow!=null && listToShow.length>0" class="row" style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

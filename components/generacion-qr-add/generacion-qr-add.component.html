@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr">
+      <div class="row group1">
+        <h1 class="title">Generación de QR</h1>
+        <button
+          class="full-color btn-regresar mx-0"
+          [routerLink]="'/extranet/generacion-qr'"
+        >
+          <span class="span">Regresar</span>
+        </button>
+      </div>
+      <div class="grid row">
+        <div class="options">
+          <button class="btn-error">Detalle de Excel</button>
+        </div>
+        <div class="table_scroll">
+          <table class="table table-info-soat" style="min-width: 1600px">
+            <thead>
+              <tr class="grid-title titulo">
+                <td class="grid-title-item colum">N° de Fila</td>
+                <td class="grid-title-item colum">Tipo de Documento</td>
+                <td class="grid-title-item colum">N° Documento</td>
+                <td class="grid-title-item colum">Nombres</td>
+                <td class="grid-title-item colum">Apellido Paterno</td>
+                <td class="grid-title-item colum">Apellido Materno</td>
+                <td class="grid-title-item colum">Teléfono Fijo</td>
+                <td class="grid-title-item colum">Teléfono Celular</td>
+                <td class="grid-title-item colum">Email</td>
+                <td class="grid-title-item colum">Cargo</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="grid-body" *ngFor="let data of dataImportada">
+                <td class="grid-body-item">{{ data.id }}</td>
+                <td class="grid-body-item">{{ data.tipo_documento }}</td>
+                <td class="grid-body-item">{{ data.numero_documento }}</td>
+                <td class="grid-body-item">{{ data.nombres }}</td>
+                <td class="grid-body-item">{{ data.apellido_paterno }}</td>
+                <td class="grid-body-item">{{ data.apellido_materno }}</td>
+                <td class="grid-body-item">{{ data.telefono_fijo }}</td>
+                <td class="grid-body-item">{{ data.telefono_celular }}</td>
+                <td class="grid-body-item">{{ data.email }}</td>
+                <td class="grid-body-item">{{ data.cargo }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

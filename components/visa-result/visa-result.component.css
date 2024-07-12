@@ -1,0 +1,267 @@
+.title_confirm {
+  color: #2b0d61;
+}
+
+.contenido {
+  width: 100%;
+  /* margin-top: 34px; */
+}
+
+.mensaje-carga {
+  padding: 5px;
+}
+
+.mensaje-carga h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 900;
+}
+
+/*.mensaje-carga p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+}*/
+
+.mensaje-aprobado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.mensaje-aprobado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: normal !important;
+}
+
+.mensaje-denegado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.mensaje-denegado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.btn-white-blue {
+  text-decoration: none;
+  padding: 10px;
+  border: 1px solid #2b0d61;
+  border-radius: 2px;
+  background-color: #ffffff;
+  cursor: pointer;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-compra {
+  height: 46px;
+  width: 100%;
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: 100;
+  line-height: 19px;
+  text-align: center;
+}
+
+.mensaje-validation {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.mensaje-validation p {
+  color: #fd2f21;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  margin-left: 40px;
+}
+
+.box-pay-info {
+  border: 1px dashed #8b7ba9;
+  padding: 10px;
+  margin: 0px;
+}
+
+.box-pay-info b,
+.box-detail b,
+.box-pay-info span,
+.box-detail span {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #9181ad;
+}
+
+.box-pay-info span,
+.box-detail span {
+  font-size: 11px;
+  text-transform: none;
+}
+
+.box-pay-info .col-sm-3 {
+  border-right: 1px dashed #8b7ba9;
+}
+
+.box-pay-info .col-sm-3:last-child {
+  border-right: none;
+}
+
+.box-detail > div {
+  padding: 10px 0px 5px 0px;
+}
+
+.box-detail a {
+  color: #9181ad;
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+.box-info {
+  float: left;
+}
+
+.box-divider {
+  border: 1px dashed #8b7ba9;
+  height: 100%;
+  float: right;
+  vertical-align: top;
+}
+
+.box-detail b {
+  text-transform: none;
+}
+
+.box-detail h5 {
+  color: #2b0d61;
+  margin-top: 10px;
+  margin: 20px;
+}
+
+.box-detail span {
+  margin-left: 10px;
+}
+
+.btn-print {
+  color: #fff;
+  border: 1px solid #2b0d61;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.btn-print span {
+  color: #2b0d61;
+  margin-left: 10px;
+  text-transform: none;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "Bliss Pro";
+}
+
+.print-color {
+  color: #2b0d61;
+  font-size: 16px;
+}
+
+.h-divider {
+  border-top: 2px solid #2b0d61;
+  margin-top: 25px;
+  height: 13px;
+}
+
+.tb-result {
+  width: 100%;
+}
+
+.tb-result td {
+  border-bottom: 2px solid #2b0d61;
+  padding: 12px;
+  font-size: 12px;
+  color: #2b0d61;
+}
+
+.tb-result tr:last-child td {
+  border: 0px none;
+}
+
+.tb-result tr :first-child {
+  font-weight: bold;
+  padding-left: 20px;
+}
+
+.tb-result tr :last-child {
+  width: 100px;
+}
+
+.div-result {
+  -webkit-border-top-left-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+  -moz-border-radius-topright: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border: 2px solid #2b0d61;
+  padding: 0px !important;
+}
+
+.tb-result td.tl {
+  -webkit-border-top-left-radius: 4px !important;
+  -moz-border-radius-topleft: 4px !important;
+  border-top-left-radius: 4px !important;
+}
+
+.tb-result td.tr {
+  -webkit-border-top-right-radius: 4px !important;
+  -moz-border-radius-topright: 4px !important;
+  border-top-right-radius: 4px !important;
+}
+
+#ifrmPdf {
+  display: none;
+  width: 0px;
+  height: 0px;
+}
+
+.btn-again {
+  background-color: #ebe9eb;
+  padding: 10px;
+  color: #515151;
+  font-family: "Bliss Pro";
+  margin: 10px 0px 20px 0px;
+  border: 1px solid #ebe9eb;
+  cursor: pointer;
+}
+
+.link-container {
+  padding: 10px 0px 10px 0px;
+}
+
+.link-terminos {
+  color: #8c7caa;
+  font-size: 12px;
+  text-decoration: underline;
+  /* margin: 5px 0px 5px 0px; */
+  /* padding: 5px 0px 5px 0px; */
+  font-family: "Bliss Pro";
+}

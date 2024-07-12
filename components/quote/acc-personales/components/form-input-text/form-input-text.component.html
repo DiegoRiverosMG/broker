@@ -1,0 +1,19 @@
+<div class="form-input-text">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+  <span *ngIf="span === true">{{value}}</span>
+  <input 
+    *ngIf="span !== true"
+    type="text" 
+    maxlength="{{maxCaracter || ''}}"
+    placeholder="{{placeholder || label}}" 
+    [ngClass]="classInput"
+    [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)"
+    [class.only-input]="onlyInput"
+    (keypress)="onKey($event);"
+    (keydown)="onKeydown($event);"
+    (blur)="onBlur.emit()"
+    (focus)="onFocus.emit()"
+    (paste)="onPaste($event)"
+     autocomplete=off
+    [disabled]="disabled" />
+</div>

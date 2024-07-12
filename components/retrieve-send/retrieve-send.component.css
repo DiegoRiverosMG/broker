@@ -1,0 +1,94 @@
+.container {
+  width: 100%;
+  padding: 30px 30px;
+}
+
+.title-principal {
+  height: auto;
+  width: 100%;
+  color: #2B0D61;
+  font-family: "Bliss Pro";
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sub-title {
+  text-align: center;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.modal {
+  margin-top: 10rem;
+}
+
+.modal-content {
+  width: 450px;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+@media (max-width: 768px) {
+  /* On small screens, convert the nav menu to a vertical sidebar */
+  .title-principal {
+    height: auto;
+    width: 100%;
+    color: #2B0D61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+}
+
+.btn-orange {
+  text-decoration: none;
+  color: #FFFFFF;
+  font-family: "Bliss Pro";
+  font-size: 15px;
+  font-weight: bold;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #ED6E00;
+  cursor: pointer;
+  width: 120px;
+  float: right;
+}
+
+.divider {
+  color: #2B0D61;
+}
+
+label {
+  color: #A0A5B4;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.email-text {
+  background: #EBF1F1;
+  color: #A0A5B4;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.email-warning {
+  color: #00AECD;
+  text-align: center;
+}

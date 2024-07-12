@@ -1,0 +1,68 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Lista de Asegurados</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="row container-fluid">
+                <div class="col-sm-3 ">
+                    <span>NOMBRE:</span>
+                    <input type="text" [(ngModel)]="name">
+                </div>
+                <div class="col-sm-3">
+                    <span>NRO. DOCUMENTO:</span>
+                    <input type="text" [(ngModel)]="doc">
+                </div>
+                <div class="col-sm-3">
+                    <span>FECHA NACIMIENTO:</span>
+                    <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsFecNacimiento" value="{{ bsFecNacimiento | date:'dd/MM/yyyy' }}" #fechaNacimiento (keydown)="borrarContenido($event)">
+                </div>
+                <div class="col-sm-3">
+                    <span>&nbsp;</span>
+                    <button class="full-color pull-right" (click)="filter()">
+                        <span>BUSCAR</span>
+                    </button>
+                </div>
+            </div>
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                              <td class="grid-title-item">ID</td>
+                              <td class="grid-title-item">Nombres y apellidos</td>
+                              <td class="grid-title-item text-center">Nro. Documento</td>
+                              <td class="grid-title-item text-center">Fecha de Nacimiento</td>
+                              <td class="grid-title-item text-center">Acción</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td>{{row_no + 1}}</td>
+                                <td>{{item.nombres}}</td>
+                                <td class="text-center">{{item.nroDocumento}}</td>
+                                <td class="text-center">{{item.fechaNacimiento}}</td>
+                                <td class="text-center">
+                                    <label>
+                                        <img src="assets/icons/user-edit.png" title="Cambiar usuario" alt="Cambiar asegurado" (click)="changeUser(item)"
+                                        style="cursor: pointer; margin: -3px auto 0; text-align: center; width: 32px" /> 
+                                    </label>
+                                </td>
+                            </tr>
+                          </tbody>
+                    </table>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                      <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                        [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                        <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                        <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                      </ngb-pagination>
+                    </div>
+                  </div>
+            </div>
+    </div>
+</div>

@@ -1,0 +1,380 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="paso">
+        <div class="form-group row hidden-xs-down">
+          <div class="col-lg-12 ">
+            <div class="creaunsoatmanual">
+              <a>{{ mainTitle }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr class="linea" />
+
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <div class="contenido">
+            <div class="contenido-nro">
+              <a>3</a>
+            </div>
+            <div class="contenido-title">
+              <a>{{ LittleTitle }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form [formGroup]="contratanteForm"
+            (ngSubmit)="saveCliente()">
+        <div class="contenido">
+          <div class="imagenes">
+            <div class="tarjeta">
+              <img alt=""
+                   src="assets/icons/dni_conductor.png" />
+            </div>
+          </div>
+
+          <!-- DATOS DOCUMENTOS DEL CLIENTE -->
+          <div class="form-group row">
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">TIPO DE PERSONA*</label>
+              <select formControlName="tipopersona"
+                      class="form-control select-formulario"
+                      [(ngModel)]="Cliente.p_NPERSON_TYP"
+                      (change)="callTypePerson($event.target.value)"
+                      [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('tipopersona').valid &&
+                    contratanteForm.get('tipopersona').touched
+                }">
+                <option value="undefined"
+                        disabled
+                        selected>Seleccione el tipo de persona</option>
+                <option *ngFor="let tipoCliente of ListaTipoCliente"
+                        value="{{ tipoCliente.npersoN_TYP }}">{{ tipoCliente.sdescript }}</option>
+              </select>
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">TIPO DE DOCUMENTO*</label>
+              <select formControlName="tipodocumento"
+                      class="form-control select-formulario"
+                      [(ngModel)]="Cliente.p_NDOCUMENT_TYP"
+                      (change)="callTypeDocument($event.target.value)"
+                      [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('tipodocumento').valid &&
+                    contratanteForm.get('tipodocumento').touched
+                }">
+                <option value="undefined"
+                        disabled
+                        selected>Seleccione el tipo de documento</option>
+                <option *ngFor="let tipoDocumento of ListaTipoDocumento"
+                        value="{{ tipoDocumento.niddoC_TYPE }}">{{ tipoDocumento.sdescript }}</option>
+              </select>
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">NÚMERO DE DOCUMENTO*</label>
+              <input [(ngModel)]="Cliente.p_SDOCUMENT"
+                     formControlName="numdocumento"
+                     maxlength="{{ this.tamanoTipoDocumento }}"
+                     (blur)="onBlurNumeroDocument()"
+                     (keypress)="soloNumeros($event)"
+                     type="text"
+                     class="form-control input-text-formulario input-text-help"
+                     placeholder="Ingresa tu numero de documento"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('numdocumento').valid &&
+                    contratanteForm.get('numdocumento').touched
+                }"
+                     value="" />
+            </div>
+          </div>
+
+          <!-- DATOS NOMBRES DEL CLIENTE -->
+          <div *ngIf="!besEmpresa"
+               class="form-group row">
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">APELLIDO PARTERNO*</label>
+              <input [(ngModel)]="Cliente.p_SCLIENT_APPPAT"
+                     formControlName="apepaterno"
+                     maxlength="50"
+                     type="text"
+                     class="form-control input-text-formulario"
+                     m
+                     placeholder="Ej. Perez"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('apepaterno').valid &&
+                    contratanteForm.get('apepaterno').touched
+                }"
+                     value="" />
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">APELLIDO MATERNO*</label>
+              <input [(ngModel)]="Cliente.p_SCLIENT_APPMAT"
+                     formControlName="apematerno"
+                     maxlength="50"
+                     type="text"
+                     class="form-control input-text-formulario"
+                     placeholder="Ej. Morales"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('apematerno').valid &&
+                    contratanteForm.get('apematerno').touched
+                }"
+                     value="" />
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">NOMBRE COMPLETO*</label>
+              <input [(ngModel)]="Cliente.p_SCLIENT_NAME"
+                     formControlName="nombres"
+                     maxlength="50"
+                     type="text"
+                     class="form-control input-text-formulario input-text-help"
+                     placeholder="Ej. Juan Diego"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('nombres').valid &&
+                    contratanteForm.get('nombres').touched
+                }"
+                     value="" />
+            </div>
+          </div>
+
+          <!-- DATOS DE LA EMPRESA -->
+          <div *ngIf="besEmpresa"
+               class="form-group row">
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">Razon Social*</label>
+              <input [(ngModel)]="Cliente.p_SLEGALNAME"
+                     formControlName="razonsocial"
+                     maxlength="50"
+                     type="text"
+                     class="form-control input-text-formulario"
+                     placeholder="Ej. Protecta SAC"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('razonsocial').valid &&
+                    contratanteForm.get('razonsocial').touched
+                }"
+                     value="" />
+            </div>
+          </div>
+
+          <!-- DATOS UBIGEO DEL CLIENTE -->
+          <div class="form-group row">
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">DEPARTAMENTO*</label>
+              <select class="form-control select-formulario"
+                      formControlName="departamento"
+                      [(ngModel)]="Cliente.p_NPROVINCE"
+                      (change)="listarProvinciasPorDepartamento($event.target.value)"
+                      [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('departamento').valid &&
+                    contratanteForm.get('departamento').touched
+                }">
+                <option value="undefined"
+                        disabled
+                        selected>Seleccione el departamento</option>
+                <option *ngFor="let departamento of departamentos"
+                        value="{{ departamento.nprovince }}">{{ departamento.sdescript }}</option>
+              </select>
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">PROVINCIA*</label>
+              <select class="form-control select-formulario"
+                      formControlName="provincia"
+                      [(ngModel)]="Cliente.p_NLOCAT"
+                      (change)="listarDistritosPorProvincia($event.target.value)"
+                      [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('provincia').valid &&
+                    contratanteForm.get('provincia').touched
+                }">
+                <option value="undefined"
+                        disabled
+                        selected>Seleccione la provincia</option>
+                <option *ngFor="let provincia of provincias"
+                        value="{{ provincia.nlocal }}">{{ provincia.sdescript }}</option>
+              </select>
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">DISTRITO*</label>
+              <select class="form-control select-formulario"
+                      formControlName="distrito"
+                      [(ngModel)]="Cliente.p_NMUNICIPALITY"
+                      [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('distrito').valid &&
+                    contratanteForm.get('distrito').touched
+                }">
+                <option value="undefined"
+                        disabled
+                        selected>Seleccione el distrito</option>
+                <option *ngFor="let distrito of distritos"
+                        value="{{ distrito.nmunicipality }}">{{ distrito.sdescript }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- DATOS PERSONALES DEL CLIENTE -->
+          <div class="form-group row">
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">DIRECCIÓN*</label>
+              <input [(ngModel)]="Cliente.p_SADDRESS"
+                     type="text"
+                     formControlName="direccion"
+                     maxlength="80"
+                     class="form-control input-text-formulario"
+                     placeholder="Ingresa la direccion de domicilio"
+                     [ngClass]="{
+                  'error-validate':
+                    (!contratanteForm.get('direccion').valid &&
+                    contratanteForm.get('direccion').touched) ||
+                    contratanteForm.get('direccion').hasError('espacios')
+                }"
+                     value="" />
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">CORREO ELECTRÓNICO*</label>
+              <input [(ngModel)]="Cliente.p_SMAIL"
+                     type="text"
+                     formControlName="correo"
+                     maxlength="100"
+                     class="form-control input-text-formulario"
+                     placeholder="correo@gmail.com"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('correo').valid &&
+                    contratanteForm.get('correo').touched
+                }"
+                     value="" />
+            </div>
+            <div class="col-lg-4">
+              <label for="disabledTextInput"
+                     class="label-formulario">NRO. DE CELULAR*</label>
+              <input [(ngModel)]="Cliente.p_SPHONE"
+                     type="text"
+                     formControlName="celular"
+                     maxlength="9"
+                     class="form-control input-text-formulario"
+                     placeholder="Ingresa tu número de celular"
+                     [ngClass]="{
+                  'error-validate':
+                    !contratanteForm.get('celular').valid &&
+                    contratanteForm.get('celular').touched
+                }"
+                     value="" />
+            </div>
+          </div>
+        </div>
+
+        <!-- dDTOS DE BOTNOS FINALES Y VALIDACIONES-->
+        <div class="form-group row">
+          <div class="volver">
+            <a routerLink="../step02">
+              <img alt=""
+                   src="assets/icons/arrow-left.png" />
+              <span>Regresar al paso 2</span>
+            </a>
+            <button type="button"
+                    [disabled]="!contratanteForm.valid"
+                    class="btn btn-siguiente"
+                    (click)="Siguiente()">
+              Siguiente
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="botones">
+            <div class="mensajes-validacion">
+              <span *ngIf="
+                  !contratanteForm.get('tipopersona').valid &&
+                  contratanteForm.get('tipopersona').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu tipo de persona<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('tipodocumento').valid &&
+                  contratanteForm.get('tipodocumento').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu tipo de documento<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('numdocumento').valid &&
+                  contratanteForm.get('numdocumento').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer el n&uacute;mero de tu documento<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('apepaterno').valid &&
+                  contratanteForm.get('apepaterno').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu apellido paterno<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('apematerno').valid &&
+                  contratanteForm.get('apematerno').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu apellido materno<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('nombres').valid &&
+                  contratanteForm.get('nombres').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tus nombres<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('departamento').valid &&
+                  contratanteForm.get('departamento').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu departamento<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('provincia').valid &&
+                  contratanteForm.get('provincia').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu provincia<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('distrito').valid &&
+                  contratanteForm.get('distrito').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu distrito<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('direccion').valid &&
+                  contratanteForm.get('direccion').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu direccion<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('correo').valid &&
+                  contratanteForm.get('correo').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu correo<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('celular').valid &&
+                  contratanteForm.get('celular').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu celular<br /></span>
+              <span *ngIf="
+                  !contratanteForm.get('razonsocial').valid &&
+                  contratanteForm.get('razonsocial').touched
+                "
+                    class="mensaje-error-control">Necesitamos conocer tu Razon Social<br /></span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

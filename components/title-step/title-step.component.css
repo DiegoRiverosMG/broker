@@ -1,0 +1,52 @@
+.paso {
+  width: 100%;
+  height: 15px;
+  margin-top: 0px;
+  /* margin-bottom: 40px; */
+  margin-bottom: 32px;
+  padding-top: 15px;
+  padding-top: 13px;
+}
+
+.paso .numero {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  background-color: #ed6e00;
+  padding: 7px 15px;
+  float: left;
+  margin-right: 8px;
+}
+
+.paso .numerod {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  background-color: #ed6e00;
+  padding: 7px 9px;
+  float: left;
+  margin-right: 8px;
+}
+
+.paso .numero span,
+.paso .numerod span {
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.paso .titulo {
+  padding: 10px;
+}
+
+.paso .titulo span {
+  height: 21px;
+  width: 464px;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+}

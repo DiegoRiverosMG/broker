@@ -1,0 +1,1292 @@
+<div class="row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="header-content mb-3 mt-3">
+      <div class="containt-item">
+        <div class="headiter-em">
+          <span class="title-re">Devoluciones ordinarias de rentas</span>
+        </div>
+        <div class="button-re label-button">
+          <img src="assets/rentas/today.svg" alt="today" />
+          <span>{{ today }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="collapse-list">
+      <div>
+        <input class="collapse-open" type="checkbox" id="busqueda" />
+        <label
+          class="collapse-btn container-button-collapse subtitle-re"
+          for="busqueda"
+        >
+          Criterios de selección
+          <i
+            class="fa fa-angle-down pull-right icon-collapse"
+            style="position: relative; top: 4px"
+          ></i>
+          <i
+            class="fa fa-angle-up pull-right icon-expand"
+            style="position: relative; top: 4px"
+          ></i>
+        </label>
+        <div class="collapse-panel">
+          <div class="collapse-inner collapse-border filter-container">
+            <div>
+              <form-input-date-re
+                label="Fecha Inicio de Recepción"
+                [(value)]="inputs.P_DATEINI"
+                [disabled]="listActions.FECHA_INICIO == 'TRUE' ? false : true"
+                [todayPreviousMonth]="true"
+              ></form-input-date-re>
+            </div>
+            <div>
+              <form-input-date-re
+                label="Fecha de Fin de Recepción"
+                [(value)]="inputs.P_DATEEND"
+                [disabled]="listActions.FECHA_FIN == 'TRUE' ? false : true"
+                [todayPreviousMonth]="true"
+              ></form-input-date-re>
+            </div>
+            <div>
+              <form-input-select-re
+                [items]="opcionesProductos"
+                [itemsArray]="true"
+                fieldCodigo="codigo"
+                fieldValor="valor"
+                label="Producto"
+                [(value)]="inputs.P_NPRODUCT"
+                [disabled]="listActions.PRODUCTO == 'TRUE' ? false : true"
+                [firstSelect]="true"
+              ></form-input-select-re>
+            </div>
+            <div>
+              <form-input-text-re
+                label="Nº póliza"
+                [(value)]="inputs.P_NPOLICY"
+                [disabled]="listActions.NRO_POLIZA == 'TRUE' ? false : true"
+              ></form-input-text-re>
+            </div>
+            <div>
+              <form-input-select-re
+                [items]="opcionesMotivos"
+                [itemsArray]="true"
+                fieldCodigo="codigo"
+                fieldValor="valor"
+                label="Motivos"
+                (onSelect)="changeMotivo(inputs.P_NMOTIVO)"
+                [firstSelect]="true"
+                [(value)]="inputs.P_NMOTIVO"
+                [disabled]="listActions.MOTIVOS == 'TRUE' ? false : true"
+              ></form-input-select-re>
+            </div>
+            <div>
+              <form-input-select-re
+                [items]="opcionesSubMotivos"
+                [itemsArray]="true"
+                fieldCodigo="codigo"
+                fieldValor="valor"
+                label="Submotivos"
+                [(value)]="inputs.P_SSUBMOTIVO"
+                [disabled]="listActions.SUBMOTIVOS == 'TRUE' ? false : true"
+                [firstSelect]="true"
+              ></form-input-select-re>
+            </div>
+            <div>
+              <form-input-text-re
+                label="Nº ticket Jira"
+                [disabled]="listActions.NRO_TICKET == 'TRUE' ? false : true"
+                [(value)]="inputs.P_SCODE_JIRA"
+              ></form-input-text-re>
+            </div>
+            <div>
+              <form-input-text-re
+                label="CUSPP"
+                [disabled]="listActions.CUSPP == 'TRUE' ? false : true"
+                [(value)]="inputs.P_SCUSPP"
+              ></form-input-text-re>
+            </div>
+            <div>
+              <form-input-select-re
+                label="Estado"
+                [items]="opcionesEstados"
+                [itemsArray]="true"
+                fieldCodigo="codigo"
+                fieldValor="valor"
+                [firstSelect]="true"
+                [defaultValue]="{ codigo: 1 }"
+                [disabled]="listActions.ESTADO == 'TRUE' ? false : true"
+                [(value)]="inputs.P_NSTATE"
+              ></form-input-select-re>
+            </div>
+
+            <div style="grid-column: span 2">
+              <span class="labelspan">Cliente</span>
+              <button
+                [disabled]="listActions.CLIENTE == 'TRUE' ? false : true"
+                class="search"
+                (click)="searchClient($event.preventDefault())"
+              >
+                {{ client.SCLIENAME ? client.SCLIENAME : "CLIENTE" }}
+              </button>
+            </div>
+            <div>
+              <form-input-select-re
+                label="Usuario Responsable"
+                [(value)]="inputs.P_NUSERCODE_RE"
+                [firstSelect]="true"
+                fieldCodigo="codigo"
+                fieldValor="valor"
+                [items]="opcionesUsuarioResponsable"
+                [itemsArray]="true"
+                [disabled]="
+                  listActions.USUARIO_RESPONSABLE == 'TRUE' ? false : true
+                "
+              ></form-input-select-re>
+            </div>
+          </div>
+          <div class="buttons-end">
+            <button
+              [style.background]="
+                listActions?.BUSCAR == 'TRUE' ? '#27246D' : '#8385B4'
+              "
+              [disabled]="listActions.BUSCAR == 'TRUE' ? false : true"
+              (click)="filter()"
+              class="button-search"
+            >
+              <span>Buscar</span>
+            </button>
+            <button
+              [style.background]="
+                listActions?.REFRESCAR == 'TRUE' ? '#27246D' : '#8385B4'
+              "
+              [disabled]="listActions.REFRESCAR == 'TRUE' ? false : true"
+              (click)="resetFilter()"
+              class="button-reset"
+            >
+              <img
+                class="autorenew"
+                src="assets/rentas/autorenew_FILL1_wght400_GRAD0_opsz24.svg"
+                alt="autorenew"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="container-subtitle subtitle-re">Listado de tickets</label>
+        <div>
+          <div class="container-button">
+            <button
+              [class.disabled]="listActions?.EDITAR_LISTADO !== 'FALSE'"
+              [style.background]="
+                listActions?.EDITAR_LISTADO == 'TRUE' ? '#27246D' : '#8385B4'
+              "
+              (click)="editList($event)"
+              class="button-re"
+            >
+              <span>Editar listado</span>
+            </button>
+            <button
+              [disabled]="
+                selectedTicketsCount <= 0 ||
+                listActions?.ASIGNAR_EJECUTIVO == 'FALSE'
+                  ? true
+                  : false
+              "
+              [disabled]="
+                selectedTicketsCount <= 0 ||
+                listActions?.ASIGNAR_EJECUTIVO == 'FALSE'
+                  ? true
+                  : false
+              "
+              [style.background]="
+                selectedTicketsCount <= 0 ||
+                listActions?.ASIGNAR_EJECUTIVO == 'FALSE'
+                  ? '#8385B4'
+                  : '#27246D'
+              "
+              (click)="assignExecutive($event)"
+              class="button-re"
+            >
+              <span>Asignar ejecutivo</span>
+            </button>
+          </div>
+          <div class="grid form-group">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="t-head">
+                  <ul
+                    class="menu menu-center"
+                    [ngClass]="{
+                      disabled: listActions?.EDITAR_LISTADO !== 'TRUE'
+                    }"
+                    *ngIf="showMenuColumn"
+                  >
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SCODE')"
+                    >
+                      Ticket<img
+                        [src]="
+                          columnVisibility.SCODE
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SCODE_JIRA')"
+                    >
+                      Ticket Jira<img
+                        [src]="
+                          columnVisibility.SCODE_JIRA
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SRAMO')"
+                    >
+                      Ramo<img
+                        [src]="
+                          columnVisibility.SRAMO
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SPRODUCT')"
+                    >
+                      Producto<img
+                        [src]="
+                          columnVisibility.SPRODUCT
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('POLIZA')"
+                    >
+                      Póliza<img
+                        [src]="
+                          columnVisibility.POLIZA
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('MOTIVO_DES')"
+                    >
+                      Motivo<img
+                        [src]="
+                          columnVisibility.MOTIVO_DES
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SUBMOTIVO_DES')"
+                    >
+                      Submotivo<img
+                        [src]="
+                          columnVisibility.SUBMOTIVO_DES
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('CONTRATANTE')"
+                    >
+                      Contratante<img
+                        [src]="
+                          columnVisibility.CONTRATANTE
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('ASEGURADO')"
+                    >
+                      Asegurado<img
+                        [src]="
+                          columnVisibility.ASEGURADO
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('FECHA_RECEPCION')"
+                    >
+                      F. de recepción
+                      <img
+                        [src]="
+                          columnVisibility.FECHA_RECEPCION
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('FECHA_REGISTRO')"
+                    >
+                      F. de registro<img
+                        [src]="
+                          columnVisibility.FECHA_REGISTRO
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('USUARIO_REGISTRO')"
+                    >
+                      Usuario responsable<img
+                        [src]="
+                          columnVisibility.USUARIO_REGISTRO
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('SLA_B')"
+                    >
+                      SLA<img
+                        [src]="
+                          columnVisibility.SLA_B
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('ESTADO')"
+                    >
+                      Estado<img
+                        [src]="
+                          columnVisibility.ESTADO
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('MONEDA')"
+                    >
+                      Moneda<img
+                        [src]="
+                          columnVisibility.MONEDA
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                    <li
+                      (keypress)="onKeyPress($event)"
+                      (click)="toggleColumn('IMP_DEVOLUCION')"
+                    >
+                      Imp. Devolución<img
+                        [src]="
+                          columnVisibility.IMP_DEVOLUCION
+                            ? 'assets/rentas/visibility.svg'
+                            : 'assets/rentas/visibility_off.svg'
+                        "
+                        alt="more_vert"
+                      />
+                    </li>
+                  </ul>
+                  <tr class="grid-title">
+                    <td
+                      *ngIf="listActions.CHECKBOX == 'TRUE' ? true : false"
+                      class="grid-title-item"
+                    >
+                      <input
+                        type="checkbox"
+                        class="accent-orange"
+                        (change)="handleMasterCheckboxChange($event)"
+                      />
+                    </td>
+                    <ng-container *ngFor="let columnName of columnOrder">
+                      <ng-container class="sin-estilos" [ngSwitch]="columnName">
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('SCODE')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Ticket'"
+                          >
+                            Ticket
+                            <img
+                              (keypress)="onKeyPress($event)"
+                              alt="swap-fill"
+                              (click)="
+                                setSortField('POLIZA'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          class="sin-estilos"
+                          *ngIf="showColumn('SCODE_JIRA')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Ticket Jira'"
+                          >
+                            Ticket Jira
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('SCODE_JIRA');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          class="sin-estilos"
+                          *ngIf="showColumn('SRAMO')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Ramo'"
+                          >
+                            Ramo
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('SRAMO'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          class="sin-estilos"
+                          *ngIf="showColumn('SPRODUCT')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Producto'"
+                          >
+                            Producto
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('SPRODUCT');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          class="sin-estilos"
+                          *ngIf="showColumn('POLIZA')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Póliza'"
+                          >
+                            Póliza
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('POLIZA'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          class="sin-estilos"
+                          *ngIf="showColumn('MOTIVO_DES')"
+                          class="grid-title-item"
+                        >
+                          <ng-container
+                            class="sin-estilos"
+                            *ngSwitchCase="'Motivo'"
+                          >
+                            Motivo
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('MOTIVO_DES');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('SUBMOTIVO_DES')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Submotivo'">
+                            Submotivo
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('SUBMOTIVO_DES');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('CONTRATANTE')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Contratante'">
+                            Contratante
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('CONTRATANTE');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('ASEGURADO')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Asegurado'">
+                            Asegurado
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('ASEGURADO');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('FECHA_RECEPCION')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'F. de recepción'">
+                            F. de recepción
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('FECHA_RECEPCION');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('FECHA_REGISTRO')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'F. de registro'">
+                            F. de registro
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('FECHA_REGISTRO');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('USUARIO_REGISTRO')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Usuario R.'">
+                            Usuario responsable
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('USUARIO_REGISTRO');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('SLA_B')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'SLA'">
+                            SLA
+                            <img
+                              (keypress)="onKeyPress($event)"
+                              alt="sla"
+                              (click)="
+                                setSortField('SLA'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('ESTADO')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Estado'">
+                            Estado
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('ESTADO'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('MONEDA')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Moneda'">
+                            Moneda
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('MONEDA'); $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                        <td
+                          (keypress)="onKeyPress($event)"
+                          (click)="
+                            toggleMenuColumn($event); $event.stopPropagation()
+                          "
+                          *ngIf="showColumn('IMP_DEVOLUCION')"
+                          class="grid-title-item"
+                        >
+                          <ng-container *ngSwitchCase="'Imp. Devolución'">
+                            Imp. Devolución
+                            <img
+                              alt="swap_vert"
+                              (keypress)="onKeyPress($event)"
+                              (click)="
+                                setSortField('IMP_DEVOLUCION');
+                                $event.stopPropagation()
+                              "
+                              src="assets/rentas/swap_vert_FILL1_wght400_GRAD0_opsz24.svg"
+                            />
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+                    <td class="grid-title-item">Alerta</td>
+                    <td
+                      *ngIf="listActions.ACCIONES == 'TRUE' ? true : false"
+                      class="grid-title-item"
+                    >
+                      Acciones
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let ticket of displayedTickets">
+                    <tr class="grid-title row-item">
+                      <td
+                        *ngIf="listActions.CHECKBOX == 'TRUE' ? true : false"
+                        class="grid-item"
+                      >
+                        <input
+                          type="checkbox"
+                          class="accent-orange"
+                          [checked]="ticket.selected"
+                          (change)="handleCheckboxChange($event, ticket)"
+                        />
+                      </td>
+                      <ng-container *ngFor="let columnName of columnOrder">
+                        <ng-container
+                          class="sin-estilos"
+                          [ngSwitch]="columnName"
+                        >
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('SCODE')"
+                            class="grid-item"
+                          >
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Ticket'"
+                            >
+                              {{ ticket.SCODE }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('SCODE_JIRA')"
+                            class="grid-item"
+                          >
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Ticket Jira'"
+                            >
+                              {{ ticket.SCODE_JIRA }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('SRAMO')">
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Ramo'"
+                            >
+                              {{ ticket.SRAMO }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('SPRODUCT')">
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Producto'"
+                            >
+                              {{ ticket.SPRODUCT }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('POLIZA')">
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Póliza'"
+                            >
+                              {{ ticket.POLIZA }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('MOTIVO_DES')"
+                          >
+                            <ng-container
+                              class="sin-estilos"
+                              *ngSwitchCase="'Motivo'"
+                            >
+                              {{ ticket.MOTIVO_DES }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('SUBMOTIVO_DES')"
+                          >
+                            <ng-container *ngSwitchCase="'Submotivo'">
+                              {{ ticket.SUBMOTIVO_DES }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('CONTRATANTE')"
+                          >
+                            <ng-container *ngSwitchCase="'Contratante'">
+                              {{ ticket.CONTRATANTE }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('ASEGURADO')">
+                            <ng-container *ngSwitchCase="'Asegurado'">
+                              {{ ticket.ASEGURADO }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('FECHA_RECEPCION')"
+                          >
+                            <ng-container *ngSwitchCase="'F. de recepción'">
+                              {{ ticket.FECHA_RECEPCION | date : "dd/MM/yyyy" }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('FECHA_REGISTRO')"
+                          >
+                            <ng-container *ngSwitchCase="'F. de registro'">
+                              {{
+                                ticket.FECHA_REGISTRO
+                                  | date : "dd/MM/yyyy HH:mm:ss"
+                              }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item"
+                            *ngIf="showColumn('USUARIO_REGISTRO')"
+                          >
+                            <ng-container *ngSwitchCase="'Usuario R.'">
+                              {{ ticket.USUARIO_REGISTRO }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('SLA_B')">
+                            <ng-container *ngSwitchCase="'SLA'">
+                              <div
+                                class="circle"
+                                [style.border]="
+                                  '1px solid ' + ticket.SLA.split('-')[0]
+                                "
+                                [style.background]="ticket.SLA.split('-')[1]"
+                              ></div>
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('ESTADO')">
+                            <ng-container *ngSwitchCase="'Estado'">
+                              {{ ticket.ESTADO }}
+                            </ng-container>
+                          </td>
+                          <td class="grid-item" *ngIf="showColumn('MONEDA')">
+                            <ng-container *ngSwitchCase="'Moneda'">
+                              {{
+                                ticket.MONEDA == 1
+                                  ? "Soles"
+                                  : ticket.MONEDA == 2
+                                  ? "Dólares"
+                                  : ""
+                              }}
+                            </ng-container>
+                          </td>
+                          <td
+                            class="grid-item text-end"
+                            *ngIf="showColumn('IMP_DEVOLUCION')"
+                          >
+                            <ng-container *ngSwitchCase="'Imp. Devolución'">
+                              {{ ticket.IMP_DEVOLUCION }}
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                      </ng-container>
+                      <td class="grid-item">
+                        <img
+                          [title]="ticket.SALERT"
+                          alt="alet"
+                          class="alert"
+                          [src]="ticket.SALERT !== ''? 'assets/rentas/notification_alert.svg':'assets/rentas/notification.svg'" 
+                        />
+                      </td>
+                      <td
+                        *ngIf="listActions.ACCIONES == 'TRUE' ? true : false"   
+                        class="grid-item menu-container"
+                      >
+                        <button
+                          class="menu-button"
+                          (click)="toggleMenu(ticket.SCODE, $event)"
+                        >
+                          <img
+                            src="assets/rentas/more_vert_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                            alt="more_vert"
+                          />
+                        </button>
+                        <ul *ngIf="showMenu[ticket.SCODE]" class="menu">
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{
+                              disabled: items.VER_DETALLE !== 'TRUE'
+                            }"
+                            [style.color]="
+                              items.VER_DETALLE == 'TRUE' &&
+                              listActions.VER_DETALLE == 'TRUE'
+                                ? '#27246D'
+                                : '#B7B7B7'
+                            "
+                            (click)="openDetails(ticket.SCODE)"
+                          >
+                            <img
+                              [src]="
+                                items.VER_DETALLE == 'TRUE' &&
+                                listActions.VER_DETALLE == 'TRUE'
+                                  ? 'assets/rentas/visibility_FILL1_wght400_GRAD0_opsz24.svg'
+                                  : 'assets/rentas/visibility_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Ver detalle
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.ASIGNAR !== 'TRUE' }"
+                            [style.color]="
+                              items.ASIGNAR == 'TRUE' &&
+                              listActions.ASIGNAR == 'TRUE'
+                                ? '#27246D'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'ASIGNAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.ASIGNAR == 'TRUE' &&
+                                listActions.ASIGNAR == 'TRUE'
+                                  ? 'assets/rentas/person_add.svg'
+                                  : 'assets/rentas/person_add_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Asignar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.CALCULAR !== 'TRUE' }"
+                            [style.color]="
+                              items.CALCULAR == 'TRUE' &&
+                              listActions.CALCULAR == 'TRUE'
+                                ? '#27246D'
+                                : '#B7B7B7'
+                            "
+                            (click)="calcular(ticket)"
+                          >
+                            <img
+                              [src]="
+                                items.CALCULAR == 'TRUE' &&
+                                listActions.CALCULAR == 'TRUE'
+                                  ? 'assets/rentas/autorenew_FILL-1.svg'
+                                  : 'assets/rentas/autorenew_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Calcular
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.CONFIRMAR !== 'TRUE' }"
+                            [style.color]="
+                              items.CONFIRMAR == 'TRUE' &&
+                              listActions.CONFIRMAR == 'TRUE'
+                                ? '#79CB33'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'CONFIRMAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.CONFIRMAR == 'TRUE' &&
+                                listActions.CONFIRMAR == 'TRUE'
+                                  ? 'assets/rentas/recommend_20dp_FILL1_wght400_GRAD0_opsz20_color.svg'
+                                  : 'assets/rentas/recommend_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Confirmar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.DERIVAR !== 'TRUE' }"
+                            [style.color]="
+                              items.DERIVAR == 'TRUE' &&
+                              listActions.DERIVAR == 'TRUE'
+                                ? '#27246D'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'DERIVAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.DERIVAR == 'TRUE' &&
+                                listActions.DERIVAR == 'TRUE'
+                                  ? 'assets/rentas/mode_comment_violet.svg'
+                                  : 'assets/rentas/mode_comment_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Derivar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.OBSERVAR !== 'TRUE' }"
+                            [style.color]="
+                              items.OBSERVAR == 'TRUE' &&
+                              listActions.OBSERVAR == 'TRUE'
+                                ? '#27246D'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'OBSERVAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.OBSERVAR == 'TRUE' &&
+                                listActions.OBSERVAR == 'TRUE'
+                                  ? 'assets/rentas/visibility_FILL1_wght400_GRAD0_opsz24.svg'
+                                  : 'assets/rentas/visibility_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Observar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.CANCELAR !== 'TRUE' }"
+                            [style.color]="
+                              items.CANCELAR == 'TRUE' &&
+                              listActions.CANCELAR == 'TRUE'
+                                ? '#DB4343'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'CANCELAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.CANCELAR == 'TRUE' &&
+                                listActions.CANCELAR == 'TRUE'
+                                  ? 'assets/rentas/block_20dp_FILL1_wght400_GRAD0_opsz20_color.svg'
+                                  : 'assets/rentas/block_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Cancelar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.APROBAR !== 'TRUE' }"
+                            [style.color]="
+                              items.APROBAR == 'TRUE' &&
+                              listActions.APROBAR == 'TRUE'
+                                ? '#79CB33'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'APROBAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.APROBAR == 'TRUE' &&
+                                listActions.APROBAR == 'TRUE'
+                                  ? 'assets/rentas/check_circle_FILL1_wght400_GRAD0_opsz24.svg'
+                                  : 'assets/rentas/check_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Aprobar
+                          </li>
+                          <li
+                            (keypress)="onKeyPress($event)"
+                            [ngClass]="{ disabled: items.RECHAZAR !== 'TRUE' }"
+                            [style.color]="
+                              items.RECHAZAR == 'TRUE' &&
+                              listActions.RECHAZAR == 'TRUE'
+                                ? '#DB4343'
+                                : '#B7B7B7'
+                            "
+                            (click)="
+                              updStatusTicket(
+                                ticket.SCODE_JIRA,
+                                'RECHAZAR',
+                                ticket
+                              )
+                            "
+                          >
+                            <img
+                              [src]="
+                                items.RECHAZAR == 'TRUE' &&
+                                listActions.RECHAZAR == 'TRUE'
+                                  ? 'assets/rentas/cancel_FILL1_wght400_GRAD0_opsz24.svg'
+                                  : 'assets/rentas/cancel_gray.svg'
+                              "
+                              alt="more_vert"
+                            />Rechazar
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <div class="container-pagination" *ngIf="showPagination">
+                <label class="labelPagination" for="itemsPerPage"
+                  >Registros por página:</label
+                >
+                <input
+                  class="paginationInput"
+                  type="number"
+                  id="itemsPerPage"
+                  [(ngModel)]="itemsPerPage"
+                  (change)="changeItemsPerPage()"
+                />
+                <span class="labelPagination"
+                  >1 - {{ currentPage }} de {{ totalPage }}</span
+                >
+                <button
+                  class="containerArrow"
+                  (click)="changePage(currentPage - 1)"
+                  [disabled]="currentPage === 1"
+                  [style.background]="currentPage === 1 ? '#E6E7FF' : '#27246D'"
+                >
+                  <img
+                    src="assets/rentas/arrow_back_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                    alt="more_vert"
+                  />
+                </button>
+                <button
+                  class="containerArrow"
+                  (click)="changePage(currentPage + 1)"
+                  [disabled]="currentPage * pageSize >= totalTickets"
+                  [style.background]="
+                    currentPage * pageSize >= totalTickets
+                      ? '#E6E7FF'
+                      : '#27246D'
+                  "
+                >
+                  <img
+                    src="assets/rentas/arrow_forward_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                    alt="more_vert"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display: flex; height: 100%; width: 100%">
+    <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

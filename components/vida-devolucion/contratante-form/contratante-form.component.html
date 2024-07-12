@@ -1,0 +1,111 @@
+<!-- CAPTCHA -->
+<div class="captcha">
+    <re-captcha #recaptchaRef="reCaptcha"
+                (resolved)="resolved($event)"
+                siteKey="{{ siteKey }}"
+                badge="bottomleft"
+                size="invisible">
+    </re-captcha>
+</div>
+
+<section class="ps-container">
+    <form class="form"
+          [formGroup]="form">
+        <label for="f-document-type"
+               class="placeholder-u"
+               aria-placeholder="Tipo de documento:">
+            <select id="f-document-type"
+                    class="input-u"
+                    formControlName="documentType">
+                <option value="2">DNI</option>
+                <option value="4"
+                        *ngIf="false">C.E.</option>
+            </select>
+        </label>
+        <label for="f-document-number"
+               class="placeholder-u"
+               aria-placeholder="Número de documento:">
+            <input type="text"
+                   id="f-document-number"
+                   class="input-u"
+                   formControlName="documentNumber"
+                   [maxlength]="documentNumberLimit.max" />
+            <ng-container *ngIf="contractorForm['documentNumber'].touched">
+                <ng-container *ngIf="contractorForm['documentNumber'].hasError('minLength')">
+                    <small class="error-in text-left">
+                        Mínimo de carácteres es {{ documentNumberLimit.min }}
+                    </small>
+                </ng-container>
+                <ng-container *ngIf="contractorForm['documentNumber'].hasError('required')">
+                    <small class="error-in text-left"> Este campo es obligatorio </small>
+                </ng-container>
+            </ng-container>
+        </label>
+        <label for="f-email"
+               class="placeholder-u"
+               aria-placeholder="Correo electrónico:">
+            <input type="text"
+                   id="f-email"
+                   class="input-u"
+                   formControlName="email" />
+            <ng-container *ngIf="contractorForm['email'].touched">
+                <ng-container *ngIf="contractorForm['email'].hasError('pattern')">
+                    <small class="error-in text-left">
+                        El correo electrónico no es válido
+                    </small>
+                </ng-container>
+                <ng-container *ngIf="contractorForm['email'].hasError('required')">
+                    <small class="error-in text-left">
+                        El correo electrónico es obligatorio
+                    </small>
+                </ng-container>
+            </ng-container>
+        </label>
+        <label for="f-phone"
+               class="placeholder-u"
+               aria-placeholder="Número de celular:">
+            <input type="text"
+                   id="f-phone"
+                   class="input-u"
+                   formControlName="phoneNumber"
+                   [maxlength]="9" />
+            <ng-container *ngIf="contractorForm['phoneNumber'].touched">
+                <ng-container *ngIf="contractorForm['phoneNumber'].hasError('required')">
+                    <small class="error-in text-left"> Este campo es obligatorio </small>
+                </ng-container>
+                <ng-container *ngIf="contractorForm['phoneNumber'].hasError('minlength')">
+                    <small class="error-in text-left">
+                        El número de celular no es válido
+                    </small>
+                </ng-container>
+            </ng-container>
+        </label>
+
+        <label for="f-birthdate"
+               class="placeholder-u"
+               aria-placeholder="Fecha de nacimiento:">
+            <input type="text"
+                   id="f-birthdate"
+                   class="input-u"
+                   #dp="bsDatepicker"
+                   [bsConfig]="birthdateConfig"
+                   bsDatepicker
+                   autocomplete="nope"
+                   readonly
+                   formControlName="birthdate"
+                   disabled="true" />
+            <ng-container *ngIf="
+          contractorForm['birthdate'].errors &&
+          contractorForm['birthdate'].touched
+        ">
+
+                <ng-container *ngIf="contractorForm['birthdate'].hasError('required')">
+                    <small class="error-in text-left">Este campo es obligatorio</small>
+                </ng-container>
+            </ng-container>
+            <small class="error-in text-left"
+                   *ngIf="!isValidFechaNacimiento">Debes ser mayor de 18 años</small>
+        </label>
+
+    </form>
+</section>

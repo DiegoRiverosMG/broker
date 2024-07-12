@@ -1,0 +1,84 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Crear Asegurado</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+        <div class="card">
+            <div class="card-body">
+              <div class="row">
+                  <div class="col-sm-4">
+                      <span>TIPO DE DOCUMENTO</span>
+                      <select class="minimal" [(ngModel)]="insured.P_NIDDOC_TYPE" disabled>
+                        <option *ngFor="let type of documents" [value]="type.Id" style="text-transform: uppercase;">{{type.Name}}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                      <span>NRO DE DOCUMENTO</span>
+                      <input type="text" [(ngModel)]="insured.P_SIDDOC" disabled>
+                  </div>
+              </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="grid form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h5>Ingresar Datos del Asegurado</h5>
+                    </div>
+                </div>
+                <form [formGroup]="mainFormGroup">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span>NOMBRES</span>
+                            <input type="text" [(ngModel)]="this.insuredCreate.P_SFIRSTNAME" formControlName="nombres" class="minimal" [ngClass]="{'error-validate': mainFormGroup.get('nombres').invalid && mainFormGroup.get('nombres').touched}">
+                        </div>
+                        <div class="col-sm-4">
+                            <span>APELLIDO PATERNO</span>
+                            <input type="text" [(ngModel)]="this.insuredCreate.P_SLASTNAME" formControlName="apellidoP" [ngClass]="{'error-validate': mainFormGroup.get('apellidoP').invalid && mainFormGroup.get('apellidoP').touched}">
+                        </div>
+                        <div class="col-sm-4">
+                            <span>APELLIDO MATERNO</span>
+                            <input type="text" [(ngModel)]="this.insuredCreate.P_SLASTNAME2" formControlName="apellidoM" [ngClass]="{'error-validate': mainFormGroup.get('apellidoM').invalid && mainFormGroup.get('apellidoM').touched}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span>FECHA DE NACIMIENTO</span>
+                            <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker formControlName="fNacimiento" [(bsValue)]="bsFecNacimiento" value="{{ bsFecNacimiento | date:'dd/MM/yyyy' }}" #fechaNacimiento>
+                        </div>
+                        <div class="col-sm-4">
+                            <span>CORREO ELECTRONICO</span>
+                            <input type="text" formControlName="correo" [(ngModel)]="email" [ngClass]="{'error-validate': mainFormGroup.get('correo').invalid && mainFormGroup.get('correo').touched}">
+                        </div>
+                        <div class="col-sm-4">
+                            <span>DIRECCION</span>
+                            <input type="text" formControlName="direccion" [ngClass]="{'error-validate': mainFormGroup.get('direccion').invalid && mainFormGroup.get('direccion').touched}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span>TELÉFONO</span>
+                            <input type="text" formControlName="telefono" [ngClass]="{'error-validate': mainFormGroup.get('telefono').invalid && mainFormGroup.get('telefono').touched}" (keypress)="textValidate($event, 1)">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-end" align="end">
+                <button class="full-color pull-right mt-4" (click)="createInsured()">
+                    <span>AGREGAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>

@@ -1,0 +1,87 @@
+<div class="panel-info-brokers">
+  <panel-widget
+    title="Datos del bróker">
+
+    <div class="row">
+      <div class="col-sm-12">
+
+        <form-button
+          *ngIf="brokers.length < 2 && !detail && !storageService.esBroker"
+          class="pull-right"
+          label="Agregar"
+          (click)="clickAdd()"
+        ></form-button>
+
+        <panel-table
+          classTable="margin-top-20"
+          [items]="brokers"
+          [detail]="detail"
+          [headerTemplate]="headerTemplateGeneral"
+          (clickDelete)="clickDelete($event)"
+          [showDelete]="this.brokers['flag']=0 && vista.modoVista == undefined"
+          [bodyTemplate]="bodyTemplateBrokers">
+        </panel-table>
+
+        <ng-template #headerTemplateGeneral>
+          <th class="text-center">Tipo documento</th>
+          <th class="text-center">Nro documento</th>
+          <th class="text-center">Razón social / nombres y apellidos</th>
+          <!--<th class="text-center width-120">Comisión</th>-->
+          <th class="text-center width-120">
+            <label class="margin-bottom-0">
+              <input type="checkbox" [(ngModel)]="proponerComision" (change)="limpiarComision()" 
+              *ngIf="!detail && vista.poliza.listReglas.flagComision">
+              <span> Propuesta</span>
+            </label>
+          </th>
+        </ng-template>
+
+        <ng-template #bodyTemplateBrokers let-item="item">
+          <td class="text-center vertical-center">{{item.NTIPDOC | typeDocument}}</td>
+          <td class="text-center vertical-center">{{item.NNUMDOC}}</td>
+          <td class="text-center vertical-center">{{item.RAZON_SOCIAL}}</td>
+          <td class="text-center" style="position: relative;">
+            <form-input-text
+              [(value)]="item.P_COM_SALUD_PRO"
+              placeholder="0"
+              [onlyInput]="true"
+              [patternPrevent]="CONSTANTS.REGEX.PORCENTAJE"
+              [disabled]="detail"
+            ></form-input-text>
+            <span  class="porcentaje" style="top: 20px;">%</span>
+            <!-- <form-input-text  *ngIf="item.COD_CANAL != CONSTANTS.BKDIRECTO"
+              [value]="vista.trama?.COMISION_BROKER || 0"
+              placeholder="0"
+              [onlyInput]="true"
+              [disabled]="true"
+            ></form-input-text> -->
+            <!-- <form-input-text
+              [value]="vista.trama?.COMISION_BROKER || 0"
+              placeholder="0"
+              [onlyInput]="true"
+              [disabled]="true"
+            ></form-input-text> -->
+            <!-- <span class="porcentaje" style="top: 20px"> %</span> -->
+              <!--
+            <form-input-text
+              [value]="item.P_COM_SALUD || 0"
+              placeholder="0"
+              [onlyInput]="true"
+              [disabled]="true"
+            ></form-input-text>
+            
+            <span class="porcentaje" style="top: 20px"> %</span>-->
+            <!-- <span   *ngIf="item.COD_CANAL == CONSTANTS.BKDIRECTO" class="text-center" style="top: 20px">0 %</span> -->
+          </td>
+          <!--
+          <td class="text-center" style="position: relative;" >
+          
+          </td>-->
+        </ng-template>
+
+
+      </div>
+    </div>
+
+  </panel-widget>
+</div>

@@ -1,0 +1,75 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <span>RAMO</span>
+                <input type="text" placeholder="Ramo" [(ngModel)]="InputsTransact.SRAMO" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>PRODUCTO</span>
+                <input type="text" placeholder="Producto" [(ngModel)]="InputsTransact.P_PRODUCTO" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>COTIZACIÓN</span>
+                <input type="text" placeholder="Cotización" [(ngModel)]="InputsTransact.P_COTIZACION" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>NRO. PÓLIZA</span>
+                <input type="text" placeholder="Nro. Póliza" [(ngModel)]="InputsTransact.P_POLIZA" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>CONTRATANTE</span>
+                <input type="text" placeholder="Contratante" [(ngModel)]="InputsTransact.P_CONTRATANTE" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>NRO. TRÁMITE</span>
+                <input type="text" placeholder="Nro. Póliza" [(ngModel)]="InputsTransact.P_TRAMITE" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>TRANSACCIÓN</span>
+                <input type="text" placeholder="Transacción" [(ngModel)]="InputsTransact.P_STYPETRANSAC" disabled>
+              </div>
+              <div class="col-sm-6">
+                <span>ESTADO</span>
+                <input type="text" placeholder="Estado" [(ngModel)]="InputsTransact.P_SSTATUS" disabled>
+              </div>
+              <div *ngIf="SMODE == 'MAIL'" class="col-sm-9">
+                <span>CORREO ELECTRÓNICO ACTUAL</span>
+                <input type="text" placeholder="Correo" [(ngModel)]="InputsTransact.P_SMAILACTUAL" disabled>
+              </div>
+              <div *ngIf="SMODE == 'MAIL'" class="col-sm-9">
+                <span>CORREO ELECTRÓNICO (REENVIO)*</span>
+                <input type="text" placeholder="Correo" [(ngModel)]="InputsTransact.P_PCORREO">
+              </div>
+              <div class="col-sm-12">
+                <span>COMENTARIO*</span>
+                <textarea cols="40" rows="5" style="width:100%" [(ngModel)]="InputsTransact.P_PCOMENTARIO"
+                  name="comentario" maxlength="4000"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  
+  </div>
+  <div class="modal-footer">
+    <button style="margin-top: 15px;" (click)="reference.close()">Regresar</button>
+    <button *ngIf="SMODE == 'MAIL'" class="full-color pull-right" style="margin-top: 15px;" (click)="reassignSend()">
+        <span>Procesar</span>
+    </button>
+    <button *ngIf="SMODE == 'ASIG'" class="full-color pull-right" style="margin-top: 15px;" (click)="reassignTransact()">
+      <span>Asignar</span>
+  </button>
+  </div>
+  

@@ -1,0 +1,3 @@
+<select (change)="onSelectState($event.target.value)">
+    <option *ngFor="let Item of lstState" value="{{Item.nidstate}}">{{Item.sdescription}}</option>
+</select>

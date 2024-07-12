@@ -1,0 +1,180 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Reporte de Comisiones - Canales</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item  rigth-item">
+            <button (click)="EventSearch($event)">
+              <img alt="" src="assets/icons/buscar_certificado.png" />
+              <span>Buscar</span>
+            </button>
+          </div>
+          <div class="header-item rigth-item">
+            <button (click)="EventDownload($event)">
+              <img alt="" src="assets/icons/descargar.png" />
+              <span>Descargar Excel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter">
+        <div class="form-group row filter-row">
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR MODALIDAD:</span>
+            <app-salesmode
+              (evResultSalesMode)="onVotedParentSalesMode($event)"
+            ></app-salesmode>
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR ESTADO:</span>
+            <app-statesales
+              (evResultStateSales)="onVotedParentStateSales($event)"
+            ></app-statesales>
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR P&Oacute;LIZA:</span>
+            <input
+              type="text"
+              [(ngModel)]="filter.FPoliza"
+              placeholder="N° Póliza"
+              (keypress)="this.utilityService._kpPolicy($event, filter.FPoliza)"
+            />
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR PRIMA:</span>
+            <div class="filter-row-cell-flex">
+              <input
+                type="text"
+                class="radius-right"
+                placeholder="S/ Desde"
+                [(ngModel)]="filter.FPrimaIni"
+                (keypress)="
+                  this.utilityService._kpPrimaSoat($event, filter.FPrimaIni)
+                "
+              />
+              <input
+                type="text"
+                class="radius-left"
+                placeholder="S/ Hasta"
+                [(ngModel)]="filter.FPrimaFin"
+                (keypress)="
+                  this.utilityService._kpPrimaSoat($event, filter.FPrimaFin)
+                "
+              />
+            </div>
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>DESDE:</span>
+            <input type="date" [(ngModel)]="filter.FDateIni" />
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>HASTA:</span>
+            <input type="date" [(ngModel)]="filter.FDateFin" />
+          </div>
+        </div>
+        <div class="form-group row filter-row">
+          <div class="col-sm-12 col-lg-8 filter-row-cell">
+            <app-channelpoint
+              (evResultChannelSales)="onVotedParentChannelSales($event)"
+              (evResultChannelPoint)="onVotedParentChannelPoint($event)"
+            ></app-channelpoint>
+          </div>
+        </div>
+        <div *ngIf="!resultError" class="alert alert-danger">
+          <div *ngFor="let err of listErrores">
+            {{ err }}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Canal de Venta</td>
+                <td class="grid-title-item">Punto de Venta</td>
+                <td class="grid-title-item">Nro. Póliza</td>
+                <td class="grid-title-item">Prima</td>
+                <td class="grid-title-item">Porcentaje Comisión</td>
+                <td class="grid-title-item">Monto Comisión</td>
+                <td class="grid-title-item">Nro. Documento</td>
+                <td class="grid-title-item">Contratante</td>
+                <td class="grid-title-item">Inico Vigencia</td>
+                <td class="grid-title-item">Fin Vigencia</td>
+                <td class="grid-title-item">Placa</td>
+                <td class="grid-title-item">Modalidad</td>
+                <td class="grid-title-item">Uso</td>
+                <td class="grid-title-item">Estado</td>
+              </tr>
+            </thead>
+            <div
+              *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+            ></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="10">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let result of ListReportComissCV">
+              <tr>
+                <td>{{ result.scliename }}</td>
+                <td>{{ result.spointname }}</td>
+                <td>{{ result.npolicy }}</td>
+                <td>{{ result.npremium }}</td>
+                <td>{{ result.nporcentaje }}</td>
+                <td>{{ result.amount }}</td>
+                <td>{{ result.ndocuments }}</td>
+                <td>{{ result.snamecomplete }}</td>
+                <td>
+                  {{ this.datePipe.transform(result.dstartdate, "dd/MM/yyyy") }}
+                </td>
+                <td>
+                  {{ this.datePipe.transform(result.dexpirdat, "dd/MM/yyyy") }}
+                </td>
+                <td>{{ result.sregist }}</td>
+                <td>{{ result.ssalemode }}</td>
+                <td>{{ result.suso }}</td>
+                <td>{{ result.sstatuS_POL_DES }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+
+      <div
+        *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+      ></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination
+              [totalItems]="totalItems"
+              [itemsPerPage]="itemsPerPage"
+              [rotate]="rotate"
+              [maxSize]="maxSize"
+              [(ngModel)]="currentPage"
+              (pageChanged)="pageChanged($event)"
+            ></pagination>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

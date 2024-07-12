@@ -1,0 +1,238 @@
+@import "variables";
+@import "standard";
+
+.group1 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.title {
+  color: $purple;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.container-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  display: grid; /*crear div con class de contenedor para fijar*/
+  grid-template-columns: 5fr 3fr 0fr;
+  grid-gap: 5px;
+}
+
+.body-qr {
+  padding-left: 40px !important;
+}
+
+.full-color {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: $purple;
+  color: #fff;
+  padding: 8px 5px;
+  max-width: 210px;
+  height: 45px;
+  outline: none;
+  min-width: 175px;
+}
+
+.full-color span {
+  color: #fff;
+  margin-left: 10px;
+}
+
+.btn-new {
+  border: 1px solid #553d81;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 2px;
+  background: #553d81;
+  color: #fff;
+  outline: none;
+  width: 190px;
+  max-width: 190px;
+  margin-left: 65% !important;
+  -webkit-border-radius: 2px;
+}
+
+.group2 {
+  border-top: 1px solid rgb(84, 61, 129);
+  width: 100%;
+  margin-top: 10px;
+  display: flex; /* ESTO PARA ABAJO ES PARA QUE PERMANEZCAN LOS BUTTON EN SU SITIO*/
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 30px;
+}
+
+.inputs {
+  display: flex;
+  grid-template-columns: 5fr 6fr 5fr;
+  grid-gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.conten-input {
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.placeholder-u {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+
+  &::before {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 5px;
+    width: 100%;
+    max-width: 100%;
+    content: attr(aria-placeholder);
+    display: block;
+    color: #2b0d61;
+    font-size: 16px;
+    flex-wrap: nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -ms-transition: 0.2s;
+    -o-transition: 0.2s;
+  }
+  &.inside {
+    &::before {
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+}
+
+.input1 {
+  width: 18%;
+}
+
+.input2 {
+  width: 22%;
+}
+
+.input3 {
+  width: 28%;
+}
+
+.grid-title-item {
+  cursor: default;
+  padding: 0.55rem !important;
+  white-space: nowrap;
+}
+
+.grid table .grid-title td,
+.thead {
+  background: #553d81;
+  color: #fff !important;
+}
+
+.grid table .grid-title td,
+.grid table .grid-body,
+.table-info-soat {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 13px;
+}
+
+.table-info-soat .thead .grid-title td {
+  padding: 0.35rem !important;
+}
+
+.table-resumen .table thead .grid-title .grid-title-item:nth-child(2),
+.table-resumen .table thead .grid-title .grid-title-item:nth-child(3) {
+  width: 200px;
+}
+
+.grid table .grid-title td {
+  background: #553d81;
+  font-size: 13px !important;
+  color: #fff !important;
+}
+.grid table .grid-title td,
+.grid table .grid-body {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
+}
+.grid table .grid-body td {
+  color: #2b0d61;
+  padding: 5px;
+}
+.grid table .grid-body {
+  cursor: pointer;
+}
+
+.table-responsive {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.table-responsive {
+  padding-right: 0rem;
+}
+
+.table {
+  margin: 0 0rem;
+}
+
+.table-resumen .table thead .grid-title .grid-title-item:nth-child(2),
+.table-resumen .table thead .grid-title .grid-title-item:nth-child(3) {
+  width: 200px;
+}
+
+.placeholder-u::before {
+  font-size: 14px;
+}
+
+.div-tableban {
+  margin-top: 20px;
+}
+
+.pag-ban {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.fa-ordenar {
+  color: white;
+}
+
+.button-ordenar {
+  background-color: #553d81;
+  margin-left: 5px;
+}

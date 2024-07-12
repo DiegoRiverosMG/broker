@@ -1,0 +1,37 @@
+<div class="panel-info-evaluacion">
+  <panel-widget [title]="'Datos de exclusión de los asegurados'">
+    <div class="row">
+      <div class="col-sm-4">
+        <label class="label mt-4">TIPO DE DEVOLUCIÓN: MENSUAL</label>
+      </div>
+      <div class="col-sm-3">
+        <!--form-input-checkbox
+        [inlineInput]="true"
+        [items]="[
+          {codigo: 'DEV_PRI', valor: '¿Devolver a prima cobrada?'}
+        ]"
+        [(mapSelected)]="cotizacion.devolucionPrima"
+        [disabled]="detail"
+        (change)="hola();"
+      ></form-input-checkbox> -->
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <form-input-text
+          label="ESTADO"
+          [value]="cotizacion.estadoDeuda"
+          [disabled]="true"
+        ></form-input-text>
+      </div>
+      <div class="col-sm-3">
+        <form-input-text
+          label="MONTO"
+          [value]="cotizacion.montoDeuda | prettyNumber:2"
+          [disabled]="true"
+        ></form-input-text>
+      </div>
+    </div>
+  </panel-widget>
+</div>

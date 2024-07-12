@@ -1,0 +1,142 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+
+  <div class="col-lg-6 mx-auto mt-5">
+    <div class="card m-auto">
+      <div class="card-body">
+
+        <ul class="list-group list-group-flush">
+
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-8">
+                <span class="text-uppercase">Configuración de Comisiones VDP+</span>
+              </div>
+
+
+              <button type="button" class="full-color mx-auto" (click)="SaveCommission()" *ngIf="show_tecnica == true"
+                [disabled]="is_disable_button_s">
+                <span>GRABAR</span>
+              </button>
+            </div>
+          </li>
+
+
+          <li class="list-group-item">
+            <div class="row">
+
+              <div class="col-8">
+                <span class="text-uppercase">Mes de inicio de comisión</span>
+              </div>
+
+              <div class="col-4">
+                <form-input-text [(value)]="item.NINI_MONTH" [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                  [disabled]="is_disable_input" maxCaracter="2"></form-input-text>
+
+              </div>
+
+            </div>
+          </li>
+
+          <li class="list-group-item">
+            <div class="row">
+
+              <div class="col-8">
+                <span class="text-uppercase">Cantidad de Meses de Comisón</span>
+              </div>
+
+              <div class="col-4">
+                <form-input-text [(value)]="item.NCANTMONTHS" [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                  [disabled]="is_disable_input" maxCaracter="2"></form-input-text>
+
+              </div>
+            </div>
+
+          </li>
+
+
+          <li class="list-group-item">
+            <div class="row">
+
+              <div class="col-8">
+                <span class="text-uppercase">Fecha de Inicio</span>
+              </div>
+              <div class="col-4">
+                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="item.DEFFECDATE"
+                  value="{{ item.DEFFECDATE | date: 'dd/MM/yyyy' }}" [disabled]="is_disable_input">
+              </div>
+
+            </div>
+          </li>
+
+          <li class="list-group-item">
+            <div class="row">
+
+              <div class="col-8">
+                <span class="text-uppercase">Estado</span>
+              </div>
+              <div class="col-4">
+                <form-input-text [(value)]="item.DESC_STATE" [disabled]="true" maxCaracter="2"></form-input-text>
+              </div>
+            </div>
+          </li>
+
+
+          <li class="list-group-item">
+            <div class="row my-2" *ngIf="item.CONFIG_EDITABLE == 0">
+              <span class="text-danger text-xs">(*)No puede editar ni rechazar esta configuracion debido a que ya se generó una
+                poliza con esta configuración.</span>
+            </div>
+            <div class="row">
+
+              <div class="col-8">
+
+                <div class="row mb-2 g-2">
+                  <button type="button" class="full-color" (click)="ActivateInput()" [disabled]="is_disable_button_a == true"
+                    *ngIf="show_tecnica == true">
+                    <span>NUEVO</span>
+                  </button>
+
+                  <button type="button" class="full-color" (click)="EditInput()" *ngIf="show_tecnica == true"
+                    [disabled]="(is_disable_button_e == true) || (item.NSTATE == 2)">
+                    <span>MODIFICAR</span>
+                  </button>
+
+                  <button type="button" class="full-color" (click)="ChangeStateRequest(2)"
+                    [disabled]=" (item.NSTATE == 2) || (is_disable_button_e == true)" *ngIf="show_tecnica == true">
+                    <span>ANULAR</span>
+                  </button>
+
+
+                  <button type="button" class="full-color" (click)="OpenModal()">
+                    <span>HISTORIAL</span>
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="col-4">
+                <button type="button" class="full-color col-2 mx-auto" (click)="GetLastCommission2()">
+                  <span>CANCELAR</span>
+                </button>
+
+              </div>
+
+            </div>
+
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display: flex; height: 100%; width: 100%">
+    <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

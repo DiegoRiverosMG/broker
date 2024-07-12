@@ -1,0 +1,176 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Monitoreo de Reportes de Cierre</span>
+          </div>
+        </div>
+      </div>
+      <div>
+
+        <div class="filter">
+
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <!-- Listamos los RAMOS -->
+                <div class="col-sm-3">
+                  <span>RAMO(*)</span>
+                  <select [disabled]="BranchOff" [(ngModel)]="IdBranch" name="IdRamo" class="minimal">
+                    <option value="-1" selected>TODOS</option>
+                    <option *ngFor="let item of ListBranch" value="{{item.NBRANCH}}">
+                      {{item.SDESCRIPT}}</option>
+                  </select>
+                </div>
+                <!-- Listamos los productos -->
+                <!-- <div class="col-sm-3">     
+                  <span>PRODUCTO</span>
+                  <select [(ngModel)]="IdProduct" name="IdProducto" class="minimal">
+                    <option value="-1" selected>TODOS</option>                    
+                    <option *ngFor="let item of ListProduct" value="{{item.NPRODUCT}}">
+                      {{item.SDESCRIPT}}</option>
+                  </select>
+                </div> -->
+                <!-- Listamos los estados -->
+                <div class="col-sm-3">
+                  <span>ESTADO(*)</span>
+                  <select [disabled]="StateOff" [(ngModel)]="IdState" name="IdEstado" class="minimal">
+                    <option value="-1" selected>TODOS</option>
+                    <option *ngFor="let item of ListState" value="{{item.NSTATUSPROC}}">
+                      {{item.SDESCRIPTION}}</option>
+                  </select>
+                </div>
+                <!--Filtro de fechas-->
+                <div class="col-sm-3">
+                  <span>FECHA DE INICIO(*)</span>
+                  <input [disabled]="StartDateOff" type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(bsValue)]="bsValueIni" value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                    readonly>
+                </div>
+                <div class="col-sm-3">
+                  <span>FECHA DE FIN(*)</span>
+                  <input [disabled]="EndDateOff" type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(bsValue)]="bsValueFin" value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                    readonly>
+                </div>
+                <div>
+                  <br>
+                  <br>
+                  &nbsp; <input type="checkbox" class="checkbox" (change)="setControlsForProcess($event)"
+                    [(ngModel)]="SearchActivated" name="SearchByIdReport">
+                </div>
+                <div class="col-sm-3">
+                  <span>BUSCAR REPORTE POR ID(*)</span>
+                  <input [disabled]="IdReportOff" [(ngModel)]="IdReport" type="text"
+                    placeholder="INGRESE ID DEL REPORTE">
+                </div> 
+                <!--Boton que Lista el Reporte en acuerdo a las fechas ingresadas-->              
+                <div class="col-sm-6">
+                </div>
+                  <div class="col-sm-2">
+                  <span>&nbsp;</span>
+                  <button class="full-color" (click)="GetProcess()" style="margin-top: 5px;">
+                    <span>BUSCAR</span>
+                  </button>
+                 </div> 
+                </div>
+              </div>
+            </div>            
+          </div>
+        <!--Grilla del reporte-->
+        <div class="grid form-group">
+          <div class="table-responsive">
+            <table id="my-table" class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item text-center">Estado</td>
+                  <td class="grid-title-item text-center">Id Reporte</td>
+                  <td class="grid-title-item text-center">Ramo</td>
+                  <td class="grid-title-item text-center">Usuario</td>
+                  <td class="grid-title-item text-center">Fecha Inicio Producción</td>
+                  <td class="grid-title-item text-center">Fecha Fin Producción</td>
+                  <!-- <td class="grid-title-item text-center">Producto</td> -->
+                  <td class="grid-title-item text-center">Tipo</td>
+                  <td class="grid-title-item text-center">Descarga</td>
+                </tr>
+              </thead>
+              <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showGrid else hideGrid">
+              </ng-container>
+            </table>
+            <ng-template #hideGrid>
+              <tbody>
+                <tr style="text-align: center;">
+                  <td colspan="10"></td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #showGrid>
+              <tbody>
+                <!--Invocamos la función que llena la grilla-->
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                  <td class="text-center">
+                    <img *ngIf="item.codEstado == 1" src="assets/icons/loadingtc.gif" title="Cargando" alt="Cargando" />
+                    <img *ngIf="item.codEstado == 2" src="assets/icons/verifyct.png" title="Finalizado"
+                      alt="Finalizado" />
+                    <img *ngIf="item.codEstado == 3" src="assets/icons/incorrecttc.png" title="Incorrecto"
+                      alt="Incorrecto" />
+                    <img *ngIf="item.codEstado == 4" src="assets/icons/warntc.png" title="Reporte sin datos"
+                      alt="Reporte sin datos"/>
+                  </td>
+                  <td class="text-center">{{ item.id }}</td>
+                  <td class="text-center">{{ item.desRamo }}</td>
+                  <td class="text-center">{{ item.desUsuario }}</td>
+                  <td class="text-center">{{ item.fecInicio }}</td>
+                  <td class="text-center">{{ item.fecFin }}</td>
+                  <!-- <td class="text-center">{{ item.desProducto }}</td>  -->
+                  <td class="text-center">{{ item.codTipo }}</td>
+                  <td class="text-center">
+                    <img *ngIf="item.codEstado == 2" src="assets/icons/download2.png" title="Descargar" alt="Descargar"
+                      style="cursor: pointer;" (click)="getFilePremiumReport(item.id)"
+                      style="padding: 0px 18px 0px 18x;" />
+                  </td>
+                </tr>
+              </tbody>
+            </ng-template>          
+          </div>
+        </div>
+        <!--Aqui se realiza la paginación-->
+        <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showPagination"></ng-container>
+        <ng-template #showPagination>
+          <div class="row mt-4">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+          <!--Descarga de archivos-->
+          <div class="row">
+            <div class="col-sm-10">
+            </div>
+            <div class="col-sm-2">
+                <span>DESCARGA DE REGISTROS</span>
+                <img src="assets/icons/exceltc.png" height="40" width="40" title="Descargar Excel"
+                  alt="Descargar Excel" style="cursor: pointer;" (click)="convertListToExcel()" />
+                &nbsp;
+                &nbsp;
+                <img src="assets/icons/printertc.png" height="40" width="40" title="Descargar PDF" alt="Descargar PDF"
+                  style="cursor: pointer;" (click)="convertListToPrintPDF()" />
+              </div> 
+            </div>
+        <div [hidden]="!isLoading" class="loadingScreen">
+          <div style="display:flex;height: 100%;width:100%">
+            <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

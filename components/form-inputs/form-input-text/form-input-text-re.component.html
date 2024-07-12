@@ -1,0 +1,20 @@
+<div class="form-input-text-re">
+  <!-- Alex Gallozo 14/03/2023 Ocultando los campos “Tipo de Facturación, Renovable, Tipo renovación" al Usuario -->
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]='detail === true && required === true'>(*)</ng-template></span>
+  <span *ngIf="span === true">{{value}}</span>
+  <input 
+    *ngIf="span !== true"
+    type="text" 
+    maxlength="{{maxCaracter || ''}}"
+    placeholder="{{placeholder || label}}" 
+    [ngClass]="classInput"
+    [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)"
+    [class.only-input]="onlyInput"
+    (keypress)="onKey($event);"
+    (keydown)="onKeydown($event);"
+    (blur)="onBlur.emit()"
+    (focus)="onFocus.emit()"
+    (focusout)="onFocusOut.emit()"
+     autocomplete=off
+    [disabled]="disabled" />
+</div>

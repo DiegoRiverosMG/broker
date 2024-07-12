@@ -1,0 +1,52 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="contenido">
+        <div *ngIf="bLoading"
+             class="mensaje-carga">
+
+          <div class="container-pago">
+            <img src="assets/soat/img/tarjeta.svg"
+                 alt=""
+                 srcset="">
+            <h5 class="loader-titulo">Por favor, espere unos segundos</h5>
+            <h6 class="loader-sutitulo">Estamos procesando su pago</h6>
+            <div class="loader-pago">
+              <div class="loaderBar-pago"></div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+        <app-visa-result [loading]="bLoading"
+                         [resultOK]="bAprobado"
+                         [result]="resultado"
+                         [downloadUrl]="downloadPdfUrl"></app-visa-result>
+
+        <div *ngIf="!bLoading && bAprobado">
+          <div class="div-center">
+            <button type="button"
+                    class="btn-compra"
+                    (click)="IrPlaca()">Realizar otra Compra</button>
+          </div>
+        </div>
+
+        <div *ngIf="!bLoading && !bAprobado"
+             class="mensaje-denegado">
+
+          <div class="div-center">
+            <button class="btn-compra"
+                    (click)="IrAResumen()">Volver a Intentar</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Actualizar Comisión</h4>
+  <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<br>
+<br>
+<div class="modal-body">
+  <div class="container-fluid" style="margin-bottom: 10px;">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-7">
+              <span>Intermediario</span>
+              <select [(ngModel)]="itemIntermediary.nintermed" class="minimal" (change)="PrintTypeIntermediary()">
+                <option value="0" selected>SELECCIONAR</option>
+                <option *ngFor="let interm of listIntermedary" value="{{interm.nintermed}}">
+                  {{interm.intermedary}}</option>
+              </select>
+            </div>
+            <div class="col-sm-5">
+              <span>Tipo intermediario</span>
+              <input type="text" [(ngModel)]="itemIntermediary.tipoIntermediario" disabled>
+            </div>
+            <br>
+            <br>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4">
+              <span>Fecha efecto</span>
+              <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax" readonly>
+
+            </div>
+            <div class="col-sm-4">
+              <span>% Comisión</span>
+              <input FloatSixDirective (blur)="validateDecimal('1,10','1,6', 1)" maxlength="10" type="text"
+                [(ngModel)]="itemBroker.POR_COMISION">
+            </div>
+            <div class="col-sm-2">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+
+<div class="modal-footer">
+  <button class="full-color pull-right" (click)="UpdateCommission()">
+    <span>Guardar</span>
+  </button>
+  <button (click)="reference.close()">Regresar</button>
+</div>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

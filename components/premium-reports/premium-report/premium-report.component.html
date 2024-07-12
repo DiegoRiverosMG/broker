@@ -1,0 +1,94 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Generación de Reportes de Cierre</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="filter">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <!-- Listamos los RAMOS -->
+                <div class="col-sm-3">
+                  <span>RAMO(*)</span>
+                  <select [(ngModel)]="IdBranch" (change)="desactivateHeader($event.target.value)" name="IdRamo" class="minimal">
+                    <option value="0" selected>SELECCIONE</option>
+                    <option *ngFor="let item of ListBranch" value="{{item.NBRANCH}}">
+                      {{item.SDESCRIPT}}</option>
+                  </select>
+                </div>                
+                <!-- Listamos los productos -->
+                <!-- <div class="col-sm-3">
+                  <span>PRODUCTO</span>
+                  <select [(ngModel)]="IdProduct" name="IdProducto" class="minimal">
+                    <option value="0" selected>SELECCIONE</option>
+                    <option *ngFor="let item of ListProduct" value="{{item.NPRODUCT}}">
+                      {{item.SDESCRIPT}}</option>
+                  </select>
+                </div> -->
+                  <!--Elegimos el Tipo-->                
+                  <!-- <div class="col-sm-3">
+                  </div>              
+                <!--Filtro de fechas-->
+                <div class="col-sm-3">
+                  <span>FECHA DE INICIO(*)</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                    value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax" readonly [disabled]="disabledFechaInicio">
+                </div>
+                <div class="col-sm-3">
+                  <span>FECHA DE FIN(*)</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueFin"
+                    value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax" readonly [disabled]="disabledFechaFin">
+                </div>              
+                <div class="col-sm-3" >               
+                  <span>TIPO DESCARGA(*)</span>    
+                  <br>     
+                  <!--*ngIf="item.NBRANCH != 66"--> 
+                  <!-- <div *ngIf="item.NBRANCH == 71" class="col-sm-3"></div>     -->
+                  <input [disabled]="HeaderOff || disabledCabecera || disabledCabeceravfc"  type="checkbox" name="Header" [(ngModel)]="isHeader"> Cabecera &nbsp; &nbsp; &nbsp;
+                  <input type="checkbox" name="Detail" [(ngModel)]="isDetail"> Detalle            
+                </div>                 
+                 <!--Botonque genera los reportes-->  
+                 <div class="col-sm-3">
+                  <span>TIPO REPORTE(*)</span>
+                  <select class="form-control minimal"
+                          [(ngModel)]="TypeReport"
+                          id="TypeReport"
+                          name="TypeReport">
+                      <option value="1"
+                              selected>REASEGUROS</option>
+                      <option value="2">FACTURACIÓN</option>
+                  </select>
+              </div>
+              <div *ngIf="IdBranch == 998" class="col-sm-3">
+                <span>ID_PROCESO_OR</span>
+                <input type="text" placeholder="ID_PROCESO_OR" [(ngModel)]="IdProcesoOr" >
+              </div>   
+              <div [ngClass]="{'col-sm-3': IdBranch == 998, 'col-sm-6' : IdBranch != 998 }">
+              </div>                      
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="processReports()" [disabled]="">
+                  <span>PROCESAR</span>
+                </button>
+              </div>                
+              </div>
+            </div>            
+          </div>     
+        </div>
+        <div [hidden]="!isLoading" class="loadingScreen">
+          <div style="display:flex;height: 100%;width:100%">
+            <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

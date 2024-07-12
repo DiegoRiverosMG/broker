@@ -1,0 +1,209 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Mantenimiento de Comisiones</span>
+          </div>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>RAMO</span>
+                <select [disabled]="stateSearchPolicy" [(ngModel)]="InputsSearch.NBRANCH" class="minimal"
+                  (change)="SelectBranch()">
+                  <option value="0" selected>AMBOS</option>
+                  <option *ngFor="let branch of branchList" value="{{branch.NBRANCH}}">
+                    {{branch.SDESCRIPT}}</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3">
+                <span>PRODUCTO</span>
+                <select [disabled]="stateSearchPolicy" [(ngModel)]="InputsSearch.NPRODUCT" class="minimal">
+                  <option value="0" selected>TODOS</option>
+                  <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                    {{product.DES_PRODUCT}}</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3">
+                <span>NRO. PÓLIZA</span>
+                <input type="text" placeholder="Nro. Póliza" [(ngModel)]="InputsSearch.NPOLICY"
+                  [disabled]="stateSearchNroPolicy" (ngModelChange)="changePolicy($event)"
+                  (keyup.enter)="BuscarBroker()" OnlyNumberDirective (keypress)="onKeyPress($event)">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BUSCAR INTERMEDIARIO</span>
+                <select [disabled]="stateSearch" (change)="onSelectTypeSearch()"
+                  [(ngModel)]="InputsSearch.P_TYPE_SEARCH">
+                  <option value="1" selected>Por Nro. de Documento</option>
+                  <option value="2">Por Nombres</option>
+                  <option value="3">Por Cod SBS</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch && !blocksbs" class="col-sm-3">
+                <span>TIPO DOCUMENTO</span>
+                <select [disabled]="stateSearch" [(ngModel)]="InputsSearch.NIDDOC_TYPE"
+                  (ngModelChange)="onSelectTypeDocument()" class="minimal">
+                  <option value="-1" selected>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="!blockSearch" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="onSelectTypePerson()" [(ngModel)]="InputsSearch.P_PERSON_TYPE"
+                  [disabled]="stateSearch" class="minimal">
+                  <option value="1" selected>Persona Natural</option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch && !blocksbs" class="col-sm-3">
+                <span>NRO. DOCUMENTO</span>
+                <input type="text" placeholder="Nro Documento" [(ngModel)]="InputsSearch.SIDDOC"
+                  (keypress)="documentNumberKeyPress($event)" (keyup.enter)="BuscarBroker()" maxlength={{maxlength}}
+                  [disabled]="stateSearch" (ngModelChange)="changeDoc($event)" />
+              </div>
+
+
+              <div *ngIf="blocksbs" class="col-sm-3">
+                <span>COD. SBS</span>
+                <input type="text" placeholder="Codigo SBS" maxlength="10" [(ngModel)]="InputsSearch.CODSBS"
+                  (keypress)="documentNumberKeyPress($event)" (keyup.enter)="BuscarBroker()" maxlength={{maxlength}}
+                  [disabled]="stateSearch" (ngModelChange)="changeDoc($event)" />
+              </div>
+
+            </div>
+
+            <div class="row" *ngIf="!blockSearch">
+              <div class="col-sm-9">
+                <span>RAZÓN SOCIAL O NOMBRES (*)</span>
+                <input type="text" placeholder="Razón Social" [disabled]="stateSearch"
+                  (ngModelChange)="changeContractor($event)" [(ngModel)]="InputsSearch.SLEGALNAME"
+                  (keyup.enter)="BuscarBroker()" LegalNameDirective />
+              </div>
+
+            </div>
+
+
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>FECHA EFECTO </span>
+                <input type="text" #dp="bsDatepicker" (ngModelChange)="valInicio($event)" [bsConfig]="bsConfig"
+                  bsDatepicker [(bsValue)]="bsValueIni" [(ngModel)]="bsValueIni" [(maxDate)]="bsValueIniMax"
+                  value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [disabled]="stateSearchPolicy" #desde readonly>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-12">
+                <button class="full-color pull-right" (click)="BuscarBroker()">
+                  <span (click)="BuscarBroker()">Buscar</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+
+
+
+
+        </div>
+        <div class="grid form-group">
+
+          <div class="grid form-group">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr class="grid-title">
+                    <td class="grid-title-item">Cod SBS</td>
+                    <td class="grid-title-item" class="text-left">Tipo intermediario</td>
+                    <td class="grid-title-item" class="text-left">Nombre/Razon social</td>
+                    <td class="grid-title-item">Ramo</td>
+                    <td class="grid-title-item">Producto</td>
+                    <td class="grid-title-item">Póliza</td>
+                    <td class="grid-title-item text-center">Fecha efecto</td>
+                    <td class="grid-title-item text-center">% Comisión</td>
+                    <td class="grid-title-item text-center">% Participación</td>
+                    <td class="grid-title-item text-center">Movimientos</td>
+                  </tr>
+                </thead>
+                <ng-container
+                  *ngIf="BrokerCommissionList!=null && BrokerCommissionList.length>0; then showGrid else hideGrid">
+                </ng-container>
+              </table>
+            </div>
+            <ng-template #hideGrid>
+              <tbody>
+                <tr>
+                  <td colspan="9" class="text-center">
+                    No se encontraron registros
+                  </td>
+
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #showGrid>
+              <tbody>
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                  <td>{{ item.COD_SBS }}</td>
+                  <td>{{ item.TIPO_INTERMEDIARIO }}</td>
+                  <td>{{ item.RAZON_INTERMEDIARIO }}</td>
+                  <td>{{ item.DES_RAMO  }}</td>
+                  <td>{{ item.DES_PRODUCT  }}</td>
+                  <td>{{ item.POLIZA }}</td>
+                  <td class="text-center">{{ item.FECHA_EFECTO }}</td>
+                  <td class="text-center">{{ item.POR_COMISION }}%</td>
+                  <td class="text-center">{{ item.POR_PARTICIPACION }}%</td>
+                  <td class="text-center">
+                    <a (click)="openModal(item)"><img alt="ver" src="assets/icons/editar.png" title="Editar"
+                        style="cursor: pointer;height: 24px;width: 24px"></a>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-container *ngIf="BrokerCommissionList!=null && BrokerCommissionList.length>0; then showPagination">
+            </ng-container>
+            <ng-template #showPagination>
+              <div class="row mt-4">
+                <div class="col-sm-12">
+                  <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                  </ngb-pagination>
+                </div>
+              </div>
+            </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla de carga -->
+    <div [hidden]="!isLoading" class="loadingScreen">
+      <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>

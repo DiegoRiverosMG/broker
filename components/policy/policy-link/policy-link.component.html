@@ -1,0 +1,397 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-sm-2 col-md-2 col-lg-3">
+    </div>
+    <div class="col-sm-8 col-md-8 col-lg-6">
+        <div class="container-fluid" style="margin: 40px 0;">  
+            <div class="container soat-container">
+                <div *ngIf="loading">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            Por favor, espere unos segundos mientras generamos su código de pago...
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!loading && approve && valid && !successfullPayment && !existentecip && !pagadocip && !expiradocip">
+                <div class="soat-header">
+                    <h2 class="title">
+                        ¡Estás a punto de culminar la compra {{ desTransaction }}!
+                    </h2>
+                </div>
+                <p>
+                    Acércate dentro de las próximas 48 horas con tu código de pago al
+                    establecimiento elegido de tu preferencia para pagar la {{transac}}
+                    de sus pólizas.
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(true, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>     
+            <div *ngIf="!loading && approve && valid && !successfullPayment && existentecip">
+                <div class="soat-header">
+                    <h2 class="title">
+                        ¡El código ya fue generado para la compra {{ desTransaction }}!
+                    </h2>
+                </div>
+                <p>
+                    Acércate dentro de las próximas 48 horas con tu código de pago, código {{cipNumber}} al
+                    establecimiento elegido de tu preferencia para pagar la {{transac}}
+                    de sus pólizas.
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(true, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!loading && approve && valid && !successfullPayment && pagadocip">
+                <div class="soat-header">
+                    <h2 class="title">
+                        ¡El código ya fue pagado!
+                    </h2>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(true, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!loading && approve && valid && !successfullPayment && expiradocip">
+                <div class="soat-header">
+                    <h2 class="title">
+                        ¡El código ya ha expirado!
+                    </h2>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(true, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!loading && !approve && valid && !successfullPayment">
+                <div class="soat-header">
+                    <h2 class="title">
+                        Lamentablemente el código de pago no se realizó satisfactoriamente.
+                    </h2>
+                </div>
+                <p>
+                    Estimado cliente, ha ocurrido un error al intentar comunicarnos con la
+                    entidad que seleccionaste, vuelve a intentar nuevamente por favor
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(false, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Volver a Intentar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!loading && !approve && !valid && !successfullPayment">
+                <div class="soat-header">
+                    <h2 class="title">
+                        No se realizó la generación de Código de Pago.
+                    </h2>
+                </div>
+                <p>
+                    Lamentablemente, los valores ingresados para la {{transac}} no cumplen con las
+                    validaciones necesarias:
+                </p>
+                <!-- <p *ngFor="let message of messages">- {{ message }}</p> -->
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center space">
+                        <button class="soat-button ripple stretch"
+                                (click)="goToMain(false, policyData.transaccion)">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Volver a Intentar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>    
+</div>
+<ng-template #payment>
+    <div *ngIf="this.flagMixSCTR == 1; else oneProdSCTR">
+        <div class="modal-container modal-lg"
+             style="width: 874px !important;height: 924px;background-color: white;border-radius: 0.3rem;max-width: none !important;">
+            <div class="modal-header"
+                style="color: #27246d;border-bottom: none !important;">
+                <h4 style="color: #27246d;border-bottom: none !important;font-size: 21px;margin-left: 10px;"
+                    class="modal-title pull-left"></h4>
+                <button type="button"
+                        class="close pull-right"
+                        aria-label="Close"
+                        style="border: none !important;"
+                        (click)="modalRef.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="display: flex;">                            
+                <div style="flex: 1;">
+                    <div style="margin-bottom: -6px;">
+                        <div class="m-3" style="background-color: #95e1eb; display: flex; align-items: center; border-radius: 0.3rem;">
+                            <i class="fa fa-info-circle shining-green-icon" aria-hidden="true" style="width: 10px;"></i>
+                            <p class="p-info">Se envió un correo al contratante con el enlace para que continúe con la regularización de su pago pendiente.</p>
+                        </div>
+                    </div>    
+                    <div class="row"
+                         style="margin-left: -7px">
+                        <div class="col-sm">
+                            <h5 style="color: #5790d3;">
+                                <img src="assets/images/SCTR_SALUD.png"
+                                    alt="sctrSALUD"
+                                    style="width: 36px;" />
+                                SCTR SALUD
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="m-3" style="border-radius: 0.3rem; display: flex; flex-direction: column; align-items: center; border: 2px solid #27246d;">
+                        <div class="mb-4" style="height: 50px;">
+                            <img src="assets/images/logo_kushki.png" style="width: 100%;" />
+                        </div>
+                        <div style="height: 60px; width: 100%; background-color: #27246d;" class="text-center d-flex justify-content-center align-items-center">
+                            <span class="box">
+                                Información para tu pago
+                            </span>
+                        </div>
+                        <div style="height: 120px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center">
+                            <span class="box1">
+                                ¡Estás a punto de finalizar tu compra <br> en {{ compSalud }}!
+                            </span>
+                        </div>
+                        <div style="height: 100px; width: 100%; background-color: #95e1eb; padding-top: 5px;" >
+                            <div class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Empresa: &nbsp;</span>
+                                <span class="box3">KUSHKI</span>
+                            </div>
+                            <div class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Tipo de Pago: &nbsp;</span>
+                                <span class="box3">{{ desTipoPago }} {{desMoneda}}</span>
+                            </div>
+                            <div *ngIf="policyData.dataCIP.tipoPago == '2'" class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Código de pago: &nbsp;</span>
+                                <span class="box3">{{ this.cod_pago_SAL }} </span>
+                            </div>                            
+                        </div>
+                        <div style="height: 110px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center flex-column">
+                            <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="openLink('2')">
+                                <img src="./assets/icons/abrirlink.png" style="width: 30px; margin-left: 8px;"/>
+                                <span class="box4">Abrir link</span>                                
+                            </button>
+                            <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="copiarLink('2')">
+                                <img class="icon-btn" src="./assets/icons/copiar_link.png" style="width: 15px; margin-left: 8px;"/>
+                                <span class="box4">Copiar link</span>                                
+                            </button>
+                            <button *ngIf="policyData.dataCIP.tipoPago == '2'" class="btn-pdf-full-color" (click)="descargarPDF('2')">
+                                <span class="box4">Descargar PDF</span>                                
+                            </button>
+                        </div>
+                        <div style="height: 60px; width: 100%; background-color: #95e1eb; display: flex; align-items: center;">
+                            <i class="fa fa-info-circle blue-icon" aria-hidden="true" style="width: 10px;"></i>
+                            <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '3'">El link tiene una vigencia de 48 horas y al darle click al botón "Pagar Monto PEN" la vigencia es de 2 horas para el código.</p>
+                            <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '2'">El código de pago indicado en el PDF tiene una vigencia de 48 horas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="divider"
+                     style="margin: 0 14px;background-color: #ccc;width: 1px;">
+                </div>
+                <div style="flex: 1;">
+                    <div style="margin-bottom: -6px;">
+                        <div class="m-3" style="background-color: #95e1eb; display: flex; align-items: center; border-radius: 0.3rem;">
+                            <i class="fa fa-info-circle shining-green-icon" aria-hidden="true" style="width: 10px;"></i>
+                            <p class="p-info">Se envió un correo al contratante con el enlace para que continúe con la regularización de su pago pendiente.</p>
+                        </div>
+                    </div>  
+                    <div class="row"
+                         style="margin-left: -7px">
+                        <div class="col-sm">
+                            <h5 style="color: #5790d3;">
+                                <img src="assets/images/SCTR_PENSION.png"
+                                    alt="sctrPENSION"
+                                    style="width: 36px;" />
+                                SCTR PENSIÓN
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="m-3" style="border-radius: 0.3rem; display: flex; flex-direction: column; align-items: center; border: 2px solid #27246d;">
+                        <div class="mb-4" style="height: 50px;">
+                            <img src="assets/images/logo_kushki.png" style="width: 100%;" />
+                        </div>
+                        <div style="height: 60px; width: 100%; background-color: #27246d;" class="text-center d-flex justify-content-center align-items-center">
+                            <span class="box">
+                                Información para tu pago
+                            </span>
+                        </div>
+                        <div style="height: 120px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center">
+                            <span class="box1">
+                                ¡Estás a punto de finalizar tu compra <br> en {{ compPension }}!
+                            </span>
+                        </div>
+                        <div style="height: 100px; width: 100%; background-color: #95e1eb; padding-top: 5px;" >
+                            <div class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Empresa: &nbsp;</span>
+                                <span class="box3">KUSHKI</span>
+                            </div>
+                            <div class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Tipo de Pago: &nbsp;</span>
+                                <span class="box3">{{ desTipoPago }} {{desMoneda}}</span>
+                            </div>
+                            <div *ngIf="policyData.dataCIP.tipoPago == '2'" class="text-center d-flex justify-content-center align-items-center">
+                                <span class="box2">Código de pago: &nbsp;</span>
+                                <span class="box3">{{ this.cod_pago_PEN }} </span>
+                            </div>                            
+                        </div>
+                        <div style="height: 110px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center flex-column">
+                            <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="openLink('1')">
+                                <img src="./assets/icons/abrirlink.png" style="width: 30px; margin-left: 8px;"/>
+                                <span class="box4">Abrir link</span>                                
+                            </button>
+                            <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="copiarLink('1')">
+                                <img class="icon-btn" src="./assets/icons/copiar_link.png" style="width: 15px; margin-left: 8px;"/>
+                                <span class="box4">Copiar link</span>                                
+                            </button>
+                            <button *ngIf="policyData.dataCIP.tipoPago == '2'" class="btn-pdf-full-color" (click)="descargarPDF('1')">
+                                <span class="box4">Descargar PDF</span>                                
+                            </button>
+                        </div>
+                        <div style="height: 60px; width: 100%; background-color: #95e1eb; display: flex; align-items: center;">
+                            <i class="fa fa-info-circle blue-icon" aria-hidden="true" style="width: 10px;"></i>
+                            <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '3'">El link tiene una vigencia de 48 horas y al darle click al botón "Pagar Monto PEN" la vigencia es de 2 horas para el código.</p>
+                            <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '2'">El código de pago indicado en el PDF tiene una vigencia de 48 horas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row justify-content-center">
+                    <div class="col soat-text-align-center">
+                        <button class="soat-button ripple stretch"
+                                (click)="modalRef.hide()">
+                            <i class="fa fa-circle-o-notch"
+                               *ngIf="loading"></i>
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #oneProdSCTR>
+        <div class="modal-header">
+            <h4 class="modal-title pull-left"></h4>
+            <button type="button"
+                    class="close pull-right"
+                    aria-label="Close"
+                    (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div style="margin-bottom: -6px;">
+            <div class="m-3" style="background-color: #95e1eb; display: flex; align-items: center; border-radius: 0.3rem;">
+                <i class="fa fa-info-circle shining-green-icon" aria-hidden="true" style="width: 10px;"></i>
+                <p class="p-info">Se envió un correo al contratante con el enlace para que continúe con la regularización de su pago pendiente.</p>
+            </div>
+        </div>
+        <div class="m-3" style="border-radius: 0.3rem; display: flex; flex-direction: column; align-items: center; border: 2px solid #27246d;">
+            <div class="mb-4" style="height: 50px;">
+                <img src="assets/images/logo_kushki.png" style="width: 100%;" />
+            </div>
+            <div style="height: 60px; width: 100%; background-color: #27246d;" class="text-center d-flex justify-content-center align-items-center">
+                <span class="box">
+                    Información para tu pago
+                </span>
+            </div>
+            <div style="height: 120px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center">
+                <span class="box1">
+                    ¡Estás a punto de finalizar tu compra <br> en {{ compProducto }}!
+                </span>
+            </div>
+            <div style="height: 100px; width: 100%; background-color: #95e1eb; padding-top: 5px;" >
+                <div class="text-center d-flex justify-content-center align-items-center">
+                    <span class="box2">Empresa: &nbsp;</span>
+                    <span class="box3">KUSHKI</span>
+                </div>
+                <div class="text-center d-flex justify-content-center align-items-center">
+                    <span class="box2">Tipo de Pago: &nbsp;</span>
+                    <span class="box3">{{ desTipoPago }} {{desMoneda}}</span>
+                </div>
+                <div *ngIf="policyData.dataCIP.tipoPago == '2'" class="text-center d-flex justify-content-center align-items-center">
+                    <span class="box2">Código de pago: &nbsp;</span>
+                    <span class="box3">{{ this.cod_pago }} </span>
+                </div>                            
+            </div>
+            <div style="height: 110px; width: 100%; background-color: #ffffff;" class="text-center d-flex justify-content-center align-items-center flex-column">
+                <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="openLink('3')">
+                    <img src="./assets/icons/abrirlink.png" style="width: 30px; margin-left: 8px;"/>
+                    <span class="box4">Abrir link</span>                                
+                </button>
+                <button *ngIf="policyData.dataCIP.tipoPago == '3'" class="btn-full-color" (click)="copiarLink('3')">
+                    <img class="icon-btn" src="./assets/icons/copiar_link.png" style="width: 15px; margin-left: 8px;"/>
+                    <span class="box4">Copiar link</span>                                
+                </button>
+                <button *ngIf="policyData.dataCIP.tipoPago == '2'" class="btn-pdf-full-color" (click)="descargarPDF('3')">
+                    <span class="box4">Descargar PDF</span>                                
+                </button>
+            </div>
+            <div style="height: 60px; width: 100%; background-color: #95e1eb; display: flex; align-items: center;">
+                <i class="fa fa-info-circle blue-icon" aria-hidden="true" style="width: 10px;"></i>
+                <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '3'">El link tiene una vigencia de 48 horas y al darle click al botón "Pagar Monto PEN" la vigencia es de 2 horas para el código.</p>
+                <p class="p-info" *ngIf="policyData.dataCIP.tipoPago == '2'">El código de pago indicado en el PDF tiene una vigencia de 48 horas.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="row justify-content-center">
+                <div class="col soat-text-align-center">
+                    <button class="soat-button ripple stretch"
+                            (click)="modalRef.hide()">
+                        <i class="fa fa-circle-o-notch"
+                           *ngIf="loading"></i>
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ng-template>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!loading_prin" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

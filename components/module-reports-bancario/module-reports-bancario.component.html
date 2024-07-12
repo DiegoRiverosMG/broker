@@ -1,0 +1,275 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   MODULE-REPORTS-BANCARIO.COMPONENT.HTML                               */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   07-03-2023                                                           */
+/*  VERSIÓN             :   1.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/***********************************************************************************************-->
+
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">MÓDULO DE REPORTES</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN DE DATOS</span>
+                <select class="form-control" formControlName="NNUMORI">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-colorN">
+                    <span>BUSCAR</span>
+                    <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="mostrarModalAgregar(contentAgregar)">
+                    <span>AGREGAR</span>
+                    <img class="icon-btn" src="./assets/icons/add.png" />
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-12">
+                    <span class="titleN">Módulos</span>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">TIPO</td>
+                                    <td class="grid-title-item text-center">ESTADO</td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="6">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow" style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.codigo }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.descripcion }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.tipo }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.estado }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a>
+                                            <i title="Editar" style="cursor: pointer" class="fa fa-edit fa-lg" (click)="mostrarModalEditar(contentEditar)"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a>
+                                            <i title="Eliminar" style="cursor: pointer" class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow!=null && listToShow.length>0" class="row" style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AGREGAR MÓDULO -->
+<ng-template #contentAgregar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            NUEVO MÓDULO
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <!-- <div class="row m-2" [formGroup]="registerForm"> -->
+            <div class="line-s">
+                <div class="row m-2">
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CÓDIGO</span>
+                        <input class="form-control" disabled />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">DESCRIPCIÓN (*)</span>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CENTRO COSTO</span>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CUENTA (*)</span>
+                        <input class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="grid1 form-group m-0">
+                <div class="table-responsive tab-c">
+                    <table class="table tab-p w-50 mb-0">
+                        <thead>
+                            <tr class="grid-title tb-titulo">
+                                <td class="grid-title-item border-0">Variable</td>
+                                <td class="grid-title-item border-0 w-50">Descripción</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                    M
+                                </td>
+                                <td class="data-table-tr-td tb-cuerpo">
+                                    <select class="form-control"></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                    RR
+                                </td>
+                                <td class="data-table-tr-td tb-cuerpo">
+                                    <select class="form-control"></select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- <code>{{ this.registerForm.value | json}}</code> -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- EDITAR MÓDULO -->
+<ng-template #contentEditar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            EDITAR MÓDULO
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <!-- <div class="row m-2" [formGroup]="registerForm"> -->
+            <div class="line-s">
+                <div class="row m-2">
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CÓDIGO</span>
+                        <input class="form-control" disabled />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">DESCRIPCIÓN (*)</span>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CENTRO COSTO</span>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-sm-12 d-flex m-1">
+                        <span class="w-50">CUENTA (*)</span>
+                        <input class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="grid1 form-group m-0">
+                <div class="table-responsive tab-c">
+                    <table class="table tab-p w-50 mb-0">
+                        <thead>
+                            <tr class="grid-title tb-titulo">
+                                <td class="grid-title-item border-0">Variable</td>
+                                <td class="grid-title-item border-0 w-50">Descripción</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                    M
+                                </td>
+                                <td class="data-table-tr-td tb-cuerpo">
+                                    <select class="form-control"></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                    RR
+                                </td>
+                                <td class="data-table-tr-td tb-cuerpo">
+                                    <select class="form-control"></select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- <code>{{ this.registerForm.value | json}}</code> -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN">
+            Guardar
+        </button>
+    </div>
+</ng-template>

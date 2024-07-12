@@ -1,0 +1,117 @@
+<div class="padding-modal">
+  <div class="modal-header border-none">
+    <h4 class="modal-title title-re" id="modal-basic-title">
+      Envío de Comentario
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="formModalReference.dismiss()"
+      value="&times;"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-one-section">
+      <div class="container-multi-select">
+        <div *ngIf="POPUPDATA == 3" class="content-multi-select">
+          <label for="multi-select">DESTINATARIOS</label>
+          <input
+            class="input-multi-select"
+            type="text"
+            [value]="selectedOptionsValue()"
+            readonly
+            (click)="toggleSelectVisibility()"
+          />
+          <select
+            class="multi-select"
+            *ngIf="isSelectVisible"
+            id="multi-select"
+            multiple
+            (change)="onSelectChange($event)"
+            [class.warning]="isOption2Selected()"
+          >
+            <option
+              *ngFor="let option of opcionesDestinatarios"
+              [value]="option.code"
+            >
+              {{ option.value }}
+            </option>
+          </select>
+          <span *ngIf="P_NCODE == 1" [class.warningText]="P_NCODE == 1">
+            <ng-container *ngFor="let part of P_SMESSAGE">
+              * {{ part }}<br />
+            </ng-container>
+          </span>
+        </div>
+      </div>
+
+      <form-input-select-re
+        label="Tipo de comentario"
+        [items]="opcionesTipoComentario"
+        [itemsArray]="true"
+        fieldCodigo="codigo"
+        fieldValor="valor"
+        [firstSelect]="true"
+        [(value)]="inputs.NCOMMUNICATION_TYPE"
+      ></form-input-select-re>
+      <form-input-text-re
+        *ngIf="POPUPDATA == 3"
+        label="Asunto"
+        [(value)]="inputs.SEMAIL_SUBJECT"
+      >
+      </form-input-text-re>
+      <form-input-textarea-re
+        label="Mensaje"
+        [rows]="8"
+        [(value)]="inputs.SEMAIL_MESSAGE"
+      >
+      </form-input-textarea-re>
+    </div>
+    <div *ngIf="POPUPDATA == 3" class="collapse-panel-table">
+      <div class="table-responsive">
+        <table class="table mb-none">
+          <thead class="t-head">
+            <tr class="grid-title">
+              <td class="grid-title-item">Documento</td>
+              <td class="grid-title-item">Tamaño</td>
+              <td class="grid-title-item">Adjuntar</td>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let doc of listAdj">
+              <tr class="grid-title row-item">
+                <td class="grid-item">{{ doc.SNAME }}</td>
+                <td class="grid-item">{{ doc.SSIZE }}</td>
+                <td class="grid-item">
+                  <input
+                    [checked]="doc.NTYPEATTACHMENT == 1"
+                    type="checkbox"
+                    (change)="
+                      updAttachmentAdj(doc.NID, $event.target.checked ? 1 : 2)
+                    "
+                  />
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-none">
+    <button class="button-cancelar" (click)="formModalReference.dismiss()">
+      <span>Cancelar</span>
+    </button>
+    <button
+      class="button-Guardar"
+      [disabled]="P_NCODE == 1"
+      (click)="validateForm()"
+    >
+      <span>Enviar</span>
+    </button>
+  </div>
+</div>

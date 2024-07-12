@@ -1,0 +1,415 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-sm-12 col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Registro de Acciones de los Usuarios</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="filter">
+        <div class="form-group row filter-row">
+          <div class="col-lg-3 filter-row-cell">
+            <span>CANAL</span>
+            <select id="ChannelSalesSelect"
+                    (change)="onSelectChannelSales($event.target.value)"
+                    [disabled]="showfilterChannel">
+              <option *ngFor="let channelsales of ListChannelSales"
+                      [selected]="channelsales.nchannel == canalHist"
+                      value="{{ channelsales.nchannel }}">
+                {{ channelsales.sdescript }}</option>
+            </select>
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>USUARIO</span>
+            <select (change)="onSelectUser($event.target.value)">
+              <option value="0"
+                      selected>Todos</option>
+              <option *ngFor="let Item of  ListUsers"
+                      value="{{ Item.id }}">{{
+                Item.firstName
+              }} {{
+                Item.lastName
+              }}</option>
+            </select>
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>PAGINA</span>
+            <select (change)="onSelectPage($event.target.value)">
+              <option value="0"
+                      selected>Todos</option>
+              <option *ngFor="let Item of ListPages"
+                      value="{{ Item.codPagina }}">{{
+                Item.pagina
+              }}</option>
+            </select>
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>POR FECHA</span>
+            <div class="col-lg-12 row ml-1">
+              <div class="col-lg-6 row mr-2 p-0">
+                <input type="text"
+                       class="form-control date-search"
+                       #dp="bsDatepicker"
+                       [bsConfig]="bsConfig"
+                       bsDatepicker
+                       [(bsValue)]="bsValueIni"
+                       value="{{ bsValueIni | date: 'dd/MM/yyyy' }}" />
+              </div>
+              <div class="col-lg-6 row p-0 ml-2">
+                <input type="text"
+                       class="form-control date-search"
+                       [bsConfig]="bsConfig"
+                       #dp="bsDatepicker"
+                       bsDatepicker
+                       [(bsValue)]="bsValueFin"
+                       value="{{ bsValueFin | date: 'dd/MM/yyyy' }}" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12">
+
+            <div class="float-right form-group row">
+              <button class="min-color"
+                      (click)="EventDownload($event)">
+                <img alt=""
+                     src="assets/icons/download2.png" />
+                <span>Descargar Excel</span>
+              </button>
+              <button (click)="onEventSearch()">
+                <span>Buscar</span>
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid form-group row ">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Canal</td>
+                <td class="grid-title-item">Usuario</td>
+                <td class="grid-title-item">Pagina</td>
+                <td class="grid-title-item">Opción</td>
+                <td class="grid-title-item">Descripción</td>
+                <td class="grid-title-item">Fecha</td>
+              </tr>
+            </thead>
+            <div *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="8">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let result of ListEvensLogs">
+              <tr>
+                <td class="data-table-tr-td">{{ result.canal }}</td>
+                <td class="data-table-tr-td">{{ result.usuario }}</td>
+                <td class="data-table-tr-td">{{ result.pagina }}</td>
+                <td class="data-table-tr-td">{{ result.evento }}</td>
+                <td class="data-table-tr-td">{{ result.comentario }}</td>
+                <td class="data-table-tr-td">{{ result.fechaRegistro }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+      <div *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination [totalItems]="totalItems"
+                        [itemsPerPage]="itemsPerPage"
+                        [rotate]="rotate"
+                        [maxSize]="maxSize"
+                        [(ngModel)]="currentPage"
+                        (pageChanged)="pageChanged($event)">
+            </pagination>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!--<div bsModal
+     #childModalConfirmasivo="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header"
+           [ngClass]="{ bHideHeader: bHideBody }">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          {{ msjHeader }}
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="closeconfirm()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message"
+             [ngClass]="{ bHideBody: bHideBody }">
+          <div class="col-lg-12 contenido-modal"
+               id="msjModal">
+            <p class="messageinfo">{{ message }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button style="min-width: 100%;"
+                    class="full-color-modal"
+                    (click)="confirm()">
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%;"
+                    class="button-close"
+                    (click)="closeconfirm()">
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          Mensaje
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="aceptarmsginfo()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-12">
+            <button style="min-width: 100%;"
+                    class="full-color-modal"
+                    (click)="aceptarmsginfo()">
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModalHistorial="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md div-historial">
+    <div class="modal-content modalcontent-hist">
+      <div class="modal-header">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo titleHist">
+          Historial de Lote de Comisiones: {{ nLote }}
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="closeHistorial()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body modal-hist">
+        <div class="grid form-group row message">
+          <div class="col-lg-12 contenido-modal">
+            <div class="table-responsive">
+              <div class="result-content scrollmodal">
+                <table class="table">
+                  <thead>
+                    <tr class="grid-title">
+                      <td class="grid-title-item col-seq">Secuencia</td>
+                      <td class="grid-title-item col-est">Estado</td>
+                      <td class="grid-title-item col-fec">Fecha Registro</td>
+                      <td class="grid-title-item col-com">Comentarios</td>
+                      <td class="grid-title-item col-usu">Usuario</td>
+                    </tr>
+                  </thead>
+
+                  <tbody *ngFor="
+                        let result of ListCommissionLotHist;
+                        let index = index
+                      ">
+                    <tr class="data-hist">
+                      <td class="data-table-tr-td">{{ index + 1 }}</td>
+                      <td class="data-table-tr-td">{{ result.sstate }}</td>
+                      <td class="data-table-tr-td">{{ result.dfecreg }}</td>
+                      <td class="data-table-tr-td">{{ result.comments }}</td>
+                      <td class="data-table-tr-td">{{ result.suser }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row  float-right">
+          <div class="col-lg-12 button-cancel">
+            <button class="min-color"
+                    (click)="closeHistorial()">
+              <span>Cancelar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModalConfirmarEnvio="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          Envío aprobación del Lote de Comisiones
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="closeEnviar()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message-approb">
+          <div class="col-lg-12 contenido-modal">
+            <div class="form-group row ">
+              <label for=""
+                     class="col-lg-3 label-datos-liquidacion dato-estado">POR ESTADO:</label>
+              <div class="col-lg-8">
+                <select (change)="onSelectState($event.target.value)"
+                        [(ngModel)]="nidStateApprob">
+                  <option value="0"
+                          selected>--SELECCIONE--</option>
+                  <option *ngFor="let Item of lstStateApprobCommission"
+                          value="{{ Item.nidstate }}">{{ Item.sdescription }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row ">
+              <label for=""
+                     class="col-lg-3 label-datos-liquidacion dato-obs">OBSERVACION:</label>
+              <div class="col-lg-8">
+                <textarea name=""
+                          id=""
+                          [(ngModel)]="strObservacion"
+                          class="form-control text-obs"
+                          maxlength="250"
+                          rows="6"></textarea>
+              </div>
+            </div>
+            <div class="form-group row "></div>
+          </div>
+        </div>
+        <div class="form-group row button-modal"
+             [ngClass]="{ bopacitysave: bopacitysave }">
+          <div class="col-lg-6">
+            <button [disabled]="bopacitysave"
+                    style="min-width: 100%;"
+                    class="full-color btn-planilla  "
+                    (click)="saveEnviar()">
+              <span>Guardar</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%;"
+                    class="btn-planilla"
+                    (click)="closeEnviar()">
+              <span>Cancelar</span>
+            </button>
+          </div>
+        </div>
+        <div class="form-group row ">
+          <div class="col-lg-12">
+            <div class="alert alert-danger"
+                 role="alert"
+                 *ngIf="this.flagAlerta">
+              <p *ngFor="let mensaje of mensajes_validacion">{{ mensaje }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<iframe id="ifrmPdf"
+        name="ifrmPdf"
+        style="display: none;"></iframe>-->

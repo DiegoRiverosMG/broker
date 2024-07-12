@@ -1,0 +1,91 @@
+
+
+   <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Detalle Movimiento {{contractor.DescriptionIdentity}} - {{contractor.IdHeaderProcess}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="reference.close(interval)">
+        <span aria-hidden="true">&times;</span>
+    </button>
+      </div>
+
+
+
+            <div class="grid form-group">
+    <div class="table-responsive">
+                            <button [hidden]="!btnFacturacion"  class="full-color buttonStyle" (click)="GenerateFacturacion()">
+                                    <span>Previsualizar</span>
+                            </button>
+                            <button [hidden]="btnFacturar"  class="full-color buttonStyle" (click)="GenerateFact()">
+                                <span>Facturar</span>
+                            </button>
+        <table class="table">
+            <thead>
+                <tr class="grid-title">
+                    <td class="grid-title-item ">ID</td>
+                    <td class="grid-title-item">PROCESO</td>
+                    <td class="grid-title-item">AVANCE</td>
+                    <td class="grid-title-item ">ESTADO</td>
+                    <td class="grid-title-item text-center">INICIO</td>
+                    <td class="grid-title-item text-center">FIN</td>
+                    <td class="grid-title-item">OPCIONES</td>
+                    <td class="grid-title-item">DESCARGA</td>
+                    <td class="grid-title-item">REPORTE</td>
+                </tr>
+            </thead>
+            <ng-container *ngIf="processDetailList!=null && processDetailList.length>0; then showGrid else hideGrid">
+            </ng-container>
+        </table>
+        <ng-template #hideGrid>
+            <tbody>
+                <tr>
+                    <td colspan="10">No se encontraron registros.</td>
+                </tr>
+            </tbody>
+        </ng-template>
+        <ng-template #showGrid>
+            <tbody>
+                <tr *ngFor="let item of processDetailList; let row_no = index">
+                                    <td >{{ item.IdDetailProcess }}</td>
+                                    <td >{{ item.FileName }}</td>
+                    <td>{{item.PorcentAvance}}%</td>
+                    <td>{{ item.DescriptionStatus }}</td>
+                    <td class="text-center">{{ item.DIniDetail }}</td>
+                    <td class="text-center">{{ item.DFinDetail }}</td>
+                    <td>
+                      <a  *ngIf = "item.IdStatusDetail == 3" class="BotonStyle" (click)='OpenMovimiento(item,"E")'><img alt="Errores" src="assets/icons/preview_soat_box.png"
+                          title="Detalle Error" style="cursor: pointer;height: 24px"></a>
+                      <a  *ngIf = "(this.lstStatus.indexOf(item.IdStatusDetail) != -1) ? true : false" class="BotonStyle" (click)='OpenMovimiento(item,"W")'><img alt="Warning" src="assets/icons/tooltip_icon_purple.png"
+                          title="Detalle Warning" style="cursor: pointer;height: 24px"></a>
+                    </td>
+                    <td>
+                      <img src="assets/icons/download2.png" title="Exportar" alt="Exportar" style="cursor: pointer;"
+                          (click)="ExportData(item)" style="padding: 0px 10px 0px 10px;" />
+                                      <!-- <img src="assets/icons/agregar.png" title="Importar" alt="Importar" style="cursor: pointer;"
+                                      (click)="stopTimer();fileInput.click()"/> -->
+
+                      <input hidden #fileInput type="file" class="mt-10"
+                                      (change)="UploadFile($event.target.files[0], item)"
+                                      accept=".csv">
+                    </td>
+                    <td>
+                      <img src="assets/icons/check_mas_beneficios.png" title="Correcto" alt="Correcto" style="cursor: pointer;"
+                      (click)="ExportDataCorrect(item)" style="padding: 0px 10px 0px 10px;" />
+                    </td>
+                </tr>
+            </tbody>
+        </ng-template>
+
+                    </div>
+    </div>
+
+
+                <div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+                  </div>
+
+                  <div class="modal-footer">
+
+    <button (click)="reference.close(interval)"><span>Volver</span></button>
+                      </div>
+

@@ -1,0 +1,99 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+     <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">PRIMA MÍNIMA</span>
+          </div>
+        </div>
+      </div> 
+      <div class="collapse-list">
+          <div>
+              <input class="collapse-open" type="checkbox" id="tipo-renovacion"/>
+              <label class="collapse-btn title" for="tipo-renovacion">TIPO DE RENOVACIÓN <i class="fa fa-angle-down pull-right"
+                      style="position: relative; top: 4px;"></i></label>
+              <div class="collapse-panel">
+                  <div class="collapse-inner collapse-border">
+                      <div class="row">
+                          <div class="col-sm-3">
+                              <span>MENUSAL</span>
+                              <input type="text" placeholder="Mensual" [(ngModel)]="monthlyAmount"/>
+                          </div>
+                          <div class="col-sm-3">
+                              <span>ANUAL MENOS DE 5 TRABAJADORES</span>
+                              <input type="text" placeholder="Anual" [(ngModel)]="yearlyAmount"/>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div>
+              <input class="collapse-open" type="checkbox" id="tipo-transaccion"/>
+              <label class="collapse-btn title" for="tipo-transaccion">TIPO DE TRANSACCIÓN <i class="fa fa-angle-down pull-right"
+                      style="position: relative; top: 4px;"></i></label>
+              <div class="collapse-panel">
+                  <div class="collapse-inner collapse-border">
+                      <div class="row">
+                          <div class="col-sm-3">
+                              <span>CREACIÓN DE LA COTIZACIÓN</span>
+                              <input type="text" placeholder="Creación de la cotización" [(ngModel)]="quoteCreationAmount"/>
+                          </div>
+                          <div class="col-sm-3">
+                              <span>EMISIÓN</span>
+                              <input type="text" placeholder="Emisión" [(ngModel)]="emissionAmount"/>
+                          </div>
+                          <div class="col-sm-3">
+                              <span>RENOVACIÓN</span>
+                              <input type="text" placeholder="Renovación" [(ngModel)]="renewalAmount"/>
+                          </div>
+                      </div>
+                 </div>
+                   <div class="row">
+                      <div class="col-sm-9">
+                          <span>COMENTARIO</span>
+                          <textarea placeholder="Comentario" cols="30" rows="10" [(ngModel)]="comment"></textarea>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12">
+                        <button class="pull-right full-color" (click)="save()">
+                          <span>Aceptar</span>
+                        </button>
+                      </div>
+                 </div>
+              </div>
+          </div>
+          <div>
+              <input class="collapse-open" type="checkbox" id="historial"/>
+              <label class="collapse-btn title" for="historial">HISTORIAL DE EVALUACIONES <i class="fa fa-angle-down pull-right"
+                      style="position: relative; top: 4px;"></i></label>
+              <div class="collapse-panel">
+                  <div class="collapse-inner collapse-border">
+                      <div class="row">
+                          <div class="table-responsive">
+                              <table class="table">
+                                  <thead>
+                                      <tr class="grid-title">
+                                          <td class="grid-title-item">Número</td>
+                                          <td class="grid-title-item">Estado</td>
+                                          <td class="grid-title-item">Motivo</td>
+                                          <td class="grid-title-item">Usuario</td>
+                                          <td class="grid-title-item">Perfil</td>
+                                          <td class="grid-title-item">Comentario</td>
+                                      </tr>
+                                  </thead>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+               
+          </div>
+      </div>
+     </div>
+  </div>
+</div>

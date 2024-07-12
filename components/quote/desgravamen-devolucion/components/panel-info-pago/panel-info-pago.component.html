@@ -1,0 +1,138 @@
+<div class="panel-info-pago" *ngIf="!!tipoPago">
+  <panel-modal
+    title="Información del pago"
+    size="lg"
+    [cotizacion]="cotizacion"
+    [(open)]="abrir" (openChange)="abrirChange.emit($event)"
+    [templateBody]="templatePago"
+    [templateFooterAntes]="templateFooterAntes"
+    (clickConfirm)="confirmar.emit()"
+    [tipoPago]="tipoPago"
+    [visaDisabled]="cotizacion.poliza.pagoElegido || 'default'"
+    [disabled]="!cotizacion.file">
+  </panel-modal>
+
+  <ng-template #templatePago>
+    <div class="row" *ngIf="!!cotizacion.prepago">
+      <div class="container-fluid">
+        <div class="col-md-12">
+          <p>{{cotizacion.prepago.msjCotizacion}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md text-center" *ngIf="tipoPago.flagvisa">
+        <div class="btn-pago-efectivo">
+          <label>
+            <img src="assets/soat/img/visa.png"
+              alt="Visa"
+              height="48"
+              appVisaButton
+              *ngIf="!!tipoPago && !!tipoPago.ObjVisa"
+              [config]="tipoPago.ObjVisa"
+              [amount]="tipoPago.ObjVisa.amount"
+              (myClick)="visaClick()" />
+          </label>
+        </div>
+      </div>
+      <div class="col-md text-center" *ngIf="tipoPago.flagpagoefectivo">
+        <div class="btn-pago-efectivo">
+          <label>
+            <div style="position: relative;z-index: 1;">
+              <a class="margin-left-10" title="Pago Efectivo">
+                <img src="assets/soat/img/pago-efectivo.png" alt="Pago Efectivo"
+                  style="cursor: pointer; width: 161px;" (click)="pagoEfectivo()" />
+              </a>
+            </div>
+            <div style="position: relative;top: -35px;right: -100px;width: 100%;cursor: pointer;">
+              <img src="assets/soat/img/info.png"
+                   alt="PagoEfectivo"
+                   height="12"
+                   title="Información"
+                   (click)="infoPagoEfectivo()"
+                   class="cursor: pointer;" />
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="col-md text-center" *ngIf="tipoPago.flagvoucher">
+        <div class="btn-pago-efectivo">
+          <label>
+            <a class="margin-left-10" title="Voucher">
+              <img src="assets/soat/img/p-voucher.png" alt="Voucher"
+                style="cursor: pointer; width: 76px;" (click)="pagoVoucher()" />
+            </a>
+          </label>
+        </div>
+      </div>
+      <div class="col-md text-center" *ngIf="tipoPago.flagdirecto">
+        <div class="btn-pago-efectivo">
+          <label>
+            <div>
+              <a class="margin-left-10" title="Emisión">
+                <img src="assets/soat/img/p-directo.png" alt="Emisión Directa"
+                  style="cursor: pointer; width: 70px;" (click)="pagoDirecto()" />
+              </a>
+            </div>
+            <div style="position: absolute;top: 10px; right: 75px; width: 15px;cursor: pointer;">
+              <img src="assets/soat/img/info.png"
+                  alt="Info Emisión Directa"
+                  height="12"
+                  (click)="infoDirecto()"
+                  title="Información"
+                  class="cursor: pointer;" />
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center" *ngIf="cotizacion.poliza.pagoElegido == CONSTANTS.PAGO_ELEGIDO.VOUCHER">
+      <div class="container-fluid">
+        <div class="col-sm-12">
+          <form-input-file
+            label="Voucher"
+            [(value)]="cotizacion.file"
+            [required]="true"
+          ></form-input-file>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #templateFooterAntes>
+    <form-button
+        *ngIf="tipoPago.flagOmitir"
+        (click)="omitirClick();"
+        btnClass="btn-secondary"
+        label="Omitir "
+      ></form-button>
+  </ng-template>
+  <ng-template #modalEfectivo>
+    <div class="modal-body">
+        <img src="assets/soat/img/pago-efectivo-info.png"
+             height="250"
+             alt="PagoEfectivo" />
+    </div>
+    <div class="modal-footer footer-pe">
+        <div class="row align-self-center mx-auto">
+            <button class="soat-button ripple btn-pe"
+                    (click)="modalRef.hide()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+  </ng-template>
+  <ng-template #modalDirecto>
+    <div class="modal-body">
+        <p>Permitirá realizar la transacción (emisión, renovación, declaración e inclusión) de la póliza de forma Directa,
+           es decir sin un pago previo.</p>
+    </div>
+    <div class="modal-footer footer-pe">
+        <div class="row align-self-center mx-auto">
+            <button class="soat-button ripple btn-pe"
+                    (click)="modalRef.hide()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+  </ng-template>
+</div>

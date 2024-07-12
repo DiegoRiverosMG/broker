@@ -1,0 +1,640 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content mb-3">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">{{inputsCovid.TITLE}}</span>
+            <span class="title">
+              <h6>Fecha Cotización: {{inputsCovid.FECHA_REGISTRO | date: 'dd/MM/yyyy'}}</h6>
+            </span>
+          </div>
+        </div>
+        <p class="eps-title">{{lblProducto}}</p>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="contratante" />
+          <label class="collapse-btn title" for="contratante"> DATOS DEL CONTRATANTE <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>TIPO DOCUMENTO (*)</span>
+                  <select disabled [(ngModel)]="inputsCovid.TIPO_DOCUMENTO" class="minimal">
+                    <option value="{{inputsCovid.TIPO_DOCUMENTO}}">
+                      {{inputsCovid.TIPO_DES_DOCUMENTO}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3">
+                  <span>NRO DE DOCUMENTO (*)</span>
+                  <input type="text" placeholder="Nro Documento" [(ngModel)]="inputsCovid.NUM_DOCUMENTO" disabled
+                    value="{{inputsCovid.NUM_DOCUMENTO}}" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9">
+                  <span>NOMBRES Y APELLIDOS / RAZÓN SOCIAL</span>
+                  <input type="text" placeholder="Nombres" disabled [(ngModel)]="inputsCovid.NOMBRE_RAZON" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>DIRECCIÓN</span>
+                  <input type="text" placeholder="Dirección" disabled [(ngModel)]="inputsCovid.DIRECCION" />
+                </div>
+                <div class="col-sm-3">
+                  <span>CORREO ELECTRÓNICO</span>
+                  <input type="text" placeholder="Correo Electrónico" [disabled]="!flagEmail"
+                    [(ngModel)]="inputsCovid.CORREO" />
+                </div>
+                <div class="col-sm-3">
+                  <span>TIPO DE CUENTA</span>
+                  <select [(ngModel)]="inputsCovid.P_SISCLIENT_GBD" [disabled]="true" class="minimal">
+                    <option value="">SELECCIONE</option>
+                    <option value="2">PRIVADO</option>
+                    <option value="1">GOBIERNO</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Agregar Contacto -->
+      <div class="collapse-list" *ngIf="contractingdata != null && flagContact">
+        <div>
+          <input class="collapse-open " type="checkbox" id="contactos" />
+          <label class="collapse-btn title" for="contactos">Datos de contacto del cliente <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-12 mt-15">
+                  <button *ngIf="contactList.length == 0" class="pull-right" (click)="openModal('add-contact')"
+                    style="margin: 0">
+                    <span>Agregar Contacto</span>
+                  </button>
+                  <table class="table table-borderless riesgo tblbroker" style="margin-top: 60px;">
+                    <thead>
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">N°</td>
+                        <td class="col-sm text-center">Parentesco</td>
+                        <td class="col-sm text-center">Nombres y Apellidos</td>
+                        <td class="col-sm text-center">Teléfono</td>
+                        <td class="col-sm text-center">Correo Electrónico</td>
+                        <td class="col-sm text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let contacto of contactList; let row = index">
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">{{row +  1}}</td>
+                        <td class="col-sm text-center">{{contacto.P_DESTICONTACTO}}</td>
+                        <td class="col-sm text-center">{{contacto.P_SNOMBRES}} {{contacto.P_SAPEPAT}}
+                          {{contacto.P_SAPEMAT}}
+                        </td>
+                        <td class="col-sm text-center">{{contacto.P_SPHONE}}</td>
+                        <td class="col-sm text-center">{{contacto.P_SE_MAIL}}</td>
+                        <td class="col-sm text-center">
+                          <img *ngIf="contacto.P_CLASS == ''" src="assets/icons/editar.png"
+                            (click)="editContact(contacto.P_NROW)" title="Editar" alt="Editar" /> &nbsp;
+                          <img *ngIf="contacto.P_CLASS == ''" src="assets/icons/anular.png" (click)="deleteContact(row)"
+                            title="Eliminar" alt="Eliminar" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="contactList.length == 0">
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">No tiene Contactos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Fin Agregar Contacto -->
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="comercializador" />
+          <label class="collapse-btn title" for="comercializador"> DATOS DE BROKERS <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row" style="margin-top: 20px">
+                <div class="col-sm-12"
+                  *ngIf="inputsCovid.quotationComer != null && inputsCovid.quotationComer.length > 0">
+                  <table class="table table-borderless riesgo tblbroker">
+                    <thead>
+                      <tr class="d-flex">
+                        <th class="col-sm text-center"><label>Tipo Documento</label></th>
+                        <th class="col-sm text-center"><label>Nro Documento</label></th>
+                        <th class="col-sm text-center"><label>Nombres y Apellidos / Razón Social
+                          </label></th>
+                        <th class="col-sm text-center"><label>Comisión</label></th>
+                        <th class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation"><label>Comisión Propuesta</label></th>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let item of inputsCovid.quotationComer">
+                      <tr class="d-flex">
+                        <td class="col-sm text-center"><span>{{ item.DES_DOC_COMER }}</span>
+                        </td>
+                        <td class="col-sm text-center"><span>{{ item.DOC_COMER }}</span></td>
+                        <td class="col-sm text-center"><span>{{ item.COMERCIALIZADOR }}</span></td>
+                        <td class="col-sm text-center"><span>{{ item.COMISION_SALUD }} %</span></td>
+                        <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation"><input
+                            *ngIf="item.COMISION_SALUD != 0" type="text" class="text-center"
+                            style="width: 50% !important;"
+                            [ngClass]="{'error-validate': item.valItemSal}" maxlength="5"
+                            [disabled]="inputsCovid.commissionPro" [(ngModel)]="item.COMISION_SALUD_PRO"
+                            FloatDirective />
+                          <input *ngIf="item.COMISION_SALUD == 0" type="text" class="text-center"
+                            style="width: 50% !important;" placeholder="0" disabled />
+                          <span class="porcentaje">%</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="cotizacion" />
+          <label class="collapse-btn title" for="cotizacion">{{variable.var_seccionDatos}} <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>TIPO RENOVACIÓN</span>
+                  <select [(ngModel)]="inputsCovid.TIP_RENOV" class="minimal" disabled>
+                    <option value="{{inputsCovid.TIP_RENOV}}">
+                      {{inputsCovid.DES_TIP_RENOV}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_iniVigencia">
+                  <span>INICIO VIGENCIA</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker (ngModelChange)="valRenovationType($event)"
+                    [(bsValue)]="inputsCovid.inicioVigencia" [(ngModel)]="inputsCovid.inicioVigencia" name="bsValueIni"
+                    [(minDate)]="inputsCovid.inicioVigenciaIni" [(maxDate)]="inputsCovid.inicioVigenciaFin" readonly
+                    [disabled]="inputsCovid.dateIni" #desde>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_finVigencia">
+                  <span>FIN VIGENCIA</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(bsValue)]="inputsCovid.finVigencia" [(ngModel)]="inputsCovid.finVigencia" name="bsValueFin"
+                    disabled readonly #hasta>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>MONEDA</span>
+                  <select [(ngModel)]="inputsCovid.COD_MONEDA" disabled class="minimal">
+                    <option value="{{inputsCovid.COD_MONEDA}}">
+                      {{inputsCovid.DES_MONEDA}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_frecPago">
+                  <span>FRECUENCIA PAGO</span>
+                  <select [(ngModel)]="inputsCovid.FREQ_PAGO" class="minimal" disabled>
+                    <option value="{{inputsCovid.FREQ_PAGO}}">
+                      {{inputsCovid.DES_FREQ_PAGO}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-6" *ngIf="template.ins_actRealizar">
+                  <span>ACTIVIDAD A REALIZAR</span>
+                  <select [(ngModel)]="inputsCovid.ACT_TECNICA" disabled class="minimal"
+                    title="{{inputsCovid.DES_ACT_TECNICA}}">
+                    <option value="{{inputsCovid.ACT_TECNICA}}">
+                      {{inputsCovid.DES_ACT_TECNICA}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="planilla" />
+          <label class="collapse-btn title" for="planilla">Datos de Trama <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>PLAN (*)</span>
+                  <select [(ngModel)]="inputsCovid.NIDPLAN" disabled class="minimal">
+                    <option value="{{inputsCovid.NIDPLAN}}">
+                      {{inputsCovid.SDES_PLAN}}
+                    </option>
+                  </select>
+                  <!-- <select [(ngModel)]="inputsCovid.codPlan" class="minimal" [disabled]="true">
+                    <option value="">SELECCIONE</option>
+                    <option *ngFor="let comision of comisionList" value="{{comision.idComision}}">
+                      {{comision.nroComision}}%</option>
+                  </select> -->
+                </div>
+                <div class="col-sm-6">
+                  <span>TRAMA (*)</span>
+                  <input type="file" class="mt-10" (change)="seleccionExcel($event.target.files[0])"
+                    [(ngModel)]="inputsCovid.excelSubir" disabled
+                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    style="position: relative; top: 8px; margin: 5px 0px; width: 100%;">
+                </div>
+                <div class="col-sm-3">
+                  <span>&nbsp;</span>
+                  <button type="button" style="display: inline-block;"
+                    (click)="validarExcel()" disabled><span>Validar</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="calculadora" />
+          <label class="collapse-btn title" for="calculadora"> COTIZADOR <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+
+              <div class="row" style="margin-top: 15px;">
+
+                <div class="col-sm-9">
+                  <table class="table table-borderless riesgo">
+                    <thead>
+                      <tr class="d-flex" style="border-bottom: 1px solid #ddd;">
+                        <th class="col-sm"><label style="font-weight: 100;">{{variable.var_tblTasasTitutoCol1}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol2}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol3Cot}}</label>
+                        </th>
+                        <th class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol3Cot}} PRO.</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol4}}</label>
+                        </th>
+                        <th class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol4}} PRO.</label>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="d-flex" *ngIf="infoPrimaList.length == 0">
+                        <td class="col-sm text-center">No hay tasas</td>
+                      </tr>
+                      <tr class="d-flex" *ngFor="let item of infoPrimaList; let row = index">
+                        <td class="col-sm">
+                          <span>{{item.DES_RIESGO}}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.NUM_TRABAJADORES}}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.TASA_CALC  | prettyNumber:2}}</span>
+                        </td>
+                        <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                          <input style="width: 70% !important; height: 120% !important;" type="text" class="text-center"
+                            placeholder="0" FloatDirective maxlength="12" [(ngModel)]="item.TASA_PRO"
+                            [disabled]="inputsCovid.premiumPro"
+                            (ngModelChange)="proposedRate(item.TIP_RIESGO, item.TASA_PRO)">
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.MONTO_PLANILLA | prettyNumber:2}} </span>
+                        </td>
+                        <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                          <span>{{item.MONTO_PLANILLA_PRO | prettyNumber:2}} </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-md-12 pl-0 pr-0" *ngIf="infoPrimaList.length > 0">
+                  <div class="col-sm-6">
+                    <div class="card mt-3">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm">
+                            <h5>{{variable.var_nomSubProducto}}</h5>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <table class="table table-borderless riesgo tblTasas">
+                            <thead>
+                              <tr class="d-flex">
+                                <th class="col-sm text-center"><label>Categoría</label></th>
+                                <th class="col-sm text-center"><label>Prima {{inputsCovid.DES_TIP_RENOV}}</label></th>
+                                <th class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation"><label>Prima {{inputsCovid.DES_TIP_RENOV}}
+                                    Propuesto</label></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngIf="infoPlanList.length == 0">
+                                <td class="text-center" colspan="3">No hay tasas asociadas
+                                </td>
+                              </tr>
+                              <tr class="d-flex" *ngFor="let item of infoPlanList; let i = index">
+                                <td class="col-sm text-center">
+                                  <span>{{item.DES_RIESGO}}</span>
+                                </td>
+                                <td class="col-sm text-center">
+                                  <span>{{item.PRIMA | prettyNumber:2}}</span></td>
+                                <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                                  <span>{{item.PRIMA_PRO | prettyNumber:2}}</span></td>
+                              </tr>
+                              <hr style="margin-bottom: 0; width: 100%;" *ngIf="infoPlanList?.length > 0">
+                              <!-- <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                                <td class="col-sm text-right">
+                                  <span>{{variable.var_primaNeta}}</span></td>
+                                <td class="col-sm text-center">
+                                  <span>{{inputsCovid.totalNeto | prettyNumber:2}}</span></td>
+                                <td class="col-sm text-center">
+                                  <span>{{inputsCovid.totalNetoProp | prettyNumber:2}}</span></td>
+                              </tr> -->
+                              <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                                <td class="col-sm text-right">
+                                  <span>{{variable.var_primaComercial}}</span></td>
+                                <td class="col-sm text-center">
+                                  <span>{{inputsCovid.totalComercial | prettyNumber:2}}</span>
+                                </td>
+                                <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                                  <span>{{inputsCovid.totalComercialProp | prettyNumber:2}}</span>
+                                </td>
+                              </tr>
+                              <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                                <td class="col-sm text-right">
+                                  <span>{{variable.var_igv}}</span></td>
+                                <td class="col-sm text-center">
+                                  <span>{{inputsCovid.igvCalculado | prettyNumber:2}}</span></td>
+                                <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                                  <span>{{inputsCovid.igvCalculadoProp | prettyNumber:2}}</span></td>
+                              </tr>
+                              <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                                <td class="col-sm text-right">
+                                  <span>{{variable.var_primaComercialTotal}}</span>
+                                </td>
+                                <td class="col-sm text-center">
+                                  <span>{{inputsCovid.totalBruto | prettyNumber:2}}</span></td>
+                                <td class="col-sm text-center" *ngIf="(mode == 'Evaluar' || mode == 'Autorizar' || mode == 'Visualizar') && !evaluation">
+                                  <span>{{inputsCovid.totalBrutoProp | prettyNumber:2}}</span></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-12">
+                  <div class="row" style="margin-top: 25px;">
+                    <div class="col-sm-6">
+                      <h5 style="font-size: 14px;">ARCHIVO ADJUNTOS </h5>
+                      <table class="table table-borderless riesgo tblbroker">
+                        <thead>
+                          <tr class="d-flex">
+                            <th class="col-sm text-center"><label>Nombre del archivo</label>
+                            </th>
+                            <th class="col-sm text-center"><label>Descargar</label></th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="inputsCovid.RUTAS != null && inputsCovid.RUTAS.length > 0">
+                          <tr *ngFor="let item of inputsCovid.RUTAS" class="d-flex">
+                            <td class="col-sm text-center">
+                              <span>{{ item | fileName }}</span></td>
+                            <td class="col-sm text-center"><a (click)="downloadFile(item)"><img
+                                  src="assets/icons/imprimir.png" title="Descargar" style="cursor:pointer;"
+                                  alt="Descargar" /></a></td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="inputsCovid.RUTAS == null || inputsCovid.RUTAS.length == 0">
+                          <tr class="d-flex">
+                            <td colspan="2" class="col-sm text-center"><span>No se encontraron
+                                archivos</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-sm-6">
+                      <span style="margin-top: 0;">COMENTARIO</span>
+                      <textarea class="form-control" cols="40" rows="5" style="width:100%" placeholder="Comentario"
+                        disabled>{{inputsCovid.COMENTARIO}}</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="collapse-list" *ngIf="mode=='Evaluar' || mode==='Autorizar' || mode=='Emitir'">
+            <div>
+              <input class="collapse-open " type="checkbox" id="evaluation" />
+              <label class="collapse-btn title" for="evaluation"> {{inputsCovid.evaluationLabel}} <i
+                  class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+              <div class="collapse-panel">
+                <div class="collapse-inner collapse-border">
+                  <div *ngIf="mode!='Recotizar'" class="row">
+                    <div class="col-sm-3">
+                      <span>ESTADO (*)</span>
+                      <select (change)="getReasonList($event)" [(ngModel)]="inputsCovid.reasonId" class="minimal">
+                        <option disabled value="undefined">Seleccione</option>
+                        <option *ngFor="let item of statusList" value="{{item.Id}}">{{item.Name}}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="reasonList!=null && reasonList.length>0" class="col-sm-3">
+                      <span>MOTIVO </span>
+                      <select class="minimal" [(ngModel)]="inputsCovid.motiveId">
+                        <option value="undefined">Seleccione</option>
+                        <option *ngFor="let item of reasonList" value="{{item.Id}}">{{item.Name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <span>COMENTARIO</span>
+                      <textarea class="form-control" rows="4" placeholder="Comentario"
+                        [(ngModel)]="inputsCovid.commentEvaluation"></textarea>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <button type="button" (click)="fileInput.click()" style="margin: 15px 0;">
+                        <span>Seleccionar Archivo</span></button>
+                      <input hidden #fileInput ngfSelect multiple type="file" [(files)]="files"
+                        [maxSize]="filesMaxSize" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div *ngIf="files.length > 0">
+                        <div style="margin-bottom: 0px">
+                          <h6>Archivos Seleccionados ({{files.length}})</h6>
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Nombre</th>
+                                <th class="text-center">Tamaño</th>
+                                <th class="text-center">Acción</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of files;let i=index">
+                                <td> <strong>{{ item.name }}</strong> </td>
+                                <td class="text-center">
+                                  {{ item.size/1024/1024 | number:'.2' }} MB </td>
+                                <td class="text-center"><img src="assets/icons/anular.png" (click)="files.splice(i,1)"
+                                    title="Eliminar" alt="Eliminar" />
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="collapse-list">
+          <div>
+            <input class="collapse-open " type="checkbox" id="history" />
+            <label class="collapse-btn title" for="history"> Historial de Evaluaciones <i
+                class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+            <div class="collapse-panel">
+              <div class="collapse-inner collapse-border">
+                <div class="grid form-group">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr class="grid-title">
+                          <th *ngIf="codProducto == 3" style="text-align: center" class="grid-title-item">Número</th>
+                          <th style="text-align: center" class="grid-title-item">Estado</th>
+                          <th style="text-align: center" class="grid-title-item">Motivo</th>
+                          <th style="text-align: center" class="grid-title-item">Usuario</th>
+                          <th style="text-align: center" class="grid-title-item">Perfil</th>
+                          <th style="text-align: center" class="grid-title-item">Fecha</th>
+                          <th style="text-align: center" class="grid-title-item">Comentario</th>
+                          <th style="text-align: center" class="grid-title-item">Archivos</th>
+                          <!-- <th *ngIf="codProducto == 3" style="text-align: center" class="grid-title-item">Trama</th> -->
+                        </tr>
+                      </thead>
+                      <tbody *ngIf="statusChangeList==null || statusChangeList.length==0">
+                        <tr>
+                          <td colspan="7">No se encontraron registros.</td>
+                        </tr>
+                      </tbody>
+                      <tbody *ngIf="statusChangeList!=null && statusChangeList.length>0">
+
+                        <tr *ngFor="let item of listToShow; let i=index">
+                          <td *ngIf="codProducto == 3">{{item.linea}}</td>
+                          <td>{{item.Status}}</td>
+                          <td>{{item.Reason}}</td>
+                          <td>{{item.User}}</td>
+                          <td>{{item.Profile}}</td>
+                          <td>{{item.EventDate | date:'dd/MM/yyyy, h:mm a'}}</td>
+                          <td>{{item.Comment}}</td>
+
+                          <ng-container
+                            *ngIf="item.FilePathList!=null && item.FilePathList.length>0; then showButton else hideButton">
+                          </ng-container>
+                          <ng-template #showButton>
+                            <td>
+                              <a (click)="openFilePicker(item.FilePathList)"><img alt="Ver movimientos"
+                                  src="assets/icons/preview_soat_box.png" title="Ver movimientos"
+                                  style="cursor: pointer;height: 24px"></a>
+                            </td>
+                          </ng-template>
+                          <ng-template #hideButton>
+                            <td>Sin Archivos</td>
+                          </ng-template>
+
+                          <!-- <td *ngIf = "item.codProceso != '' && codProducto == 3">
+                              <a (click)="getTramaFile(item)"><img alt="descargar"
+                                src="assets/icons/download2.png" title="descargar"
+                                style="cursor: pointer;height: 24px"></a>
+                            </td> -->
+                          <td *ngIf="item.codProceso == '' && codProducto == 3">
+                            Sin Trama
+                          </td>
+
+
+
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div *ngIf="statusChangeList!=null && statusChangeList.length>0" class="row" style="display:flex">
+                  <div class="col-sm-12">
+                    <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                      [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                      <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                      <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                    </ngb-pagination>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2" style="width: 100%;">
+          <!-- <button
+              *ngIf="((mode === 'Emitir' || mode === 'EmitirR') || mode === 'Evaluar' || mode == 'Autorizar' || mode == 'Recotizar' || mode =='Renovar')"
+              class="pull-right full-color" (click)="manageOperation()">
+              <span>{{inputsCovid.buttonName}}</span>
+            </button> -->
+
+          <!-- <button *ngIf="mode === 'EmitirR'"
+              class="pull-right full-color" (click)="recotizar()">
+              <span>Recotizar</span>
+            </button> -->
+
+
+          <!-- <ng-container> -->
+          <button *ngIf="operationBtn" class="pull-right full-color"
+            (click)="manageOperation()">
+            <span>{{inputsCovid.buttonName}}</span>
+          </button>
+          <button *ngIf="from == ''" class="pull-right" [routerLink]="['/extranet/request-covid']">
+            <span>Cancelar</span>
+          </button>
+
+          <!-- <button *ngIf="from == 'BANDEJA'" class="pull-right" [routerLink]="['/extranet/bandeja']">
+            <span>Cancelar</span>
+          </button> -->
+          <!-- <button class="pull-right" [routerLink]="['/extranet/request-status']">
+              <span>Cancelar</span>
+            </button> -->
+          <!-- </ng-container> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pantalla de carga -->
+  <div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>

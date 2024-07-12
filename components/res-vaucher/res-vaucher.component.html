@@ -1,0 +1,66 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="contenido">
+        <div *ngIf="!bLoading && bAprobado"
+             class="mensaje-aprobado">
+          <div *ngIf="Modalidad.tipoCertificado === 1">
+            <h4>
+              Completaste el registro de la compra del SOAT Manual Protecta
+              Security
+            </h4>
+            <p>
+              El registro del SOAT Manual se ha efectuado con éxito. Recuerda
+              generar tus planillas y efectuar tus pagos en la opción “Mis
+              Planillas”
+            </p>
+          </div>
+          <div *ngIf="Modalidad.tipoCertificado === 2">
+            <h4>Completaste la compra del SOAT Láser Protecta Security</h4>
+            <p>
+              La compra y el registro del SOAT se ha efectuado con éxito. Ya
+              puedes proceder a imprimir el certificado. Recuerda generar tus
+              planillas y efectuar tus pagos en la opción “Mis Planillas”.
+              <br />
+            </p>
+            <a *ngIf="Modalidad.tipoCertificado === 2"
+               class="btn-white-blue"
+               (click)="onImprimir()">Imprimir Certificado</a>
+          </div>
+          <div *ngIf="Modalidad.tipoCertificado === 3">
+            <h4>
+              Completaste la compra de tu SOAT Electrónico Protecta Security
+            </h4>
+            <p>
+              La compra del SOAT se ha efectuado con éxito. Hemos enviado tu
+              certificado a la siguiente dirección:
+              {{ cliente.p_SMAIL }}. Recuerda generar tus planillas y efectuar
+              tus pagos en la opción “Mis Planillas”.
+              <br />
+            </p>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <button type="button"
+                      class="btn-compra"
+                      (click)="descargarConstanciaSOAT()">
+                Descargar constancia SOAT
+              </button>
+            </div>
+            <div class="col-6">
+              <button type="button"
+                      class="btn-compra"
+                      (click)="IrPlaca()">
+                Realizar otra Compra
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

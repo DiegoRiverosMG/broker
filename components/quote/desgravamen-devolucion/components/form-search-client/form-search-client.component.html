@@ -1,0 +1,91 @@
+<div class="form-search-client">
+  <div class="row">
+    <div class="col-sm-3">            
+      <form-input-select
+        label="Búsqueda por {{label}}"
+        [items]="[
+          {codigo: 'POR_DOC', valor: 'NRO. DE DOCUMENTO'},
+          {codigo: 'POR_NOM', valor: 'NOMBRES'}
+        ]"
+        [(value)]="client.tipoBusqueda"
+        [firstSelect]="true"
+        [disabled]="disabled"
+        [(clear)]="clear" 
+        (onSelect)="clearInfo()"
+      ></form-input-select>
+    </div>
+    <ng-template [ngIf]="client.tipoBusqueda?.codigo == 'POR_DOC'">
+      <div class="col-sm-3">
+        <form-input-select
+          label="Tipo doc. {{label}}"
+          [service]="clientInformationService"
+          method="getDocumentTypeList"
+          [params]="codProducto"
+          fieldCodigo="Id"
+          fieldValor="Name"
+          [(value)]="client.tipoDocumento"
+          [firstSelect]="true"
+          [disabled]="disabled"
+          (onSelect)="clearInfo()"
+        ></form-input-select>
+      </div>
+      <div class="col-sm-3">
+        <form-input-text
+          label="Nro. doc. {{label}}"
+          [(value)]="client.numDocumento"
+          [disabled]="disabled"
+          [patternPrevent]="CONSTANTS.REGEX[client.tipoDocumento?.Id]"
+          [(clear)]="clear"
+        ></form-input-text>
+      </div>
+    </ng-template>
+    <ng-template [ngIf]="client.tipoBusqueda?.codigo == 'POR_NOM'">
+      <div class="col-sm-3">            
+        <form-input-select
+          label="Tipo persona"
+          [items]="[
+            {codigo: 'PJ', valor: 'PERSONA JURIDICA'}
+          ]"
+          [(value)]="client.tipoPersona"
+          [disabled]="disabled"
+          [(clear)]="clear" (clearChange)="clearChange.emit($event)"
+        ></form-input-select>
+      </div>
+      <div class="col-sm-3" *ngIf="client.tipoPersona?.codigo == 'PJ'">
+        <form-input-text
+          label="Razón social"
+          [(value)]="client.razonSocial"
+          [disabled]="disabled"
+          [(clear)]="clear" (clearChange)="clearChange.emit($event)"
+        ></form-input-text>
+      </div>
+    </ng-template>
+   </div>           
+   
+  <div *ngIf="client.tipoBusqueda?.codigo == 'POR_NOM' && client.tipoPersona?.codigo == 'PN'" class="row">
+    <div class="col-sm-3">
+      <form-input-text
+        label="Nombres"
+        [(value)]="client.nombres"
+        [disabled]="disabled"
+        [(clear)]="clear" (clearChange)="clearChange.emit($event)"
+      ></form-input-text>
+    </div>
+    <div class="col-sm-3">
+      <form-input-text
+        label="Apellido paterno"
+        [(value)]="client.apellidoPaterno"
+        [disabled]="disabled"
+        [(clear)]="clear" (clearChange)="clearChange.emit($event)"
+      ></form-input-text>
+    </div>
+    <div class="col-sm-3">
+      <form-input-text
+        label="Apellido materno"
+        [(value)]="client.apellidoMaterno"
+        [disabled]="disabled"
+        [(clear)]="clear" (clearChange)="clearChange.emit($event)"
+      ></form-input-text>
+    </div>            
+  </div>  
+</div>

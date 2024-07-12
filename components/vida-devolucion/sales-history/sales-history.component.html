@@ -1,0 +1,294 @@
+<div class="content">
+  <app-nav-menuprod></app-nav-menuprod>
+  <section class="content-sales">
+    <div class="header-u">
+      <h1 class="title">Historial de ventas</h1>
+      <button class="button secondary fit"
+              [disabled]="!listSalesHistory$.length"
+              (click)="downloadReport()">
+        <i class="fa fa-download"
+           aria-hidden="true"></i>
+        Descargar Excel
+      </button>
+    </div>
+    <!-- FILTROS -->
+    <form class="form ff"
+          [formGroup]="form">
+      <label class="placeholder-u"
+             aria-placeholder="CANAL:">
+        <select class="input-u"
+                formControlName="idCanal">
+          <option [value]="0">TODOS</option>
+          <option *ngFor="let data of listChannelSales$"
+                  [value]="data.id">
+            {{ data.description }}
+          </option>
+        </select>
+      </label>
+      <label class="placeholder-u"
+             aria-placeholder="RAMO:">
+        <select class="input-u"
+                formControlName="idRamo">
+          <option *ngFor="let data of listBranches$"
+                  [value]="data.id">
+            {{ data.description }}
+          </option>
+        </select>
+      </label>
+      <label class="placeholder-u"
+             aria-placeholder="PRODUCTO:">
+        <select class="input-u"
+                formControlName="idProducto">
+          <option *ngFor="let data of listProducts$"
+                  [value]="data.id">
+            {{ data.description }}
+          </option>
+        </select>
+      </label>
+      <label for="type-document"
+             class="placeholder-u"
+             aria-placeholder="TIPO DE DOCUMENTO:">
+        <select id="type-document"
+                class="input-u"
+                formControlName="idTipoDocumento">
+          <option [value]="0">TODOS</option>
+          <option value="2">DNI</option>
+          <option value="4">C.E.</option>
+        </select>
+      </label>
+      <label for="document-number"
+             class="placeholder-u"
+             aria-placeholder="NÚMERO DE DOCUMENTO:">
+        <input type="text"
+               id="document-number"
+               class="input-u"
+               autocomplete="off"
+               [minlength]="LimitdocumentNumber.min"
+               [maxlength]="LimitdocumentNumber.max"
+               formControlName="numeroDocumento" />
+      </label>
+      <label for="id-process"
+             class="placeholder-u"
+             aria-placeholder="COTIZACIÓN:">
+        <input type="text"
+               id="id-process"
+               class="input-u"
+               formControlName="idProcess" />
+      </label>
+      <label for="date-i"
+             class="placeholder-u"
+             aria-placeholder="FEC INI. DE EMISIÓN:">
+        <input readonly
+               type="text"
+               id="date-i"
+               class="input-u"
+               autocomplete="off"
+               #dp="bsDatepicker"
+               [bsConfig]="bsConfigValidity"
+               bsDatepicker
+               formControlName="fechaInicio" />
+      </label>
+      <label for="date-f"
+             class="placeholder-u"
+             aria-placeholder="FEC FIN. DE EMISIÓN:">
+        <input readonly
+               type="text"
+               id="date-f"
+               class="input-u"
+               autocomplete="off"
+               #dp="bsDatepicker"
+               [bsConfig]="bsConfigValidityEnd"
+               bsDatepicker
+               formControlName="fechaFin" />
+      </label>
+      <label style="width: 100%;" class="placeholder-u"
+             aria-placeholder="TIPO DE CLIENTE">
+        <select class="input-u"
+                formControlName="typeClient">
+          <option *ngFor="let data of listTypeClient$"
+                  [value]="data.idClient">
+            {{ data.cliente }}
+          </option>
+        </select>
+      </label>
+      <label for="document-number"
+          class="placeholder-u"
+           aria-placeholder="NOMBRES">
+         <input type="text"
+              id="nombres"
+              class="input-u"
+               autocomplete="off"
+
+              formControlName="nombres" />
+      </label>
+      <label for="document-number"
+           class="placeholder-u"
+            aria-placeholder="APELLIDO 1">
+           <input type="text"
+           id="PrimerApellido"
+           class="input-u"
+           autocomplete="off"
+
+           formControlName="PrimerApellido" />
+      </label>
+      <label for="document-number"
+          class="placeholder-u"
+          aria-placeholder="APELLIDO 2">
+          <input type="text"
+          id="SegundoApellido"
+          class="input-u"
+          autocomplete="off"
+
+           formControlName="SegundoApellido" />
+      </label>
+
+      <label id="EjecutivoComercialLabel" style="width: 185%;" class="placeholder-u"
+             aria-placeholder="EJECUTIVO COMERCIAL:">
+        <select class="input-u"
+                formControlName="ejecutivo">
+          <option *ngFor="let data of listComercialEjecutives$"
+                  [value]="data.idEjecutivo">
+            {{ data.ejecutivo }}
+          </option>
+        </select>
+      </label>
+      <!--       <label
+      for="client-name"
+      class="placeholder-u"
+      aria-placeholder="NOMBRE Y APELLIDO DEL CLIENTE:"
+    >
+      <input
+        type="text"
+        id="client-name"
+        class="input-u"
+        autocomplete="off"
+        formControlName="clientName"
+      />
+    </label> -->
+      <div class="form-actions">
+        <button class="button secondary fit"
+                (click)="resetFormFilters()">
+          Limpiar
+        </button>
+        <button class="button primary fit"
+                (click)="search(true)">
+          Buscar
+        </button>
+      </div>
+    </form>
+    <div class="divider"></div>
+    <!-- TABLA -->
+    <div class="grid">
+      <div class="table-responsive TableMargin div-tableban"
+           id="table-scroll">
+        <table class="table-u">
+          <thead>
+            <tr class="grid-title">
+               <!-- <td class="grid-title-item">Canal</td> -->
+              <td class="grid-title-item">Póliza</td>
+              <td class="grid-title-item">Cuota Inicial</td>
+              <td class="grid-title-item">Cuota Completa</td>
+              <td class="grid-title-item">Frecuencia de Pago</td>
+              <td class="grid-title-item">Temporalidad</td>
+              <td class="grid-title-item">Porcentaje</td>
+              <td class="grid-title-item">Moneda</td>
+              <td class="grid-title-item">Cotización</td>
+              <td class="grid-title-item">Nombre del contratante</td>
+              <td class="grid-title-item">DNI contr.</td>
+              <td class="grid-title-item">Fecha emisión</td>
+              <td class="grid-title-item">Asesor comercial</td>
+              <td class="grid-title-item">Nombre del asegurado</td>
+              <td class="grid-title-item">DNI aseg.</td>
+              <td class="grid-title-item">Estado </td>
+              <td class="grid-title-item">Acciones</td>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="!listSalesHistory$?.length">
+              <tr class="grid-body">
+                <td class="grid-body-item"
+                    colspan="10">
+                  No hay informacion para mostrar
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="listSalesHistory$?.length">
+              <tr class="grid-body"
+                  *ngFor="
+                  let data of listSalesHistory$
+                    | paginate
+                      : {
+                          itemsPerPage: 10,
+                          currentPage: p,
+                          totalItems: listSalesHistory$[0]?.cantidadRegistros,
+                          id: 'list-history'
+                        };
+                        let index = index
+                ">
+                <!-- <td class="grid-title-item"
+                    [innerHTML]="data.canal"></td> -->
+               <td class="grid-title-item">{{ data.poliza }}</td>
+               <td class="grid-title-item">{{ data.cuotaInicial }}</td>
+               <td class="grid-title-item">{{ data.cuotaCompleta }}</td>
+               <td class="grid-title-item">{{ data.frecuencia }}</td>
+               <td class="grid-title-item">{{ data.temporalidad }}</td>
+               <td class="grid-title-item">{{ data.porcentaje }}</td>
+               <td class="grid-title-item">{{ data.moneda }}</td>
+                <td class="grid-title-item">{{ data.cotizacionDefinitiva }}</td>
+                <td class="grid-title-item">{{ data.contratante }}</td>
+                <td class="grid-title-item">
+                  {{ data.contratanteNumeroDocumento }}
+                </td>
+                <td class="grid-title-item">{{ data.fechaEmision }}</td>
+                <td class="grid-title-item">{{ data.asesor }}</td>
+                <td class="grid-title-item">{{ data.cliente }}</td>
+                <td class="grid-title-item">
+                  {{ data.numeroDocumento }}
+                </td>
+                <td class="grid-title-item">{{ data.estadoCotizacion }}</td>
+                <td class="tbl__body--row-item tbl-actions actions"
+                    ngbDropdown
+                    [placement]="index > 0 ? 'top-right' : 'bottom-right'">
+                  <button class="btn-dropdown-u"
+                          tabindex="0"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                          ngbDropdownToggle>
+                    <i class="fa fa-ellipsis-v"
+                       aria-hidden="true"></i>
+                  </button>
+                  <ul class="dropdown-u"
+                      display="dynamic"
+                      ngbDropdownMenu>
+                    <li class="dropdown-item-u">
+                      <!-- [disabled]="userJefe || userSupervisor || !currentUser.comercial" -->
+                      <button class="dropdown-item-btn-u"
+                              (click)="setViewCotizacion(data)">
+                        <i class="fa fa-paint-brush"></i>Volver a cotizar
+                      </button>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="content-pagination pag-ban">
+      <pagination-controls class="my-pagination"
+                           id="list-history"
+                           autoHide="true"
+                           responsive="true"
+                           previousLabel="Anterior"
+                           nextLabel="Siguiente"
+                           screenReaderPaginationLabel="Paginación"
+                           screenReaderPageLabel="pagina"
+                           screenReaderCurrentLabel="Estás en la pagina"
+                           (pageChange)="currentPage = $event"
+                           *ngIf="listSalesHistory$?.length">
+      </pagination-controls>
+    </div>
+  </section>
+</div>

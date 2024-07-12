@@ -1,0 +1,1277 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="content">
+        <section class="content__header">
+          <div class="content__header--left">
+            <h1 class="title">
+              {{
+                params?.lotId
+                  ? "Detalles de lote N° " + params.lotId
+                  : "Registrar lote de comisiones"
+              }}
+            </h1>
+          </div>
+          <div class="content__header--right">
+            <button
+              class="button-default secondary"
+              (click)="openModalConfirmBackStep()"
+            >
+              <i class="fa fa-angle-left" aria-hidden="true"></i>
+              Regresar a Lotes
+            </button>
+          </div>
+        </section>
+
+        <ng-container *ngIf="!params?.lotId">
+          <hr />
+          <section class="content__section subheader">
+            <div class="subheader__left">
+              <h2 class="subtitle">COMISIONES</h2>
+            </div>
+            <div class="subheader__right">
+              <button
+                class="button-default secondary"
+                type="button"
+                role="button"
+                [disabled]="commissionLotList$?.data?.length > 0"
+                (click)="onSearch(true)"
+              >
+                Buscar
+              </button>
+              <button
+                class="button-default secondary"
+                type="button"
+                role="button"
+                (click)="resetFormFilters()"
+              >
+                Limpiar
+              </button>
+              <button
+                class="button-default secondary"
+                type="button"
+                role="button"
+                [disabled]="!this.commissionLotList$?.data?.length"
+                (click)="exportExcel()"
+              >
+                <i class="fa fa-download" aria-hidden="true"></i>
+                Descargar
+              </button>
+            </div>
+          </section>
+          <form class="content__section filters" [formGroup]="formFilters">
+            <!-- *Canal -->
+            <pro-select
+              placeholder="CANAL:"
+              [clearable]="false"
+              value="nchannel"
+              label="sdescript"
+              [items]="ListChannelSales"
+              formControlName="salesChannel"
+            >
+            </pro-select>
+
+            <!-- *Punto de venta -->
+            <pro-select
+              placeholder="PUNTO DE VENTA:"
+              [clearable]="false"
+              value="nnumpoint"
+              label="sdescript"
+              [items]="ListChannelPoint"
+              formControlName="pointSale"
+            >
+            </pro-select>
+
+            <!-- *Por Ramo -->
+            <pro-select
+              placeholder="POR RAMO*:"
+              [clearable]="false"
+              value="nid"
+              label="sdescript"
+              [items]="lstBranch"
+              formControlName="branch"
+            >
+            </pro-select>
+
+            <!-- *Por Producto -->
+            <pro-select
+              placeholder="POR PRODUCTO*:"
+              [clearable]="false"
+              value="nid"
+              label="sdescript"
+              [items]="lstProduct"
+              formControlName="product"
+            >
+            </pro-select>
+
+            <!-- *Desde -->
+            <label
+              for="form-filter-start-date"
+              class="placeholder upper"
+              aria-placeholder="Desde*:"
+            >
+              <input
+                type="text"
+                id="form-filter-start-date"
+                readonly
+                bsDatepicker
+                #dp="bsDatepicker"
+                [bsConfig]="startDateConfig"
+                formControlName="startDate"
+              />
+            </label>
+
+            <!-- *Hasta -->
+            <label
+              for="form-filter-end-date"
+              class="placeholder upper"
+              aria-placeholder="Hasta*:"
+            >
+              <input
+                type="text"
+                id="form-filter-end-date"
+                readonly
+                bsDatepicker
+                #dp="bsDatepicker"
+                [bsConfig]="endDateConfig"
+                formControlName="endDate"
+              />
+            </label>
+
+            <!-- *Moneda -->
+            <label
+              for="form-filter-currency"
+              class="placeholder upper select"
+              aria-placeholder="Por moneda*:"
+            >
+              <select id="form-filter-currency" formControlName="currency">
+                <option [value]="null" disabled>Seleccione</option>
+                <option value="2">Dólares Americanos</option>
+                <option value="1">Soles</option>
+              </select>
+            </label>
+          </form>
+        </ng-container>
+
+        <section
+          class="content__section lots"
+          *ngIf="
+            !params?.lotId ||
+            (commissionLotList$?.data?.length && params?.lotId)
+          "
+        >
+          <hr />
+          <div class="action__include">
+            <button
+              class="button-default secondary"
+              type="button"
+              role="button"
+              [disabled]="!this.commissionLotList$?.data?.length"
+              (click)="exportExcel()"
+              *ngIf="params?.lotId"
+            >
+              <i class="fa fa-download" aria-hidden="true"></i>
+              Descargar
+            </button>
+            <button
+              class="button-default secondary"
+              type="button"
+              role="button"
+              [disabled]="!commissionLotIsSomeChecked"
+              (click)="includeCommissionLot()"
+            >
+              Incluir
+            </button>
+          </div>
+          <div class="content-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>
+                    <div class="selection orange">
+                      <input
+                        type="checkbox"
+                        id="mark-all-lots"
+                        [disabled]="!commissionLotList$?.data?.length"
+                        [checked]="commissionLotCheckedAll"
+                        (change)="
+                          commissionLotMarkAllAsChecked($event.target.checked)
+                        "
+                      />
+                      <label for="mark-all-lots"></label>
+                    </div>
+                  </th>
+                  <th>N° Póliza</th>
+                  <th>N° Recibo</th>
+                  <th>N° Comprobante</th>
+                  <th>Moneda</th>
+                  <th>Prima total</th>
+                  <th>% Comisión</th>
+                  <th>Comisión</th>
+                  <th>Fecha de emisión</th>
+                  <th>Fecha facturación</th>
+                  <th>Estado</th>
+                  <th *ngIf="params?.action != 'upd'">Ver detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="!commissionLotList$?.data?.length">
+                  <tr class="no-hover">
+                    <td colspan="13">No se encontraron resultados</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="commissionLotList$?.data?.length">
+                  <ng-container
+                    *ngFor="
+                      let item of commissionLotList$?.data
+                        | paginate
+                          : {
+                              id: 'commission-lot-list',
+                              currentPage: currentPageLots,
+                              totalItems: commissionLotList$?.totalItems || 0,
+                              itemsPerPage: 10
+                            };
+                      let index = index
+                    "
+                  >
+                    <tr
+                      [class.row-error]="
+                        hasErrorCommissionLotForInclude(item) &&
+                        !item.isCreditNote
+                      "
+                      [class.locked]="item.disabled"
+                      [attr.title]="
+                        item.disabled
+                          ? 'Esta comisión ya se encuentra incluida'
+                          : ''
+                      "
+                      *ngIf="!item.isCreditNote"
+                    >
+                      <td>{{ index + 1 + (currentPageLots - 1) * 10 }}</td>
+                      <td>
+                        <div class="selection orange">
+                          <input
+                            type="checkbox"
+                            [id]="'commission-lot-' + index"
+                            [checked]="item.checked"
+                            [disabled]="item.disabled"
+                            (change)="commissionLotMarkAsChecked(item)"
+                          />
+                          <label [attr.for]="'commission-lot-' + index"></label>
+                        </div>
+                      </td>
+                      <td>{{ item.numeroPoliza }}</td>
+                      <td>{{ item.numeroRecibo }}</td>
+                      <td>{{ item.comprobante || "-" }}</td>
+                      <td>{{ item.idMoneda == 1 ? "SOLES" : "DÓLARES" }}</td>
+                      <td>
+                        {{ item.moneda }}
+                        {{ item.primaTotal | number : "1.2-2" }}
+                      </td>
+                      <td>{{ item.porcentajeComision }}%</td>
+                      <td>
+                        {{ item.moneda }}
+                        {{ item.montoComision | number : "1.2-2" }}
+                      </td>
+                      <td>{{ item.fechaEmision }}</td>
+                      <td>{{ item.fechaPago || "-" }}</td>
+                      <td>POR COBRAR</td>
+                      <td class="actions"
+                          *ngIf="params?.action != 'upd'">
+                        <button class="button-action"
+                                [disabled]="item.agrupado != 2"
+                                (click)="showModalCommissionLotDetail(item)">
+                          <i class="fa fa-file-text"
+                             aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <pagination-controls
+            id="commission-lot-list"
+            [autoHide]="true"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+            (pageChange)="currentPageLots = $event"
+            *ngIf="commissionLotList$.data?.length"
+          ></pagination-controls>
+          <span class="has-error" *ngIf="errorMessageCommissionLotList">
+            {{ errorMessageCommissionLotList }}
+          </span>
+        </section>
+        <hr />
+
+        <ng-container *ngIf="commissionLotListIncluded.length">
+          <section class="content__section includes">
+            <div class="includes__section actions">
+              <div class="includes__section--left">
+                <h2 class="subtitle" *ngIf="!params?.lotId">
+                  GENERACIÓN DE LOTES
+                </h2>
+              </div>
+              <div class="includes__section--right">
+                <button
+                  class="button-default secondary"
+                  type="button"
+                  role="button"
+                  [disabled]="!commissionLotIncludedIsSomeChecked"
+                  (click)="excludeCommissionLot()"
+                >
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                  Excluir
+                </button>
+              </div>
+            </div>
+            <div class="includes__section">
+              <div class="content-table table-includes-lots">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>
+                        <div class="selection orange">
+                          <input
+                            type="checkbox"
+                            id="mark-all-lots-includes"
+                            [disabled]="!policiesWithoutCreditNotes.length"
+                            [checked]="isCommissionLotIncludedAllChecked"
+                            (change)="
+                              commissionLotIncludedMarkAllAsChecked(
+                                $event.target.checked
+                              )
+                            "
+                          />
+                          <label for="mark-all-lots-includes"></label>
+                        </div>
+                      </th>
+                      <th>N° Póliza</th>
+                      <th>N° Comprobante</th>
+                      <th>N° Nota Crédito</th>
+                      <th>Moneda</th>
+                      <th>Prima total</th>
+                      <th>% Comisión</th>
+                      <th>Comisión</th>
+                      <th>Fecha de emisión</th>
+                      <th>Fecha facturación</th>
+                      <th>Estado</th>
+                      <th *ngIf="params?.action != 'upd'">Ver detalle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="!policiesWithoutCreditNotes.length">
+                      <tr class="no-hover">
+                        <td colspan="12">No se han incluido lotes</td>
+                      </tr>
+                    </ng-container>
+                    <ng-container *ngIf="policiesWithoutCreditNotes.length">
+                      <ng-container
+                        *ngFor="
+                          let item of policiesWithoutCreditNotes
+                            | paginate
+                              : {
+                                  id: 'list-commission-lot-included',
+                                  currentPage: currentpageLotsIncluded,
+                                  totalItems:
+                                    policiesWithoutCreditNotes?.length || 0,
+                                  itemsPerPage: 10
+                                };
+                          let index = index
+                        "
+                      >
+                        <tr
+                          [class.is-credit-note]="item.isCreditNote"
+                          [attr.title]="
+                            item.isCreditNote ? 'Nota de crédito' : ''
+                          "
+                        >
+                          <td>{{ index + 1 }}</td>
+                          <td>
+                            <div class="selection orange">
+                              <input
+                                type="checkbox"
+                                [id]="'commission-lot-included-' + index"
+                                [checked]="item.checked"
+                                (change)="
+                                  commissionLotIncludedMarkAsChecked(item)
+                                "
+                              />
+                              <label
+                                [attr.for]="'commission-lot-included-' + index"
+                              ></label>
+                            </div>
+                          </td>
+                          <td>{{ item.numeroPoliza }}</td>
+                          <td>{{ item.comprobante || "-" }}</td>
+                          <td>
+                            {{
+                              countCreditNotes(item) > 1
+                                ? "VARIOS"
+                                : item.notaCredito || "-"
+                            }}
+                          </td>
+                          <td>
+                            {{ item.idMoneda == 1 ? "SOLES" : "DÓLARES" }}
+                          </td>
+                          <td>
+                            {{ item.moneda }}
+                            {{ item.primaTotal | number : "1.2-2" }}
+                          </td>
+                          <td>{{ item.porcentajeComision }}%</td>
+                          <td>
+                            {{ item.moneda }}
+                            {{ calculateCommision(item) | number : "1.2-2" }}
+                          </td>
+                          <td>{{ item.fechaEmision }}</td>
+                          <td>{{ item.fechaPago || "-" }}</td>
+                          <td>POR COBRAR</td>
+                          <td class="actions"
+                              *ngIf="params?.action != 'upd'">
+                            <button class="button-action"
+                                    [disabled]="!item.haveCreditNotes"
+                                    (click)="showModalCreditNotes(item)">
+                              <i class="fa fa-file-text"
+                                 aria-hidden="true"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <pagination-controls
+                id="list-commission-lot-included"
+                nextLabel="Siguiente"
+                previousLabel="Anterior"
+                [autoHide]="true"
+                (pageChange)="currentPageCommissionLotIncluded = $event"
+                *ngIf="commissionLotListIncluded.length"
+              ></pagination-controls>
+            </div>
+            <div class="includes__section info">
+              <p class="paragraph">
+                Cantidad de pólizas en Lote:
+                <span class="count">
+                  {{ policiesWithoutCreditNotes.length }}
+                </span>
+              </p>
+              <p class="paragraph">
+                Importe total de la comisión:
+                <span class="ammount">
+                  {{ formFilterControl["currency"].value == 1 ? "S/ " : "$ " }}
+                  {{ totalAmmountCommissionLotIncluded | number : "1.2-2" }}
+                </span>
+              </p>
+              <p class="paragraph has-error">
+                {{ errorMessageSaveCommissionLot }}
+              </p>
+            </div>
+          </section>
+          <hr />
+        </ng-container>
+
+        <section class="content__section invoice">
+          <h2 class="subtitle">DATOS DE LA FACTURA</h2>
+          <form class="invoice__form" [formGroup]="formInvoice">
+            <!-- *Datos generales -->
+
+            <div class="invoice__section" aria-label=":: Datos Generales ::">
+              <div class="general" formGroupName="generals">
+                <!-- *Fecha de emisión -->
+                <label
+                  for="form-invoice-emission-date"
+                  class="placeholder upper"
+                  aria-placeholder="Fecha de emisión"
+                >
+                  <input
+                    type="text"
+                    id="form-invoice-emission-date"
+                    readonly="readonly"
+                    #dp="bsDatepicker"
+                    bsDatepicker
+                    [bsConfig]="emmissionDateConfig"
+                    formControlName="emmissionDate"
+                  />
+                </label>
+
+                <!-- *Tipo de comprobante -->
+                <div class="tooltip-container">
+                  <label
+                    for="form-invoice-voucher-type"
+                    class="placeholder upper select"
+                    aria-placeholder="Tipo de comprobante"
+                  >
+                    <select
+                      id="form-invoice-voucher-type"
+                      formControlName="voucherType"
+                    >
+                      <option value="0">Seleccione</option>
+                      <option
+                        *ngFor="let item of parameters$.typesReceipts"
+                        [value]="item.id"
+                      >
+                        {{ item.descripcion }}
+                      </option>
+                    </select>
+                  </label>
+                  <div class="tooltip-group">
+                    <i
+                      class="fa fa-info-circle fa-lg ml-2"
+                      aria-hidden="true"
+                    ></i>
+                    <div class="tooltip-message">
+                      <span>
+                        <b>Factura electrónica:</b> Adjuntar los comprobantes
+                        emitidos por SUNAT (PDF y XML).<br />
+                      </span>
+                      <span>
+                        <b>Factura física:</b> Adjuntar comprobante escaneado en
+                        formato PDF y entregar el original en nuestra oficina
+                        principal.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- *N° de serie -->
+                <label
+                  for="form-invoice-serie"
+                  class="placeholder upper"
+                  aria-placeholder="N° de serie"
+                >
+                  <input
+                    type="text"
+                    id="form-invoice-serie"
+                    placeholder="Ingrese la serie"
+                    formControlName="serialNumber"
+                    maxlength="4"
+                  />
+                </label>
+
+                <!-- *N° de factura -->
+                <label
+                  for="form-invoice-number"
+                  class="placeholder upper"
+                  aria-placeholder="N° de factura"
+                >
+                  <input
+                    type="text"
+                    id="form-invoice-number"
+                    placeholder="Ingrese el número de factura"
+                    formControlName="invoiceNumber"
+                    maxlength="10"
+                  />
+                </label>
+
+                <!-- *N° de RUC -->
+                <div>
+                  <label
+                    for="form-invoice-number"
+                    class="placeholder upper"
+                    aria-placeholder="N° de RUC"
+                  >
+                    <input
+                      type="text"
+                      id="form-invoice-ruc"
+                      placeholder="Ingrese el RUC"
+                      formControlName="ruc"
+                      [maxlength]="11"
+                    />
+                  </label>
+                  <small
+                    class="has-error"
+                    *ngIf="
+                      formInvoiceGeneralControl['ruc'].invalid &&
+                      formInvoiceGeneralControl['ruc'].touched
+                    "
+                  >
+                    El número de ruc es invalido
+                  </small>
+                </div>
+
+                <ng-container
+                  *ngIf="formInvoiceGeneralControl['voucherType'].value == 2"
+                >
+                  <span class="general__info">
+                    *Estos campos se autocompletan al adjuntar el archivo XML
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="invoice__section" aria-label=":: Datos Bancarios ::">
+              <div class="bank" formGroupName="bank">
+                <!-- *Banco -->
+                <label
+                  for="form-invoice-bank"
+                  class="placeholder upper select"
+                  aria-placeholder="Banco"
+                >
+                  <select id="form-invoice-bank" formControlName="typeBank">
+                    <option value="0">Seleccione</option>
+                    <option
+                      *ngFor="let item of parameters$.typesBanks"
+                      [value]="item.id"
+                    >
+                      {{ item.descripcion }}
+                    </option>
+                  </select>
+                </label>
+
+                <!-- *Tipo de cuenta -->
+                <label
+                  for="form-invoice-account-type"
+                  class="placeholder upper select"
+                  aria-placeholder="Tipo de cuenta"
+                >
+                  <select
+                    id="form-invoice-account-type"
+                    formControlName="accountType"
+                  >
+                    <option value="0">Seleccione</option>
+                    <option
+                      *ngFor="let item of parameters$.accountTypes"
+                      [value]="item.id"
+                    >
+                      {{ item.descripcion }}
+                    </option>
+                  </select>
+                </label>
+
+                <!-- *N° de cuenta -->
+                <label
+                  for="form-invoice-account-number"
+                  class="placeholder upper"
+                  aria-placeholder="N° de cuenta"
+                >
+                  <input
+                    type="text"
+                    id="form-invoice-account-number"
+                    placeholder="Ingrese el número de cuenta"
+                    formControlName="accountNumber"
+                    maxlength="30"
+                  />
+                </label>
+
+                <!-- *N° de CCI -->
+                <label
+                  for="form-invoice-cci"
+                  class="placeholder upper"
+                  [attr.aria-placeholder]="placeholderCCI"
+                >
+                  <input
+                    type="text"
+                    id="form-invoice-cci"
+                    placeholder="Ingrese el número de CCI"
+                    formControlName="cci"
+                    maxlength="30"
+                  />
+                </label>
+
+                <ng-container
+                  *ngIf="formInvoiceBankControl['typeBank'].value == 5"
+                >
+                  <!-- *Nombre de la entidad -->
+                  <label
+                    for="form-invoice-entity-name"
+                    class="placeholder upper"
+                    aria-placeholder="Nombre de la entidad"
+                  >
+                    <input
+                      type="text"
+                      id="form-invoice-entity-name"
+                      placeholder="Ingrese el nombre de la entidad"
+                      formControlName="entityName"
+                      maxlength="50"
+                    />
+                  </label>
+
+                  <!-- *Entidad extranjera -->
+                  <div class="content-foreign-entity">
+                    <span>Entidad extranjera</span>
+                    <div class="content-foreign-entity__radios">
+                      <div class="selection radio orange">
+                        <input
+                          type="radio"
+                          id="foreign-entity-yes"
+                          value="1"
+                          formControlName="foreignEntity"
+                        />
+                        <label for="foreign-entity-yes"> Si </label>
+                      </div>
+                      <div class="selection radio orange">
+                        <input
+                          type="radio"
+                          id="foreign-entity-no"
+                          value="0"
+                          formControlName="foreignEntity"
+                        />
+                        <label for="foreign-entity-no"> No </label>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="invoice__group">
+              <!-- *Totales -->
+              <div class="invoice__section" aria-label=":: Totales ::">
+                <div class="total">
+                  <div class="total__group">
+                    <span class="total__group--label">MONTO S/.</span>
+                    <span class="total__group--value">{{
+                      commissionLotSummary.ammount | number : "1.2-2"
+                    }}</span>
+                  </div>
+                  <div class="total__group">
+                    <span class="total__group--label">IGV%</span>
+                    <span class="total__group--value">
+                      {{ commissionLotSummary.igv | number : "1.2-2" }}
+                    </span>
+                  </div>
+                  <div class="total__group">
+                    <span class="total__group--label">TOTAL S/.</span>
+                    <span class="total__group--value">
+                      {{ commissionLotSummary.total | number : "1.2-2" }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- *Documentos -->
+              <div
+                class="invoice__section attachments"
+                aria-label=":: Adjuntar Documentos (solo archivos 'pdf' o 'xml') ::"
+              >
+                <div class="upload">
+                  <label
+                    for="form-invoice-attachment"
+                    class="placeholder upper select"
+                    aria-placeholder="Tipo de archivo a cargar"
+                  >
+                    <select
+                      id="form-invoice-attachment"
+                      formControlName="fileType"
+                    >
+                      <option [value]="null" disabled>Seleccione</option>
+                      <option value="1">PDF</option>
+                      <option
+                        value="3"
+                        *ngIf="
+                          formInvoiceGeneralControl['voucherType'].value == 2
+                        "
+                      >
+                        XML
+                      </option>
+                    </select>
+                  </label>
+
+                  <div class="content-upload-attachment">
+                    <input
+                      type="file"
+                      id="form-invoice-upload-attachment"
+                      accept="application/pdf, application/xml"
+                      formControlName="file"
+                      (change)="uploadAttachment($event)"
+                    />
+                    <label
+                      class="button-default"
+                      for="form-invoice-upload-attachment"
+                      *ngIf="formInvoiceControl['fileType'].value"
+                    >
+                      Adjuntar
+                    </label>
+                  </div>
+
+                  <span class="count-attachments">
+                    Archivos adjuntos ({{ attachments.length }})
+                  </span>
+
+                  <small class="has-error">
+                    {{ messageInfoAttachments }}
+                  </small>
+                </div>
+                <div class="content-table table-attachments">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Tipo</th>
+                        <th>Nombre del archivo</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngIf="!attachments.length">
+                        <tr class="no-hover">
+                          <td colspan="4">No se han adjuntado archivos</td>
+                        </tr>
+                      </ng-container>
+                      <ng-container *ngIf="attachments.length">
+                        <tr *ngFor="let obj of attachments; let index = index">
+                          <td>{{ index + 1 }}</td>
+                          <td>{{ obj.fileTypeName }}</td>
+                          <td>{{ obj.fileName }}</td>
+                          <td>
+                            <button
+                              class="button-action"
+                              title="Eliminar"
+                              (click)="removeAttachment(obj)"
+                            >
+                              <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <section class="content__section actions">
+          <button
+            class="button-default secondary"
+            type="button"
+            role="button"
+            (click)="openModalConfirmBackStep()"
+          >
+            Cancelar
+          </button>
+          <button
+            class="button-default"
+            type="button"
+            role="button"
+            (click)="openModalConfirmSaveCommissionLot()"
+            [disabled]="disableButtonSave"
+          >
+            <i class="fa fa-save" aria-hidden="true"></i>
+            Grabar todo
+          </button>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalCommissionLotDetail>
+  <div class="content-modal modal-commission-lot-detail">
+    <section>
+      <div class="modal-header">
+        <h6>
+          Fecha de Pago: {{ commissionLotSelected.fechaPago }} - Cant.
+          Comprobantes: {{ commissionLotDetail$.data?.length }}
+        </h6>
+        <h6>Cant. seleccionados: {{ countCommissionLotSelected }}</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="hideModalCommissionLotDetail()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="content-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="selection orange">
+                    <input
+                      type="checkbox"
+                      id="commission-lot-detail-checked-all"
+                      [checked]="commissionLotDetailCheckedAll"
+                      (change)="
+                        commissionLotDetailMarkAllAsChecked(
+                          $event.target.checked
+                        )
+                      "
+                    />
+                    <label for="commission-lot-detail-checked-all"></label>
+                  </div>
+                </th>
+                <th>N° Póliza</th>
+                <th>N° Recibo</th>
+                <th>N° Comprobante</th>
+                <th>Moneda</th>
+                <th>Prima total</th>
+                <th>% Comisión</th>
+                <th>Comisión</th>
+                <th>Fecha de emisión</th>
+                <th>Fecha de pago</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!commissionLotDetail$?.data?.length">
+                <tr class="no-hover">
+                  <td colspan="11">No se encontraron resultados</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="commissionLotDetail$?.data?.length">
+                <tr
+                  *ngFor="
+                    let obj of commissionLotDetail$?.data
+                      | paginate
+                        : {
+                            id: 'commission-lot-detail',
+                            itemsPerPage: params?.lotId
+                              ? commissionLotListIncluded?.length || 0
+                              : 10,
+                            totalItems: commissionLotDetail$?.totalItems || 0,
+                            currentPage: currentPageLotDetail
+                          };
+                    let index = index
+                  "
+                  [class.locked]="obj.disabled"
+                  [title]="
+                    obj.disabled ? 'Esta comisión ya se encuentra incluida' : ''
+                  "
+                >
+                  <td>
+                    <div class="selection orange">
+                      <input
+                        type="checkbox"
+                        [id]="'commission-lot-detail-checked-' + index"
+                        [disabled]="obj.disabled"
+                        [checked]="obj.checked"
+                        (change)="commissionLotDetailMarkAsChecked(obj)"
+                      />
+                      <label
+                        [attr.for]="'commission-lot-detail-checked-' + index"
+                      ></label>
+                    </div>
+                  </td>
+                  <td>{{ obj.numeroPoliza }}</td>
+                  <td>{{ obj.numeroRecibo }}</td>
+                  <td>{{ obj.comprobante }}</td>
+                  <td>{{ obj.idMoneda == 1 ? "SOLES" : "DÓLARES" }}</td>
+                  <td>
+                    {{ obj.moneda }}{{ obj.primaTotal | number : "1.2-2" }}
+                  </td>
+                  <td>{{ obj.porcentajeComision }}%</td>
+                  <td>
+                    {{ obj.moneda }}{{ obj.montoComision | number : "1.2-2" }}
+                  </td>
+                  <td>{{ obj.fechaEmision }}</td>
+                  <td>{{ obj.fechaPago }}</td>
+                  <td>POR COBRAR</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <ng-container
+          *ngIf="commissionLotDetail$.data?.length && !params?.lotId"
+        >
+          <pagination-controls
+            id="commission-lot-detail"
+            [autoHide]="true"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+            (pageChange)="currentPageLotDetail = $event"
+          ></pagination-controls>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="hideModalCommissionLotDetail()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          [disabled]="!commissionLotDetailIsSomeChecked"
+          (click)="includeCommissionLotDetail(null, true)"
+        >
+          Incluir
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmSaveCommissionLot>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          ¿Está seguro que desea
+          {{ params.action == "upd" ? "actualizar" : "generar" }} el lote?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="saveCommissionLot()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalMessage>
+  <div class="content-modal modal-message">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="messageInfo.showImage">
+          <img
+            src="assets/backoffice/check-error.png"
+            alt="error icon"
+            *ngIf="!messageInfo.success"
+          />
+          <img
+            src="assets/backoffice/check-success.png"
+            alt="success icon"
+            *ngIf="messageInfo.success"
+          />
+        </ng-container>
+        <p class="paragraph">
+          {{ messageInfo.message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="closeModal()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmBackStep>
+  <div class="content-modal modal-back-step">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">¿Está seguro que desea regresar a lotes?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="backStep()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmLot>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          Está seguro que desea incluir más comisiones al lote? <br />
+          El importe total se modificará.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="addCommissionLot()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalRemoveLot>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          Está seguro que desea excluir las comisiones del lote? <br />
+          El importe total se modificará.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="removeCommissionLot()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalCreditNotes>
+  <div class="content-modal">
+    <section class="modal-credit-notes">
+      <div class="modal-header">
+        <h6>Comprobantes</h6>
+        <button (click)="clearModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="content-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Tipo comprobante</th>
+                <th>N° de comprobante</th>
+                <th>Moneda</th>
+                <th>Prima total</th>
+                <th>% Comisión</th>
+                <th>Comisión</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of creditNotesOfPolicy">
+                <tr>
+                  <td>
+                    {{
+                      item.isCreditNote
+                        ? "NOTA DE CRÉDITO"
+                        : getFirstLetter(item.comprobante) == "B"
+                        ? "BOLETA"
+                        : "FACTURA"
+                    }}
+                  </td>
+                  <td>{{ item.comprobante }}</td>
+                  <td>{{ item.idMoneda == 1 ? "SOLES" : "DÓLARES" }}</td>
+                  <td>
+                    {{ item.moneda }}{{ item.primaTotal | number : "1.2-2" }}
+                  </td>
+                  <td>{{ item.porcentajeComision }}%</td>
+                  <td>
+                    {{ item.moneda }}{{ item.montoComision | number : "1.2-2" }}
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <pagination-controls
+          id="pagination-vouchers"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          [autoHide]="true"
+        ></pagination-controls>
+      </div>
+    </section>
+  </div>
+</ng-template>

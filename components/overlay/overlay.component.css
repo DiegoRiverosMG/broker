@@ -1,0 +1,62 @@
+h2 {
+  font-size: 40px;
+}
+.overlay {
+  text-align: center;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color:rgba(255, 255, 255, 0.75);
+    z-index:9999;
+    color:white;
+}
+
+.overlay:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.txt {
+    display: inline-block;
+    vertical-align: middle;
+    position:relative;
+    width: content;
+    height: content;
+    width: 10px;
+    height: 50px;
+    margin-left: -5px;
+    animation: barras1 1.5s ease-in-out 0.1s infinite alternate;
+}
+
+.bar-1 {
+  background-color: #ED6E00 !important;
+}
+.bar-2 {
+  background-color: #008CCC;
+  animation-delay: 0.2s;
+}
+.bar-3 {
+  background-color: #E60D2E;
+  animation-delay: 0.3s;
+}
+.bar-4 {
+  background-color: #781496;
+  animation-delay: 0.4s;
+}
+.bar-5 {
+  background-color: #638F38;
+  animation-delay: 0.5s;
+}
+.bar-6 {
+  background-color: #2B0D61;
+  animation-delay: 0.6s;
+}
+
+@keyframes barras1 {
+  from { width: 10px; }
+  to { width: 20px; }
+}

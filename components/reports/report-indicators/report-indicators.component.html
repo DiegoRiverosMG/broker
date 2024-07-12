@@ -1,0 +1,296 @@
+<div class="row">
+    <div class="col-md-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">REPORTES SLA DE TRAMITES</span>
+                    </div>
+                </div>
+                <div class="containt-item">
+                    <div class="header-item rigth-item">
+                        <button (click)="buscarPoliza()">
+                            <img alt="" src="assets/icons/buscar_certificado.png"
+                                style="position: relative; top: 4px;" />
+                            <span>Buscar</span>
+                        </button>
+                    </div>
+                    <div class="header-item rigth-item">
+                        <button (click)="buscarPoliza(1)">
+                            <img alt="" src="assets/icons/descargar.png" style="position: relative; top: 6px;" />
+                            <span>Descargar Excel</span>
+                        </button>
+                    </div>
+                    <div class="header-item rigth-item">
+                        <button (click)="resetForm()">
+                            <span>Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="filter">
+            <div class="card">
+                <div class="card-body" [formGroup]="mainFormGroup">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>RAMO</span>
+                        <select formControlName="branch" class="minimal"
+                        (change)="SelectBranch()">
+                        <option *ngFor="let branch of branchList" value="{{branch.NBRANCH}}">
+                            {{branch.SDESCRIPT}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>TIPO PRODUCTO</span>
+                        <select formControlName="product" class="minimal">
+                        <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                            {{product.DES_PRODUCT}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>TIPO DE REPORTE</span>
+                        <select formControlName="type_report" class="minimal" (change)="typeReportChanged($event)">
+                            <option *ngFor="let report of typeReportList" value="{{report.Id}}">
+                                {{report.Name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>CORTE</span>
+                        <select formControlName="cut" class="minimal">
+                            <option value="0" disabled selected>Seleccionar</option>
+                            <option *ngFor="let cut of cutList" value="{{cut.Id}}">
+                                {{cut.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>BUSQUEDA POR:</span>
+                        <select formControlName="busqueda_por" class="minimal" (change)="changeBusqueda()">
+                            <option *ngFor="let bp of busquedaPorList" value="{{bp.Id}}">
+                                {{bp.Name}}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="mainFormGroup.controls.busqueda_por.value=='1'" class="col-sm-3">
+                        <span>NRO. TRÁMITE</span>
+                        <input type="text" placeholder="Número de Trámite"
+                            (paste)="onPaste($event)" (keyup)="NumberChanged($event)"
+                            (keypress)="procedureNumberPressed($event)" (keyup.enter)="buscarPoliza()"
+                            maxlength="10" OnlyNumberDirective formControlName="procedureNumber"/>
+                    </div>
+                    <div *ngIf="mainFormGroup.controls.busqueda_por.value=='2'" class="col-sm-3">
+                        <span>NRO. COTIZACIÓN</span>
+                        <input type="text" placeholder="Número de Cotización"
+                            (paste)="onPaste($event)" (keyup)="NumberChanged($event)"
+                            (keypress)="quotationNumberPressed($event)" (keyup.enter)="buscarPoliza()"
+                            maxlength="10" OnlyNumberDirective formControlName="quotationNumber"/>
+                    </div>
+                    <div *ngIf="mainFormGroup.controls.busqueda_por.value=='3'" class="col-sm-3">
+                        <span>NRO. PÓLIZA</span>
+                        <input type="text" placeholder="Nro. Póliza" formControlName="policy"
+                            (paste)="onPaste($event)" (keyup)="NumberChanged($event)"
+                            (keyup.enter)="buscarPoliza()" OnlyNumberDirective (keypress)="policyNumberPressed($event)" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>ESTADO</span>
+                        <select formControlName="status" class="minimal">
+                            <option value="0" selected>TODOS</option>
+                            <option *ngFor="let state of statusList" value="{{state.NSTATUS_TRA}}">
+                            {{state.SDESCRIPT}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>Tipo de Cliente</span>
+                        <select formControlName="type_bill" class="minimal">
+                            <option value="0" selected>TODOS</option>
+                            <option *ngFor="let bill of billList" value="{{bill.Id}}">
+                            {{bill.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>Tipo de Solicitud</span>
+                        <select formControlName="type_request" class="minimal">
+                            <option value="0" selected>TODOS</option>
+                            <option *ngFor="let requestType of requestTypeList" value="{{requestType.NTYPE_MOVEMENT}}">
+                            {{requestType.SDESCRIPT}}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Usuario -->
+                <div class="row">
+                    <div class="col-sm-3">
+                    <span>BÚSQUEDA POR USUARIO</span>
+                        <select
+                            formControlName="user" class="minimal">
+                            <option value="0">Todos</option>
+                            <option *ngFor="let item of usersList" value="{{item.NIDUSER}}">
+                                {{item.SNAMES}}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Fecha de Operacion -->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="subtitle">FECHA OPERACIÓN</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                    <div class="grid form-group">
+                        <div class="col-sm-12">
+                            <div class="form-check form-check-inline">
+                                <input [attr.disabled]="flagDateT == 0 || null" (click)="chooseDateClk(1)" class="form-check-input" type="radio" id="inlineRadio1" formControlName="inlineRadioOptions" value="option1">
+                                <label class="form-check-label" for="inlineRadio1">Trámite</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input [attr.disabled]="flagDateBool == 0 || null" (click)="chooseDateClk(2)" class="form-check-input" type="radio" id="inlineRadio2" formControlName="inlineRadioOptions" value="option2">
+                                <label class="form-check-label" for="inlineRadio2">Envío a Técnica</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input [attr.disabled]="flagDateBool == 0 || null" (click)="chooseDateClk(3)" class="form-check-input" type="radio" id="inlineRadio3" formControlName="inlineRadioOptions" value="option3">
+                                <label class="form-check-label" for="inlineRadio3">Envío a Comercial</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input [attr.disabled]="flagDateBool == 0 || null" (click)="chooseDateClk(4)" class="form-check-input" type="radio" id="inlineRadio4" formControlName="inlineRadioOptions" value="option4">
+                                <label class="form-check-label" for="inlineRadio4">Atendido Operaciones</label>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <span>DESDE </span>
+                    <input type="text" #dp="bsDatepicker" (focus)="cleanValidation()" [bsConfig]="bsConfig" placeholder="dd/mm/yyyy"
+                        bsDatepicker [(bsValue)]="bsValueIni" formControlName="startDate" (keyup.enter)="buscarPoliza()"
+                        value="{{ bsValueIni | date:'dd/MM/yyyy' }}" DateDirective #desde
+                        [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid}" />
+                        <ng-container [ngSwitch]="true"
+                            *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid">
+                            <span *ngSwitchCase="mainFormGroup.get('startDate').hasError('required')"
+                                class="mensaje-error-control">La fecha inicial es requerida.</span>
+                            <span
+                                *ngSwitchCase="!mainFormGroup.controls.startDate.valid && !mainFormGroup.get('startDate').hasError('required')"
+                                class="mensaje-error-control">{{invalidStartDateMessage}}</span>
+                            <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                class="mensaje-error-control">{{invalidStartDateOrderMessage}}</span>
+                        </ng-container>
+                    </div>
+                    <div class="col-sm-3">
+                    <span>HASTA</span>
+                    <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" [bsConfig]="bsConfig" #dp="bsDatepicker"
+                        (focus)="cleanValidation()" bsDatepicker DateDirective [(bsValue)]="bsValueFin" #dp="bsDatepicker"
+                        value="{{ bsValueFin | date:'dd/MM/yyyy' }}" (keyup.enter)="buscarPoliza()" #hasta
+                        [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid}" />
+                    <ng-container [ngSwitch]="true"
+                        *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid">
+                        <span *ngSwitchCase="mainFormGroup.get('endDate').hasError('required')"
+                            class="mensaje-error-control">La fecha final es requerida.</span>
+                        <span
+                            *ngSwitchCase="!mainFormGroup.controls.endDate.valid && !mainFormGroup.get('endDate').hasError('required')"
+                            class="mensaje-error-control">{{invalidEndDateMessage}}</span>
+                        <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                            class="mensaje-error-control">{{invalidEndDateOrderMessage}}</span>
+                    </ng-container>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="grid form-group">
+                <div class="table-responsive">
+                <table class="table">
+                    <thead >
+                    <tr class="grid-title">
+                        <td class="grid-title-item text-center">Ramo</td>
+                        <td class="grid-title-item text-center">Producto</td>
+                        <td class="grid-title-item text-center">Nro. Cotización</td>
+                        <td class="grid-title-item text-center">Nro. Póliza</td>
+                        <td class="grid-title-item text-center">Nro. Trámite</td>
+                        <td class="grid-title-item text-center">Tipo Solictud</td>
+                        <td class="grid-title-item text-center">Tipo Cliente</td>
+                        <td class="grid-title-item text-center">Estado de Trámite</td>
+                        <td class="grid-title-item text-center">Comercial Responsable</td>
+                        <td class="grid-title-item text-center">Fecha de Creación/ envio a operaciones</td>
+                        <td class="grid-title-item text-center">Fecha de asignación operaciones</td>
+                        <td class="grid-title-item text-center">Usuario de Operaciones</td>
+                        <td class="grid-title-item text-center">Fecha de Envío a Técnica</td>
+                        <td class="grid-title-item text-center">Fecha respuesta Técnica</td>
+                        <td class="grid-title-item text-center">Fecha atendido Operaciones/ enviado a Ejecutivo comercial</td>
+                        <td class="grid-title-item text-center">Fecha respuesta Ejecutivo Comercial</td>
+                        <td class="grid-title-item text-center">Tiempo de Atención</td>
+                    </tr>
+                    </thead>
+                    <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showGrid else hideGrid">
+                    </ng-container>
+                </table>
+                <ng-template #hideGrid>
+                    <tbody>
+                    <tr>
+                        <td colspan="17" class="text-center">
+                        No se encontraron registros
+                        </td>
+                    </tr>
+                    </tbody>
+                </ng-template>
+                <ng-template #showGrid>
+                <tbody>
+                    <tr *ngFor="let item of listToShow; let row_no = index;">
+                        <td class="text-center">{{ item.NBRANCH }}</td>
+                        <td class="text-center">{{ item.NPRODUCT }}</td>
+                        <td class="text-center">{{ item.NID_COTIZACION }}</td>
+                        <td class="text-center">{{ item.POLICY }}</td>
+                        <td class="text-center">{{ item.NID_TRAMITE }}</td>
+                        <td class="text-center">{{ item.STRANSAC_TYPE }}</td>
+                        <td class="text-center">{{ item.TYPE_ACCOUNT }}</td>
+                        <td class="text-center">{{ item.SSTATUS_TRA }}</td>
+                        <td class="text-center">{{ item.SUUSERCODE_COMMER }}</td>
+                        <td class="text-center">{{ item.DFECHA_CREATE + ' '  + item.DHORA_CREATE}}</td>
+                        <td class="text-center">{{ item.DFECHA_ASSIGNED_OPERA + ' ' + item.DFECHA_ASSIGNED_OPERA_HORA}}</td>
+                        <td class="text-center">{{ item.SUUSERCODE_OPERA }}</td>
+                        <td class="text-center">{{ item.DFECHA_DER_TECNICA + ' ' + item.DFECHA_DER_TECNICA_HOUR }}</td>
+                        <td class="text-center">{{ item.DFECHA_RES_TECNICA  + ' ' + item.DFECHA_RES_TECNICA_HOUR}}</td>
+                        <td class="text-center">{{ item.DFECHA_ATTENDED_OPERA + ' ' + item.DFECHA_ATTENDED_OPERA_HOUR }}</td>
+                        <td class="text-center">{{ item.DFECHA_RES_EJECCOM + ' ' + item.DFECHA_RES_EJECCOM_HOUR}}</td>
+                        <td class="text-center">{{ item.NTIME_ATTENDED }}</td>
+                    </tr>
+                </tbody>
+                </ng-template>
+                </div>
+            </div>
+            <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display: flex;">
+                <div class="col-sm-10">
+                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                </ngb-pagination>
+                </div>
+                    <div class="col-sm-2">
+                        <span style="display: inline-block;">Mostrar: </span>
+                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                            style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+            </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- Pantalla de carga -->
+  <div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>
+    

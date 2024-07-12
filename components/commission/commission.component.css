@@ -1,0 +1,416 @@
+.label-filtros {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: rgb(153, 136, 180);
+  font-weight: 600;
+}
+
+.h-divider {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 1px;
+  width: 100%;
+  border-top: 1px solid gray;
+}
+
+.titles {
+  color: #553d81;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+  font-family: Bliss Pro;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 6px 5px;
+  min-width: 200px;
+  height: 36px;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600 !important;
+  color: rgb(83, 66, 121);
+}
+
+.full-color {
+  background: #553d81;
+}
+
+.full-color span {
+  color: #fff;
+}
+
+.grid {
+  width: 100%;
+  margin: 20px auto;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.grid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid table tr td {
+  padding: 5px 5px;
+  text-align: center;
+  color: #2b0d61 !important;
+}
+
+.grid table tr:hover {
+  background-color: #e2e2e2;
+  cursor: pointer;
+}
+
+.grid table .grid-title td {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 12px;
+  background: #553d81;
+  color: #fff !important;
+}
+
+.button-search {
+  padding: 0px 0px;
+  height: 37px;
+  min-width: 130px;
+  background: #553d81 !important;
+}
+
+.cboCanal,
+:host ::ng-deep .filter select,
+:host ::ng-deep select#ChannelSalesSelect {
+  height: 36px;
+}
+:host ::ng-deep .filter-puntoventa span {
+  font-size: 12px !important;
+}
+
+.grid table tr td button {
+  border: none;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 3px;
+  background: rgb(169, 157, 192);
+  color: #fff;
+  margin: 0 2px;
+  outline: none;
+  height: 30px;
+  width: 25px;
+}
+
+.grid table tr .flex {
+  display: flex;
+  justify-content: center;
+}
+
+select {
+  width: 100%;
+  border: none;
+  display: block;
+  padding: 8px 5px;
+  border: 1px solid rgb(146, 138, 163);
+  border-radius: 2px;
+  margin-top: 5px;
+  color: rgb(146, 138, 163);
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  height: 45px;
+  padding-left: 12px;
+  font-weight: 300;
+  color: #aa9ec0;
+  border: 1px solid #aa9ec0;
+}
+
+input[type="text"] {
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 36px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.titlemensajeinfo {
+  font-family: "Bliss Pro" !important;
+  font-size: 19px !important;
+  color: #2b0d61 !important;
+  font-weight: bold !important;
+  line-height: 28px !important;
+}
+.messageinfo {
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  color: #aa9ec0;
+  font-weight: 300;
+  height: 21px;
+  line-height: 21px;
+}
+
+.messageinfo span {
+  color: #2b0d61 !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 16px !important;
+}
+
+.header-content {
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 1px solid rgb(109, 99, 129);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+}
+
+.header-content .containt-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-content .header-item {
+  display: block;
+  padding: 5px 0;
+}
+
+.header-content .header-item .title {
+  color: #553d81;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.header-content .header-item .min-color button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+}
+
+.header-content .header-item .full-color button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #553d81;
+  color: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+}
+
+.header-content .header-item .full-color span {
+  color: #fff;
+}
+
+.header-content .header-item button:hover {
+  cursor: pointer;
+}
+
+.header-content .header-item button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600;
+  color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple {
+  background: #553d81;
+}
+
+.header-content .header-item .purple span {
+  color: #fff;
+}
+
+.header-content .rigth-item {
+  float: right;
+}
+
+.float-right {
+  margin-top: 10px;
+}
+
+::placeholder {
+  color: rgb(146, 138, 163);
+}
+
+.filter {
+  width: 100%;
+  border-bottom: 1px solid rgb(84, 61, 129);
+}
+
+.filter .filter-row {
+  width: 100%;
+  display: flex;
+}
+
+.filter .filter-row .filter-row-cell {
+  padding: 8px 5px;
+}
+
+.filter .filter-row .filter-row-cell span {
+  width: 100%;
+  color: #2b0d61;
+  display: block;
+  font-size: 14px;
+}
+
+.filter .filter-row .filter-row-cell input[type="text"] {
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 36px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.filter .filter-row .filter-row-cell input[type="date"] {
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 36px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.close-button {
+  min-width: initial;
+  font-size: initial;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  padding: 5px;
+  border: none !important;
+}
+
+.close-button span {
+  margin: auto;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: radio;
+  -moz-appearance: radio;
+  -ms-appearance: radio;
+  -o-appearance: radio;
+}
+
+.spanFecha {
+  margin-top: 10px;
+}
+
+.modal-header {
+  background: white !important;
+  padding: 15px !important;
+  border-bottom: 1.5px solid #d5cfdf !important;
+}
+
+.full-color-modal {
+  height: 36px;
+  width: 226px;
+  border-radius: 2px;
+  background-color: #ed6e00;
+  border: 1px solid #ed6e00;
+}
+
+.full-color-modal span {
+  height: 19px;
+  width: 170px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+}
+
+.modal-body .message {
+  height: 90px;
+}
+
+.button-modal {
+  border-top: 1.5px solid #d5cfdf !important;
+  border-radius: 0 0 6px 6px !important;
+  background-color: #ffffff !important;
+  margin-top: 5px;
+  padding-top: 15px;
+  margin-bottom: 0 !important;
+}
+
+.button-close {
+  border: 1px solid #ed6e00 !important;
+}
+.button-close span {
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  color: #ed6e00 !important;
+}
+
+.bHideBody {
+  display: none;
+}
+
+.bHideHeader {
+  border: none !important;
+}
+
+.filter-text {
+  font-size: 11px !important;
+}
+
+.fila-search {
+  margin-top: -20px !important;
+  margin-right: -1px;
+}

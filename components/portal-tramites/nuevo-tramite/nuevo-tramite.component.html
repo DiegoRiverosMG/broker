@@ -1,0 +1,1040 @@
+<div class="container-fluid content-all">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-sm-12 col-lg-9">
+      <form class="container-fluid px-4 py-4" [formGroup]="form">
+        <div class="header-content pb-4">
+          <div class="containt-item">
+            <div class="header-item px-0 py-0 mx-0 my-0">
+              <span class="title">Endosos: Nuevo Trámite</span>
+            </div>
+          </div>
+          <button class="btn-primary-u ps-button-max-width" (click)="back()">
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+            Atrás
+          </button>
+        </div>
+        <div class="filter filterDe mp-group">
+          <div>
+            <div class="col-lg-12 mgBt">
+              <div class="tooltip-container">
+                <button
+                  class="buttonEdit"
+                  [disabled]="!validateEditPolicy()"
+                  (click)="isEditValid ? (editPolicy = true) : ''"
+                  *ngIf="!editPolicy"
+                >
+                  <i
+                    class="fa fa-pencil"
+                    aria-hidden="true"
+                    style="margin-right: 7px"
+                  ></i>
+                  Editar
+                </button>
+                <ng-container *ngIf="messageInvalidEdit.length">
+                  <div class="tooltip">
+                    <div *ngFor="let item of messageInvalidEdit" class="p-1">
+                      {{ item }}
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              <button
+                *ngIf="editPolicy"
+                class="buttonEdit"
+                (click)="cancelPolicy()"
+              >
+                Cancelar
+              </button>
+              <button
+                class="buttonEdit"
+                (click)="savePolicy()"
+                *ngIf="editPolicy"
+                style="background-color: #592f59; color: white"
+              >
+                <i
+                  class="fa fa-floppy-o"
+                  aria-hidden="true"
+                  style="margin-right: 7px; color: white !important"
+                ></i>
+                Guardar
+              </button>
+              <span class="text-Style proLeft"
+                >Datos de la Póliza: {{ transactData$?.poliza }}</span
+              >
+            </div>
+          </div>
+          <div>
+            <p class="pb-4">
+              Para cambios en la vigencia de la póliza comuníquese a
+              <span class="info-mail-edit"
+                >soatoperaciones@protectasecurity.pe</span
+              >
+            </p>
+          </div>
+          <div class="col-lg-12" formGroupName="policy">
+            <!-- *NEW DESIGN -->
+            <section class="grp" [class.policy-edit-mode]="editPolicy">
+              <div class="grp__info grp-validity">
+                <span class="grp__info--item">Vigencia</span>
+                <ng-container *ngIf="!editPolicy">
+                  <span
+                    class="grp__info--item"
+                    [class.value-change]="isValueChange('startValidity')"
+                  >
+                    {{
+                      procedureNewValues?.startValidity | date : "dd/MM/yyyy"
+                    }}
+                    -
+                    {{ procedureNewValues?.endValidity | date : "dd/MM/yyyy" }}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="editPolicy">
+                  <div class="grp__info--input">
+                    <label
+                      for="grp-startdate"
+                      class="placeholder-u"
+                      aria-placeholder="Inicio"
+                    >
+                      <input
+                        type="text"
+                        id="grp-startdate"
+                        class="input-u"
+                        #dp="bsDatepicker"
+                        bsDatepicker
+                        readonly
+                        [bsConfig]="datePickerConfig"
+                        formControlName="startValidity"
+                      />
+                    </label>
+                    <span class="grp__info--item end-date-span"
+                      >Fin:
+                      {{
+                        formPolicyControl["endValidity"].value
+                          | date : "dd/MM/yyyy"
+                      }}
+                    </span>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="grp__info grp-validity">
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="
+                    changePremium !== 0 &&
+                    changePremium != formPolicyControl['premium'].value
+                  "
+                  >Prima</span
+                >
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="
+                    changePremium !== 0 &&
+                    changePremium != formPolicyControl['premium'].value
+                  "
+                  [title]="procedureNewValues?.premium"
+                >
+                  S/ {{ procedureNewValues?.premium | number : "1.2-2" }}
+                </span>
+              </div>
+              <ng-container
+                *ngIf="
+                  !editPolicy &&
+                  changePremium !== 0 &&
+                  changePremium != formPolicyControl['premium'].value
+                "
+              >
+                <div></div>
+                <div class="grp__info grp-validity">
+                  <span class="grp__info--item">Prima vigente</span>
+                  <span
+                    class="grp__info--item"
+                    [title]="procedureNewValues?.prima"
+                  >
+                    S/ {{ procedureCurrentValues?.premium | number : "1.2-2" }}
+                  </span>
+                </div>
+              </ng-container>
+              <div class="grp__info grp-validity">
+                <span class="grp__info--item">Canal de Venta</span>
+                <span
+                  class="grp__info--item channel-desc"
+                  [class.value-change]="isValueChange('channelSale')"
+                  [title]="procedureNewValues?.channelSale"
+                >
+                  {{ procedureNewValues?.channelSale }}
+                </span>
+              </div>
+            </section>
+          </div>
+          <div
+            class="alertDiv bg-content-alert"
+            *ngIf="
+              changePremium > formPolicyControl['premium'].value &&
+              changePremium !== 0
+            "
+          >
+            <div class="filter-row">
+              <i
+                class="fa fa-exclamation-triangle mr-2"
+                aria-hidden="true"
+                style="color: red !important"
+              >
+              </i>
+              <span style="color: red">
+                Se detectó un incremento en la prima, no se puede proceder con
+                la modificación. Por favor consulte el proceso de anulación a
+                soatoperaciones@protectasecurity.pe
+              </span>
+            </div>
+          </div>
+          <div
+            class="alertDiv bg-content-alert"
+            *ngIf="procedureNewValues.premium == 0"
+          >
+            <div class="filter-row">
+              <i
+                class="fa fa-exclamation-triangle mr-2"
+                aria-hidden="true"
+                style="color: red !important"
+              >
+              </i>
+              <span style="color: red">
+                No se encontró una prima configurada para los datos enviados.
+                Por favor comuníquese con soatoperaciones@protectasecurity.pe
+                para la evaluación de su requerimiento
+              </span>
+            </div>
+          </div>
+          <div
+            class="alertDiv"
+            *ngIf="
+              changePremium < formPolicyControl['premium'].value &&
+              changePremium !== 0
+            "
+          >
+            <div class="filter-row">
+              <i
+                class="fa fa-exclamation-circle mr-2"
+                aria-hidden="true"
+                style="color: orange !important"
+              ></i>
+              <span style="color: orange"
+                >Se detectó una variación en la prima. Puede continuar con su
+                solicitud, pero tenga en cuenta que no se realizará una
+                devolución por la diferencia. Por favor, comuníquese con
+                soatoperaciones@protectasecurity.pe
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter filterB mp-group" formGroupName="auto">
+          <div class="col-lg-12 mgBt">
+            <div class="tooltip-container">
+              <button
+                class="buttonEdit"
+                [disabled]="!validateProcedure()"
+                (click)="isEditAuto()"
+                *ngIf="!editAuto"
+              >
+                <i
+                  class="fa fa-pencil"
+                  aria-hidden="true"
+                  style="margin-right: 7px"
+                ></i>
+                Editar
+              </button>
+              <ng-container *ngIf="messageInvalidProcedure.length">
+                <div class="tooltip">
+                  <div class="p-1">{{ messageInvalidProcedure }}</div>
+                </div>
+              </ng-container>
+            </div>
+            <button *ngIf="editAuto" class="buttonEdit" (click)="cancelAuto()">
+              Cancelar
+            </button>
+            <button
+              class="buttonEdit"
+              (click)="saveAuto()"
+              *ngIf="editAuto"
+              [disabled]="formAuto.invalid"
+              style="background-color: #592f59; color: white"
+            >
+              <i
+                class="fa fa-floppy-o"
+                aria-hidden="true"
+                style="margin-right: 7px; color: white !important"
+              ></i>
+              Guardar
+            </button>
+            <span class="text-Style proLeft">Datos del Vehículo</span>
+          </div>
+          <div class="col-lg-12">
+            <div class="grp">
+              <div class="grp__info">
+                <span class="grp__info--item">Placa</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('licensePlate')"
+                  pattern="[a-zA-Z0-9-]"
+                >
+                  {{ procedureNewValues?.licensePlate }}
+                </span>
+                <input
+                  type="text"
+                  class="input-u"
+                  [class.input-error]="formAutoControl['licensePlate'].errors"
+                  formControlName="licensePlate"
+                  *ngIf="editAuto"
+                  [maxlength]="7"
+                />
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Nro. de serie</span>
+                <span
+                  class="grp__info--item"
+                  [title]="procedureNewValues?.serialNumber"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('serialNumber')"
+                >
+                  {{ procedureNewValues?.serialNumber }}
+                </span>
+                <input
+                  type="text"
+                  class="input-u"
+                  formControlName="serialNumber"
+                  [class.input-error]="formAutoControl['serialNumber'].errors"
+                  maxlength="30"
+                  *ngIf="editAuto"
+                />
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Marca</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('brand')"
+                >
+                  {{ procedureNewValues?.brandDesc }}
+                </span>
+                <select
+                  class="input-u"
+                  formControlName="brand"
+                  [class.input-error]="formAutoControl['brand'].errors"
+                  *ngIf="editAuto"
+                >
+                  <option [value]="null" disabled selected hidden>
+                    SELECCIONE
+                  </option>
+                  <option
+                    *ngFor="let data of autoBrands$"
+                    [value]="data.brandId"
+                  >
+                    {{ data.desc }}
+                  </option>
+                </select>
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Modelo</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('versionDesc')"
+                >
+                  {{ procedureNewValues?.versionDesc }}
+                </span>
+                <select
+                  class="input-u"
+                  formControlName="versionDesc"
+                  [class.input-error]="formAutoControl['versionDesc'].errors"
+                  *ngIf="editAuto"
+                >
+                  <option [value]="null" disabled selected hidden>
+                    SELECCIONE
+                  </option>
+                  <option *ngFor="let data of autoModels$" [value]="data.desc">
+                    {{ data.desc }}
+                  </option>
+                </select>
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Clase</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('class')"
+                >
+                  {{ procedureNewValues?.classDesc }}
+                </span>
+                <select
+                  class="input-u"
+                  formControlName="class"
+                  [class.input-error]="formAutoControl['class'].errors"
+                  *ngIf="editAuto"
+                >
+                  <option [value]="null" disabled selected hidden>
+                    SELECCIONE
+                  </option>
+                  <option
+                    *ngFor="let data of autoClass$"
+                    [value]="data.classId"
+                  >
+                    {{ data.desc }}
+                  </option>
+                </select>
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Uso</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('use')"
+                >
+                  {{ procedureNewValues?.useDesc }}
+                </span>
+                <select
+                  class="input-u"
+                  formControlName="use"
+                  *ngIf="editAuto"
+                  [class.input-error]="formAutoControl['use'].errors"
+                >
+                  <option [value]="null" disabled selected hidden>
+                    SELECCIONE
+                  </option>
+                  <option *ngFor="let data of autoUses$" [value]="data.useId">
+                    {{ data.desc }}
+                  </option>
+                </select>
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Año</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('year')"
+                >
+                  {{ procedureNewValues?.year }}
+                </span>
+                <input
+                  type="text"
+                  class="input-u"
+                  id="year"
+                  formControlName="year"
+                  [class.input-error]="formAutoControl['year'].errors"
+                  *ngIf="editAuto"
+                  [maxlength]="4"
+                  min="1900"
+                />
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Asientos</span>
+                <span
+                  class="grp__info--item"
+                  *ngIf="!editAuto"
+                  [class.value-change]="isValueChange('seating')"
+                >
+                  {{ procedureNewValues?.seating }}
+                </span>
+                <input
+                  type="text"
+                  class="input-u"
+                  id="seating"
+                  formControlName="seating"
+                  [class.input-error]="formAutoControl['seating'].errors"
+                  *ngIf="editAuto"
+                  [maxlength]="2"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- ng-container *ngIf="!form.invalid">
+              <i></i><span>Necesitamos conocer tu placa</span>
+            </ng-container>
+            <ng-container *ngIf="fa['licensePlate'].errors.maxlength">
+              <i></i><span>Formato de placa inválido</span>
+            </ng-container>
+            <ng-container *ngIf="fa['licensePlate'].errors.moto"> -->
+          <!--  <i></i>
+              <span>
+                Protecta Security no comercializa SOAT para motos de uso particular,
+                ingresa a
+                <a class="error-msg" href="http://protectasecurity.pe/" target="_new">
+                  www.protectasecurity.pe
+                </a>
+                y conoce los seguros que tenemos para ti.
+              </span> -->
+          <!--  </ng-container> -->
+        </div>
+        <div class="filter filterDe mp-group">
+          <div class="col-lg-12 mgBt">
+            <div class="tooltip-container">
+              <button
+                class="buttonEdit"
+                [disabled]="!validateProcedure()"
+                (click)="openModalProcedure()"
+              >
+                <i
+                  class="fa fa-pencil"
+                  aria-hidden="true"
+                  style="margin-right: 7px"
+                ></i>
+                Editar
+              </button>
+              <ng-container *ngIf="messageInvalidProcedure.length">
+                <div class="tooltip">
+                  <div class="p-1">
+                    {{ messageInvalidProcedure }}
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <span class="text-Style proLeft">Datos del contratante</span>
+          </div>
+          <div>
+            <p class="pb-4">
+              En este momento solo se permite cambio de correo o teléfono,
+              cualquier cambio adicional, por favor comuníquese con
+              <span class="info-mail-edit"
+                >soatoperaciones@protectasecurity.pe</span
+              >
+            </p>
+          </div>
+          <div class="col-lg-12">
+            <div class="grp">
+              <div class="grp__info">
+                <span class="grp__info--item">Documento</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="
+                    isValueChange('documentType') ||
+                    isValueChange('documentNumber')
+                  "
+                  >{{ getDocumentDesc(procedureNewValues?.documentType) }}
+                  -
+                  {{ procedureNewValues?.documentNumber }}</span
+                >
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Departamento</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('department')"
+                  >{{ getDepartmentDesc(procedureNewValues?.department) }}</span
+                >
+              </div>
+              <ng-container
+                *ngIf="procedureNewValues?.documentType == 1 && !isRucPerson"
+              >
+                <div class="grp__info grp-ruc">
+                  <span class="grp__info--item">Contratante</span>
+                  <span
+                    class="grp__info--item"
+                    [class.value-change]="isValueChange('legalName')"
+                    [title]="procedureNewValues?.legalName"
+                    >{{ procedureNewValues?.legalName }}</span
+                  >
+                </div>
+              </ng-container>
+              <ng-container
+                *ngIf="procedureNewValues?.documentType != 1 || isRucPerson"
+              >
+                <div class="grp__info grp-names">
+                  <span class="grp__info--item">Nombres</span>
+                  <span
+                    class="grp__info--item"
+                    [class.value-change]="isValueChange('names')"
+                    >{{ procedureNewValues?.names }}</span
+                  >
+                </div>
+                <div class="grp__info grp-lm1">
+                  <span class="grp__info--item">Apellido Paterno</span>
+                  <span
+                    class="grp__info--item"
+                    [class.value-change]="isValueChange('apePat')"
+                    >{{ procedureNewValues?.apePat }}</span
+                  >
+                </div>
+                <div class="grp__info grp-lm2">
+                  <span class="grp__info--item">Apellido Materno</span>
+                  <span
+                    class="grp__info--item"
+                    [class.value-change]="isValueChange('apeMat')"
+                    >{{ procedureNewValues?.apeMat }}</span
+                  >
+                </div>
+              </ng-container>
+              <div class="grp__info">
+                <span class="grp__info--item">Provincia</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('province')"
+                  >{{ getProvinceDesc(procedureNewValues?.province) }}</span
+                >
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Dirección</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('address')"
+                  [title]="procedureNewValues?.address"
+                  >{{ procedureNewValues?.address }}</span
+                >
+              </div>
+              <div
+                class="grp__info"
+                [class.grp-district]="
+                  procedureNewValues?.documentType != 1 || isRucPerson
+                "
+              >
+                <span class="grp__info--item">Distrito</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('district')"
+                  >{{ getDistrictDesc(procedureNewValues?.district) }}</span
+                >
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Nro. Celular</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('cellPhone')"
+                  >{{ procedureNewValues?.cellPhone }}</span
+                >
+              </div>
+              <div class="grp__info">
+                <span class="grp__info--item">Correo Electrónico</span>
+                <span
+                  class="grp__info--item"
+                  [class.value-change]="isValueChange('email')"
+                  [title]="procedureNewValues?.email"
+                  >{{ procedureNewValues?.email }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="filter filterDe mp-group content-attachments"
+          formArrayName="files"
+        >
+          <table class="table tbl" style="margin: 0px">
+            <thead>
+              <tr class="bColor">
+                <th>Tipo de documento</th>
+                <th>Obligatorio</th>
+                <th>Documento</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!formArrayFiles.controls.length">
+                <tr>
+                  <td colspan="4">No se encontraron resultados</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="formArrayFiles.controls.length">
+                <tr
+                  *ngFor="
+                    let item of formArrayFiles.controls;
+                    let index = index
+                  "
+                >
+                  <ng-container [formGroupName]="index">
+                    <td>{{ item.get("description").value }}</td>
+                    <td>{{ item.get("required").value ? "Si" : "No" }}</td>
+                    <td
+                      class="file-name"
+                      [attr.title]="item.get('fileName').value || '-'"
+                    >
+                      {{ item.get("fileName").value || "-" }}
+                    </td>
+                    <td>
+                      <input
+                        type="file"
+                        formControlName="file"
+                        [id]="'file-policy-' + index"
+                        hidden
+                        (change)="uploadFile($event, index)"
+                      />
+                      <label
+                        class="button_file"
+                        [attr.for]="'file-policy-' + index"
+                        *ngIf="!item.get('file').value"
+                      >
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        Adjuntar archivo
+                      </label>
+                      <button
+                        class="closeMin"
+                        (click)="dropFile(index)"
+                        *ngIf="item.get('file').value"
+                        title="Eliminar"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <small class="has-error" *ngIf="messageErrorFileUploaded">
+            {{ messageErrorFileUploaded }}
+          </small>
+        </div>
+        <div class="modal__footer">
+          <button
+            class="buttonSend"
+            (click)="openConfirModal()"
+            [disabled]="invalidForm"
+          >
+            Generar trámite
+          </button>
+        </div>
+        <ng-template #mostrarPaginado>
+          <div></div>
+        </ng-template>
+        <ng-template #ocultarPaginado>
+          <div class="row">
+            <div class="col-xs-12 col-12">
+              <pagination
+                [totalItems]="totalItems"
+                [itemsPerPage]="itemsPerPage"
+                [rotate]="rotate"
+                [maxSize]="maxSize"
+                [(ngModel)]="currentPage"
+                (pageChanged)="pageChanged($event)"
+              >
+              </pagination>
+            </div>
+          </div>
+        </ng-template>
+      </form>
+    </div>
+  </div>
+</div>
+<iframe id="ifrmPdf" name="ifrmPdf" style="display: none"></iframe>
+<ng-template #modalProcedure>
+  <div class="content-modal-u">
+    <section class="modal-u mec">
+      <div class="modal__header">
+        <h2 class="modal__header--title">Editar Contratante</h2>
+        <button class="modal__header--close" (click)="cancelContractor()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body" [formGroup]="form">
+        <div
+          class="u-modal__body--form"
+          formGroupName="contractor"
+          [class.is-ruc]="formContractorControl['documentType'].value == 1"
+        >
+          <div class="dbl-in">
+            <label class="placeholder-u inside" for="documentType">
+              <select
+                class="input-u"
+                id="documentType"
+                formControlName="documentType"
+                [class.input-error]="
+                  formContractorControl['documentType'].errors
+                "
+              >
+                <option value="1">RUC</option>
+                <option value="2">DNI</option>
+                <option value="4">CE</option>
+              </select>
+            </label>
+            <label
+              class="placeholder-u inside"
+              [class.placeholder-active-u]="
+                formContractorControl['documentNumber'].value
+              "
+              for="numeroDocumento"
+              aria-placeholder="Número de documento"
+            >
+              <input
+                type="text"
+                class="input-u"
+                [class.input-error]="
+                  formContractorControl['documentNumber'].errors
+                "
+                id="numeroDocumento"
+                (blur)="getInfoDocument()"
+                formControlName="documentNumber"
+                [minlength]="limitDocumentNumber.min"
+                [maxlength]="limitDocumentNumber.max"
+              />
+            </label>
+          </div>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="
+              formContractorControl['department'].value
+            "
+            aria-placeholder="Departamento"
+          >
+            <select
+              class="input-u"
+              formControlName="department"
+              [class.input-error]="formContractorControl['department'].errors"
+            >
+              <option [value]="null" disabled selected hidden></option>
+              <option *ngFor="let data of departments$" [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="
+              formContractorControl['legalName'].value
+            "
+            for="razonSocial"
+            aria-placeholder="Razón Social"
+            *ngIf="
+              formContractorControl['documentType'].value == 1 && !isRucPerson
+            "
+          >
+            <input
+              type="text"
+              class="input-u"
+              [class.input-error]="formContractorControl['legalName'].errors"
+              id="razonSocial"
+              [maxlength]="60"
+              formControlName="legalName"
+            />
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="formContractorControl['names'].value"
+            for="nombresCliente"
+            aria-placeholder="Nombres"
+            *ngIf="
+              formContractorControl['documentType'].value != 1 || isRucPerson
+            "
+          >
+            <input
+              type="text"
+              id="nombresCliente"
+              class="input-u"
+              [minlength]="3"
+              [maxlength]="20"
+              [class.input-error]="formContractorControl['names'].errors"
+              formControlName="names"
+            />
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="
+              formContractorControl['province'].value
+            "
+            aria-placeholder="Provincia"
+          >
+            <select
+              class="input-u"
+              formControlName="province"
+              [class.input-error]="formContractorControl['province'].errors"
+            >
+              <option [value]="null" disabled selected hidden></option>
+              <option
+                *ngFor="let data of provinces$"
+                [value]="data.idProvincia"
+              >
+                {{ data.provincia }}
+              </option>
+            </select>
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="formContractorControl['apePat'].value"
+            for="apellidoPaterno"
+            aria-placeholder="Apellido Paterno"
+            *ngIf="
+              formContractorControl['documentType'].value != 1 || isRucPerson
+            "
+          >
+            <input
+              type="text"
+              class="input-u"
+              [class.input-error]="formContractorControl['apePat'].errors"
+              id="apellidoPaterno"
+              [minlength]="3"
+              [maxlength]="20"
+              formControlName="apePat"
+            />
+          </label>
+          <label
+            class="placeholder-u inside in-district"
+            [class.placeholder-active-u]="
+              formContractorControl['district'].value
+            "
+            aria-placeholder="Distrito"
+          >
+            <select
+              class="input-u"
+              formControlName="district"
+              [class.input-error]="formContractorControl['district'].errors"
+            >
+              <option [value]="null" disabled selected hidden></option>
+              <option *ngFor="let data of districts$" [value]="data.idDistrito">
+                {{ data.distrito }}
+              </option>
+            </select>
+          </label>
+          <label
+            class="placeholder-u inside in-email"
+            [class.placeholder-active-u]="formContractorControl['email'].value"
+            for="email"
+            aria-placeholder="Correo Electrónico"
+          >
+            <input
+              type="text"
+              id="email"
+              [class.input-error]="formContractorControl['email'].errors"
+              class="input-u"
+              [maxlength]="60"
+              formControlName="email"
+            />
+          </label>
+          <label
+            class="placeholder-u inside in-apeMat"
+            [class.placeholder-active-u]="formContractorControl['apeMat'].value"
+            for="apellidoMaterno"
+            aria-placeholder="Apellido Materno"
+            *ngIf="
+              formContractorControl['documentType'].value != 1 || isRucPerson
+            "
+          >
+            <input
+              type="text"
+              class="input-u"
+              [class.input-error]="formContractorControl['apeMat'].errors"
+              id="apellidoMaterno"
+              [minlength]="3"
+              [maxlength]="20"
+              formControlName="apeMat"
+            />
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="
+              formContractorControl['cellPhone'].value
+            "
+            for="numeroCelular"
+            aria-placeholder="Número de Celular"
+          >
+            <input
+              type="text"
+              id="numeroCelular"
+              [class.input-error]="formContractorControl['cellPhone'].errors"
+              class="input-u"
+              [minlength]="9"
+              [maxlength]="9"
+              formControlName="cellPhone"
+            />
+          </label>
+          <label
+            class="placeholder-u inside"
+            [class.placeholder-active-u]="
+              formContractorControl['address'].value
+            "
+            for="direccion"
+            aria-placeholder="Dirección"
+          >
+            <input
+              id="direccion"
+              class="input-u"
+              [minlength]="3"
+              [maxlength]="80"
+              formControlName="address"
+              [class.input-error]="formContractorControl['address'].errors"
+            />
+          </label>
+          <!-- <div class="government content-checkbox-u">
+              <input
+                type="checkbox"
+                id="cgb1"
+                class="checkbox-u"
+                formControlName="isGovernment"
+              />
+              <label for="cgb1" class="checkbox-label-u center orange"
+                >¿Es cliente del estado?</label
+              >
+            </div> -->
+        </div>
+        <!-- <small class="hasError" #formClienteError></small> -->
+      </div>
+      <div class="modal__footer">
+        <button
+          role="buton"
+          class="btn-secondary-u"
+          (click)="cancelContractor()"
+        >
+          Cancelar
+        </button>
+        <button
+          tittle="Guardar"
+          role="button"
+          class="btn-primary-u"
+          (click)="saveContractor()"
+          [disabled]="invalidFormContractor"
+        >
+          Guardar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalConfirProcedure>
+  <div class="content-modal-u">
+    <div class="modal-u mp">
+      <div class="col-lg-12" style="text-align: center; height: 82px">
+        <span class="modal__header--title">Nuevo Trámite</span>
+      </div>
+      <div class="col-lg-12" style="text-align: center; margin-bottom: 2rem">
+        <span class="newSubModal"
+          >¿Estás seguro que deseas generar nuevo trámite?</span
+        >
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn-secondary-u" (click)="closeModal()">Cancelar</button>
+        <button class="btn-primary-u" (click)="generateTransact()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalMessage>
+  <div class="content-modal-u">
+    <div class="modal-u ms">
+      <div class="moda__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <img
+          src="assets/backoffice/check-success.png"
+          alt="success icon"
+          width="120"
+          height="120"
+          class="success-icon"
+          *ngIf="responseSuccess"
+        />
+        <p class="paragraph">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u" (click)="closeModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

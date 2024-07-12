@@ -1,0 +1,110 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">
+        Tasas
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('dismiss')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+
+        <div class="filter">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <span>Póliza</span>
+                            <input type="text" placeholder="0" maxlength="10" [(ngModel)]="inputsRate.NPOLICY"
+                                OnlyNumberDirective [disabled]="controlDisabled" (keyup)="polizaKeyPress($event)" />
+                        </div>
+                        <div class="col-sm-6">
+                            <span>&nbsp;</span>
+                            <div class="row pull-right">
+                                <button (click)="addRate('INS')" class="full-color" *ngIf="SMODEFORM !='Consult'">
+                                    <span>Agregar</span>
+                                </button>
+                            </div>
+                            <div class="col text-right">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="grid form-group">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class="grid-title">
+                            <td class="grid-title-item" style="text-align: left;">Código</td>
+                            <td class="grid-title-item" style="text-align: left;">Mes Inicial</td>
+                            <td class="grid-title-item">Mes Final</td>
+                            <td class="grid-title-item">Porcentaje</td>
+                            <td class="grid-title-item">Monto Fijo</td>
+                            <td class="grid-title-item" style="text-align: left;">Moneda</td>
+                            <td class="grid-title-item">Póliza</td>
+                            <td colspan="2" class="column-icon">Acción</td>
+                        </tr>
+                    </thead>
+                    <div *ngIf="listToShow.length > 0; then showGrid else hideGrid"></div>
+                </table>
+                <ng-template #hideGrid>
+                    <tbody>
+                        <tr>
+                            <td colspan="7">No se encontraron registros</td>
+                        </tr>
+                    </tbody>
+                </ng-template>
+                <ng-template #showGrid>
+                    <tbody>
+                        <tr *ngFor="let item of listToShow; let row_no = index">
+                            <td style="text-align: left;"> {{ item.SRECHARGETYPE }} </td>
+                            <td> {{ item.NMONTHI }} </td>
+                            <td> {{ item.NMONTHE }} </td>
+                            <td> {{ item.NPERCENT }} </td>
+                            <td> {{ item.NAMOUNT }} </td>
+                            <td style="text-align: left;"> {{ item.SCURRENCY }} </td>
+                            <td> {{ item.NPOLICY }} </td>
+                            <td class="column-icon">
+                                <a (click)="edit(item, 'UPD')">
+                                    <img alt="Editar" src="assets/icons/editar.png" title="Editar"
+                                        style="cursor: pointer;height: 24px;width: 24px">
+                                </a>
+                            </td>
+                            <td class="column-icon">
+                                <a (click)="anular(item)">
+                                    <img alt="Anular" src="assets/icons/anular.png" title="Anular"
+                                        style="cursor: pointer;height: 24px;width: 24px">
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </ng-template>
+            </div>
+            <ng-container *ngIf="coverRateList.length>0; then showPagination"></ng-container>
+            <ng-template #showPagination>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="reference.close()">
+        <span *ngIf="SMODEFORM =='Consult'">Salir</span>
+        <span *ngIf="SMODEFORM !='Consult'">Cancelar</span>
+    </button>
+    <button (click)="eventSave();reference.close('save')" class="full-color2" *ngIf="SMODEFORM !='Consult'">
+        <span> Aplicar </span>
+    </button>
+</div>

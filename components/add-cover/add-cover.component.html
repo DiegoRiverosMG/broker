@@ -1,0 +1,455 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content mb-3">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Cobertura</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse-list">
+            <div>
+                <input class="collapse-open " type="checkbox" id="cotizador" />
+                <label class="collapse-btn title" for="cotizador">INFORMACIÓN GENERAL DE LA COBERTURA</label>
+                <div class="collapse-panel">
+                    <div class="collapse-inner collapse-border">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Descripción (*)</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="DESCRIPCIÓN"
+                                    maxlength="120" OnlyTextSpaceJustDirective class="normalText"
+                                    [(ngModel)]="inputsCover.SDESCRIPT" (click)="clearValidate(0)"
+                                    (focus)="clearValidate(0)" [ngClass]="{'error-validate': inputsValidate[0]}" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Des. Abreviada (*)</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="DESCRIPCIÓN ABREVIADA"
+                                    maxlength="30" OnlyTextSpaceDotDirective class="normalText"
+                                    [(ngModel)]="inputsCover.SSHORT_DES" (click)="clearValidate(1)"
+                                    (focus)="clearValidate(1)" [ngClass]="{'error-validate': inputsValidate[1]}" />
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Rescate</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="RESCATE" maxlength="12"
+                                    OnlyTextNumberJustDirective [(ngModel)]="inputsCover.SROUSURRE" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Reserva matemática</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="RESERVA MATEMÁTICA"
+                                    maxlength="12" OnlyTextNumberJustDirective [(ngModel)]="inputsCover.SROURESER" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Condicionado</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="CONDICIONADO"
+                                    maxlength="30" OnlyTextNumberJustDirective [(ngModel)]="inputsCover.SCONDSVS" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Clasificación</span>
+                                <select class="minimal" [disabled]="controlDisabled" id="cboClasificacion">
+                                    <option value="-1" selected>Seleccionar</option>
+                                    <option value="1">Básico</option>
+                                    <option value="3">Complementario</option>
+                                    <option value="2">Amplio</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Moneda (*)</span>
+                                <ng-select [items]="currencyList" bindLabel="SDESCRIPT" bindValue="NCODIGINT"
+                                    [(ngModel)]="inputsCover.NCURRENCY" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[9]}"
+                                    (click)="clearValidate(9)" (focus)="clearValidate(9)">
+                                </ng-select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>Tipo</span>
+                                <ng-select [items]="coverTypeList" bindLabel="SDESCRIPT" bindValue="SCODIGINT"
+                                    [(ngModel)]="inputsCover.SINSURINI" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onInformated($event)" [(ngModel)]="isInformated">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Informar a prestador de servicios
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">RAMOS PARA INTERFACES</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Contabilidad (*)</span>
+                                <ng-select [items]="contabilityList" bindLabel="SDESCRIPT" bindValue="NBRANCH_LED"
+                                    [(ngModel)]="inputsCover.NBRANCH_LED" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[4]}"
+                                    (click)="clearValidate(4)" (focus)="clearValidate(4)">
+                                </ng-select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>Reaseguro (*)</span>
+                                <ng-select [items]="reinsuranceList" bindLabel="SDESCRIPT" bindValue="NBRANCH_REI"
+                                    [(ngModel)]="inputsCover.NBRANCH_REI" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[5]}"
+                                    (click)="clearValidate(5)" (focus)="clearValidate(5)">
+                                </ng-select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>Clasificación SVS (*)</span>
+                                <ng-select [items]="clasificationList" bindLabel="SDESCRIPT" bindValue="NBRANCH_EST"
+                                    [(ngModel)]="inputsCover.NBRANCH_EST" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[6]}"
+                                    (click)="clearValidate(6)" (focus)="clearValidate(6)">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Genérico (*)</span>
+                                <ng-select [items]="genericList" bindLabel="SDESCRIPT" bindValue="NBRANCH_GEN"
+                                    [(ngModel)]="inputsCover.NBRANCH_GEN" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[7]}"
+                                    (click)="clearValidate(7)" (focus)="clearValidate(7)">
+                                </ng-select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>Tipo de siniestro (*)</span>
+                                <ng-select [items]="sinisterList" bindLabel="SDESCRIPT" bindValue="NCLA_LI_TYP"
+                                    [(ngModel)]="inputsCover.NCLA_LI_TYP" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados"
+                                    [disabled]="controlDisabled" [ngClass]="{'error-validate': inputsValidate[8]}"
+                                    (click)="clearValidate(8)" (focus)="clearValidate(8)">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse-list">
+            <div>
+                <input class="collapse-open " type="checkbox" id="cotizador" />
+                <label class="collapse-btn title" for="cotizador">CONDICIONES DEL CAPITAL, PRIMA Y SINIESTROS</label>
+                <div class="collapse-panel">
+                    <div class="collapse-inner collapse-border">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">CAPITAL</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onCapitalPremium($event)" [(ngModel)]="isCapitalPremium">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Capital en función de la prima
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <select class="minimal" [disabled]="controlDisabled" id="cboCapitalPrima"
+                                    (change)="SelectCapitalPremium()">
+                                    <option value="-1" selected>Seleccionar</option>
+                                    <option value="2">Libre</option>
+                                    <option value="1">Fijo</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span style="visibility: hidden">&nbsp</span>
+                                <input id="txtCapitalPrima" type="text" placeholder="0.0"
+                                    [disabled]="controlCapitalPrimaDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.NCACALFIX" FloatDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">PRIMA</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onPremiumCapital($event)" [(ngModel)]="isPremiumCapital">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Prima en función del capital
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Rutina (*)</span>
+                                <input type="text" placeholder="RUTINA" [disabled]="controlDisabled"
+                                    [(ngModel)]="inputsCover.SROUPRCAL" maxlength="12" OnlyTextNumberJustDirective
+                                    (click)="clearValidate(2)" (focus)="clearValidate(2)"
+                                    [ngClass]="{'error-validate': inputsValidate[2]}" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Tasa</span>
+                                <input type="text" placeholder="TASA" [disabled]="controlDisabled" maxlength="15"
+                                    [(ngModel)]="inputsCover.NPREMIRAT" FloatDirective />
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">SINIESTROS</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Muerte</span>
+                                <input type="text" placeholder="MUERTE" [disabled]="controlDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.SCLDEATHI" OnlyTextNumberJustDirective />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Doble Indemnización</span>
+                                <input type="text" placeholder="DOBLE INDEMNIZACIÓN" [disabled]="controlDisabled"
+                                    maxlength="12" [(ngModel)]="inputsCover.SCLACCIDI" OnlyTextNumberJustDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Triple indemnización</span>
+                                <input type="text" placeholder="TRIPLE INDEMNIZACIÓN" [disabled]="controlDisabled"
+                                    maxlength="12" [(ngModel)]="inputsCover.SCLVEHACI" OnlyTextNumberJustDirective />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Supervivencia</span>
+                                <input type="text" placeholder="SUPERVIVENCIA" [disabled]="controlDisabled"
+                                    maxlength="12" [(ngModel)]="inputsCover.SCLSURVII" OnlyTextNumberJustDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Incapacidad</span>
+                                <input type="text" placeholder="INCAPACIDAD" [disabled]="controlDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.SCLINCAPI" OnlyTextNumberJustDirective />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Invalidez</span>
+                                <input type="text" placeholder="INVALIDEZ" [disabled]="controlDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.SCLINVALI" OnlyTextNumberJustDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Enfermedad</span>
+                                <input type="text" placeholder="ENFERMEDAD" [disabled]="controlDisabled"
+                                    [(ngModel)]="inputsCover.SCLILLNESS" OnlyTextNumberJustDirective />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="collapse-list">
+            <div>
+                <input class="collapse-open " type="checkbox" id="cotizador" />
+                <label class="collapse-btn title" for="cotizador">Definición de duración y condiciones de
+                    renovación</label>
+                <div class="collapse-panel">
+                    <div class="collapse-inner collapse-border">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="subtitle">SEGURO</div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="subtitle">PAGOS</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Seguro</span>
+                                <select class="minimal" [disabled]="controlDisabled" id="cboInsurance"
+                                    (change)="selectInsurance()">
+                                    <option value="-1" selected>Seleccionar</option>
+                                    <option value="1">Abierta</option>
+                                    <option value="1">Edad alcanzada</option>
+                                    <option value="1">Años</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <span>Cantidad</span>
+                                <input id="txtCantidadInsurance" type="text" placeholder="0"
+                                    [disabled]="controlSeguroDisabled" maxlength="5" [(ngModel)]="inputsCover.NDURATIND"
+                                    OnlyNumberDirective />
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>Pagos</span>
+                                <select class="minimal" [disabled]="controlDisabled" id="cboPays"
+                                    (change)="selectPagos()">
+                                    <option value="-1" selected>Seleccionar</option>
+                                    <option value="1">Abierta</option>
+                                    <option value="1">Edad alcanzada</option>
+                                    <option value="1">Años</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <span>Cantidad</span>
+                                <input type="text" placeholder="0" [disabled]="controlPagosDisabled" maxlength="5"
+                                    [(ngModel)]="inputsCover.NDURATPAY" OnlyNumberDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">RENOVACIÓN</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-sm-6">
+                                <span>Edad límite</span>
+                                <input type="text" placeholder="EDAD LÍMITE" [disabled]="controlDisabled"
+                                    [(ngModel)]="inputsCover.NAGEMAXI" OnlyNumberDirective maxlength="5" />
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onRenovable($event)" [(ngModel)]="isRenovable">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Renovable
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onRevalued($event)" [(ngModel)]="isRevalued">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Revalorizable
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="subtitle">CAPITAL</div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="subtitle">PRIMA</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Rutina (*)</span>
+                                <input type="text" placeholder="RUTINA" [disabled]="controlDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.SROUCHACA" (click)="clearValidate(3)"
+                                    (focus)="clearValidate(3)" [ngClass]="{'error-validate': inputsValidate[3]}"
+                                    OnlyTextNumberJustDirective />
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onAgeReached($event)" [(ngModel)]="isAgeReached">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Edad alcanzada
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>Rutina</span>
+                                <input type="text" placeholder="RUTINA" [disabled]="controlDisabled" maxlength="12"
+                                    [(ngModel)]="inputsCover.SROUCHAPR" OnlyTextNumberJustDirective />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+            <button (click)="back()">
+                <span>Cancelar</span>
+            </button>
+            <button *ngIf="inputsCover.SACCION !== 'QUE'" class="full-color" (click)="eventSave($event)"
+                [disabled]="controlDisabled">
+                <span>Guardar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

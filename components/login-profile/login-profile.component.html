@@ -1,0 +1,238 @@
+<div class="form-group row">
+  <div class="col-lg-3 section_navmenu">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9 main_body">
+    <div class="container-fluid">
+      <div class="form-group row row-title-principal">
+        <div class="col-sm-12 text-center title-princial">
+          Simulador de Canales
+          <span class="title-princial-gray"
+                *ngIf=false> {{ nombre }}</span>
+        </div>
+        <!-- <div class="col-12 text-center sub-title-princial">
+                    <div>
+                        <span class="main-wish">
+                            ¿Qué deseas vender hoy?
+                        </span>
+                    </div>
+                </div> -->
+        <div class="col-sm-12 text-center sub-title-secondary"
+             *ngIf=false>
+          <div>
+            <span class="main-wish-subtitle">
+              Seleccione el perfil con el que desea ingresar y luego el canal deseado
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+
+        <div *ngFor="let item of Profiles"
+             class="">
+          <div>
+            <input type="radio"
+                   id="rad_{{item.id}}"
+                   name="rad_perfil"
+                   value="{{item.id}}"
+                   (click)="setProfile(item)">
+            <span class="main-wish-subtitle radio-margin">
+              {{item.name}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row justify-content-center">
+
+        <div class="filter">
+          <div class="grid form-group">
+            <div class="form-group row filter-row">
+              <div class="col-sm-6 col-lg-6 filter-row-cell">
+                <input placeholder="Filtrar canales de venta"
+                       type="text"
+                       name="prima"
+                       id="prima"
+                       [(ngModel)]="searchtext"
+                       (keyup)="search($event.target.value)" />
+
+              </div>
+              <!-- <div class="col-sm-3 ">
+                <button (click)="commissions()"
+                        type="button"
+                        class="btn-compra active pull-right">
+                  Disp. Comisiones
+                </button>
+              </div> -->
+              <ng-container *ngIf="enableExportLeads">
+                <div class="col-sm-6 ">
+                  <button (click)="openModalLeads()"
+                          type="button"
+                          class="btn-compra active pull-right">
+                    Leads
+                  </button>
+                </div>
+              </ng-container>
+
+              <!-- <div class="col-sm-6 col-lg-6 filter-row-cell">
+                <button (click)="onLogin()"
+                        type="button"
+                        class="btn-compra active"
+                        [disabled]="disabledBtn">
+                  Ingresar
+                </button>
+              </div> -->
+            </div>
+
+            <div class="table-responsive">
+
+
+              <table class="table"
+                     fixed-header>
+                <thead>
+                  <tr class="grid-title">
+                    <td class="grid-title-item">Código</td>
+                    <td class="grid-title-item col-client-w">Canal</td>
+                    <td class="grid-title-item">Tipo</td>
+                    <td class="grid-title-item">Inicio Vigencia</td>
+                    <td class="grid-title-item">Ingresar</td>
+                  </tr>
+                </thead>
+                <div *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"></div>
+              </table>
+              <ng-template #mostrarGrilla>
+                <tbody>
+                  <tr>
+                    <td colspan="10">{{ msgErrorLista }}</td>
+                  </tr>
+                </tbody>
+              </ng-template>
+              <ng-template #ocultarGrilla>
+                <tbody>
+                  <tr *ngFor="let canal of listaCanales | paginate: { itemsPerPage: 10, currentPage: p }">
+                    <td>{{ canal.codigoCanal }}</td>
+                    <td class="col-client col-client-w">{{ canal.cliente }}</td>
+                    <td>{{ canal.tipoCanal }}</td>
+                    <td>{{ this.datePipe.transform(canal.inicioVigencia,"dd/MM/yyyy") }}</td>
+                    <td>
+                      <a *ngIf="!disabledBtn"
+                         (click)="setChanel(canal)">
+                        <i title="Ingresar"
+                           style="cursor: pointer; color: #ff6e00; margin-left: 3px;"
+                           class="fa fa-arrow-right fa-lg"></i>
+                      </a>
+
+                      <a *ngIf="disabledBtn">
+                        <i title="Por favor seleccione un perfil"
+                           style="cursor: pointer; color: #e2e2e2; margin-left: 3px;"
+                           class="fa fa-arrow-right fa-lg"></i>
+                      </a>
+
+
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-template>
+
+              <pagination-controls class="my-pagination"
+                                   (pageChange)="p = $event"
+                                   autoHide="true"
+                                   responsive="true"
+                                   previousLabel="Anterior"
+                                   nextLabel="Siguiente"
+                                   screenReaderPaginationLabel="Paginación"
+                                   screenReaderPageLabel="pagina"
+                                   screenReaderCurrentLabel="Estás en la pagina"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="form-group row row-title-principal">
+        <div class="col-12 text-center div-btn">
+          <div>
+            <button (click)="doLogout()"
+                    type="button"
+                    class="btn-compra active">
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+</div>
+
+<div bsModal
+     #childModalLeads="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header"
+           [ngClass]="{ bHideHeader: bHideBody }">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          Reporte Leads
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="closeModalLeads()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message"
+             [ngClass]="{ bHideBody: bHideBody }">
+          <div class="col-lg-12 contenido-modal"
+               id="msjEmail">
+            <select class="form-control browser-default custom-select"
+                    id="form-field-select-1"
+                    name="leadType"
+                    [(ngModel)]="leadType">
+              <option value=""
+                      selected>Seleccionar Lead</option>
+              <option value="1">Soat</option>
+              <option value="2">Vida Ley</option>
+              <option value="3">Accidentes Personales</option>
+            </select>
+            <input placeholder="Fecha inicio - fin"
+                   type="text"
+                   class="form-control"
+                   #drp="bsDaterangepicker"
+                   bsDaterangepicker
+                   [(ngModel)]="bsRangeValue"
+                   [bsConfig]="bsConfig" />
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-sm-6 col-lg-6 filter-row-cell">
+            <button style="min-width: 100%;"
+                    class="btn-compra"
+                    (click)="getLeads()">
+              <span>Descargar</span>
+            </button>
+
+          </div>
+          <div class="col-sm-6 ">
+            <button style="min-width: 100%;"
+                    class="btn-secundary"
+                    (click)="closeModalLeads()">
+              <span>Cerrar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

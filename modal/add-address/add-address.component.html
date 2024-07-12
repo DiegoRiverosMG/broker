@@ -1,0 +1,129 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{txtAccion}}</h4>
+  <input type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')" value="&times;" />
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <input type="hidden" class="form-control" [(ngModel)]="inputsStreet.P_NROW">
+    <div class="row">
+      <div class="col-sm-12">
+        <span>TIPO DE DIRECCIÓN (*)</span>
+        <ng-select [items]="directionTypeList" class="border-ng" (change)="onSelectDirectionType($event)" bindLabel="SDESCRIPT" bindValue="SRECTYPE"
+          [(ngModel)]="inputsStreet.P_SRECTYPE" [clearable]="true" placeholder="Seleccionar" [ngClass]="{'error-validate': inputsValidate[0]}" (click)="clearValidate(0)"
+          dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <span>TIPO DE VÍA (*)</span>
+        <ng-select [items]="roadTypeList" class="border-ng" (change)="onSelectRoadType($event)" bindLabel="SDESCRIPT" bindValue="STI_DIRE"
+          [(ngModel)]="inputsStreet.P_STI_DIRE" [clearable]="true" [ngClass]="{'error-validate': inputsValidate[1]}" (click)="clearValidate(1)"
+          placeholder="Seleccionar" dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div class="col-sm-6">
+        <span>DIRECCIÓN (*)</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SNOM_DIRECCION" maxlength="60" [ngClass]="{'error-validate': inputsValidate[2]}" (click)="clearValidate(2)" (keypress)="textValidate($event, 3)" />
+      </div>
+      <div class="col-sm-3">
+        <span>NÚMERO (*)</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SNUM_DIRECCION" maxlength="4" [ngClass]="{'error-validate': inputsValidate[3]}" (click)="clearValidate(3)" (keypress)="textValidate($event, 1)"  />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <span>PREF. DEPART.</span>
+        <ng-select [items]="interiorTypeList" class="border-ng" (change)="onSelectInteriorType($event)" bindLabel="SDESCRIPT" bindValue="STI_INTERIOR"
+          [(ngModel)]="inputsStreet.P_STI_INTERIOR" [clearable]="true" placeholder="Seleccionar"  [ngClass]="{'error-validate': inputsValidate[4]}" (click)="clearValidate(4)"
+          dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div class="col-sm-3">
+        <span>INTERIOR</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SNUM_INTERIOR" maxlength="8" [ngClass]="{'error-validate': inputsValidate[5]}" (click)="clearValidate(5)" (keypress)="textValidate($event, 4)" />
+      </div>
+      <div class="col-sm-3">
+        <span>MANZANA</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SMANZANA" maxlength="4"  [ngClass]="{'error-validate': inputsValidate[6]}" (click)="clearValidate(6)" (keypress)="textValidate($event, 4)" />
+      </div>
+      <div class="col-sm-3">
+        <span>LOTE</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SLOTE" maxlength="4"  [ngClass]="{'error-validate': inputsValidate[7]}" (click)="clearValidate(7)" (keypress)="textValidate($event, 4)" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <span>ETAPA</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SETAPA" maxlength="4" [ngClass]="{'error-validate': inputsValidate[8]}" (click)="clearValidate(8)" (keypress)="textValidate($event, 4)" />
+      </div>
+      <div class="col-sm-3">
+        <span>CONJ. HABIT.</span>
+        <ng-select [items]="cjhtTypeList" class="border-ng" bindLabel="SDESCRIPT" bindValue="STI_CJHT" (change)="onSelectConjHab($event)"
+          [(ngModel)]="inputsStreet.P_STI_CJHT" [clearable]="true" placeholder="Seleccionar"  [ngClass]="{'error-validate': inputsValidate[9]}" (click)="clearValidate(9)"
+          dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div class="col-sm-6">
+        <span>NOMBRE CONJ. HABIT.</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SNOM_CJHT" maxlength="30" [ngClass]="{'error-validate': inputsValidate[10]}" (click)="clearValidate(10)" (keypress)="textValidate($event, 4)" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <span>BLOQUE/CHALET</span>
+        <ng-select [items]="blockTypeList" class="border-ng" (change)="onSelectBlockType($event)" bindLabel="SDESCRIPT" bindValue="STI_BLOCKCHALET"
+          [(ngModel)]="inputsStreet.P_STI_BLOCKCHALET" [clearable]="true" placeholder="Seleccionar" [ngClass]="{'error-validate': inputsValidate[11]}" (click)="clearValidate(11)"
+          dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div class="col-sm-3">
+        <span>NÚMERO/LETRA</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SBLOCKCHALET" maxlength="3" [ngClass]="{'error-validate': inputsValidate[12]}" (click)="clearValidate(12)" (keypress)="textValidate($event, 4)"  />
+      </div>
+      <div class="col-sm-6">
+        <span>REFERENCIA</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SREFERENCE" maxlength="30" [ngClass]="{'error-validate': inputsValidate[13]}" (click)="clearValidate(13)" (keypress)="textValidate($event, 4)" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <span>PAÍS (*)</span>
+        <ng-select [items]="countryList" class="border-ng" (change)="onSelectCountry($event)" bindLabel="SDESCRIPT" bindValue="NCOUNTRY"
+          [(ngModel)]="inputsStreet.P_NCOUNTRY" [clearable]="false"  [ngClass]="{'error-validate': inputsValidate[14]}" (click)="clearValidate(14)"
+          placeholder="Seleccionar" dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div *ngIf="blockPais" class="col-sm-6">
+        <span>DEPARTAMENTO (*)</span>
+        <ng-select [items]="departmentList" class="border-ng" (change)="onSelectDepartment($event)" bindLabel="Name" bindValue="Id"
+          [(ngModel)]="inputsStreet.P_NPROVINCE" [clearable]="true" placeholder="Seleccionar" dropdownPosition="bottom"  [ngClass]="{'error-validate': inputsValidate[15]}" (click)="clearValidate(15)"
+          notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div *ngIf="blockPais" class="col-sm-6">
+        <span>PROVINCIA (*)</span>
+        <ng-select [items]="provinceList" class="border-ng" (change)="onSelectProvince($event)" bindLabel="Name" bindValue="Id"
+          [(ngModel)]="inputsStreet.P_NLOCAL" [clearable]="true" placeholder="Seleccionar"  [ngClass]="{'error-validate': inputsValidate[16]}" (click)="clearValidate(16)"
+          dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+      <div *ngIf="blockPais" class="col-sm-6">
+        <span>DISTRITO (*)</span>
+        <ng-select [items]="districtList" class="border-ng" (change)="onSelectDistrict($event)" bindLabel="Name" bindValue="Id"
+          [(ngModel)]="inputsStreet.P_NMUNICIPALITY" [clearable]="true"  [ngClass]="{'error-validate': inputsValidate[17]}" (click)="clearValidate(17)"
+          placeholder="Seleccionar" dropdownPosition="bottom" notFoundText="No hay resultados">
+        </ng-select>
+      </div>
+    </div>
+    <div class="row" *ngIf="itemDireccion != null">
+      <div class="col-sm-12">
+        <span>DIRECCIÓN ACTUAL (*)</span>
+        <input type="text" [(ngModel)]="inputsStreet.P_SDESDIREBUSQ" disabled />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="full-color" (click)="EventSave($event)"><span>{{txtAccion}}</span></button>
+</div>

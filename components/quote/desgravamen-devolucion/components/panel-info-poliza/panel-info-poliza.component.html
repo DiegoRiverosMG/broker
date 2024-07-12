@@ -1,0 +1,390 @@
+<div class="panel-info-poliza">
+  <panel-widget title="Datos de la póliza">
+
+    <div class="row">
+      <!--
+            <div class="col-sm-3">
+                <form-input-select label="Tipo producto" [service]="policyemitService" method="getTypesPolicy" [params]="CONSTANTS.RAMO" fieldCodigo="id" fieldValor="descripcion" [firstSelect]="true" [alwaysSelect]="true" [(value)]="poliza.tipoPoliza" [detail]="detail"
+                    (onSelect)="cambiarTipoProducto();" [hidden]="true">
+                </form-input-select>
+            </div>
+            <div class="col-sm-3">
+                <form-input-select label="Tipo perfil" [service]="quotationService" method="getPlanListAcc" [params]="{
+            P_NBRANCH: CONSTANTS.RAMO,
+            P_NPRODUCT: poliza.tipoPoliza?.codigo || null,
+            DEFFECDATE: fechaActual,
+            CHANNEL: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0
+          }" fieldCodigo="NIDPLAN" fieldValor="SDESCRIPT" [firstSelect]="true" [alwaysSelect]="true" [(value)]="poliza.tipoPerfil" [detail]="detail" (onSelect)="cambiarTipoPerfil();" [hidden]="true"></form-input-select>
+            </div>
+            <div class="col-sm-3">
+                <form-input-select label="Modalidad" [service]="DesgravamenDevolucionService" method="getModalidad" [params]="{
+            P_NBRANCH: CONSTANTS.RAMO,
+            P_NPRODUCT: poliza.tipoPoliza?.codigo || null,
+            DEFFECDATE: fechaActual,
+            TYPE_PROFILE: poliza.tipoPerfil?.NIDPLAN || null
+          }" fieldCodigo="ID" fieldValor="DESCRIPCION" [firstSelect]="!detail" [alwaysSelect]="!detail" [(value)]="poliza.modalidad" [detail]="detail || poliza.tipoPoliza?.codigo == '1'" [hidden]="true" (onSelect)="getSegmento()">
+                </form-input-select>
+            </div>
+            -->
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-3">
+        <form-input-select label="Tipo renovación"
+                           [disabled]="true"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetTipoRenovacionGraph"
+                           [params]="{
+            nbranch: CONSTANTS.RAMO,
+            nproduct_channel: codProducto,
+            nusercode: userId,
+            ntype_transac: cotizacion.tipoTransaccion
+          }"
+                           fieldCodigo="COD_TIPO_RENOVACION"
+                           fieldValor="DES_TIPO_RENOVACION"
+                           [(value)]="poliza.tipoRenovacion"
+                           [detail]="detail && (cotizacion.modoRenovacionEditar != true)"
+                           (onSelect)="cambiarTipoRenovacion();"
+                           [required]="true"
+                           [order]="true"></form-input-select>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-select label="Frecuencia pago"
+                           [disabled]="true"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetFrecuenciaPagoGraph"
+                           [params]="{
+            nbranch: CONSTANTS.RAMO,
+            nproduct_channel: codProducto,
+            renovationType: poliza.tipoRenovacion?.COD_TIPO_RENOVACION || null
+          }"
+                           fieldCodigo="COD_TIPO_FRECUENCIA"
+                           fieldValor="DES_TIPO_FRECUENCIA"
+                           [(value)]="poliza.frecuenciaPago"
+                           [detail]="(detail && (cotizacion.modoRenovacionEditar !== true) && cotizacion.PolizaEditAsegurados != 0) || poliza.tipoPoliza?.codigo == '1'"
+                           (onSelect)="cambiarTipoFreq();"></form-input-select>
+      </div>
+      <!--[defaultValue]="{codigo: poliza.tipoRenovacion?.COD_TIPO_RENOVACION  || null}"-->
+      <div class="col-sm-3">
+        <form-input-date label="Inicio vigencia póliza"
+                         [(value)]="poliza.fechaInicioPoliza"
+                         (valueChange)="changeDate(1)"
+                         [disabled]="validarDeshabilitarFechaVigenciaInicio()"
+                         [today]="true"
+                         (onSelect)="emitirCambiarDatoPoliza()"
+                         [required]="true"></form-input-date>
+      </div>
+      <div class="col-sm-3">
+        <form-input-date label="Fin vigencia póliza"
+                         [(value)]="poliza.fechaFinPoliza"
+                         (valueChange)="changeDate(2)"
+                         (onSelect)="emitirCambiarDatoPoliza()"
+                         [todayNextMonth]="!detail"
+                         [transac]="cotizacion.tipoTransaccion"
+                         [minDateSup]="poliza.fechaInicioPoliza"
+                         [baseDateValue]="poliza.fechaInicioPoliza"
+                         [baseDatePeriod]="poliza.tipoRenovacion?.COD_TIPO_RENOVACION"
+                         [disabled]="CONSTANTS.TIPO_RENOVACION.ESPECIAL != poliza.tipoRenovacion?.COD_TIPO_RENOVACION || detail">
+        </form-input-date>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col-sm-3">
+        <form-input-select label="Tipo facturación"
+                           [service]="DesgravamenDevolucionService"
+                           method="getTypesFactura"
+                           clear="clear"
+                           [params]="{
+                    nproduct: codProducto
+                }"
+                           fieldCodigo="id"
+                           fieldValor="descripcion"
+                           [defaultValue]="{codigo:2}"
+                           [(value)]="poliza.tipoFacturacion"
+                           [detail]="detail || verificarPerfilAforo()"
+                           [required]="true"
+                           (onSelect)="getSegmento()">
+        </form-input-select>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-select label="Moneda"
+                           [service]="DesgravamenDevolucionService"
+                           method="getCurrency"
+                           [params]="{
+            nbranch: CONSTANTS.RAMO,
+            nproduct: poliza.producto?.codigo || '0'
+          }"
+                           fieldCodigo="NCODIGINT"
+                           fieldValor="SDESCRIPT"
+                           [(value)]="poliza.moneda"
+                           (onSelect)="getSegmento()"
+                           [detail]="detail"></form-input-select>
+      </div>
+      <div class="col-sm-3">
+        <form-input-text label="% de sobrevivencia"
+                         [(value)]="poliza.sobrevivencia"
+                         [patternPrevent]="CONSTANTS.REGEX.PORCENTAJE"
+                         maxCaracter="5"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+      
+      <!--
+            <div class="col-sm-3" *ngIf="validarInputMostrar()">
+                <form-input-select label="Actividad a realizar" [service]="DesgravamenDevolucionService" method="GetTechnicalTariffList" [params]="{
+            nbranch: CONSTANTS.RAMO,
+            channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : null,
+            currency: poliza.moneda?.NCODIGINT || null,
+            profile: poliza.tipoPerfil?.codigo || null,
+            policyType: poliza.tipoPoliza?.codigo || null,
+            collocationType: poliza.modalidad?.codigo || null,
+            billingType: poliza.tipoFacturacion?.id || null,
+            nproduct_channel: codProducto,
+            planId: poliza.tipoPlan?.codigo || null
+          }" fieldCodigo="Id" fieldValor="Name" [firstSelect]="!detail" [alwaysSelect]="!detail" [(value)]="poliza.tipoActividad" [detail]="detail" (onSelect)="emitirCambiarDatoPoliza()" [hidden]="true">
+                </form-input-select>
+            </div>
+
+            <div class="col-sm-3" *ngIf="!validarInputMostrar()">
+                <form-input-select label="Actividad a realizar" [service]="clientInformationService" method="getTechnicalActivityList" [params]="codProducto" fieldCodigo="Id" fieldValor="Name" [(value)]="poliza.tipoActividad" [detail]="detail" (onSelect)="emitirCambiarDatoPoliza()"
+                    [hidden]="true">
+                </form-input-select>
+            </div>
+
+            <div class="col-sm-3">
+                <form-input-select label="CIIU" [service]="DesgravamenDevolucionService" method="getEconomicActivityList" [params]="{
+            nbranch: CONSTANTS.RAMO,
+            channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : null,
+            currency: poliza.moneda?.NCODIGINT || null,
+            profile: poliza.tipoPerfil?.codigo || null,
+            policyType: poliza.tipoPoliza?.codigo || null,
+            collocationType: poliza.modalidad?.codigo || null,
+            billingType: poliza.tipoFacturacion?.id || null,
+            nproduct_channel: codProducto,
+            planId: poliza.tipoPlan?.codigo || null,
+            codActividad: poliza.tipoActividad?.Id
+          }" [firstSelect]="!detail" [alwaysSelect]="!detail" fieldCodigo="Id" fieldValor="Name" [(value)]="poliza.CodCiiu" [detail]="detail" (onSelect)="emitirCambiarDatoPoliza()" [hidden]="true">
+                </form-input-select>
+            </div>
+-->
+      <div class="col-sm-3"
+           hidden="true">
+        <form-input-date label="Inicio vigencia asegurado"
+                         [(value)]="poliza.fechaInicioAsegurado"
+                         [disabled]="true && cotizacion.modoVista !==  CONSTANTS.MODO_VISTA.POLIZAINCLUIR"
+                         [maxDate]="poliza.fechaFinAsegurado"
+                         [minDateSup]="validateMin()"
+                         (onSelect)="emitirCambiarDatoPoliza()"
+                         [hidden]="true">
+        </form-input-date>
+      </div>
+      <div class="col-sm-3"
+           hidden="true">
+        <form-input-date label="Fin vigencia asegurado"
+                         [(value)]="poliza.fechaFinAsegurado"
+                         [transac]="cotizacion.tipoTransaccion"
+                         [baseDateValue]="poliza.fechaInicioAsegurado"
+                         [baseDatePeriod]="poliza.frecuenciaPago?.COD_TIPO_FRECUENCIA"
+                         [disabled]="true"
+                         [hidden]="true"></form-input-date>
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-3">
+        <form-input-text label="Edad Mínima de ingreso"
+                         [(value)]="poliza.edminingreso"
+                         [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                         maxCaracter="3"
+                         [required]="true"
+                         [disabled]="true"></form-input-text>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-text label="Edad Máxima de ingreso"
+                         [(value)]="poliza.edmaxingreso"
+                         [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                         maxCaracter="3"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-text label="Edad Máxima de permanencia"
+                         [(value)]="poliza.edmaxperman"
+                         [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                         maxCaracter="3"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+
+      
+      <!--
+            <div class="col-sm-3">
+                <form-input-select label="Tipo plan" [items]="poliza.listPlanes" [itemsArray]="true" fieldCodigo="ID_PLAN" fieldValor="TIPO_PLAN" [(value)]="poliza.tipoPlan" [detail]="detail && (cotizacion.modoRenovacionEditar != true)" [hidden]="true" (onSelect)="emitirCambiarDatoPoliza()"></form-input-select>
+            </div>
+            -->
+
+      <div class="col-sm-3"
+           *ngIf="poliza.listReglas.flagAlcance">
+        <form-input-select label="Alcance"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetAlcance"
+                           [params]="{ nbranch: CONSTANTS.RAMO }"
+                           fieldCodigo="id"
+                           fieldValor="descripcion"
+                           [(value)]="poliza.codAlcance"
+                           [detail]="detail"
+                           [required]="true"
+                           (onSelect)="emitirCambiarDatoPoliza()"></form-input-select>
+      </div>
+
+
+      <div class="col-sm-3"
+           *ngIf="CONSTANTS.MODO_VISTA.EXCLUIR === cotizacion.modoVista">
+        <form-input-date label="Fecha exclusión"
+                         [(value)]="poliza.fechaExclusion"
+                         [disabled]="false"
+                         (onSelect)="emitirCambiarDatoPoliza()"
+                         [required]="true"
+                         [maxDate]="poliza.fechaFinAsegurado"
+                         [minDateSup]="validateMin()"></form-input-date>
+      </div>
+      <div class="col-sm-3"
+           *ngIf="poliza.listReglas.flagTemporalidad">
+        <form-input-select label="Temporalidad"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetHoras"
+                           fieldCodigo="id"
+                           fieldValor="descripcion"
+                           [(value)]="poliza.temporalidad"
+                           [detail]="detail"
+                           [required]="true"
+                           (onSelect)="emitirCambiarDatoPoliza()"></form-input-select>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <form-input-text label="TASA DE SEGURO POR MIL"
+                         [(value)]="poliza.tasasegurodesdev"
+                         [patternPrevent]="CONSTANTS.REGEX.PORCENTAJEDCD"
+                         maxCaracter="9"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-text label="TASA DE AHORRO POR MIL"
+                         [(value)]="poliza.tasaahorrodesdev"
+                         [patternPrevent]="CONSTANTS.REGEX.PORCENTAJEDCD"
+                         maxCaracter="9"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-text label="TASA"
+                         [(value)]="poliza.tasadesdev"
+                         [patternPrevent]="CONSTANTS.REGEX.PORCENTAJEDCD"
+                         maxCaracter="9"
+                         [required]="true"
+                         [disabled]="true"></form-input-text>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <form-input-text label="CÚMULO MÁXIMO POR ASEGURADO"
+                         [(value)]="poliza.cumulomaxdesdev"
+                         [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                         maxCaracter="7"
+                         [required]="true"
+                         [disabled]="detail"></form-input-text>
+      </div>
+
+      <div class="col-sm-3"
+           [hidden]="flagAforo">
+        <form-input-checkbox [inlineInput]="true"
+                             [items]="[
+            {codigo: 'POL_MAT', valor: '¿Póliza matriz?',
+            show: cotizacion.modoVista !== CONSTANTS.MODO_VISTA.ENDOSO,
+            disabled: storageService.esBroker,
+            isSelected: poliza.checkbox1?.POL_MAT == true ? true : false}
+          ]"
+                             [disabled]="detail && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.ENDOSO"
+                             [(mapSelected)]="poliza.checkbox1"
+                             (mapSelectedChange)="validarPolizaMatriz()"></form-input-checkbox>
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-3"
+           *ngIf="verificarPerfilViajes()">
+        <form-input-select label="tipo viaje"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetTipoViaje"
+                           fieldCodigo="id"
+                           fieldValor="descripcion"
+                           [alwaysSelect]="true"
+                           [defaultValue]="{codigo: 1, id: 1}"
+                           [(value)]="poliza.codTipoViaje"
+                           [detail]="true"
+                           [required]="true"
+                           (onSelect)="emitirCambiarDatoPoliza()">
+        </form-input-select>
+      </div>
+
+      <!--   <div class="col-sm-3" *ngIf="poliza.codTipoViaje?.id == '1'">
+        <form-input-select label="Origen" [service]="DesgravamenDevolucionService" method="GetDepartmentList" fieldCodigo="Id"
+          fieldValor="Name" [(value)]="poliza.codOrigen" [detail]="detail" [required]="true"
+          (onSelect)="emitirCambiarDatoPoliza()"></form-input-select>
+      </div> -->
+
+      <div class="col-sm-3">
+        <form-input-select label="Departamento"
+                           [service]="DesgravamenDevolucionService"
+                           method="GetDepartmentList"
+                           fieldCodigo="Id"
+                           fieldValor="Name"
+                           [alwaysSelect]="true"
+                           [defaultValue]="{codigo: 14}"
+                           [(value)]="poliza.codDestino"
+                           [detail]="detail"
+                           [hidden]="true"
+                           (onSelect)="emitirCambiarDatoPoliza()"
+                           [firstSelect]="true"></form-input-select>
+      </div>
+
+      <div class="col-sm-3">
+        <form-input-checkbox [inlineInput]="true"
+                             [items]="[
+            {codigo: 'TRA_MIN', valor: '¿Trabajo en mina?'}
+          ]"
+                             [(mapSelected)]="poliza.checkbox2"
+                             [disabled]="detail"
+                             [hidden]="true"></form-input-checkbox>
+      </div>
+
+      <!--   <div class="col-sm-3" *ngIf="poliza.codTipoViaje?.id == '2'">
+        <form-input-select label="Origen" [service]="DesgravamenDevolucionService" method="GetCountryList" fieldCodigo="NCOUNTRY"
+          fieldValor="SDESCRIPT" [(value)]="poliza.codOrigen" [detail]="detail" [required]="true"
+          (onSelect)="emitirCambiarDatoPoliza()"></form-input-select>
+      </div>
+      <div class="col-sm-3" *ngIf="poliza.codTipoViaje?.id == '2'">
+        <form-input-select label="Destino" [service]="DesgravamenDevolucionService" method="GetCountryList" fieldCodigo="NCOUNTRY"
+          fieldValor="SDESCRIPT" [(value)]="poliza.codDestino" [detail]="detail" [required]="true"
+          (onSelect)="emitirCambiarDatoPoliza()"  [firstSelect]="true"></form-input-select>
+      </div> -->
+    </div>
+  </panel-widget>
+</div>

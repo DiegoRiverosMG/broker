@@ -1,0 +1,293 @@
+
+/*BEGIN Reports
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  font-size: 11px;
+}*/
+
+.title-principal{
+  height: auto;
+  width: 100%;
+  color: #2B0D61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 24px;
+  text-align: left;
+  padding: 12px 226px;
+}
+
+::placeholder{
+  color: rgb(146, 138, 163);
+}
+
+.header{
+  width: 90%;
+  margin: 20px auto;
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header div h2{
+  margin-left: 15px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.header div button{
+  outline: none;
+  padding: 10px 15px;
+  border:none;
+  background: rgb(84, 61, 129);
+  color:#fff;
+  border-radius: 3px;
+}
+
+.header div button:hover{
+  cursor: pointer;
+}
+
+.filter{
+  width: 100%;
+  margin: 10px auto;
+  border-bottom: 1px solid rgb(84, 61, 129);
+  padding: 10px 0 15px 0;
+}
+
+.filter .filter-row{
+  width: 100%;
+  display: flex;
+  margin-bottom: 0px;
+}
+
+.filter .filter-row .filter-row-cell{
+  padding: 8px 5px;
+}
+
+.filter .filter-row .filter-row-cell .filter-row-cell-flex{
+  display: flex;
+  justify-content: center;
+}
+
+.filter .filter-row .filter-row-cell .filter-row-cell-flex input[type="text"]{
+  width: 50%;
+  color: rgb(146, 138, 163);
+  outline: auto;
+}
+
+.filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-right{
+  border-radius: 3px 0 0 3px;
+}
+
+.filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-left{
+  border-radius: 0 3px 3px 0;
+}
+
+.filter .filter-row .filter-row-cell span{
+  width: 100%;
+  color: #2B0D61;
+  display: block;
+  font-size: 14px;
+  font-weight: 300;
+  height: 24px;
+  line-height: 24px;
+}
+
+.filter .filter-row .filter-row-cell input[type="text"]{
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #AA9EC0;
+  color: #AA9EC0;
+  height: 45px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.filter .filter-row .filter-row-cell input[type="date"]{
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #AA9EC0;
+  color: #AA9EC0;
+  height: 45px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+
+.grid {
+  width: 95%;
+  margin: 20px auto;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.grid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid table tr td {
+  padding: 15px 15px;
+  text-align: center;
+  color: rgb(146, 138, 163);
+}
+
+.grid table .grid-title td {  
+  font-family: "Bliss Pro";
+  padding: 25px 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(42, 18, 99, 0.78);
+}
+
+.grid table tr td button{
+  border:none;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 3px;
+  background: rgb(169, 157, 192);
+  color:#fff;
+  margin: 0 2px;
+  outline: none;
+  height: 30px;
+  width: 25px;
+}
+
+.grid table tr .flex{
+  display: flex;
+  justify-content: center;
+}
+
+select{
+  width: 100% ;
+  border: none;
+  display: block ;
+  border: 1px solid rgb(146, 138, 163);
+  border-radius: 2px;
+  margin-top: 5px ;
+  color: rgb(146, 138, 163);
+  border: 1px solid #AA9EC0;
+  font-size: 14px;
+  font-weight: 300;
+  height: 45px ;
+  padding-left: 12px;
+  color: #AA9EC0;
+}
+
+/*END Reports*/
+
+/*Header*/
+
+.header-content{
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 1px solid rgb(109, 99, 129);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+}
+
+.header-content .containt-item{
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-content .header-item{
+  display: block;
+  padding: 5px 0;
+}
+
+.header-content .header-item .title{
+  color:#553D81;
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.header-content .header-item button{
+  display: flex;
+  justify-content: center;
+  border:1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+}
+
+.header-content .header-item button:hover{
+  cursor: pointer;
+}
+
+.header-content .header-item button span{
+  display: block;
+  margin-left: 10px;
+  font-weight: 600;
+  color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple{
+  background: #553D81;
+}
+
+.header-content .header-item .purple span{
+  color:#fff;
+}
+
+.header-content .rigth-item{
+  float: right;
+}
+
+
+select{
+  width: 100% ;
+  border: none;
+  display: block ;
+  border: 1px solid rgb(146, 138, 163);
+  border-radius: 2px;
+  margin-top: 5px ;
+  color: rgb(146, 138, 163);
+  border: 1px solid #AA9EC0;
+  font-size: 14px;
+  font-weight: 300;
+  height: 45px ;
+  padding-left: 12px;
+  color: #AA9EC0;
+}
+
+input[type="text"] {
+  border: none;
+  border-radius: 2px;
+  padding: 7px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #AA9EC0;
+  color: #AA9EC0;
+  height: 45px;
+  font-weight: 300;
+  padding-left: 12px;
+}

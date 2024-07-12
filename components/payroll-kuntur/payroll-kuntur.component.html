@@ -1,0 +1,507 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 no-left">
+        <app-nav-menuprod></app-nav-menuprod>
+      </div>
+      <div class="col-md-9">
+        <div class="container-fluid">
+          <div class="header-content">
+            <div class="containt-item">
+              <div class="header-item">
+                <span class="title">Mis Planillas</span>
+              </div>
+            </div>
+            <div class="containt-item">
+              <div class="header-item  rigth-item">
+                <button class="full-color" (click)="setAgregarPlanilla()">
+                  <img alt="" src="assets/icons/add.png" />
+                  <span>Agregar planilla</span>
+                </button>
+              </div>
+              <div class="header-item  rigth-item">
+                <button class="min-color" (click)="openModalConfirmacionMasivo()">
+                  <img alt="" src="assets/icons/delete.png" />
+                  <span>Eliminar planillas</span>
+                </button>
+              </div>
+              <div class="header-item right-item">
+                <button class="min-color" (click)="EventDownload($event)">
+                  <img alt="" src="assets/icons/download2.png" />
+                  <span>Descargar Excel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+  
+          <div class="filter">
+            <div class="form-group row filter-row">
+              <div class="col-lg-2 filter-row-cell">
+                <span>POR FECHA DE VENTA:</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  #dp="bsDatepicker"
+                  [bsConfig]="bsConfig"
+                  bsDatepicker
+                  [(bsValue)]="bsValueIni"
+                  value="{{ bsValueIni | date: 'dd/MM/yyyy' }}"
+                />
+              </div>
+              <div class="col-lg-2 filter-row-cell">
+                <span>&nbsp;</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [bsConfig]="bsConfig"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [(bsValue)]="bsValueFin"
+                  value="{{ bsValueFin | date: 'dd/MM/yyyy' }}"
+                />
+              </div>
+              <div class="col-lg-2 filter-row-cell">
+                <span>POR ESTADO:</span>
+                <select (change)="onSelectState($event.target.value)">
+                  <option value="0" selected>Todos</option>
+                  <option
+                    *ngFor="let Item of lstStateChannel"
+                    value="{{ Item.nidstate }}"
+                    >{{ Item.sdescription }}</option
+                  >
+                </select>
+              </div>
+              <div class="col-lg-2 filter-row-cell">
+                <span>POR NRO. PLANILLA:</span>
+                <input
+                  type="text"
+                  (keypress)="
+                    this.utilityService._kpPolicy($event, planillaBuscar)
+                  "
+                  placeholder="Busca con tu número de planilla"
+                  class="form-control"
+                  [(ngModel)]="InputsFilter.P_NIDPAYROLL"
+                />
+              </div>
+              <div class="col-lg-4 filter-row-cell">
+                <span>POR CANAL:</span>
+                <select
+                  id="ChannelSalesSelect"
+                  (change)="onSelectChannel($event.target.value)"
+                >
+                  <option value="0">Todos</option>
+                  <option
+                    *ngFor="let channelsales of ListChannelSales"
+                    value="{{ channelsales.nchannel }}"
+                  >
+                    {{ channelsales.sdescript }}</option
+                  >
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-12">
+                <div class="float-right">
+                  <button (click)="onEventSearch()">
+                    <span>Buscar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="grid form-group row ">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr class="grid-title">
+                    <td class="grid-title-item">
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="selectedAll"
+                        (change)="selectAll()"
+                      />
+                    </td>
+                    <td class="grid-title-item">Nro. de Planilla</td>
+                    <td class="grid-title-item">Nro. SOATS</td>
+                    <td class="grid-title-item">Fecha</td>
+                    <td class="grid-title-item">Medio de Pago</td>
+                    <td class="grid-title-item">Precio</td>
+                    <td class="grid-title-item">Estado</td>
+                    <td class="grid-title-item">Acciones</td>
+                  </tr>
+                </thead>
+                <div
+                  *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+                ></div>
+              </table>
+              <ng-template #mostrarGrilla>
+                <tbody>
+                  <tr>
+                    <td colspan="8">{{ msgErrorLista }}</td>
+                  </tr>
+                </tbody>
+              </ng-template>
+              <ng-template #ocultarGrilla>
+                <tbody *ngFor="let result of ListPayroll">
+                  <tr>
+                    <td>
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="result.selected"
+                        (change)="checkIfAllSelected()"
+                      />
+                    </td>
+                    <td class="data-table-tr-td">{{ result.splanilla }}</td>
+                    <td class="data-table-tr-td">{{ result.NQUANTITY }}</td>
+                    <td class="data-table-tr-td">{{ result.sregister }}</td>
+                    <td class="data-table-tr-td">{{ result.stype }}</td>
+                    <td class="data-table-tr-td">S/ {{ result.namounttotal }}</td>
+                    <td class="data-table-tr-td">{{ result.sdescription }}</td>
+                    <td class="data-table-tr-td">
+                      <a
+                        *ngIf="result.nidstate === 1 || result.nidstate === 3"
+                        (click)="openModalConfirmacion(result.splanilla)"
+                      >
+                        <img
+                          alt=""
+                          src="assets/icons/anular.png"
+                          title="Anular"
+                          alt="Anular"
+                        />
+                      </a>
+                      <a
+                        (click)="
+                          EnviarPlanilla(result.splanilla, result.nidstate)
+                        "
+                      >
+                        <img
+                          alt=""
+                          src="assets/icons/enviar.png"
+                          title="Enviar"
+                          alt="Enviar"
+                        />
+                      </a>
+                      <a
+                        *ngIf="result.nidstate == 3 || result.nidstate == 1"
+                        (click)="ActualizarPlanilla(result.splanilla)"
+                      >
+                        <img
+                          alt=""
+                          src="assets/icons/editar.png"
+                          title="Editar"
+                          alt="Editar"
+                        />
+                      </a>
+                      <a
+                        *ngIf="result.nidstate == 5 && this.tipoCanal == 5"
+                        (click)="openModalConfirConciliacion(result.nidpayroll)"
+                      >
+                        <img
+                          alt=""
+                          src="assets/icons/check_mas_beneficios.png"
+                          title="Conciliar"
+                          alt="Conciliar"
+                        />
+                      </a>
+                      <a
+                        class="min-color"
+                        (click)="EventDownloadDetailPayroll(result.nidpayroll)"
+                      >
+                        <img
+                          alt=""
+                          src="assets/icons/download2.png"
+                          title="Descargar"
+                          alt="Descargar"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-template>
+            </div>
+          </div>
+  
+          <div
+            *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+          ></div>
+          <ng-template #mostrarPaginado>
+            <div></div>
+          </ng-template>
+  
+          <ng-template #ocultarPaginado>
+            <div class="row">
+              <div class="col-xs-12 col-12">
+                <pagination
+                  [totalItems]="totalItems"
+                  [itemsPerPage]="itemsPerPage"
+                  [rotate]="rotate"
+                  [maxSize]="maxSize"
+                  [(ngModel)]="currentPage"
+                  (pageChanged)="pageChanged($event)"
+                >
+                </pagination>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    bsModal
+    #childModalConfirmasivo="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            {{ msjHeader }}
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeconfirm()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            class="form-group row message"
+            [ngClass]="{ bHideBody: bHideBody }"
+          >
+            <div class="col-lg-12 contenido-modal" id="msjModal">
+              <p class="messageinfo">{{ message }}</p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="full-color-modal"
+                (click)="confirm()"
+              >
+                <span>Si</span>
+              </button>
+            </div>
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="button-close"
+                (click)="closeconfirm()"
+              >
+                <span>No</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    bsModal
+    #childModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Mensaje
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="aceptarmsginfo()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+            <div class="col-lg-12">
+              <p class="messageinfo">{{ messageinfo }}</p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-12">
+              <button
+                style="min-width: 100%;"
+                class="full-color-modal"
+                (click)="aceptarmsginfo()"
+              >
+                <span>Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    bsModal
+    #childModalConfirmarEnvio="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Mensaje de Confirmaci&oacute;n
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeEnviar()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+            <div class="col-lg-12 contenido-modal">
+              <p class="messageinfo">{{ messageEnvio }}</p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="full-color-modal"
+                (click)="confirmEnviar()"
+              >
+                <span>Si</span>
+              </button>
+            </div>
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="button-close"
+                (click)="closeEnviar()"
+              >
+                <span>No</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    bsModal
+    #childModalEliminarIndividual="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            {{ msjHeader }}
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeconfirmIndividual()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row ">
+            <div class="col-lg-6">
+              <p class="messageinfo">
+                <span class="Titulo">Nro Planilla</span><br />
+                {{ strPlanilla }}
+              </p>
+            </div>
+            <div class="col-lg-6">
+              <p class="messageinfo">
+                <span class="Titulo">Precio</span><br />
+                {{ strPrecio }}
+              </p>
+            </div>
+          </div>
+          <div class="form-group row ">
+            <div class="col-lg-6">
+              <p class="messageinfo">
+                <span class="Titulo">Medio Pago</span><br />
+                {{ strMedioPago }}
+              </p>
+            </div>
+            <div class="col-lg-6">
+              <p class="messageinfo">
+                <span class="Titulo">Fecha</span><br />
+                {{ strFechaEliminar }}
+              </p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="full-color-modal"
+                (click)="confirm()"
+              >
+                <span>Si, deseo anularlo</span>
+              </button>
+            </div>
+            <div class="col-lg-6">
+              <button
+                style="min-width: 100%;"
+                class="button-close"
+                (click)="closeconfirmIndividual()"
+              >
+                <span>No, deseo cancelarlo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

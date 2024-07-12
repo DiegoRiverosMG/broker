@@ -1,0 +1,498 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content pb-2">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Mis Planillas</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <div class="header-item rigth-item">
+              <button class="full-color" (click)="setAgregarPlanilla()">
+                <img alt="" src="assets/icons/add.png" />
+                <span>Agregar planilla</span>
+              </button>
+            </div>
+            <div class="header-item rigth-item">
+              <button class="min-color" (click)="openModalConfirmacionMasivo()">
+                <img alt="" src="assets/icons/delete.png" />
+                <span>Anular planillas</span>
+              </button>
+            </div>
+            <div class="header-item right-item">
+              <button class="min-color mr-0" (click)="EventDownload($event)">
+                <img alt="" src="assets/icons/download2.png" />
+                <span>Descargar Excel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter mx-0 px-0">
+          <div class="form-group row filter-row mx-0 px-0">
+            <div class="col-lg-7 filter-row-cell pl-0">
+              <app-channelpoint *ngIf="!isAdmin" (evResultChannelSales)="onVotedParentChannelSales($event)"
+                (evResultChannelPoint)="onVotedParentChannelPoint($event)"></app-channelpoint>
+              <span *ngIf="isAdmin" class="filter-text">CANAL:</span>
+              <select *ngIf="isAdmin" class="cboCanal" id="ChannelSalesSelect"
+                (change)="onSelectChannel($event.target.value)" [(ngModel)]="channelSelected">
+                <option value="0">Todos</option>
+                <option *ngFor="let channelsales of ListChannelSales" value="{{ channelsales.nchannel }}">
+                  {{ channelsales.sdescript }}
+                </option>
+              </select>
+            </div>
+            <div class="col-lg-2 filter-row-cell">
+              <span for="" class="filter-text">POR RAMO*:</span>
+              <select (change)="onSelectBranch($event.target.value)">
+                <option value="0">Todos</option>
+                <option *ngFor="let Item of lstBranch" [selected]="Item.nid == InputsFilter.P_NBRANCH"
+                  value="{{ Item.nid }}">
+                  {{ Item.sdescript }}
+                </option>
+              </select>
+            </div>
+            <div class="col-lg-3 filter-row-cell pr-0">
+              <span class="filter-text">POR PRODUCTO*:</span>
+              <select (change)="onSelectProduct($event.target.value)">
+                <option value="0">Todos</option>
+                <option *ngFor="let Item of lstProduct" [selected]="Item.nid == InputsFilter.P_NPRODUCT"
+                  value="{{ Item.nid }}">
+                  {{ Item.sdescript }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row filter-row mx-0 px-0">
+            <div class="col-lg-3 p-0">
+              <div class="col-lg-12 row">
+                <span class="filter-text ml-0">FECHA DE VENTA:</span>
+              </div>
+              <div class="col-lg-12 row ml-0 p-0">
+                <div class="col-lg-6 pr-1 pl-0">
+                  <input type="text" class="form-control date-search" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                    bsDatepicker [(bsValue)]="bsValueIni" value="{{ bsValueIni | date: 'dd/MM/yyyy' }}" readonly />
+                </div>
+                <div class="col-lg-6 pl-1 pr-0">
+                  <input type="text" class="form-control date-search" [bsConfig]="bsConfig" #dp="bsDatepicker"
+                    bsDatepicker [(bsValue)]="bsValueFin" value="{{ bsValueFin | date: 'dd/MM/yyyy' }}" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 filter-row-cell pt-0 pb-0 ml-2">
+              <span class="filter-text">ESTADO:</span>
+              <select (change)="onSelectState($event.target.value)" [(ngModel)]="stateSelected">
+                <option value="0" selected>Todos</option>
+                <option *ngFor="let Item of lstStateChannel" value="{{ Item.nidstate }}">
+                  {{ Item.sdescription }}
+                </option>
+              </select>
+            </div>
+            <div class="col-lg-2 filter-row-cell pt-0 pb-0 ml-2">
+              <span class="filter-text">N° PLANILLA:</span>
+              <input type="text" (keypress)="
+                  this.utilityService._kpPolicy($event, planillaBuscar)
+                " placeholder="Nro. Planilla" class="form-control" [(ngModel)]="InputsFilter.P_NIDPAYROLL" />
+            </div>
+            <div class="col-lg-2 filter-row-cell pt-0 pb-0 ml-2">
+              <span for="" class="filter-text">POR MONEDA*:</span>
+              <select (change)="onSelectCurrency($event.target.value)">
+                <option *ngFor="let currency of lstCurrency"
+                  [selected]="currency.nidcurrency == InputsFilter.P_NCURRENCY" value="{{ currency.nidcurrency }}">
+                  {{ currency.sdescript }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row fila-search mx-0 px-0">
+            <div class="col-lg-12 mx-0 px-0">
+              <div class="float-right">
+                <button class="searchForAdmin mr-0" (click)="onEventSearch()">
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid form-group row">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">
+                    <input type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll()" />
+                  </td>
+                  <td class="grid-title-item">Ramo</td>
+                  <td class="grid-title-item">Producto</td>
+                  <td class="grid-title-item">N° de Planilla</td>
+                  <td class="grid-title-item">Cantidad</td>
+                  <td class="grid-title-item">Fecha</td>
+                  <td class="grid-title-item">Medio de Pago</td>
+                  <td class="grid-title-item">Moneda</td>
+                  <td class="grid-title-item">Precio</td>
+                  <td class="grid-title-item">Estado</td>
+                  <td class="grid-title-item">Acciones</td>
+                </tr>
+              </thead>
+              <div *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"></div>
+            </table>
+            <ng-template #mostrarGrilla>
+              <tbody>
+                <tr>
+                  <td colspan="11">{{ msgErrorLista }}</td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #ocultarGrilla>
+              <tbody *ngFor="let result of ListPayroll; let index = index">
+                <tr>
+                  <td>
+                    <input type="checkbox" [(ngModel)]="result.selected" (change)="checkIfAllSelected()" />
+                  </td>
+                  <td class="data-table-tr-td">{{ result.sbranch }}</td>
+                  <td class="data-table-tr-td">{{ result.sproduct }}</td>
+                  <td class="data-table-tr-td">
+                    <div title="{{ result.scanal }}">
+                      {{ result.splanilla }}
+                    </div>
+                  </td>
+                  <td class="data-table-tr-td">{{ result.nquantity }}</td>
+                  <td class="data-table-tr-td">{{ result.sregister }}</td>
+                  <td class="data-table-tr-td">{{ result.stype }}</td>
+                  <td class="data-table-tr-td">{{ result.scurrency }}</td>
+                  <td class="data-table-tr-td">
+                    {{ result.sshortcurrency }}
+                    {{ result.namounttotal | number: "1.2-2" }}
+                  </td>
+                  <td class="data-table-tr-td">{{ result.sdescription }}</td>
+                  <td class="data-table-tr-td content__menu" ngbDropdown container="body">
+                    <a class="toggle__menu" tabindex="0" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false" ngbDropdownToggle role="button" (click)="showMenuActions(result.nidpayroll)"
+                      [id]="'navbarDropdown1' + result.nidpayroll">
+                      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    </a>
+                    <div class="dropdown-menu" display="dynamic" [attr.aria-labelledby]="
+                        'navbarDropdown1' + result.nidpayroll
+                      " ngbDropdownMenu [@fade]="true">
+                      <a (click)="VerHistorial(result.nidpayroll)" ngbDropdownItem>
+                        <i title="Ver historial de planilla" style="cursor: pointer" class="fa fa-file-text fa-lg"></i>
+                        Ver historial
+                      </a>
+                      <a *ngIf="result.nidstate === 1 || result.nidstate === 3"
+                        (click)="openModalConfirmacion(result.splanilla)" ngbDropdownItem>
+                        <i title="Anular planilla" style="
+                            cursor: pointer;
+                            color: #d43f3a;
+                            margin-left: 3px;
+                          " class="fa fa-trash fa-lg"></i>
+                        Anular planilla
+                      </a>
+
+                      <a *ngIf="result.nidstate == 1 || result.nidstate == 2" (click)="
+                          EnviarPlanilla(result.splanilla, result.nidstate)
+                        " ngbDropdownItem>
+                        <i title="Enviar planilla" style="cursor: pointer; margin-left: 3px"
+                          class="fa fa-send-o fa-lg"></i>
+                        Enviar planilla
+                      </a>
+
+                      <a *ngIf="result.nidstate == 11" (click)="verDetalle(result.splanilla)" ngbDropdownItem>
+                        <i title="Ver Detalle" style="cursor: pointer; margin-left: 3px" class="fa fa-search fa-lg"></i>
+                        Ver Detalle
+                      </a>
+
+                      <a *ngIf="result.nidstate == 1" (click)="
+                          ActualizarPlanilla(
+                            result.splanilla,
+                            result.nbranch,
+                            result.nproduct
+                          )
+                        " ngbDropdownItem>
+                        <i title="Editar" style="cursor: pointer; margin-left: 3px" class="fa fa-edit fa-lg"></i>
+                        Editar
+                      </a>
+                      <a *ngIf="result.nidstate == 5 && mainTipoCanal == 5"
+                        (click)="openModalConfirConciliacion(result.nidpayroll)" ngbDropdownItem>
+                        <i title="Conciliar" style="cursor: pointer; margin-left: 3px"
+                          class="fa fa-external-link-square fa-lg"></i>
+                        Enviar a conciliar
+                      </a>
+
+                      <a class="min-color" (click)="EventDownloadDetailPayroll(result.nidpayroll)" ngbDropdownItem>
+                        <i title="Descargar" style="cursor: pointer; margin-left: 3px" class="fa fa-download fa-lg"></i>
+                        Descargar
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </div>
+        </div>
+
+        <div *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"></div>
+        <ng-template #mostrarPaginado>
+          <div></div>
+        </ng-template>
+
+        <ng-template #ocultarPaginado>
+          <div class="row">
+            <div class="col-xs-12 col-12">
+              <pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [rotate]="rotate" [maxSize]="maxSize"
+                [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)">
+              </pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModalConfirmasivo="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+        <h4 id="dialog-child-name" class="modal-title pull-left titlemensajeinfo">
+          {{ msjHeader }}
+        </h4>
+        <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close"
+          (click)="closeconfirm()">
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message" [ngClass]="{ bHideBody: bHideBody }">
+          <div class="col-lg-12 contenido-modal" id="msjModal">
+            <p class="messageinfo">{{ message }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="full-color-modal" (click)="confirm()">
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="button-close" (click)="closeconfirm()">
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left titlemensajeinfo">
+          Mensaje
+        </h4>
+        <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close"
+          (click)="aceptarmsginfo()">
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message modal-anular-body">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-12">
+            <button style="min-width: 100%" class="full-color-modal" (click)="aceptarmsginfo()">
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModalConfirmarEnvio="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left titlemensajeinfo">
+          Mensaje de Confirmaci&oacute;n
+        </h4>
+        <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close"
+          (click)="closeEnviar()">
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12 contenido-modal">
+            <p class="messageinfo">{{ messageEnvio }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="full-color-modal" (click)="confirmEnviar()">
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="button-close" (click)="closeEnviar()">
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModalEliminarIndividual="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left titlemensajeinfo">
+          {{ msjHeader }}
+        </h4>
+        <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close"
+          (click)="closeconfirmIndividual()">
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Nro Planilla</span><br />
+              {{ strPlanilla }}
+            </p>
+          </div>
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Precio</span><br />
+              {{ strPrecio }}
+            </p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Medio Pago</span><br />
+              {{ strMedioPago }}
+            </p>
+          </div>
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Fecha</span><br />
+              {{ strFechaEliminar }}
+            </p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="full-color-modal" (click)="confirm()">
+              <span>Si, deseo anularlo</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%" class="button-close" (click)="closeconfirmIndividual()">
+              <span>No, deseo cancelarlo</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModalHistorial="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md div-historial">
+    <div class="modal-content modalcontent-hist">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left titlemensajeinfo titleHist">
+          Historial de Planilla: {{ nLote }}
+        </h4>
+        <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close"
+          (click)="closeHistorial()">
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body modal-hist">
+        <div class="grid-hist form-group row message">
+          <div class="col-lg-12 contenido-modal">
+            <!--Cuerpo del popup-->
+            <div class="table-responsive">
+              <!--  <div class="payroll-content">-->
+              <div class="result-content scrollmodal">
+                <table class="table">
+                  <thead>
+                    <tr class="grid-title">
+                      <td class="grid-title-item col-seq">Secuencia</td>
+                      <td class="grid-title-item col-est">Estado</td>
+                      <td class="grid-title-item col-fec">Fecha Registro</td>
+                      <td class="grid-title-item col-com">Comentarios</td>
+                      <td class="grid-title-item col-usu">Usuario</td>
+                    </tr>
+                  </thead>
+
+                  <tbody *ngFor="let result of ListPayrollHist; let index = index">
+                    <tr *ngIf="fExistRegistroHistorial" class="data-hist">
+                      <td class="data-table-tr-td">{{ index + 1 }}</td>
+                      <td class="data-table-tr-td">{{ result.sstate }}</td>
+                      <td class="data-table-tr-td">{{ result.dfecreg }}</td>
+                      <td class="data-table-tr-td">{{ result.comments }}</td>
+                      <td class="data-table-tr-td">{{ result.suser }}</td>
+                    </tr>
+                  </tbody>
+
+                  <tbody *ngIf="!fExistRegistroHistorial">
+                    <tr class="data-hist">
+                      <td colspan="8" class="data-table-tr-td">
+                        {{ msgErrorListaHist }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--
+              </div> -->
+            </div>
+
+            <!--Fin table responsive -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer footer-hist">
+        <div class="form-group row hist-footer">
+          <div class="col-lg-12 button-cancel">
+            <button class="min-color" (click)="closeHistorial()">
+              <span>Cerrar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

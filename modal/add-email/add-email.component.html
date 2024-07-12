@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{txtAccion}}</h4>
+  <input type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')" value="&times;" />
+
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <span>TIPO DE CORREO ELECTRÓNICO (*)</span>
+        <select (change)="onSelectEmailType($event)" [(ngModel)]="inputsEmail.P_SRECTYPE" [ngClass]="{'error-validate': inputsValidate[0]}" (click)="clearInputs(0)" class="minimal">
+          <option value="0" selected>Seleccionar</option>
+          <option *ngFor="let emailType of emailTypeList" value="{{emailType.SRECTYPE}}">{{emailType.SDESCRIPT}}</option>
+        </select>
+      </div>
+      <div class="col-sm-6">
+        <span>CORREO ELECTRÓNICO (*)</span>
+        <input type="text" [(ngModel)]="inputsEmail.P_SE_MAIL" maxlength="60" [ngClass]="{'error-validate': inputsValidate[1]}" (click)="clearInputs(1)" (keypress)="textValidate($event, 6)" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="full-color" (click)="EventSave()"><span>{{txtAccion}}</span></button>
+</div>

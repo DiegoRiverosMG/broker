@@ -1,0 +1,357 @@
+<div class="content-all">
+  <app-nav-menuprod></app-nav-menuprod>
+  <section class="content">
+    <div class="header-u">
+      <h1 class="title-u">
+        {{ tipoTramite == 1 ? "Endosos" : "Anulación" }} : Selección de Póliza
+      </h1>
+      <button class="btn-primary-u ps-button-max-width" (click)="back()">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+        Atrás
+      </button>
+    </div>
+    <form class="filters" [formGroup]="form">
+      <label
+        for="f-channelsale"
+        class="placeholder-u f-channel-sale"
+        aria-placeholder="CANAL DE VENTA:"
+      >
+        <select
+          id="f-channelsale"
+          class="input-u"
+          formControlName="channelCode"
+          style="margin-top: 5px"
+        >
+          <option [value]="null" disabled selected hidden>SELECCIONE</option>
+          <ng-container *ngIf="!channelSales$.length">
+            <option [value]="null" disabled>
+              No se encontraron resultados
+            </option>
+          </ng-container>
+          <ng-container *ngIf="channelSales$.length">
+            <option [value]="0" *ngIf="channelSales$.length > 1">TODOS</option>
+            <option *ngFor="let data of channelSales$" [value]="data.id">
+              {{ data.description }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+      <label
+        for="f-document-type"
+        class="placeholder-u"
+        aria-placeholder="TIPO DE DOCUMENTO:"
+      >
+        <select
+          id="f-document-type"
+          class="input-u"
+          formControlName="documentType"
+          style="margin-top: 5px"
+        >
+          <option [value]="null" disabled selected hidden>SELECCIONE</option>
+          <option value="0">TODOS</option>
+          <option value="4">CE</option>
+          <option value="2">DNI</option>
+          <option value="1">RUC</option>
+        </select>
+      </label>
+      <label
+        for="f-numdoc"
+        class="placeholder-u"
+        aria-placeholder="NÚMERO DE DOCUMENTO:"
+      >
+        <input
+          type="text"
+          id="f-numdoc"
+          class="input-u"
+          formControlName="documentNumber"
+          [maxlength]="maxLengthDocumentNumber.max"
+        />
+      </label>
+
+      <label for="f-policy" class="placeholder-u" aria-placeholder="PÓLIZA:">
+        <input
+          type="text"
+          id="f-policy"
+          class="input-u"
+          formControlName="policy"
+          [maxlength]="10"
+        />
+      </label>
+      <label for="f-placa" class="placeholder-u" aria-placeholder="PLACA:">
+        <input
+          type="text"
+          id="f-placa"
+          class="input-u"
+          formControlName="licensePlate"
+          [maxlength]="7"
+        />
+      </label>
+      <label
+        for="f-startdate"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['startDate'].value"
+        aria-placeholder="FECHA INICIO:"
+      >
+        <input
+          type="text"
+          id="f-startdate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="startDate"
+        />
+      </label>
+      <label
+        for="f-enddate"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['endDate'].value"
+        aria-placeholder="FECHA FIN:"
+      >
+        <input
+          type="text"
+          id="f-enddate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="endDate"
+        />
+      </label>
+      <div class="content-actions">
+        <button class="btn-secondary-u" (click)="resetForm()">Limpiar</button>
+        <button
+          class="btn-primary-u btn-new"
+          (click)="listadoPolizas(true)"
+          [disabled]="!validateSearch"
+        >
+          Buscar
+        </button>
+      </div>
+    </form>
+    <div class="divider"></div>
+    <!-- <div class="col-lg-12">
+         <span class="titleSel">
+           Lista de Polizas
+         </span>
+       </div> -->
+    <section class="content-table">
+      <table class="table tbl">
+        <thead class="tbl__head">
+          <tr class="tbl__head--row">
+            <th class="tbl__head--row-item">Seleccionar</th>
+            <th class="tbl__head--row-item">Placa</th>
+            <th class="tbl__head--row-item">Póliza</th>
+            <th class="tbl__head--row-item">Contratante</th>
+            <th class="tbl__head--row-item">Documento</th>
+            <th class="tbl__head--row-item">Fecha de Emisión</th>
+            <th class="tbl__head--row-item">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="tbl__body">
+          <ng-container *ngIf="!proceduresData$.length">
+            <tr class="tbl__body--row">
+              <td class="tbl__body--row-item" colspan="7">
+                No se encontraron resultados
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="proceduresData$.length">
+            <tr
+              class="tbl__body--row"
+              *ngFor="
+                let data of proceduresData$
+                  | paginate
+                    : {
+                        itemsPerPage: 10,
+                        currentPage: page,
+                        totalItems: proceduresData$[0]?.cantidadRegistros,
+                        id: 'bdj'
+                      };
+                let index = index
+              "
+            >
+              <td class="tbl__body--row-item tbl-checkmark">
+                <input
+                  type="radio"
+                  class="mark-u orange"
+                  name="policy_radio"
+                  [id]="'polcicy' + index"
+                  (change)="selectPolicy = data"
+                  [disabled]="data.flagTramite != 0"
+                />
+                <label
+                  [for]="'polcicy' + index"
+                  class="center"
+                  [title]="
+                    data.flagTramite != 0
+                      ? 'Esta póliza ya tiene un trámite generado'
+                      : 'Seleccionar'
+                  "
+                ></label>
+              </td>
+              <td class="tbl__body--row-item tbl-process-id">
+                {{ data.placa }}
+              </td>
+              <td class="tbl__body--row-item tbl-channel-name">
+                {{ data.poliza }}
+              </td>
+              <td class="tbl__body--row-item tbl-policy">
+                {{ data.contratante }}
+              </td>
+              <td class="tbl__body--row-item tbl-placa">
+                {{ data.tipoDocumento }} - {{ data.numeroDocumento }}
+              </td>
+              <td class="tbl__body--row-item tbl-date">
+                {{ data.fechaEmision }}
+              </td>
+              <td
+                class="tbl__body--row-item tbl-actions"
+                ngbDropdown
+                [placement]="index > 5 ? 'top-right' : 'bottom-right'"
+              >
+                <ng-container>
+                  <button class="tbl-btn-action" (click)="policySummary(data)">
+                    <i class="fa fa-file-text fa-lg" aria-hidden="true"></i>
+                    Resumen
+                  </button>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </section>
+    <ng-container *ngIf="proceduresData$.length">
+      <div class="content-pagination">
+        <pagination-controls
+          class="my-pagination"
+          id="bdj"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+          (pageChange)="currentPage = $event"
+        >
+        </pagination-controls>
+      </div>
+      <button
+        class="btn-primary-u btn-continue orange"
+        (click)="setNuevoTramite()"
+        [disabled]="!policySelected"
+      >
+        Continuar
+      </button>
+    </ng-container>
+  </section>
+</div>
+<ng-template #modalProcedure>
+  <div class="content-modal-u">
+    <div class="modal-u mp">
+      <div class="modal__header">
+        <h6 class="modal__header--title" style="font-weight: bold">
+          Resumen de Póliza {{ selectedPolicyData$.poliza }}
+        </h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="mp-group">
+          <h6 class="mp-subtitle">Datos de la póliza</h6>
+          <div class="mp-policy-data">
+            <div class="mp-data-policy-item">
+              <span>Vigencia</span>
+              <span
+                >{{ selectedPolicyData$.fechaInicio }} -
+                {{ selectedPolicyData$.fechaFin }}</span
+              >
+            </div>
+            <div class="mp-data-policy-item">
+              <span>Prima</span>
+              <span>S/ {{ selectedPolicyData$.prima | number : "1.2-2" }}</span>
+            </div>
+            <div class="mp-data-policy-item">
+              <span>Canal de venta</span>
+              <span>{{ selectedPolicyData$.canal }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mp-group">
+          <h6 class="mp-subtitle">Datos del vehículo</h6>
+          <table class="mp-tbl">
+            <tbody>
+              <tr>
+                <td>Placa</td>
+                <td>{{ selectedPolicyData$.placa }}</td>
+                <td>Marca</td>
+                <td>{{ selectedPolicyData$.marca }}</td>
+              </tr>
+              <tr>
+                <td>Uso</td>
+                <td>{{ selectedPolicyData$.uso }}</td>
+                <td>Modelo</td>
+                <td>{{ selectedPolicyData$.version }}</td>
+              </tr>
+              <tr>
+                <td>Clase</td>
+                <td>{{ selectedPolicyData$.clase }}</td>
+                <td>Año</td>
+                <td>{{ selectedPolicyData$.anio }}</td>
+              </tr>
+              <tr>
+                <td>Serie</td>
+                <td>{{ selectedPolicyData$.serie }}</td>
+                <td>Asientos</td>
+                <td>{{ selectedPolicyData$.asientos }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mp-group">
+          <h6 class="mp-subtitle">Datos del contratante</h6>
+          <table class="mp-tbl">
+            <tbody>
+              <tr>
+                <td>Contratante</td>
+                <td>
+                  {{
+                    selectedPolicyData$.tipoDocumento == "RUC"
+                      ? selectedPolicyData$.razonSocial
+                      : selectedPolicyData$.apellidoPaterno +
+                        " " +
+                        selectedPolicyData$.apellidoMaterno +
+                        " " +
+                        selectedPolicyData$.nombres
+                  }}
+                </td>
+                <td>Documento</td>
+                <td>
+                  {{ selectedPolicyData$.tipoDocumento }} -
+                  {{ selectedPolicyData$.numeroDocumento }}
+                </td>
+              </tr>
+              <tr>
+                <td>Correo</td>
+                <td>{{ selectedPolicyData$.correo }}</td>
+                <td>Celular</td>
+                <td>{{ selectedPolicyData$.telefono }}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u purple" (click)="closeModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

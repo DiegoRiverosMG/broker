@@ -1,0 +1,25 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="contenido">
+        <div class="mensaje-aprobado">
+          <h4>¡Estás a punto de culminar la compra de tu SOAT Electrónico Protecta Security!</h4>
+          <p>
+            Una vez tengamos la confirmación de tu pago, te estaremos enviando un correo electronico a
+            {{ cliente?.p_SMAIL }} con tu SOAT electr&oacute;nico Protecta Security
+            <br><br>
+            Si no recibes el correo con tu constancia electrónica SOAT una vez que hayas realizado el pago,
+            comun&iacute;cate en Lima al 391-3000 y en provincias al 0801-1-1278 o escr&iacute;benos a
+            clientes@protectasecurity.pe
+          </p>
+          <button type="button"
+                  class="btn-compra"
+                  (click)="IrPlaca()">Realizar otra Compra</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,378 @@
+/* @import '../../sctr.component.css'; */
+
+.collapse-list {
+  margin-bottom: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.collapse-open {
+  display: none;
+}
+
+.collapse-panel {
+  max-height: 100%;
+  visibility: visible;
+  opacity: 1;
+  display: flex;
+}
+
+.collapse-open:checked ~ .collapse-panel {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.collapse-items {
+  max-height: 100%;
+  visibility: visible;
+  opacity: 1;
+}
+
+.collapse-open:checked ~ .collapse-items {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.collapse-border {
+  padding: 0.5rem 1.25rem 1.25rem;
+  margin-top: -1px;
+  margin-bottom: 10px;
+}
+.container-button-collapse {
+  border-radius: 5px;
+  background-color: #e6e7ff;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collapse-list .collapse-btn {
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.2s ease;
+  opacity: 1;
+}
+.title-re {
+  text-align: left;
+  font: normal normal normal 24px/29px Bliss Pro;
+  letter-spacing: 0px;
+  color: #27246d;
+  opacity: 1;
+}
+
+.container-subtitle {
+  display: block;
+  transition: background-color 0.2s ease;
+  background-color: #e6e7ff;
+  border-radius: 5px;
+  opacity: 1;
+  padding: 14px;
+}
+
+.subtitle-re {
+  font: normal normal normal 18px/21px Bliss Pro;
+  letter-spacing: 0px;
+  color: #27246d;
+  opacity: 1;
+}
+
+.filter-container {
+  display: grid;
+  gap: 10px;
+  width: 80%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.input-re {
+  border: 1px solid #b4b5d9;
+  border-radius: 5px;
+}
+
+.column-span {
+  grid-column: span 2;
+}
+
+.container-button {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.button-re {
+  border: none;
+  background: #27246d 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  text-align: center;
+  font: normal normal bold 14px/16px Bliss Pro;
+  letter-spacing: 0px;
+  color: #ffffff;
+  width: 135px;
+  height: 45px;
+  margin-bottom: 30px;
+}
+
+.t-head {
+  background: #f4f4fa 0% 0% no-repeat padding-box;
+}
+
+.cabecera {
+  border-radius: 5px 5px 0px 0px;
+}
+
+.check {
+  padding-left: 10px;
+}
+
+.grid-title-item {
+  border: none;
+  font: normal normal normal 14px Bliss Pro;
+  letter-spacing: 0px;
+  color: #27246d;
+  padding: 16px 0;
+}
+
+.grid-item {
+  font: normal normal normal 14px Bliss Pro;
+  letter-spacing: 0px;
+  color: #707070;
+  padding: 10px 0;
+}
+
+.row-item {
+  border-bottom: 1px solid #e6e7ff;
+}
+
+.circle {
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background-color: red;
+}
+
+.button-reset {
+  width: 45px;
+  height: 45px;
+  background: #8385b4 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  font: normal normal bold 14px/16px Bliss Pro;
+  letter-spacing: 0px;
+  color: #ffffff;
+  border: none;
+}
+
+.grid-title-item > img {
+  width: 12px;
+  height: 12px;
+}
+
+.td-head {
+  display: flex;
+}
+
+.autorenew {
+  width: 14px;
+  height: 14px;
+}
+
+.menu-container {
+  display: flex;
+  justify-content: center;
+}
+
+.menu-button {
+  background-color: transparent;
+  border: none;
+}
+
+.menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  border-radius: 4px;
+  z-index: 1;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #e6e7ff;
+  border-radius: 5px;
+  min-width: 160px;
+  margin: 30px 120px 0 0;
+}
+.menu-center {
+  left: 45%;
+}
+
+.menu li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.button-search {
+  border: none;
+  background: #27246d 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  text-align: center;
+  font: normal normal bold 14px/16px Bliss Pro;
+  letter-spacing: 0px;
+  color: #ffffff;
+  width: 135px;
+  height: 45px;
+  flex-grow: 1;
+}
+
+.buttons-end {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.accent-orange {
+  accent-color: #ff7b00;
+  margin: 0 10px;
+}
+
+.labelPagination {
+  font: normal normal normal 12px/14px Bliss Pro;
+  color: #707072;
+}
+
+.paginationInput {
+  font: normal normal normal 12px / 14px Bliss Pro;
+  color: #212121;
+  width: 40px;
+  border: none;
+  border-bottom: 2px solid #e6e7ff;
+  text-align: center;
+  outline: none;
+  margin: 0 6px;
+}
+
+.containerArrow {
+  background-color: #27246d;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-pagination {
+  display: flex;
+  gap: 6px;
+  justify-content: end;
+}
+
+.sin-estilos {
+  margin: 0;
+  padding: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.containt-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.label-button {
+  background: #f2f2ff 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  color: #8385b4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-collapse {
+  display: inline;
+}
+
+.icon-expand {
+  display: none;
+}
+
+#busqueda:checked + label .icon-collapse {
+  display: none;
+}
+
+#busqueda:checked + label .icon-expand {
+  display: inline;
+}
+
+.loadingScreen {
+  opacity: 0.7;
+  transition: opacity 0.8s ease-in-out;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #000;
+  z-index: 10000000000;
+}
+
+.data-none {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.search {
+  padding-left: 24px; /* Ajusta este valor según sea necesario para que la imagen no se solape con el texto */
+  background-image: url("assets/rentas/search_24dp_FILL0_wght400_GRAD0_opsz24.svg");
+  background-size: 20px; /* Ajusta el tamaño de la imagen según sea necesario */
+  background-repeat: no-repeat;
+  background-position: 4px center; /* Ajusta la posición de la imagen */
+  font-size: 14px !important;
+  width: 100%;
+  border: 1px solid #b4b5d9 !important;
+  border-radius: 5px;
+  opacity: 1;
+  color: #aa9ec0;
+  height: 45px !important;
+  font-weight: 300 !important;
+  text-transform: uppercase;
+  outline: none;
+  background-color: white;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.labelspan {
+  text-transform: uppercase;
+  margin: 0.7em 0 0.7em 0;
+  display: block;
+  text-align: left;
+  font: normal normal normal 14px/16px Bliss Pro;
+  letter-spacing: 0px;
+  color: #8385b4;
+}
+
+.search:disabled {
+  background-color: rgb(222, 222, 222);
+}

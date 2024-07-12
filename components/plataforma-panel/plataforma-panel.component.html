@@ -1,0 +1,113 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row row-title-principal row text-center d-flex justify-content-center">
+        <div class="col-sm-12 col-lg-12">
+          <div class="title-princial">
+            <a>Bienvenido a Protecta Security, {{ nombre }}.</a>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row row-title-secondary">
+        <div class="col-sm-12 col-lg-12">
+          <div class="text-descripcion">
+            <p>
+              Ahora podrás crear e ingresar el seguro vehícular de tus clientes
+              de manera inmediata. Conoce el Historial de tus Ventas de SOAT con
+              Protecta Security.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row text-center d-flex justify-content-center">
+        <div class="col-lg-4">
+          <div>
+            <label for="disabledTextInput"
+                   class="label-formulario">CANAL DE VENTAS
+            </label>
+            <select id="ChannelSalesSelect"
+                    (change)="onSelectChannelSales($event.target.value)"
+                    class="form-control">
+              <option value="0"
+                      selected>Seleccionar</option>
+              <option *ngFor="let channelsales of ListChannelSales"
+                      [selected]="channelsales.nchannel == channelSalesId"
+                      value="{{ channelsales.nchannel }}">
+                {{ channelsales.sdescript }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="">
+            <label for="disabledTextInput"
+                   class="label-formulario">DESDE - HASTA
+            </label>
+            <input placeholder="Desde - hasta"
+                   type="text"
+                   class="form-control"
+                   #drp="bsDaterangepicker"
+                   bsDaterangepicker
+                   [(ngModel)]="bsRangeValue"
+                   [bsConfig]="bsConfig" />
+          </div>
+        </div>
+        <div class="col-lg-1">
+          <div class="row text-center d-flex justify-content-center">
+            <div class="align-middle"
+                 style="padding: 31px;">
+              <button (click)="getSalesDashboard()"
+                      class="btn-compra"> Consultar </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div *ngFor="let producto of listSalesDashboard; let row = index"
+             class="col-sm-12 col-lg-6">
+          <div class="rectangle">
+            <div class="cabera">
+              <img src="assets/icons/{{producto.producto =='SOAT' ? 'soat.png' :
+                                  producto.producto == 'VIDA LEY' ? 'vida-ley.png' :
+                                  producto.producto == 'SCTR' ? 'sctr.png' :
+                                  producto.producto == 'ACCIDENTES PERSONALES' ? 'accidentes-personales.png' :
+                                  ''}}"
+                   class="face-score"
+                   alt="" />
+
+            </div>
+            <div class="title-rectangle">
+              <a>{{producto.producto}}</a>
+            </div>
+            <div class="content-rectagle">
+              <div class="rectangle-copy-left">
+                <p class="rectangle-copy-parrafo">PAGADOS</p>
+                <div class="rectangle-copy-numero">
+                  {{ producto.pagados }}
+                </div>
+              </div>
+              <div class="rectangle-copy-left">
+                <p class="rectangle-copy-parrafo">EMITIDOS</p>
+                <div class="rectangle-copy-numero">
+                  {{ producto.emitidos }}
+                </div>
+              </div>
+              <div class="rectangle-copy-rigth">
+                <p class="rectangle-copy-parrafo">ENVIADOS</p>
+                <div class="rectangle-copy-numero">
+                  {{ producto.enviados }}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

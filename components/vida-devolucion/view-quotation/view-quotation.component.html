@@ -1,0 +1,2645 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body"
+         @fade>
+      <div class="navigation">
+        <app-breadcrumb>
+          <a routerLink="/extranet/vidadevolucion/prospectos">
+            <i class="fa fa-home"
+               aria-hidden="true"></i>
+            VIDA DEVOLUCIÓN PROTECTA <sup>+</sup>
+          </a>
+          <a routerLink="/extranet/vidadevolucion/prospectos">
+            Mis prospectos
+          </a>
+          <a routerLink="/extranet/vidadevolucion/cliente/nuevo"
+             *ngIf="currentUser.comercial || currentUser.soporte">
+            Nuevo prospecto
+          </a>
+          <a class="disabled"> Resumen del prospecto </a>
+        </app-breadcrumb>
+        <div class="content-action-state">
+          <button class="button secondary fit no-border orange"
+                  (click)="backToNewClient()">
+            <i class="fa fa-chevron-left"
+               aria-hidden="true"></i>
+            Regresar
+          </button>
+          <span class="prospect-state"
+                [class.pending]="stateType?.id != 3 && stateType?.id != 4"
+                [class.success]="stateType?.id == 3 || stateType?.id == 4">
+                        {{ stateType?.description }}
+                    </span>
+        </div>
+      </div>
+      <!-- <div class="header-u">
+        <h1 class="title-u">Resumen del prospecto</h1>
+        <div *ngIf="currentUser.soporte && !isObserver && !isSupport" class="support-actions">
+          <button class="button btn-secondary-u orange no-border fit btn-reject" (click)="openModalCancelProspect()">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            Rechazar
+          </button>
+          <button class="button btn-primary-u orange fit" (click)="asignarAsesor()">
+            <img src="assets/icons/asesor.png" class="img-excel asesor-img" />Asignar asesor
+          </button>
+        </div>
+      </div> -->
+      <div class="datosbasicos">
+        <h2 class="subtitle">Datos básicos del asegurado</h2>
+
+        <h2 class="subtitle">Asignado: {{ asesorasignado }}</h2>
+      </div>
+      <section class="section basic">
+        <!-- DOCUMENTO DE IDENTIDAD DEL ASEGURADO -->
+        <div *ngIf="!finalQuotationSuccess"
+             class="section__info contractor">
+          <label class="placeholder-u"
+                 aria-placeholder="Tipo de documento:">
+            <span class="input-u">DNI</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Número de documento:">
+            <span class="input-u">{{ contractor$?.numeroDocumento }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Fecha de nacimiento:">
+            <span class="input-u">{{ contractor$?.fechaNacimiento }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Nombres:">
+            <span class="input-u">{{ contractor$?.nombres }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Apellido paterno:">
+            <span class="input-u">{{ contractor$?.apellidoPaterno }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Apellido materno:">
+            <span class="input-u">{{ contractor$?.apellidoMaterno }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Sexo:">
+            <span class="input-u">{{ contractor$?.sexo }}</span>
+          </label>
+        </div>
+        <div *ngIf="finalQuotationSuccess"
+             disabled
+             class="section__info contractor">
+          <label class="placeholder-u"
+                 aria-placeholder="Tipo de documento:">
+            <span class="input-u">DNI</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Número de documento:">
+            <span class="input-u">{{ contractor$?.numeroDocumento }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Fecha de nacimiento:">
+            <span class="input-u">{{ contractor$?.fechaNacimiento }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Nombres:">
+            <span class="input-u">{{ contractor$?.nombres }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Apellido paterno:">
+            <span class="input-u">{{ contractor$?.apellidoPaterno }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Apellido materno:">
+            <span class="input-u">{{ contractor$?.apellidoMaterno }}</span>
+          </label>
+          <label class="placeholder-u"
+                 aria-placeholder="Sexo:">
+            <span class="input-u">{{ contractor$?.sexo }}</span>
+          </label>
+        </div>
+        <!-- DATOS DE RIESGO DEL ASEGURADO -->
+        <div class="section risk">
+          <div class="sub-container1">
+            <div>
+              <h3 class="sub-title">Idecon</h3>
+              <div class="label">
+                <span class="item">Otras listas</span>
+                <span class="item">{{
+                  convertToYesOrno(indicator$?.idecon?.isOtherList)
+                  }}</span>
+
+                <span class="item">Es PEP</span>
+                <span class="item">{{
+                  convertToYesOrno(indicator$?.idecon?.isPep)
+                  }}</span>
+
+                <span class="item">Tiene Familiar PEP</span>
+                <span class="item">{{
+                  convertToYesOrno(indicator$?.idecon?.isFamPep)
+                  }}</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="sub-title">WorldCheck</h3>
+              <div class="label">
+                <span class="item">Otras listas</span>
+                <span class="item">{{
+                  convertToYesOrno(indicator$?.worldCheck?.isOtherList)
+                  }}</span>
+
+                <span class="item">Es PEP</span>
+                <span class="item">{{
+                  convertToYesOrno(indicator$?.worldCheck?.isPep)
+                  }}</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="sub-title">Experian</h3>
+              <div class="label">
+                <span class="item">Cliente Riesgoso</span>
+                <span *ngIf="!indicator$?.experian?.experianRisk"
+                      class="item">{{
+                  convertToYesOrno(indicator$?.experian?.experianRisk)
+                  }}</span>
+                <span *ngIf="indicator$?.experian?.experianRisk"
+                      class="item colorRedExp">{{
+                  convertToYesOrno(indicator$?.experian?.experianRisk)
+                  }}</span>
+                <span *ngIf="indicator$?.experian?.experianRisk"
+                      class="item">Aprobado</span>
+                <span *ngIf="indicator$?.experian?.experianRisk"
+                      class="item">{{
+                  convertToYesOrno(indicator$?.experian?.approve)
+                  }}</span>
+              </div>
+            </div>
+          </div>
+          <!-- checkbox -->
+          <div class="content-checkbox-u content-namesake mt-3"
+               [formGroup]="formAsegurado"
+               *ngIf="!finalQuotationSuccess && currentUser.comercial">
+            <input type="checkbox"
+                   id="f-namesake"
+                   class="checkbox-u"
+                   formControlName="namesake"/>
+            <label for="f-namesake"
+                   class="checkbox-label-u orange">
+              La persona corresponde a un homónimo
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <form class="form form-plandata"
+            [formGroup]="formClient">
+        <div style="margin-top: 20px; display: flex; align-items: center">
+          <label class="subtitle"
+                 style="margin-right: 20px">El asegurado es la misma persona que contrata el seguro</label>
+          <div class="content-radio-u mr-3">
+            <input type="radio"
+                   id="client-yes"
+                   class="mark-u orange"
+                   value="0"
+                   formControlName="typeClients"
+                   (click)="changeClientType()"
+                   [checked]="fbes['typeClients'].value == 0"/>
+            <label for="client-yes"
+                   class="radio-label-u orange mark-u">
+              Sí
+            </label>
+          </div>
+          <div class="content-radio-u">
+            <input type="radio"
+                   id="client-no"
+                   class="mark-u orange"
+                   value="1"
+                   formControlName="typeClients"
+                   (click)="changeClientType()"
+                   [checked]="fbes['typeClients'].value == 1"/>
+            <label for="client-no"
+                   class="radio-label-u orange mark-u">
+              No
+            </label>
+          </div>
+          <div *ngIf="clientAseguradoBol"
+               style="margin-left: 50px">
+            <label for="occupation"
+                   class="placeholder-u"
+                   aria-placeholder="PARENTESCO CON EL CONTRATANTE">
+              <select id="occupation"
+                      class="input-u"
+                      formControlName="parentescocontratante">
+                <option value="null"
+                        selected
+                        disabled
+                        hidden>
+                  SELECCIONE
+                </option>
+                <option *ngFor="let data of parameters$?.parentescos"
+                        [value]="data.id">
+                  {{ data.descripcion }}
+                </option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- Datos básicos del contratante -->
+        <!-- CAPTCHA -->
+        <div class="captcha">
+          <re-captcha #recaptchaRef="reCaptcha"
+                      (resolved)="resolved($event)"
+                      siteKey="{{ siteKey }}"
+                      badge="bottomleft"
+                      size="invisible">
+          </re-captcha>
+        </div>
+
+        <div *ngIf="clientAseguradoBol"
+             style="margin-top: 10px"
+             class="datosbasicos">
+          <h2 class="subtitle">Datos básicos del contratante</h2>
+        </div>
+        <section *ngIf="clientAseguradoBol"
+                 class="section basic">
+          <!-- DOCUMENTO DE IDENTIDAD DEL CONTRATANTE -->
+          <div *ngIf="!finalQuotationSuccess"
+               class="section__info contractor">
+            <label class="placeholder-u"
+                   aria-placeholder="TIPO DE DOCUMENTO">
+              <select class="input input-wp"
+                      formControlName="typeDoc">
+                <!-- (change)="changeTypeDoc()"> -->
+                <!-- <option value="4">CE</option> -->
+                <option value="2">DNI</option>
+              </select>
+            </label>
+            <label class="placeholder-u"
+                   for="ndoc"
+                   aria-placeholder="NÚMERO DE DOCUMENTO">
+              <input type="text"
+                     id="ndoc"
+                     class="input-u"
+                     autocomplete="off"
+                     formControlName="nDoc"
+                     [maxlength]="numberDocumentLimit.max"
+                     [minlength]="numberDocumentLimit.min"/>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Fecha de nacimiento:">
+                            <span class="input-u">{{
+                              contractorContratante$?.birthdate
+                              }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Nombres:">
+              <span class="input-u">{{ contractorContratante$?.names }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Apellido paterno:">
+              <span class="input-u">{{ contractorContratante$?.apePat }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Apellido materno:">
+              <span class="input-u">{{ contractorContratante$?.apeMat }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Sexo:">
+                            <span *ngIf="contractorContratante$?.sex == 2"
+                                  class="input-u">{{
+                              "MASCULINO"
+                              }}</span>
+              <span *ngIf="contractorContratante$?.sex == 1"
+                    class="input-u">{{
+                "FEMENINO"
+                }}</span>
+              <span *ngIf="
+                  contractorContratante$?.sex != 2 &&
+                  contractorContratante$?.sex != 1
+                "
+                    class="input-u">{{ contractorContratante$?.sex }}</span>
+            </label>
+          </div>
+          <div *ngIf="finalQuotationSuccess"
+               disabled
+               class="section__info contractor">
+            <label class="placeholder-u"
+                   aria-placeholder="TIPO DE DOCUMENTO">
+              <select class="input input-wp"
+                      formControlName="typeDoc"
+                      disabled>
+                <!-- (change)="changeTypeDoc()"> -->
+                <!-- <option value="4">CE</option> -->
+                <option value="2">DNI</option>
+              </select>
+            </label>
+            <label class="placeholder-u"
+                   for="ndoc"
+                   aria-placeholder="NÚMERO DE DOCUMENTO">
+              <input type="text"
+                     id="ndoc"
+                     class="input-u"
+                     autocomplete="off"
+                     formControlName="nDoc"
+                     [maxlength]="numberDocumentLimit.max"
+                     [minlength]="numberDocumentLimit.min"
+                     disabled/>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Fecha de nacimiento:">
+                            <span class="input-u">{{
+                              contractorContratante$?.birthdate
+                              }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Nombres:">
+              <span class="input-u">{{ contractorContratante$?.names }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Apellido paterno:">
+              <span class="input-u">{{ contractorContratante$?.apePat }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Apellido materno:">
+              <span class="input-u">{{ contractorContratante$?.apeMat }}</span>
+            </label>
+            <label class="placeholder-u"
+                   aria-placeholder="Sexo:">
+                            <span *ngIf="contractorContratante$?.sex == 2"
+                                  class="input-u">{{
+                              "MASCULINO"
+                              }}</span>
+              <span *ngIf="contractorContratante$?.sex == 1"
+                    class="input-u">{{
+                "FEMENINO"
+                }}</span>
+              <span *ngIf="
+                  contractorContratante$?.sex != 2 &&
+                  contractorContratante$?.sex != 1
+                "
+                    class="input-u">{{ contractorContratante$?.sex }}</span>
+            </label>
+          </div>
+
+          <!-- DATOS DE RIESGO DEL CONTRATANTE -->
+          <div class="section risk">
+            <div class="sub-container1">
+              <div>
+                <h3 class="sub-title">Idecon</h3>
+                <div class="label">
+                  <span class="item">Otras listas</span>
+                  <span class="item">{{
+                    convertToYesOrno(indicatorcontratante$?.idecon?.isOtherList)
+                    }}</span>
+
+                  <span class="item">Es PEP</span>
+                  <span class="item">{{
+                    convertToYesOrno(indicatorcontratante$?.idecon?.isPep)
+                    }}</span>
+
+                  <span class="item">Tiene Familiar PEP</span>
+                  <span class="item">{{
+                    convertToYesOrno(indicatorcontratante$?.idecon?.isFamPep)
+                    }}</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="sub-title">WorldCheck</h3>
+                <div class="label">
+                  <span class="item">Otras listas</span>
+                  <span class="item">{{
+                    convertToYesOrno(
+                      indicatorcontratante$?.worldCheck?.isOtherList
+                    )
+                    }}</span>
+
+                  <span class="item">Es PEP</span>
+                  <span class="item">{{
+                    convertToYesOrno(indicatorcontratante$?.worldCheck?.isPep)
+                    }}</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="sub-title">Experian</h3>
+                <div class="label">
+                  <span class="item">Cliente Riesgoso</span>
+                  <span *ngIf="!indicatorcontratante$?.experian?.experianRisk"
+                        class="item">{{
+                    convertToYesOrno(
+                      indicatorcontratante$?.experian?.experianRisk
+                    )
+                    }}</span>
+                  <span *ngIf="indicatorcontratante$?.experian?.experianRisk"
+                        class="item colorRedExp">{{
+                    convertToYesOrno(
+                      indicatorcontratante$?.experian?.experianRisk
+                    )
+                    }}</span>
+                  <span *ngIf="indicatorcontratante$?.experian?.experianRisk"
+                        class="item">Aprobado</span>
+                  <span *ngIf="indicatorcontratante$?.experian?.experianRisk"
+                        class="item">{{
+                    convertToYesOrno(indicatorcontratante$?.experian?.approve)
+                    }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- checkbox -->
+          </div>
+        </section>
+      </form>
+
+      <ng-container *ngIf="listadoPolizas.length">
+        <div class="divider"></div>
+        <h2 class="subtitle">Estado de Pólizas</h2>
+        <section class="section quotation"
+                 *ngIf="isTariffLoaded"
+                 @fade
+                 style="text-align: -webkit-center">
+          <div class="grid form-group row content-quotations">
+            <div class="table-responsive"
+                 id="table-scroll">
+              <table class="table-u">
+                <thead>
+                <tr>
+                  <th>N° póliza</th>
+                  <th>Emisión</th>
+                  <th>Moneda</th>
+                  <th>Porcentaje de Devolución (%)</th>
+                  <th>Tiempo de ahorro</th>
+                  <th>Cuota</th>
+                  <th>Frecuencia</th>
+                  <th>Estado de Poliza</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngIf="!listadoPolizas?.length">
+                  <tr>
+                    <td colspan="9">No hay informacion para mostrar</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="!!listadoPolizas?.length">
+                  <tr *ngFor="
+                        let data of listadoPolizas
+                          | paginate
+                            : {
+                                itemsPerPage: 8,
+                                currentPage: currentPagePolizas,
+                                totalItems: listadoPolizas.length,
+                                id: 'paginationPolizasVigentes'
+                              };
+                        let index = index
+                      ">
+                    <td>{{ data.poliza }}</td>
+                    <td>
+                      {{ data.fechaEmision }}
+                    </td>
+                    <td>{{ data.moneda || "-" }}</td>
+                    <td>{{ data.porcentajeDevolucion || "-" }} %</td>
+                    <td>{{ data.tiempoAhorro || "-" }} años</td>
+                    <td>
+                      {{ data.moneda == "Soles" ? "S/." : "$" }}
+                      {{ data.primaMensual || "-" }}
+                    </td>
+                    <td>{{ data.frecuenciaPago || "-" }}</td>
+                    <td>
+                                                <span class="quotation-status"
+                                                      [class.generated]="data.estado == 'Emitido'"
+                                                      [class.expired]="data.estado == 'Anulado'">
+                                                    {{ data.estado }}
+                                                </span>
+                    </td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="content-pagination pag-ban">
+            <pagination-controls class="my-pagination"
+                                 id="paginationPolizasVigentes"
+                                 autoHide="true"
+                                 responsive="true"
+                                 previousLabel="Anterior"
+                                 nextLabel="Siguiente"
+                                 screenReaderPaginationLabel="Paginación"
+                                 screenReaderPageLabel="pagina"
+                                 screenReaderCurrentLabel="Estás en la pagina"
+                                 (pageChange)="currentPagePolizas = $event"
+                                 *ngIf="!!listadoPolizas?.length">
+            </pagination-controls>
+          </div>
+        </section>
+      </ng-container>
+      <ng-container *ngIf="
+          currentUser.comercial ||
+          userJefe ||
+          userSupervisor ||
+          currentUser.soporte
+        ">
+        <div class="divider"></div>
+        <h2 class="subtitle">Nueva cotización</h2>
+        <section class="section quotation"
+                 *ngIf="isTariffLoaded"
+                 @fade>
+          <app-buy-plandata [validDoc]="fbes['nDoc'].valid"
+                            [validarindicadores]="validarindicadores"
+                            [typeClients]="fbes['typeClients'].value"
+                            [parentescocontratantea]="fbes['parentescocontratante'].value"
+                            (quotationChange)="quotationChange($event)"
+                            (validateQuotation)="validateQuotation($event)"></app-buy-plandata>
+        </section>
+        <div style="color: red; display: flex"
+             *ngIf="validarspan">
+          <button class="icon-info"
+                  style="
+              background: none;
+              transform: translateY(-13px);
+              margin-right: 8px;
+              color: red;
+            ">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="18"
+                 height="18"
+                 viewBox="0 0 24 24">
+              <path fill="red"
+                    d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+            </svg>
+          </button>
+          <p style="color: red">
+            El cliente cuenta con {{ numpolizascontratadas }} pólizas
+            contratadas por una suma asegurada de S/
+            {{ currencyformat(totalsumapolizas) }} . Puede comprar una cobertura
+            máxima de S/ {{ currencyformat(sumasuperada2) }} adicionales
+          </p>
+        </div>
+      </ng-container>
+      <div class="divider"></div>
+
+      <!-- DATOS CONPLEMENTARIOS DEL Asegurado -->
+      <div class="subtitle-action"
+           *ngIf="
+          currentUser.comercial ||
+          userJefe ||
+          userSupervisor ||
+          currentUser.soporte
+        ">
+        <h2 class="subtitle subtitle-complements">
+          Datos complementarios del asegurado
+        </h2>
+      </div>
+      <form [formGroup]="formAsegurado"
+            class="form-contractor">
+        <label for="cellphone"
+               class="placeholder-u"
+               aria-placeholder="Celular:">
+          <input type="text"
+                 id="cellphone"
+                 class="input-u"
+                 autocomplete="off"
+                 [maxlength]="9"
+                 formControlName="phoneNumber"
+                 [class.input-has-error]="
+              f['phoneNumber'].errors && f['phoneNumber'].touched
+            "/>
+        </label>
+        <label for="email"
+               class="placeholder-u"
+               aria-placeholder="Correo electrónico:">
+          <input type="text"
+                 id="adress"
+                 class="input-u"
+                 autocomplete="off"
+                 [maxlength]="60"
+                 formControlName="email"
+                 [class.input-has-error]="f['email'].errors && f['email'].touched"/>
+        </label>
+        <label for="adress"
+               class="placeholder-u"
+               aria-placeholder="Dirección:">
+          <input type="text"
+                 id="adress"
+                 class="input-u"
+                 autocomplete="off"
+                 [maxlength]="90"
+                 formControlName="direccion"
+                 [class.input-has-error]="
+              f['direccion'].errors && f['direccion'].touched
+            "/>
+        </label>
+        <label for="state-civil"
+               class="placeholder-u"
+               aria-placeholder="Estado civil:">
+          <select id="state-civil"
+                  class="input-u"
+                  formControlName="estadoCivil"
+                  [class.input-has-error]="
+              f['estadoCivil'].errors && f['estadoCivil'].touched
+            ">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>SELECCIONE
+            </option>
+            <option *ngFor="let data of parameters$?.estadoCivil"
+                    [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+        <label for="activity"
+               class="placeholder-u"
+               aria-placeholder="Actividad económica:"
+               *ngIf="ammountParseDolar >= 1500">
+          <select id="activity"
+                  class="input-u"
+                  formControlName="actividad"
+                  [class.input-has-error]="
+              f['actividad'].errors && f['actividad'].touched
+            ">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>SELECCIONE
+            </option>
+            <option value="D">DEPENDIENTE</option>
+            <option value="I">INDEPENDIENTE</option>
+          </select>
+        </label>
+        <label for="income"
+               class="placeholder-u"
+               aria-placeholder="Ingresos mensuales:"
+               *ngIf="ammountParseDolar >= 1500">
+          <input type="text"
+                 id="income"
+                 class="input-u"
+                 formControlName="ingresos"
+                 [class.input-has-error]="
+              f['ingresos'].errors && f['ingresos'].touched
+            "/>
+        </label>
+
+        <label for="nationality"
+               class="placeholder-u"
+               aria-placeholder="Nacionalidad:">
+          <select id="nationality"
+                  class="input-u"
+                  formControlName="nacionalidad"
+                  [class.input-has-error]="
+              f['nacionalidad'].errors && f['nacionalidad'].touched
+            ">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>SELECCIONE
+            </option>
+            <option *ngFor="let data of parameters$?.nacionalidades"
+                    [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+        <label for="department"
+               class="placeholder-u"
+               aria-placeholder="Departamento:">
+          <select id="department"
+                  class="input-u"
+                  formControlName="departamento"
+                  [class.input-has-error]="
+              f['departamento'].errors && f['departamento'].touched
+            ">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>SELECCIONE
+            </option>
+            <option *ngFor="let data of departments$"
+                    [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+        <label for="province"
+               class="placeholder-u"
+               aria-placeholder="Provincia:">
+          <select id="province"
+                  class="input-u"
+                  formControlName="provincia"
+                  [class.input-has-error]="
+              f['provincia'].errors && f['provincia'].touched
+            ">
+            <ng-container *ngIf="!!provinces$?.length">
+              <option [value]="null"
+                      selected
+                      disabled
+                      hidden>
+                SELECCIONE
+              </option>
+              <option *ngFor="let data of provinces$"
+                      [value]="data.idProvincia">
+                {{ data.provincia }}
+              </option>
+            </ng-container>
+            <ng-container *ngIf="!provinces$?.length">
+              <option [value]="null">NO HAY RESULTADOS</option>
+            </ng-container>
+          </select>
+        </label>
+        <label for="district"
+               class="placeholder-u"
+               aria-placeholder="Distrito:">
+          <select id="district"
+                  class="input-u"
+                  formControlName="distrito"
+                  [class.input-has-error]="
+              f['distrito'].errors && f['distrito'].touched
+            ">
+            <ng-container *ngIf="!!districts$?.length">
+              <option [value]="null"
+                      selected
+                      disabled
+                      hidden>
+                SELECCIONE
+              </option>
+              <option *ngFor="let data of districts$"
+                      [value]="data.idDistrito">
+                {{ data.distrito }}
+              </option>
+            </ng-container>
+            <ng-container *ngIf="!districts$?.length">
+              <option [value]="null">NO HAY RESULTADOS</option>
+            </ng-container>
+          </select>
+        </label>
+        <label for="occupation"
+               class="placeholder-u"
+               aria-placeholder="Ocupación:">
+          <select id="occupation"
+                  class="input-u"
+                  formControlName="ocupacion"
+                  [class.input-has-error]="
+              f['ocupacion'].errors && f['ocupacion'].touched
+            ">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>SELECCIONE
+            </option>
+            <option *ngFor="let data of parameters$?.ocupaciones"
+                    [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+        <div class="so-container"
+             *ngIf="ammountParseDolar >= 1500">
+          <label for="condition"
+                 class="placeholder-u"
+                 aria-placeholder="Condición de SO:">
+            <select id="condition"
+                    class="input-u"
+                    formControlName="condicion"
+                    [class.input-has-error]="
+                f['condicion'].errors && f['condicion'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+
+              <option value="S">SI</option>
+              <option value="N">NO</option>
+            </select>
+          </label>
+          <button class="btn-condition-info"
+                  (click)="viewCondition()">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 viewBox="0 0 24 24">
+              <path
+                d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <!-- OBLIGACIONES -->
+      <div style="text-align: center"
+           *ngIf="
+          currentUser.comercial ||
+          userJefe ||
+          userSupervisor ||
+          currentUser.soporte
+        ">
+        <div style="margin-top: 60px">
+          <label>¿El asegurado tiene obligaciones fiscales/tributarias fuera del
+            Perú? </label>
+          <button class="icon-info"
+                  style="transform: translateY(-10px); margin-left: 8px"
+                  (click)="viewObligaciones()">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 viewBox="0 0 24 24">
+              <path
+                d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+            </svg>
+          </button>
+          <form [formGroup]="formAsegurado">
+            <div class="content-chk-obligaciones"
+                 style="display: flex; margin-top: 15px; justify-content: center">
+              <input type="radio"
+                     id="chk-ob-1"
+                     [value]="1"
+                     hidden
+                     formControlName="obligacionFiscal"/>
+              <label for="chk-ob-1"
+                     class="style-chk-ob"
+                     role="button">Si</label>
+              <input type="radio"
+                     id="chk-ob-0"
+                     [value]="0"
+                     hidden
+                     formControlName="obligacionFiscal"/>
+              <label for="chk-ob-0"
+                     class="style-chk-ob ml-5"
+                     role="button">No</label>
+            </div>
+          </form>
+        </div>
+
+        <!-- DATOS COMPLEMENTARIOS DEL CONTRATANTE -->
+        <div style="margin-top: 30px"
+             class="subtitle-action"
+             *ngIf="
+            (currentUser.comercial ||
+              userJefe ||
+              userSupervisor ||
+              currentUser.soporte) &&
+            clientAseguradoBol
+          ">
+          <h2 class="subtitle subtitle-complements">
+            Datos complementarios del Contratante
+          </h2>
+        </div>
+        <form *ngIf="clientAseguradoBol"
+              [formGroup]="formContratante"
+              class="form-contractor">
+          <label for="cellphone"
+                 class="placeholder-u"
+                 aria-placeholder="Celular:">
+            <input type="text"
+                   id="cellphone"
+                   class="input-u"
+                   autocomplete="off"
+                   [maxlength]="9"
+                   formControlName="phoneNumber"
+                   [class.input-has-error]="
+                fc['phoneNumber'].errors && fc['phoneNumber'].touched
+              "/>
+          </label>
+          <label for="email"
+                 class="placeholder-u"
+                 aria-placeholder="Correo electrónico:">
+            <input type="text"
+                   id="adress"
+                   class="input-u"
+                   autocomplete="off"
+                   [maxlength]="60"
+                   formControlName="email"
+                   [class.input-has-error]="fc['email'].errors && fc['email'].touched"/>
+          </label>
+          <label for="adress"
+                 class="placeholder-u"
+                 aria-placeholder="Dirección:">
+            <input type="text"
+                   id="adress"
+                   class="input-u"
+                   autocomplete="off"
+                   [maxlength]="90"
+                   formControlName="direccion"
+                   [class.input-has-error]="
+                fc['direccion'].errors && fc['direccion'].touched
+              "/>
+          </label>
+          <label for="state-civil"
+                 class="placeholder-u"
+                 aria-placeholder="Estado civil:">
+            <select id="state-civil"
+                    class="input-u"
+                    formControlName="estadoCivil"
+                    [class.input-has-error]="
+                fc['estadoCivil'].errors && fc['estadoCivil'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+              <option *ngFor="let data of parameters$?.estadoCivil"
+                      [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <label for="activity"
+                 class="placeholder-u"
+                 aria-placeholder="Actividad económica:"
+                 *ngIf="ammountParseDolar >= 1500">
+            <select id="activity"
+                    class="input-u"
+                    formControlName="actividad"
+                    [class.input-has-error]="
+                fc['actividad'].errors && fc['actividad'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+              <option value="D">DEPENDIENTE</option>
+              <option value="I">INDEPENDIENTE</option>
+            </select>
+          </label>
+          <label for="income"
+                 class="placeholder-u"
+                 aria-placeholder="Ingresos mensuales:"
+                 *ngIf="ammountParseDolar >= 1500">
+            <input type="text"
+                   id="income"
+                   class="input-u"
+                   formControlName="ingresos"
+                   [class.input-has-error]="
+                fc['ingresos'].errors && fc['ingresos'].touched
+              "/>
+          </label>
+
+          <label for="nationality"
+                 class="placeholder-u"
+                 aria-placeholder="Nacionalidad:">
+            <select id="nationality"
+                    class="input-u"
+                    formControlName="nacionalidad"
+                    [class.input-has-error]="
+                fc['nacionalidad'].errors && fc['nacionalidad'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+              <option *ngFor="let data of parameters$?.nacionalidades"
+                      [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <label for="department"
+                 class="placeholder-u"
+                 aria-placeholder="Departamento:">
+            <select id="department"
+                    class="input-u"
+                    formControlName="departamento"
+                    [class.input-has-error]="
+                fc['departamento'].errors && fc['departamento'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+              <option *ngFor="let data of departmentscontratante$"
+                      [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <label for="province"
+                 class="placeholder-u"
+                 aria-placeholder="Provincia:">
+            <select id="province"
+                    class="input-u"
+                    formControlName="provincia"
+                    [class.input-has-error]="
+                fc['provincia'].errors && fc['provincia'].touched
+              ">
+              <ng-container *ngIf="!!provincescontratante$?.length">
+                <option [value]="null"
+                        selected
+                        disabled
+                        hidden>
+                  SELECCIONE
+                </option>
+                <option *ngFor="let data of provincescontratante$"
+                        [value]="data.idProvincia">
+                  {{ data.provincia }}
+                </option>
+              </ng-container>
+              <ng-container *ngIf="!provincescontratante$?.length">
+                <option [value]="null">NO HAY RESULTADOS</option>
+              </ng-container>
+            </select>
+          </label>
+          <label for="district"
+                 class="placeholder-u"
+                 aria-placeholder="Distrito:">
+            <select id="district"
+                    class="input-u"
+                    formControlName="distrito"
+                    [class.input-has-error]="
+                fc['distrito'].errors && fc['distrito'].touched
+              ">
+              <ng-container *ngIf="!!districtscontratante$?.length">
+                <option [value]="null"
+                        selected
+                        disabled
+                        hidden>
+                  SELECCIONE
+                </option>
+                <option *ngFor="let data of districtscontratante$"
+                        [value]="data.idDistrito">
+                  {{ data.distrito }}
+                </option>
+              </ng-container>
+              <ng-container *ngIf="!districtscontrantante$?.length">
+                <option [value]="null">NO HAY RESULTADOS</option>
+              </ng-container>
+            </select>
+          </label>
+          <label for="occupation"
+                 class="placeholder-u"
+                 aria-placeholder="Ocupación:">
+            <select id="occupation"
+                    class="input-u"
+                    formControlName="ocupacion"
+                    [class.input-has-error]="
+                fc['ocupacion'].errors && fc['ocupacion'].touched
+              ">
+              <option value="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE
+              </option>
+              <option *ngFor="let data of parameters$?.ocupaciones"
+                      [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <div class="so-container"
+               *ngIf="ammountParseDolar >= 1500">
+            <label for="condition"
+                   class="placeholder-u"
+                   aria-placeholder="Condición de SO:">
+              <select id="condition"
+                      class="input-u"
+                      formControlName="condicion"
+                      [class.input-has-error]="
+                  f['condicion'].errors && f['condicion'].touched
+                ">
+                <option value="null"
+                        selected
+                        disabled
+                        hidden>
+                  SELECCIONE
+                </option>
+
+                <option value="S">SI</option>
+                <option value="N">NO</option>
+              </select>
+            </label>
+            <button class="btn-condition-info"
+                    (click)="viewCondition()">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   width="24"
+                   height="24"
+                   viewBox="0 0 24 24">
+                <path
+                  d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="clientAseguradoBol"
+             style="margin-top: 60px">
+          <label>¿El contratante tiene obligaciones fiscales/tributarias fuera del
+            Perú? </label>
+          <button class="icon-info"
+                  style="transform: translateY(-10px); margin-left: 8px"
+                  (click)="viewObligaciones()">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 viewBox="0 0 24 24">
+              <path
+                d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+            </svg>
+          </button>
+          <form [formGroup]="formContratante">
+            <div class="content-chk-obligaciones"
+                 style="display: flex; margin-top: 15px; justify-content: center">
+              <input type="radio"
+                     id="chk-ob-1c"
+                     [value]="1"
+                     hidden
+                     formControlName="obligacionFiscalcontratante"/>
+              <label for="chk-ob-1c"
+                     class="style-chk-ob"
+                     role="button">Si</label>
+              <input type="radio"
+                     id="chk-ob-0c"
+                     [value]="0"
+                     hidden
+                     formControlName="obligacionFiscalcontratante"/>
+              <label for="chk-ob-0c"
+                     class="style-chk-ob ml-5"
+                     role="button">No</label>
+            </div>
+          </form>
+        </div>
+        <label class="adver-msg"><i class="fa fa-info-circle"
+                                    aria-hidden="true"></i>Solo será
+          necesario tener todos los datos complementarios cuando se seleccione
+          una cotización definitiva</label>
+      </div>
+
+      <!-- DECLARACIÓN JURADA -->
+      <!--
+<section
+class="dps-container"
+*ngIf="finalQuotationSuccess && currentUser.comercial"
+>
+<h2 class="subtitle">Declaración Personal de Salud</h2>
+<button
+  class="btn-submit btn-primary-u purple fit button mx-auto"
+  (click)="getDpsSummary()"
+  *ngIf="finalQuotationSuccess"
+>
+  Ver DPS
+</button>
+</section> -->
+
+      <h2 *ngIf="
+          cotizacionSeleccionada?.selected &&
+          !finalQuotationSuccess &&
+          !clientAseguradoBol
+        "
+          class="subtitle">
+        Declaración Personal de Salud
+      </h2>
+      <h2 *ngIf="
+          cotizacionSeleccionada?.selected &&
+          !finalQuotationSuccess &&
+          clientAseguradoBol
+        "
+          class="subtitle">
+        Declaración Personal de Salud del asegurado
+      </h2>
+
+      <app-dps [(data)]="dpsData"
+               *ngIf="cotizacionSeleccionada?.selected && !finalQuotationSuccess"></app-dps>
+
+      <ng-container *ngIf="currentUser.soporte">
+        <!-- ASIGNAR O REASIGNAR ASESOR -->
+        <div class="divider"></div>
+        <div class="container"
+             style="margin-top: 2rem">
+          <h2>Asignar</h2>
+        </div>
+        <div class="">
+          <div style="padding-top: 1rem">
+            <label>Seleccionar asignado:</label>
+            <div class="tabs">
+              <div class="col-4">
+                <form [formGroup]="formAsignar">
+                  <p class="sub-title-a">NOMBRE DEL ASIGNADO:</p>
+                  <ng-select class="select-a"
+                             placeholder="SELECCIONE ASIGNADO"
+                             [items]="listAssesors"
+                             bindLabel="nombre"
+                             bindValue="id"
+                             (change)="changeAsesor($event)"
+                             notFoundText="No se encontraron resultados"
+                             formControlName="asignar_asesor">
+                  </ng-select>
+                </form>
+              </div>
+            </div>
+          </div>
+          <label class="adver-msg"><i class="fa fa-info-circle"
+                                      aria-hidden="true"></i>Si no se asigna
+            a ninguna persona, el prospecto irá a la bandeja de "pendientes de
+            asignación"
+          </label>
+          <div class="d-flex mt-3">
+            <button class="button secondary fit orange mr-3"
+                    (click)="backToTray()">
+              Cancelar
+            </button>
+            <button class="button primary fit orange"
+                    (click)="openReasign()"
+                    [disabled]="formAsignar.invalid">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="
+          (finalQuotationSuccess && currentUser.comercial) ||
+          (finalQuotationSuccess && !userJefe) ||
+          (finalQuotationSuccess && !userSupervisor)
+        ">
+        <div class="divider"></div>
+        <h2 class="subtitle">Declaración Personal de salud</h2>
+        <section class="section quotation"
+                 *ngIf="isTariffLoaded"
+                 @fade
+                 style="text-align: -webkit-center">
+          <button class="button primary fit purple"
+                  (click)="getDpsSummary()">
+            Ver DPS
+          </button>
+          <label class="adver-msg"><i class="fa fa-info-circle"
+                                      aria-hidden="true"></i>Solo será
+            necesario contar con la DPS cuando se seleccione una cotización
+            definitiva</label>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="
+          (!finalQuotationSuccess && currentUser.comercial) ||
+          (!finalQuotationSuccess && userJefe) ||
+          (!finalQuotationSuccess && userSupervisor) ||
+          (!finalQuotationSuccess && currentUser.soporte)
+        ">
+        <div class="divider"></div>
+        <!-- LISTA DE COTIZACIONES -->
+        <div class="container"
+             style="margin-top: 2rem">
+          <h2 class="subtitle">Lista de cotizaciones</h2>
+        </div>
+        <!-- TABS -->
+        <div style="padding-top: 0rem">
+          <div class="tabs">
+            <input type="radio"
+                   name="tabs"
+                   id="tabone"
+                   checked="checked"
+                   style="display: none"/>
+            <label for="tabone"
+                   class="label-one"><i class="fa fa-check fa-lg"
+                                        aria-hidden="true"></i>Cotizaciones
+              vigentes</label>
+
+            <div class="tab">
+              <div class="group-div mb-4">
+                <div class="content-titulo">
+                  <h2 class="titulo-content">Cotizaciones vigentes</h2>
+                </div>
+                <div class="group-button"
+                     *ngIf="
+                    currentUser.comercial ||
+                    userJefe ||
+                    userSupervisor ||
+                    currentUser.soporte
+                  ">
+                  <button [disabled]="!listQuotationsSelected.length ||
+                                    (+formClient.controls['typeClients'].value == 1? this.fbes['parentescocontratante'].invalid : false) ||
+                                    (+formClient.controls['typeClients'].value == 1? this.fc['email'].invalid : false) ||
+                                    (+formClient.controls['typeClients'].value == 1? this.fbes['nDoc'].invalid : false)"
+                          class="btn-submit btn-primary-u purple"
+                          style="width: 200px"
+                          (click)="sendSlip()">
+                    <img alt=""
+                         src="assets/icons/Union.png"
+                         class="img-excel"
+                         style="margin-right: 10px"/>Enviar cotización
+                  </button>
+                  <button class="btn-submit btn-primary-u orange"
+                          (click)="saveFinalQuotation()"
+                          style="width: 270px"
+                          [disabled]="formAsegurado.invalid ||
+                                      (+formClient.controls['typeClients'].value == 1? formContratante.invalid : false) ||
+                                      (+formClient.controls['typeClients'].value == 1? !formClient.controls['parentescocontratante'].value : false) ||
+                                      !cotizacionSeleccionada">
+                    <img alt=""
+                         src="assets/icons/check.png"
+                         class="img-excel"
+                         style="margin-right: 5px"/>Seleccionar cotización definitiva
+                  </button>
+                </div>
+              </div>
+              <!-- tabla -->
+              <div class="grid form-group row content-quotations">
+                <div class="table-responsive TableMargin div-tableban"
+                     id="table-scroll">
+                  <table class="table-u">
+                    <thead>
+                    <tr>
+                      <th *ngIf="
+                            currentUser.profileId == 191 ||
+                            userJefe ||
+                            userSupervisor ||
+                            currentUser.soporte
+                          ">
+                        Seleccionar
+                      </th>
+                      <th>Código</th>
+                      <th>Tiempo de ahorro</th>
+                      <th>Moneda</th>
+                      <th>Suma asegurada</th>
+                      <th>Porcentaje de Devolución (%)</th>
+                      <th>Frecuencia</th>
+                      <th>Estado de cotización</th>
+                      <th class="d-flex"
+                          *ngIf="
+                            currentUser.profileId == 191 ||
+                            userJefe ||
+                            userSupervisor ||
+                            currentUser.soporte
+                          ">
+                        Enviar Cotización
+                        <input type="checkbox"
+                               class="mark-u orange"
+                               name="chk-quotation"
+                               [checked]="everyCheckedListQuotations"
+                               (change)="selectAll($event.target.checked)"
+                               id="quotation-head"/>
+                        <label for="quotation-head"
+                               class="mark-u orange center ml-2">
+                        </label>
+                      </th>
+                      <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ng-container *ngIf="!listadoCotizacionesVigentes?.length">
+                      <tr>
+                        <td colspan="9">No hay información para mostrar</td>
+                      </tr>
+                    </ng-container>
+                    <ng-container *ngIf="!!listadoCotizacionesVigentes?.length">
+                      <tr *ngFor="
+                            let data of listadoCotizacionesVigentes
+                              | paginate
+                                : {
+                                    itemsPerPage: 8,
+                                    currentPage:
+                                      currentPageCotizacionesVigentes,
+                                    totalItems:
+                                      listadoCotizacionesVigentes.length,
+                                    id: 'paginationCotizacionesVigentes'
+                                  };
+                            let index = index
+                          "
+                          id="hovert">
+                        <td *ngIf="
+                              currentUser.profileId == 191 ||
+                              userJefe ||
+                              userSupervisor ||
+                              currentUser.soporte
+                            ">
+                          <input type="radio"
+                                 class="mark-u orange"
+                                 name="radio-quotation"
+                                 (change)="selectCotizacion(data)"
+                                 [checked]="chekedsumamaxima"
+                                 [disabled]="
+                                  data.estado == 'Definitiva' ||
+                                  (this.fbes['typeClients'].value == 1 ? indicator$?.worldCheck?.isOtherList : false) ||
+                                  (this.fbes['typeClients'].value == 1 ? indicator$?.idecon?.isOtherList : false) ||
+                                  indicator$?.experian?.experianRisk && !indicator$?.experian?.approve ||
+                                  validarMoneda(data) > sumasuperada ||
+                                  indicator$?.worldCheck.isOtherList ||
+                                  indicator$?.idecon.isOtherList ||
+                                  (this.fbes['typeClients'].value == 1 ? data.estado == 'Definitiva' ? indicator$?.worldCheck?.isOtherList : false : false) ||
+                                  (this.fbes['typeClients'].value == 1 ? data.estado == 'Definitiva' ? indicator$?.idecon?.isOtherList : false : false) ||
+                                  (this.fbes['typeClients'].value == 1 ? data.estado == 'Definitiva' ? indicator$?.experian?.experianRisk && !indicator$?.experian?.approve : false : false)"
+                                 [id]="'quotation-' + index"/>
+
+                          <label [for]="'quotation-' + index"
+                                 class="mark-u orange center"></label>
+                        </td>
+
+                        <td class="hovert">{{ data.idProceso }}</td>
+                        <td class="hovert2">
+                          {{
+                          data.cantidadAnios
+                            ? data.cantidadAnios + " AÑOS"
+                            : "-"
+                          }}
+                        </td>
+                        <td>{{ data.moneda || "-" }}</td>
+                        <td>
+                          {{ data.monedaSimbolo ? data.monedaSimbolo : "" }}
+                          {{ (data.sumaAsegurada | number : "1.2-2") || "-" }}
+                        </td>
+                        <td>{{ data.porcentajeRetorno || "-" }} %</td>
+                        <td>{{ data.frecuenciaPago }}</td>
+                        <td>
+                          <span class="quotation-status"
+                                [class.definitive]="data.estado == 'Definitiva'"
+                                [class.generated]="data.estado == 'Generado'"
+                                [class.expired]="data.estado == 'Vencido'">
+                              {{ data.estado }}
+                          </span>
+                        </td>
+                        <td *ngIf="
+                              currentUser.profileId == 191 ||
+                              userJefe ||
+                              userSupervisor ||
+                              currentUser.soporte
+                            ">
+                          <input type="checkbox"
+                                 class="mark-u orange"
+                                 name="chk-quotation"
+                                 [checked]="data.checked"
+                                 (change)="marcarCotizacion(data)"
+                                 [id]="'sendq-' + index"/>
+
+                          <label [for]="'sendq-' + index"
+                                 class="mark-u orange center"></label>
+                        </td>
+
+                        <!--INICIO CAMBIOS  -->
+
+                        <td class="tbl__body--row-item tbl-actions actions"
+                            ngbDropdown
+                            [placement]="
+                              index > 0 ? 'top-right' : 'bottom-right'
+                            ">
+                          <button class="btn-dropdown-u"
+                                  tabindex="0"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                  ngbDropdownToggle>
+                            <i class="fa fa-ellipsis-v"
+                               aria-hidden="true"></i>
+                          </button>
+                          <ul class="dropdown-u"
+                              display="dynamic"
+                              ngbDropdownMenu>
+                            <li class="dropdown-item-u">
+                              <button (click)="selectCotizacion(data, true)"
+                                      [disabled]="(+this.fbes['typeClients'].value == 1 ? (this.fbes['parentescocontratante'].value == null)  : false ) ||
+                                                  validacionExperian || formAsegurado.invalid || (+this.fbes['typeClients'].value == 1 ? formContratante.invalid : false) ||
+                                                  (+this.fbes['typeClients'].value == 1 ? indicator$?.experian?.experianRisk && !indicator$?.experian?.approve : false ) ||
+                                                  (+this.fbes['typeClients'].value == 1 ? !this.fbes['nDoc'].valid : false) ||
+                                                  (+this.fbes['typeClients'].value == 1 ? indicator$?.worldCheck?.isOtherList : false) ||
+                                                  (+this.fbes['typeClients'].value == 1 ? indicator$?.idecon?.isOtherList : false)"
+                                      class="dropdown-item-btn-u"
+                                      *ngIf="(data.estado == 'Definitiva' && currentUser.comercial) ||
+                                      (data.estado == 'Definitiva' && userJefe) ||
+                                      (data.estado == 'Definitiva' && userSupervisor) ||
+                                      (data.estado == 'Definitiva' && currentUser.soporte)">
+                                <i class="fa fa-sign-in fa-lg"></i>Continuar
+                              </button>
+                            </li>
+
+                            <li class="dropdown-item-u">
+                              <button class="dropdown-item-btn-u"
+                                      title="Ver resumen"
+                                      [disabled]="!data.cantidadAnios"
+                                      (click)="verResumen(data)"
+                                      *ngIf="
+                                    data.estado == 'Generado' ||
+                                    !currentUser.comercial ||
+                                    data.estado == 'Definitiva'
+                                  ">
+                                <i class="fa fa-eye fa-lg"></i>Ver resumen
+                              </button>
+                            </li>
+                          </ul>
+                        </td>
+                        <span *ngIf="validarMoneda(data) > sumasuperada"
+                              class="tooltiptext">El cliente cuenta con
+                          {{ numpolizascontratadas }} pólizas contratadas por
+                                                        una suma asegurada de S/
+                          {{ currencyformat(totalsumapolizas) }} . Puede
+                                                        comprar una cobertura máxima de S/
+                          {{ currencyformat(sumasuperada) }} adicionales
+                                                    </span>
+
+                        <!-- CAMBIO BOTONES -->
+                        <!-- <td>
+      <button (click)="verResumen(data)"
+              class="btn-action"
+              title="Ver resumen"
+              [disabled]="!data.cantidadAnios"
+              *ngIf="
+          data.estado !== 'Definitiva' ||
+          !currentUser.comercial
+        "
+      >
+        <i class="fa fa-eye fa-lg"></i>
+        Ver resumen
+      </button>
+      <button
+        (click)="selectCotizacion(data, true)"
+        class="btn-continue button primary fit orange"
+        *ngIf="
+          data.estado == 'Definitiva' &&
+          currentUser.comercial
+        "
+      >
+        Continuar
+        <i class="fa fa-chevron-right ml-3"></i>
+      </button>
+    </td> -->
+                      </tr>
+                    </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="content-pagination pag-ban">
+                <pagination-controls class="my-pagination"
+                                     id="paginationCotizacionesVigentes"
+                                     autoHide="true"
+                                     responsive="true"
+                                     previousLabel="Anterior"
+                                     nextLabel="Siguiente"
+                                     screenReaderPaginationLabel="Paginación"
+                                     screenReaderPageLabel="pagina"
+                                     screenReaderCurrentLabel="Estás en la pagina"
+                                     (pageChange)="currentPageCotizacionesVigentes = $event"
+                                     *ngIf="!!listadoCotizacionesVigentes?.length">
+                </pagination-controls>
+              </div>
+            </div>
+
+            <input type="radio"
+                   name="tabs"
+                   id="tabtwo"
+                   style="display: none"/>
+            <label for="tabtwo"
+                   class="label-two"><i class="fa fa-times fa-lg"
+                                        aria-hidden="true"></i>Cotizaciones
+              no vigentes</label>
+
+            <div class="tab">
+              <div class="content-titulo2">
+                <h2 class="titulo-content2">Cotizaciones no vigentes</h2>
+              </div>
+              <div class="grid form-group row">
+                <div class="table-responsive"
+                     id="table-scroll">
+                  <table class="table-u">
+                    <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Tiempo de ahorro</th>
+                      <th>Moneda</th>
+                      <th>Suma asegurada</th>
+                      <th>Porcentaje de Devolución (%)</th>
+                      <th>Frecuencia</th>
+                      <th>Estado de cotización</th>
+                      <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ng-container *ngIf="!listadoCotizacionesNoVigentes?.length">
+                      <tr>
+                        <td colspan="7">No hay información para mostrar</td>
+                      </tr>
+                    </ng-container>
+                    <ng-container *ngIf="!!listadoCotizacionesNoVigentes?.length">
+                      <tr *ngFor="
+                            let data of listadoCotizacionesNoVigentes
+                              | paginate
+                                : {
+                                    itemsPerPage: 8,
+                                    currentPage:
+                                      currentPageCotizacionesNoVigentes,
+                                    totalItems:
+                                      listadoCotizacionesNoVigentes.length,
+                                    id: 'paginationCotizacionesNoVigentes'
+                                  };
+                            let index = index
+                          ">
+                        <td>{{ data.idProceso }}</td>
+                        <td>
+                          {{
+                          data.cantidadAnios
+                            ? data.cantidadAnios + " AÑOS"
+                            : "-"
+                          }}
+                        </td>
+                        <td>{{ data.moneda || "-" }}</td>
+                        <td>
+                          {{ data.monedaSimbolo ? data.monedaSimbolo : "" }}
+                          {{ (data.sumaAsegurada | number : "1.2-2") || "-" }}
+                        </td>
+                        <td>{{ data.porcentajeRetorno || "-" }} %</td>
+                        <td>{{ data.frecuenciaPago }}</td>
+                        <td>
+                                                        <span class="quotation-status"
+                                                              [class.definitive]="data.estado == 'Definitiva'"
+                                                              [class.generated]="data.estado == 'Generado'"
+                                                              [class.expired]="data.estado == 'Vencido'">
+                                                            {{ data.estado }}
+                                                        </span>
+                        </td>
+                        <td>
+                          <button (click)="verResumen(data)"
+                                  class="btn-action"
+                                  [disabled]="!data.cantidadAnios"
+                                  title="Ver resumen">
+                            <i class="fa fa-eye fa-lg icon"></i>
+                            Ver resumen
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    </tbody>
+                  </table>
+                  <div class="content-pagination pag-ban">
+                    <pagination-controls class="my-pagination"
+                                         id="paginationCotizacionesNoVigentes"
+                                         autoHide="true"
+                                         responsive="true"
+                                         previousLabel="Anterior"
+                                         nextLabel="Siguiente"
+                                         screenReaderPaginationLabel="Paginación"
+                                         screenReaderPageLabel="pagina"
+                                         screenReaderCurrentLabel="Estás en la pagina"
+                                         (pageChange)="currentPageCotizacionesNoVigentes = $event"
+                                         *ngIf="!!listadoCotizacionesNoVigentes?.length">
+                    </pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="finalQuotationSuccess">
+        <button class="button secondary fit orange no-border ml-auto mt-4"
+                (click)="backToSummary()"
+                *ngIf="!isObserver">
+          <i class="fa fa-chevron-left"
+             aria-hidden="true"></i>
+          Ver otras cotizaciones
+        </button>
+        <app-data-product (reload)="reload($event)"
+                          (statusChange)="statusChange($event)">
+          <!-- <h2 class="subtitle">Comentarios</h2>
+<div class="comments">
+  <div class="comments__input"
+       [formGroup]="formComment">
+    <input type="text"
+           class="input-u input-comment"
+           formControlName="comment" />
+    <button class="button primary fit orange"
+            (click)="sendComment()"
+            [disabled]="formComment.invalid">
+      Comentar
+    </button>
+  </div>
+  <div class="list-comments">
+    <div class="comments__item"
+         *ngFor="let data of listComments">
+      <div class="comments__item--user">
+        <i class="fa fa-user"
+           aria-hidden="true"></i>
+        <div class="comment__info">
+          <div class="comment__user-info">
+            <span class="comments__item--user-name">
+              {{ data.usuario }}
+            </span>
+            <span class="comments__item--user-time">
+              {{ data.fechaRegistro }}
+            </span>
+          </div>
+          <span class="comments__item--user-comment">
+            {{ data.comentario }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+        </app-data-product>
+      </ng-container>
+      <ng-container>
+        <h2 class="subtitle">Comentarios</h2>
+        <div class="comments">
+          <div class="comments__input"
+               [formGroup]="formComment">
+            <input type="text"
+                   class="input-u input-comment"
+                   formControlName="comment"/>
+            <button class="button primary fit orange"
+                    (click)="sendComment()"
+                    [disabled]="formComment.invalid">
+              Comentar
+            </button>
+          </div>
+          <div class="list-comments">
+            <div class="comments__item"
+                 *ngFor="let data of listComments">
+              <div class="comments__item--user">
+                <i class="fa fa-user"
+                   aria-hidden="true"></i>
+                <div class="comment__info">
+                  <div class="comment__user-info">
+                                        <span class="comments__item--user-name">
+                                            {{ data.usuario }}
+                                        </span>
+                    <span class="comments__item--user-time">
+                                            {{ data.fechaRegistro }}
+                                        </span>
+                  </div>
+                  <span class="comments__item--user-comment">
+                                        {{ data.comentario }}
+                                    </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<ng-template #modalCondition>
+  <div class="content-modal-u">
+    <div class="modal-u modalCreateRequest"
+         style="text-align: justify; width: 400px">
+      <div class="modal__header">
+        <!-- <h6 class="modal__header--title">Sujeto Obligado (SO)</h6> -->
+        <button class="modal__header--close"
+                (click)="resetAll()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body mbcr"
+           style="margin-bottom: 1.5rem">
+        <span class="span-modal"> Sujeto Obligado (SO)</span>
+        <p style="color: rgba(0, 0, 0, 0.6)">
+          Persona natural o jurídica obligada a proporcionar información a la
+          UIF Perú, designado como tal en el artículo 3° de la Ley N°29038 o
+          incorporado por la SBS conforme a las facultades conferidas a través
+          del numeral 3.4 del artículo 3º de la Ley Nº 29038.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-secondary-u modal-button"
+                (click)="resetAll()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalObligaciones>
+  <div class="content-modal-u">
+    <div class="modal-u modalCreateRequest"
+         style="text-align: justify; width: 400px">
+      <div class="modal__header">
+        <button class="modal__header--close"
+                (click)="resetAll()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body mbcr"
+           style="margin-bottom: 1.5rem">
+        <span class="span-modal">Obligaciones fiscales/tributarias</span>
+        <p style="color: rgba(0, 0, 0, 0.6)">
+          En referencia a casos en donde el contratante/asegurado/beneficiario
+          ha nacido, tiene la nacionalidad y permiso de residencia en EEUU y/o
+          tiene residencia fiscal en un país distinto al Perú.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-secondary-u modal-button"
+                (click)="resetAll()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalDJ>
+  <div class="content-modal-u">
+    <div class="modal-u modalCreateRequest"
+         style="text-align: justify; max-width: 700px">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Declaración Personal de Salud</h6>
+        <button class="modal__header--close"
+                (click)="resetAll()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body mbcr"
+           style="margin-bottom: 1.5rem; overflow-y: clip">
+        <div class="content"
+             style="padding: 0rem; background-color: #f8f8f8">
+          <form class="content__dps"
+                [formGroup]="form"
+                #formDps>
+            <ol class="dps__item"
+                type="1"
+                style="margin-left: 30px">
+              <!-- PREGUNTA 1 -->
+              <li>
+                <span class="dps__item--quest">¿Cual es su talla y peso?</span>
+                <div class="dps__item--inputs">
+                  <div class="content-talla">
+                    <span class="dps__item--quest">Talla:</span>
+                    <span class="dps__item--resp">{{ dpsSummary?.talla }} m</span>
+                    <span class="dps__item--quest">Peso:</span>
+                    <span class="dps__item--resp">{{ dpsSummary?.peso }} kg</span>
+                  </div>
+                </div>
+              </li>
+              <!-- PREGUNTA 2 -->
+              <li>
+                <span class="dps__item--quest">¿Fuma?</span>
+                <span class="dps__item--resp">{{
+                  convertToYesOrno(dpsSummary?.fuma)
+                  }}</span>
+                <ng-container *ngIf="dpsSummary?.fuma_resp">
+                  <div class="dbps__item--res">
+                    <span class="dps__item--quest">Indicar consumo diario de cigarrillo(s):</span>
+                    <span class="dps__item--resp">{{
+                      dpsSummary?.fuma_resp
+                      }}</span>
+                  </div>
+                </ng-container>
+              </li>
+              <!-- PREGUNTA 3 -->
+              <li>
+                                <span class="dps__item--quest">¿Se ha medido la presión arterial en los últimos 2
+                                    años?</span>
+                <span class="dps__item--resp">{{
+                  convertToYesOrno(dpsSummary?.presion)
+                  }}</span>
+                <ng-container *ngIf="dpsSummary?.presion_resp">
+                  <div class="dbps__item--res">
+                    <span class="dps__item--quest">¿Cual fue el resultado?</span>
+                    <span class="dps__item--resp">{{
+                      convertDpsPresionResultToString(dpsSummary?.presion_resp)
+                      }}</span>
+                  </div>
+                </ng-container>
+              </li>
+              <!-- PREGUNTA 4 -->
+              <li>
+                                <span class="dps__item--quest">¿Usted tiene, o ha tenido, o se encuentra en tratamiento,
+                                    o
+                                    en proceso de diagnóstico, alguna de las siguientes
+                                    enfemedades, dolencias o situaciones de salud?</span>
+                <ol type="a"
+                    style="margin-left: 30px">
+                  <!-- PREGUNTA 4.1 -->
+                  <li>
+                                        <span class="dps__item--quest">¿Cáncer, tumores, V.I.H., SIDA, Linfomas,
+                                            Leucemia,
+                                            Enfermedades Hematológicas, Enfermedades del Pulmón,
+                                            Enfermedades al Riñón, Insuficiencia Renal Crónica?</span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.cancer) }}
+                                        </span>
+                  </li>
+                  <!-- PREGUNTA 4.2 -->
+                  <li>
+                                        <span class="dps__item--quest">¿Infarto al Miocardio, Infarto Cerebral,
+                                            Enfermedades
+                                            Cardiacas, Hipertensión Arterial, Enfermedades Coronarias,
+                                            Soplos Cardiacos, Aneurismas, Accidentes
+                                            Cerebrovasculares, Dislipidemia, Hipercolesterolemia,
+                                            Sobrepreso, Obesidad, Diabetes Mellitus?</span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.infarto) }}
+                                        </span>
+                  </li>
+                  <!-- PREGUNTA 4.3 -->
+                  <li>
+                                        <span class="dps__item--quest">¿Enfermedades Gastrointestinales, Hepatitis (B o
+                                            C),
+                                            Cirrosis Hepática, Úlcera Gástrica, Colitis Ulcerosa,
+                                            Epilepsia, Enfermedad de Alzheimer, Depresión,
+                                            Enfermedades Psiquiatricas?</span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.gastro) }}
+                                        </span>
+                  </li>
+                </ol>
+              </li>
+              <!-- PREGUNTA 5 -->
+              <li>
+                                <span class="dps__item--quest">¿Realiza o participa en actividades o deportes riesgosos?
+                                    se
+                                    considera como tales actividades o deportes, aquellos que
+                                    constituyan una clara agravación del riesgo o en el que se
+                                    ponga en peligro su vida.</span>
+                <ol type="a"
+                    style="margin-left: 30px">
+                  <!-- PREGUNTA 5.1 -->
+                  <li>
+                                        <span class="dps__item--quest">¿Viaja en helicópteros, aviones militares, de
+                                            instrucción
+                                            o aviones particulares, vuelos como piloto o
+                                            estudiante?</span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.viaja) }}
+                                        </span>
+                  </li>
+                  <!-- PREGUNTA 5.2 -->
+                  <li>
+                                        <span class="dps__item--quest">¿Practica paracaidismo, andinismo, automovilismo,
+                                            buceo,
+                                            motociclismo o afines, bungee jumping (caída libre con
+                                            cuerda), pesca submarina, ala delta, planeador, rodeo,
+                                            surf o cualquier otro deporte o actividad obviamente
+                                            peligrosa?</span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.deporte) }}
+                                        </span>
+                  </li>
+                </ol>
+              </li>
+              <!-- PREGUNTA 6 -->
+              <li>
+                                <span class="dps__item--quest">
+                                    Considerando el contexto de Emergencia Nacional y Sanitaria
+                                    decretada por Estado Peruano debido al brote del COVID-19, se
+                                    consulta lo siguiente:
+                                </span>
+                <ol type="a"
+                    style="margin-left: 30px">
+                  <!-- PREGUNTA 6.1 -->
+                  <li>
+                                        <span class="dps__item--quest">
+                                            ¿Usted ha tenido contacto con alguna persona enferma del
+                                            Coronavirus (COVID-19) en los últimos 15 días o se
+                                            encuentra en aislamiento debido a sospecha de contagio del
+                                            COVID-19?
+                                        </span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.covid) }}
+                                        </span>
+                  </li>
+                  <!-- PREGUNTA 6.2 -->
+                  <li>
+                                        <span class="dps__item--quest">
+                                            ¿Le han diagnosticado COVID -19 en los ultimos 15 o 30
+                                            días?
+                                        </span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.diagnostico_covid) }}
+                                        </span>
+                  </li>
+                  <!-- PREGUNTA 6.3 -->
+                  <li>
+                                        <span class="dps__item--quest">
+                                            ¿Ha tenido que ser hospitalizado por COVID-19? En caso
+                                            afirmativo indicar número de días
+                                        </span>
+                    <span class="dps__item--resp">
+                                            {{ convertToYesOrno(dpsSummary?.hospitalizacion_covid) }}
+                                        </span>
+                    <ng-container *ngIf="dpsSummary?.hospitalizacion_covid_resp">
+                      <div class="dbps__item--res"
+                           hidden>
+                                                <span class="dps__item--quest">Indicar el número de días que fué
+                                                    hospitalizado:</span>
+                        <span class="dps__item--resp">
+                                                    {{ dpsSummary?.hospitalizacion_covid_resp }}
+                                                </span>
+                      </div>
+                    </ng-container>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </form>
+        </div>
+      </div>
+      <div class="modal__footer"></div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- MODAL DE SUMA MAXIMA -->
+<ng-template #modalSumaMaxima>
+  <div class="content-modal-u">
+    <div class="modal-u modalCreateRequest">
+      <div style="margin-bottom: 20px">
+        <p style="text-align: center">
+          El cliente cuenta con {{ numpolizascontratadas }} pólizas contratadas
+          por una suma asegurada de S/ {{ currencyformat(totalsumapolizas) }} .
+          Puede comprar una cobertura máxima de S/
+          {{ currencyformat(sumasuperada) }} adicionales
+        </p>
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn-secondary-u modal-button"
+                (click)="Disable()">
+          ACEPTAR
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalResumen>
+  <div class="content-modal-u">
+    <div class="modal-u modalCreateRequest">
+      <div class="modal__header">
+        <button class="modal__header--close"
+                (click)="closeModals()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body mbcr"
+           style="margin-bottom: 1.5rem">
+                <span class="span-modal title-re">
+                    Resumen de la cotización {{ idProcesoCotizacion }}</span>
+        <!-- Resumend de cotizacion -->
+        <div style="max-width: fit-content; min-width: 992px">
+          <div class="row mx-0 my-0 px-0 py-0"
+               style="justify-content: center">
+            <div class="datos-product"
+                 style="width: 450px">
+              <h5 class="datos-product__title my-0 mb-2">Datos del producto</h5>
+              <div class="detail-product mb-2">
+                <div class="fila">
+                  <span>Cobertura de protección por fallecimiento</span>
+                  <span>{{ summaryQuotation?.moneda }}
+                    {{ summaryQuotation?.capital | number : "1.2-2" }}</span>
+                </div>
+                <div class="fila"
+                     hidden>
+                  <span>Monto</span>
+                  <span>{{ summaryQuotation?.moneda }}
+                    {{ summaryQuotation?.capital | number : "1.2-2" }}</span>
+                </div>
+                <div class="fila">
+                  <span>Frecuencia</span>
+                  <span>{{ summaryQuotation?.frecuenciaPago }}</span>
+                </div>
+                <div class="fila">
+                  <span>Periodo</span>
+                  <span>{{ summaryQuotation?.cantidadAnios }} años</span>
+                </div>
+                <div class="fila">
+                  <span>Porcentaje de devolución</span>
+                  <span>{{ summaryQuotation?.porcentajeRetorno }}%</span>
+                </div>
+                <div class="fila">
+                  <span>Cobertura de devolución de primas</span>
+                  <span>{{ summaryQuotation?.moneda }}
+                    {{
+                    summaryQuotation?.primaPorcentajeRetorno
+                      | number : "1.2-2"
+                    }}</span>
+                </div>
+              </div>
+              <div class="content-grid2">
+                <div>
+                  <h5 class="datos-product__title my-0">Primer pago</h5>
+                  <div class="data_cuota">
+                                        <span>
+                                            {{ summaryQuotation?.moneda }}
+                                          {{ summaryQuotation?.primaInicial | number : "1.2-2" }}
+                                        </span>
+                    <span>
+                                            La cuota inicial se calcula desde la fecha de contratación
+                                            hasta el último día del mes.
+                                        </span>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="datos-product__title my-0">
+                    Pago {{ summaryQuotation?.frecuenciaPago }}(*)
+                  </h5>
+                  <div class="data_cuota">
+                                        <span>{{ summaryQuotation?.moneda }}
+                                          {{
+                                          summaryQuotation?.primaMensual | number : "1.2-2"
+                                          }}</span>
+                    <span> (*)Pago a realizar desde el segundo periodo. </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="table-u">
+            <thead>
+            <tr>
+              <th>DNI</th>
+              <th>Nombre y Apellido</th>
+              <th>Parentesco</th>
+              <th style="width: 10px">Asignación (%)</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngIf="!showbeneficiariesSelectedQuotation$.length">
+              <tr>
+                <td colspan="5">No hay información para mostrar</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="showbeneficiariesSelectedQuotation$.length">
+              <tr *ngFor="
+                    let data of showbeneficiariesSelectedQuotation$;
+                    let index = index
+                  ">
+                <td>{{ data.numeroDocumento }}</td>
+                <td>
+                  {{ data.nombres.substr(0, finprimernombre) }}
+                  {{ data.apellidoPaterno }}
+                </td>
+                <td>{{ data.parentesco }}</td>
+                <td>{{ data.porcentajeParticipacion }}</td>
+                <td style="max-width: 120px">
+                  <button class="btn-action fit editBtn"
+                          title="Ver resumen"
+                          style="background-color: #553d81; color: white"
+                          (click)="editBeneficiary(data)">
+                    <i class="fa fa-pencil"
+                       style="color: white"></i>
+                    Editar
+                  </button>
+                  <button class="btn-action fit editBtn"
+                          style="background: white; border: 1px solid"
+                          (click)="removeBeneficiary(data)">
+                    <i class="fa fa-trash"></i>
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-secondary-u modal-button"
+                (click)="closeResume()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- MODAL ASIGNAR -->
+<ng-template #modalAsignar>
+  <div class="content-modal-u">
+    <div class="modal-u mfb"
+         style="width: 440px">
+      <div class="modal__header">
+        <h6 class="modal__header--title title-a">Asignar asesor</h6>
+        <button class="modal__header--close"
+                (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body body_a">
+        <form [formGroup]="formAsignar">
+          <p class="sub-title-a">NOMBRE DE ASESOR:</p>
+          <ng-select class="select-a"
+                     placeholder="SELECCIONE"
+                     [items]="listAssesors"
+                     bindLabel="nombre"
+                     autofocus
+                     bindValue="id"
+                     (change)="changeAsesor($event)"
+                     notFoundText="No se encontraron resultados"
+                     formControlName="asignar_asesor">
+          </ng-select>
+        </form>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u purple btn-asesor"
+                (click)="assignAssesor()"
+                [disabled]="formAsignar.invalid">
+          Asignar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalMessageExperian>
+  <div class="content-modal-u">
+    <section class="modal-u mm">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close"
+                (click)="closeModalExperian()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="button btn-primary-u ps-button-max-width orange"
+                (click)="closeModalExperian()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalMessage>
+  <div class="content-modal-u">
+    <section class="modal-u mm">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close"
+                (click)="closeModalExperian()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="button btn-primary-u ps-button-max-width orange"
+                (click)="closeModalExperian()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalMessageBen>
+  <div class="content-modal-u">
+    <section class="modal-u mm">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close"
+                (click)="closeModalBen()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="button btn-primary-u ps-button-max-width orange"
+                (click)="closeModalBen()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalDpsRisk>
+  <div class="content-modal-u">
+    <section class="modal-u mdps">
+      <div class="modal__header">
+        <button class="modal__header--close"
+                (click)="closeAllModals()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          Los siguientes datos de la Declaración Personal de Salud no permiten
+          continuar con la compra:
+        </p>
+        <ul class="list">
+          <li class="list__item"
+              *ngIf="!dpsValidations?.esValidoImc">IMC
+          </li>
+          <li class="list__item"
+              *ngIf="!dpsValidations?.esValidoCantidadCigarros">
+            Consumo diario de cigarrillos
+          </li>
+          <li class="list__item"
+              *ngIf="!dpsValidations?.esValidoPeso">Peso
+          </li>
+          <li class="list__item"
+              *ngIf="!dpsValidations?.esValidoPresionArterial">
+            Presion arterial
+          </li>
+          <li class="list__item"
+              *ngIf="
+              !dpsValidations?.esValidoCancer ||
+              !dpsValidations?.esValidoInfarto ||
+              !dpsValidations?.esValidoGastro
+            ">
+            Por situación de salud (Pregunta 4)
+          </li>
+          <li class="list__item"
+              *ngIf="
+              !dpsValidations?.esValidoViaje || !dpsValidations?.esValidoDeporte
+            ">
+            Actividad o deporte riesgoso (Pregunta 5)
+          </li>
+        </ul>
+      </div>
+      <div class="modal__footer">
+        <button class="button primary fit orange"
+                (click)="closeAllModals()">
+          Regresar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalCancelProspect>
+  <div class="content-modal-u">
+    <section class="modal-u mcp">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Rechazar prospecto: {{ clientId }}</h6>
+        <button class="modal__header--close"
+                (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          ¿Estás seguro que desea rechazar el prospecto de
+          <span class="contractor-name">{{ message }}</span>?
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="button btn-secondary-u orange fit mr-3"
+                (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="button btn-primary-u orange fit"
+                (click)="cancelProspect()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalReasign>
+  <div class="content-modal-u">
+    <section class="modal-u">
+      <div class="">
+        <div class="modal__body"
+             style="height: fit-content; text-align: center">
+          <span class="msg-alert">Este prospecto ya esta asignado a un asesor comercial.</span>
+          <span class="msg-alert">¿Estás seguro que desea realizar una reasignación?</span>
+        </div>
+        <div class="modal__footer">
+          <button class="button secondary fit orange mr-3"
+                  (click)="closeModal()">
+            Cancelar
+          </button>
+          <button class="button primary fit orange"
+                  (click)="assignAssesor()">
+            Continuar de todos modos
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalBeneficiary>
+  <div class="content-modal-u">
+    <div class="modal-u mfb">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Datos del beneficiario</h6>
+        <button class="modal__header--close"
+                (click)="closeModals()">
+          &times;
+        </button>
+      </div>
+      <form class="modal__body form-beneficiary"
+            [formGroup]="formBeneficiary">
+        <!-- DOCUMENTO -->
+        <div class="fb-group fb-document">
+          <label for="fb-document-type"
+                 class="placeholder-u inside">
+            <select id="fb-document-type"
+                    class="input-u"
+                    formControlName="idTipoDocumento">
+              <option value="2">DNI</option>
+              <option value="4">CE</option>
+            </select>
+          </label>
+          <label for="fb-document-number"
+                 class="placeholder-u inside"
+                 [class.placeholder-active-u]="fbe['numeroDocumento'].value"
+                 aria-placeholder="Número de Documento">
+            <input type="text"
+                   id="fb-document-number"
+                   class="input-u"
+                   [maxlength]="documentNumberCharacterLimit.max"
+                   formControlName="numeroDocumento"
+                   (blur)="requestClientInfo()"/>
+          </label>
+        </div>
+
+        <!-- NACIONALIDAD -->
+        <label class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['nacionalidad'].value"
+               aria-placeholder="Nacionalidad">
+          <select class="input-u"
+                  formControlName="idNacionalidad">
+            <option [value]="null"
+                    disabled
+                    selected
+                    hidden>
+              NACIONALIDAD
+            </option>
+            <option *ngFor="let item of parameters$?.nacionalidades"
+                    [value]="item.id">
+              {{ item.descripcion }}
+            </option>
+          </select>
+        </label>
+
+        <!-- NOMBRES -->
+        <label for="fb-names"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['nombres'].value"
+               aria-placeholder="Nombre">
+          <input type="text"
+                 id="fb-names"
+                 class="input-u"
+                 formControlName="nombres"/>
+        </label>
+
+        <!-- DEPARTAMENTO -->
+        <!-- <label class="placeholder-u inside select"
+             [class.placeholder-active-u]="fbe['department'].value"
+             aria-placeholder="Departamento">
+        <select class="input-u"
+                formControlName="department">
+          <option [value]="null"
+                  disabled
+                  selected
+                  hidden>
+            Departamento
+          </option>
+          <option *ngFor="let item of departments$"
+                  [value]="item.id">
+            {{ item.descripcion }}
+          </option>
+        </select>
+      </label> -->
+
+        <!-- APELLIDO PATERNO -->
+        <label for="fb-lastname"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['apellidoPaterno'].value"
+               aria-placeholder="Apellido Paterno">
+          <input type="text"
+                 id="fb-lastname"
+                 class="input-u"
+                 formControlName="apellidoPaterno"/>
+        </label>
+
+        <!-- PROVINCIA -->
+        <!-- <label class="placeholder-u inside select"
+             [class.placeholder-active-u]="fbe['province'].value"
+             aria-placeholder="Provincia">
+        <select class="input-u"
+                formControlName="province">
+          <option [value]="null"
+                  disabled
+                  selected
+                  hidden>Provincia</option>
+          <option *ngFor="let item of provinces$"
+                  [value]="item.idProvincia">
+            {{ item.provincia }}
+          </option>
+        </select>
+      </label> -->
+
+        <!-- APELLIDO MATERNO -->
+        <label for="fb-lastname2"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['apellidoMaterno'].value"
+               aria-placeholder="Apellido Materno">
+          <input type="text"
+                 id="fb-lastname2"
+                 class="input-u"
+                 formControlName="apellidoMaterno"/>
+        </label>
+
+        <!-- DISTRITO -->
+        <!-- <label class="placeholder-u inside select"
+             [class.placeholder-active-u]="fbe['district'].value"
+             aria-placeholder="Distrito">
+        <select class="input-u"
+                formControlName="district">
+          <option [value]="null"
+                  disabled
+                  selected
+                  hidden>Distrito</option>
+          <option *ngFor="let item of districts$"
+                  [value]="item.idDistrito">
+            {{ item.distrito }}
+          </option>
+        </select>
+      </label> -->
+
+        <!-- FECHA DE NACIMIENTO -->
+        <label for="fb-birthdate"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['fechaNacimiento'].value"
+               aria-placeholder="Fecha de Nacimiento">
+          <input type="text"
+                 id="fb-birthdate"
+                 class="input-u"
+                 #dp="bsDatepicker"
+                 bsDatepicker
+                 [bsConfig]="bsConfigBirthdate"
+                 [readonly]="true"
+                 formControlName="fechaNacimiento"/>
+        </label>
+
+        <label class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['sexo'].value"
+               aria-placeholder="Género">
+          <select class="input-u"
+                  formControlName="idSexo">
+            <option [value]="null"
+                    disabled
+                    selected
+                    hidden>SEXO
+            </option>
+            <option value="1">Femenino</option>
+            <option value="2">Masculino</option>
+            <option value="3">No informado</option>
+          </select>
+        </label>
+
+        <!-- PARENTESCO -->
+        <label for="fb-relationship"
+               class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['parentesco'].value"
+               aria-placeholder="Parentesco">
+          <select id="fb-relationship"
+                  class="input-u"
+                  formControlName="idParentesco">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>PARENTESCO
+            </option>
+            <option *ngFor="let data of parameters$?.parentescos"
+                    [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+
+        <!-- ASIGNACION -->
+        <label for="fb-assignment"
+               class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['porcentajeParticipacion'].value"
+               aria-placeholder="Asignación (%)">
+          <select id="fb-assignment"
+                  class="input-u"
+                  formControlName="porcentajeParticipacion">
+            <option value="null"
+                    selected
+                    disabled
+                    hidden>ASIGNACIÓN
+            </option>
+            <option *ngFor="let n of percents"
+                    [value]="n">{{ n }}%
+            </option>
+          </select>
+        </label>
+      </form>
+      <div class="modal__footer">
+        <button class="btn-primary-u purple mfb-btn"
+                [disabled]="formBeneficiary.invalid || beneficiaryExist"
+                (click)="submitBeneficiary()">
+          {{ editMode ? "Actualizar" : "Agregar" }}
+        </button>
+      </div>
+      <ng-container *ngIf="beneficiaryExist">
+        <small class="has-error">
+          El beneficiario ya existe, ingrese otro beneficiario
+        </small>
+      </ng-container>
+      <ng-container *ngIf="clientIsBeneficiary">
+        <small class="has-error"> El cliente no puede ser beneficiario </small>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

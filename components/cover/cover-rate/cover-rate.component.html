@@ -1,0 +1,99 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">
+    TARIFAS DE VIDA - PROTECTA
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('dismiss')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid" style="margin-bottom: 10px;">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Tipo de Recargo</span>
+              <ng-select [items]="rechargeType" [disabled]="rechargeTypeDisabled" bindLabel="SDESCRIPT"
+                (change)="inputsRate.SRECHARGETYPE = $event.SDESCRIPT;selectRecharge();" bindValue="NCODREC"
+                [(ngModel)]="inputsRate.NCODREC" class="border-ng" [clearable]="true" placeholder="Seleccione"
+                dropdownPosition="bottom" notFoundText="No hay resultados" [disabled]="controlDisabled">
+              </ng-select>
+            </div>
+
+            <div class="col-sm-6">
+              <span>Póliza (*)</span>
+              <input type="text" placeholder="0" maxlength="10" [(ngModel)]="inputsRate.NPOLICY" OnlyNumberDirective
+                (blur)="validateExistsPolicy();" (click)="clearValidate(1)" (focus)="clearValidate(1)"
+                [ngClass]="{'error-validate': inputsValidate[1]}" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="SMESSAGE">
+                <span class="mensaje-error-control" *ngSwitchCase="''"></span>
+                <span class="mensaje-error-control" *ngSwitchDefault>{{SMESSAGE}}</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Mes inicial</span>
+              <input type="text" placeholder="0" [(ngModel)]="inputsRate.NMONTHI" OnlyNumberDirective maxlength="5"
+                [disabled]="controlDisabled" />
+            </div>
+
+            <div class="col-sm-6">
+              <span>Mes Final (*)</span>
+              <input type="text" placeholder="0" [(ngModel)]="inputsRate.NMONTHE" OnlyNumberDirective maxlength="5"
+                (click)="clearValidate(0)" (focus)="clearValidate(0)" [ngClass]="{'error-validate': inputsValidate[0]}"
+                [disabled]="controlDisabled" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Porcentaje</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsRate.NPERCENT" maxlength="19" id="txtPercent"
+                (keydown)="onPercentage($event)" OnlyNumberDecimals (blur)="validateDecimal('1,13','1,5', 2)"
+                [disabled]="percentDisabled" (click)="clearValidate(2)" (focus)="clearValidate(2)"
+                [ngClass]="{'error-validate': inputsValidate[2]}" />
+              <ng-container [ngSwitch]="inputsValidate[2]">
+                <span class="mensaje-error-control"
+                  *ngSwitchCase="inputsValidateError[2]">{{ inputsValidateError[2] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+
+            <div class="col-sm-6">
+              <span>Monto fijo</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsRate.NAMOUNT" maxlength="19" id="txtAmount"
+                FloatDirective (keydown)="onAmount($event)" OnlyNumberDecimals (blur)="validateDecimal('1,12','1,6', 3)"
+                [disabled]="amountDisabled" (click)="clearValidate(3)" (focus)="clearValidate(3)"
+                [ngClass]="{'error-validate': inputsValidate[3]}" />
+              <ng-container [ngSwitch]="inputsValidate[3]">
+                <span class="mensaje-error-control"
+                  *ngSwitchCase="inputsValidateError[3]">{{ inputsValidateError[3] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>MONEDA</span>
+              <ng-select [items]="currency" bindLabel="SDESCRIPT"
+                (change)="inputsRate.SCURRENCY = $event.SDESCRIPT;selectCurrency();" bindValue="NCODIGINT"
+                [(ngModel)]="inputsRate.NCODIGINT" class="border-ng" [clearable]="true" placeholder="Seleccione"
+                dropdownPosition="bottom" notFoundText="No hay resultados" [disabled]="controlDisabled">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="reference.close()">Cancelar</button>
+  <button (click)="guardar();" class="full-color" *ngIf="SMODEFORM !='Consult'">
+    <span>Aplicar</span>
+  </button>
+</div>

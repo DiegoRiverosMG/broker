@@ -1,0 +1,732 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-sm-12 col-lg-9">
+      <div class="content">
+        <div class="content__header">
+          <div class="content__header--left">
+            <h1 class="title">Lote de comisiones</h1>
+          </div>
+          <div class="content__header--right">
+            <button
+              class="button-default"
+              [title]="mensajeBloqueo"
+              [disabled]="!bSbs"
+              *ngIf="tipoCanal != 8 && canalHist != 2018000011"
+              (click)="setAgregarLote()"
+            >
+              <i class="fa fa-plus" aria-hidden="true"></i>
+              Agregar Lote
+            </button>
+            <button
+              class="button-default secondary"
+              [disabled]="!commissionLotListIsSomeSelected"
+              (click)="openModalConfirmacionMasivo()"
+              *ngIf="tipoCanal != 8 && canalHist != 2018000011"
+            >
+              <i class="fa fa-trash" aria-hidden="true"></i>
+              Anular Lote
+            </button>
+            <button
+              class="button-default secondary"
+              (click)="exportExcel()"
+              [disabled]="!commissionLotList.items?.length"
+            >
+              <i class="fa fa-download" aria-hidden="true"></i>
+              Descargar Excel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <form class="content_form form-filters" [formGroup]="formFilters">
+          <!-- *Fecha inicio -->
+          <label
+            for="form-filter-start-date"
+            class="placeholder upper"
+            aria-placeholder="Por fecha*:"
+          >
+            <input
+              type="text"
+              id="form-filter-start-date"
+              #dp="bsDatepicker"
+              [bsConfig]="startDateFilter"
+              bsDatepicker
+              readonly
+              formControlName="startDate"
+            />
+          </label>
+
+          <!-- *Fecha fin -->
+          <label
+            for="form-filter-end-date"
+            class="placeholder upper"
+            aria-placeholder=""
+          >
+            <input
+              type="text"
+              id="form-filter-end-date"
+              #dp="bsDatepicker"
+              [bsConfig]="endDateFilter"
+              bsDatepicker
+              readonly
+              formControlName="endDate"
+            />
+          </label>
+
+          <!-- *Canal -->
+          <pro-select
+            placeholder="CANAL*:"
+            [clearable]="false"
+            [items]="ListChannelSales"
+            value="id"
+            label="description"
+            formControlName="salesChannel"
+          ></pro-select>
+
+          <!-- *Ramo -->
+          <pro-select
+            placeholder="POR RAMO*:"
+            [items]="lstBranch"
+            value="nid"
+            label="sdescript"
+            formControlName="branch"
+          ></pro-select>
+
+          <!-- *Producto -->
+          <pro-select
+            placeholder="POR PRODUCTO*:"
+            [clearable]="false"
+            [items]="lstProduct"
+            value="id"
+            label="description"
+            formControlName="product"
+          ></pro-select>
+
+          <!-- *N° de lote -->
+          <label
+            for="form-filter-lot"
+            class="placeholder upper"
+            aria-placeholder="N° de lote:"
+          >
+            <input
+              type="text"
+              id="form-filter-lot"
+              placeholder="Busca con tu N° Lote"
+              formControlName="lot"
+            />
+          </label>
+
+          <!-- *Policy -->
+          <label
+            for="form-filter-policy"
+            class="placeholder upper"
+            aria-placeholder="Por N° de póliza:"
+          >
+            <input
+              type="text"
+              id="form-filter-policy"
+              placeholder="Busca con tu N° Póliza"
+              formControlName="policy"
+            />
+          </label>
+
+          <!-- *Estado -->
+          <label
+            for="form-filter-state"
+            class="placeholder upper select"
+            aria-placeholder="Estado de lotes:"
+          >
+            <select id="form-filter-state" formControlName="state">
+              <option
+                *ngFor="let item of lstStateCommission"
+                [value]="item.nidstate"
+              >
+                {{ item.sdescription }}
+              </option>
+            </select>
+          </label>
+
+          <!-- *Planilla -->
+          <label
+            for="form-filter-payroll"
+            class="placeholder upper"
+            aria-placeholder="Por N° de planilla:"
+          >
+            <input
+              type="text"
+              id="form-filter-payroll"
+              placeholder="Busca con tu N° Planilla"
+              formControlName="payroll"
+            />
+          </label>
+
+          <!-- *Moneda -->
+          <label
+            for="form-filter-currency"
+            class="placeholder upper select"
+            aria-placeholder="Por moneda:"
+          >
+            <select id="form-filter-currency" formControlName="currency">
+              <option
+                *ngFor="let item of lstCurrency"
+                [value]="item.nidcurrency"
+              >
+                {{ item.sdescript }}
+              </option>
+            </select>
+          </label>
+        </form>
+        <div
+          class="content__actions"
+          [class.flex-end]="canalHist == 2018000011"
+        >
+          <div class="content__actions--left" *ngIf="canalHist != 2018000011">
+            <button
+              class="button-default secondary button-download-manual"
+              (click)="downloadManual()"
+            >
+              <i class="fa fa-download" aria-hidden="true"></i>
+              Descargar Manual
+            </button>
+          </div>
+          <div class="content__actions--right">
+            <button
+              class="button-default secondary"
+              type="button"
+              role="button"
+              (click)="resetFormFilters()"
+            >
+              Limpiar
+            </button>
+            <button
+              class="button-default"
+              type="button"
+              role="button"
+              (click)="onSearch(true)"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+        <div class="content__info" *ngIf="muestracorreo">
+          <span *ngIf="canalHist != 2018000011">
+            Correo de Notificaciones: {{ emailbroker }}
+            <button
+              class="button-icon"
+              type="button"
+              role="button"
+              (click)="ActualizarMail(emailbroker)"
+            >
+              <i class="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+          </span>
+          <span> Estatus SBS: {{ textSbs }} </span>
+        </div>
+        <hr />
+        <div class="content-table commission-lot">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>
+                  <div class="selection orange">
+                    <input
+                      type="checkbox"
+                      id="commission-lot-all"
+                      [checked]="commissionLotListIsEverySelected"
+                      [disabled]="!commissionLotList.items?.length"
+                      (change)="commisionLotCheckAll($event.target.checked)"
+                    />
+                    <label for="commission-lot-all"></label>
+                  </div>
+                </th>
+                <th>Ramo</th>
+                <th>Producto</th>
+                <th>N° de Lote</th>
+                <th>N° de Comisiones</th>
+                <th>Fecha</th>
+                <th>Moneda</th>
+                <th>Comis. neta variable</th>
+                <th>Comis. neta grossup</th>
+                <th>Comisión total</th>
+                <th>Estado</th>
+                <th>N° Facturación Lote</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!commissionLotList.items?.length">
+                <tr class="no-hover">
+                  <td colspan="13">No se encontraron resultado</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="commissionLotList.items?.length">
+                <tr
+                  *ngFor="
+                    let item of commissionLotList.items
+                      | paginate
+                        : {
+                            id: 'comission-lot-list',
+                            itemsPerPage: 10,
+                            currentPage: currentPageComissionLot,
+                            totalItems: commissionLotList.totalItems || 0
+                          };
+                    let index = index
+                  "
+                >
+                  <td>
+                    {{ index + 1 + (currentPageComissionLot - 1) * 10 }}
+                  </td>
+                  <td>
+                    <div class="selection orange">
+                      <input
+                        type="checkbox"
+                        [id]="'commission-lot-' + index"
+                        [checked]="item.selected"
+                        (change)="commisionLotCheck(item)"
+                      />
+                      <label [attr.for]="'commission-lot-' + index"></label>
+                    </div>
+                  </td>
+                  <td>{{ item.ramo }}</td>
+                  <td>{{ item.producto }}</td>
+                  <td>{{ item.idLote }}</td>
+                  <td>{{ item.cantidadComisiones }}</td>
+                  <td>{{ item.fechaLote }}</td>
+                  <td>{{ item.moneda }}</td>
+                  <td>
+                    {{ item.moneda == "SOLES" ? "S/ " : "$ " }}
+                    {{ item.comisionNeta | number : "1.2-2" }}
+                  </td>
+                  <td>
+                    {{ item.moneda == "SOLES" ? "S/ " : "$ " }}
+                    {{ item.comisionGrossUp | number : "1.2-2" }}
+                  </td>
+                  <td>
+                    {{ item.moneda == "SOLES" ? "S/ " : "$ " }}
+                    {{ item.comisionTotal | number : "1.2-2" }}
+                  </td>
+                  <td>{{ item.estado }}</td>
+                  <td>{{ item.facturaLote }}</td>
+                  <td class="dropdown">
+                    <div
+                      ngbDropdown
+                      [placement]="index > 4 ? 'top-right' : 'bottom-right'"
+                    >
+                      <button class="dropdown__button" ngbDropdownToggle>
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                      </button>
+                      <ul class="dropdown__list" ngbDropdownMenu>
+                        <li>
+                          <button (click)="VerHistorial(item.idLote)">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            Ver historial
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            *ngIf="
+                              (this.tipoCanal != 8 &&
+                                this.tipoCanal != 5 &&
+                                item.idEstado == 1) ||
+                              item.idEstado == 3 ||
+                              item.idEstado == 9 ||
+                              (this.tipoCanal == 8 && item.idEstado == 2)
+                            "
+                            (click)="
+                              ActualizarLote(
+                                item.idLote,
+                                item.idEstado,
+                                item.idRamo
+                              )
+                            "
+                          >
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                            Editar
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            *ngIf="
+                              (this.tipoCanal != 8 &&
+                                this.tipoCanal != 5 &&
+                                item.idEstado == 1) ||
+                              item.idEstado == 3 ||
+                              item.idEstado == 9 ||
+                              (item.idEstado == 2 && tipoCanal == 8)
+                            "
+                            (click)="
+                              EnviarCommLot(
+                                item.idLote,
+                                item.idEstado,
+                                item.idRamo,
+                                item.sbillnum,
+                                item
+                              )
+                            "
+                          >
+                            <i class="fa fa-send" aria-hidden="true"></i>
+                            Enviar
+                          </button>
+                        </li>
+                        <li>
+                          <button (click)="onImprimir(item.idLote, 'extendido')">
+                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                            Liquidación PDF
+                          </button>
+                        </li>
+                        <li>
+                            <button (click)="onImprimir(item.idLote, 'resumido')">
+                              <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                              Resumen de liquidación PDF
+                            </button>
+                        </li>
+                        <li>
+                            <button (click)="downloadAttachments(item.idLote, fileType.PDF)"
+                                    [disabled]="!item.facturaPDF">
+                              <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                              Factura PDF
+                            </button>
+                        </li>
+                        <li>
+                            <button (click)="downloadAttachments(item.idLote, fileType.XML)"
+                                    [disabled]="!item.facturaXML">
+                              <i
+                                class="fa fa-file-code-o"
+                                aria-hidden="true"
+                              ></i>
+                              Factura XML
+                            </button>
+                          </li>
+                        <li>
+                          <button (click)="descargarExcel(item.idLote)">
+                            <i
+                              class="fa fa-file-excel-o"
+                              aria-hidden="true"
+                            ></i>
+                            Descargar Excel
+                          </button>
+                        </li>
+                        <li *ngIf="item.estado == 'PENDIENTE'">
+                          <button (click)="openModalConfirmCancelLot(item)">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            Anular lote
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <pagination-controls
+          id="comission-lot-list"
+          [autoHide]="true"
+          nextLabel="Siguiente"
+          previousLabel="Anterior"
+          (pageChange)="currentPageComissionLot = $event"
+          *ngIf="commissionLotList.items?.length"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmasivo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="content-modal modal-confirmacion-anulacion">
+    <section>
+      <div class="modal-header">
+        <h6>Anulación de lotes</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeconfirm()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          {{ msjHeader }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeconfirm()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="btnAnularPayrollMasivo()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="content-modal modal-message">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="aceptarmsginfo()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          {{ messageinfo }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default" (click)="aceptarmsginfo()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalHistorial="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+  [config]="{
+    backdrop: 'static'
+  }"
+>
+  <div class="content-modal modal-log">
+    <section>
+      <div class="modal-header">
+        <h6>Historial de Lote de Comisiones: {{ nLote }}</h6>
+        <button aria-label="Cerrar modal" (click)="closeHistorial()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="content-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Secuencia</th>
+                <th>Estado</th>
+                <th>Fecha Registro</th>
+                <th>Comentarios</th>
+                <th>Usuario</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of ListCommissionLotHist; let index = index">
+                <td class="data-table-tr-td">{{ index + 1 }}</td>
+                <td class="data-table-tr-td">{{ item.sstate }}</td>
+                <td class="data-table-tr-td">{{ item.dfecreg }}</td>
+                <td class="data-table-tr-td">{{ item.comments }}</td>
+                <td class="data-table-tr-td">{{ item.suser }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default" (click)="closeHistorial()">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmarEnvio="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="content-modal modal-aprobacion">
+    <section>
+      <div class="modal-header">
+        <h6>Envío aprobación del Lote de Comisiones</h6>
+        <button (click)="closeEnviar()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label
+          for="form-aprobacion-estado"
+          class="placeholder upper select"
+          aria-placeholder="Por estado:"
+        >
+          <select
+            (change)="onSelectState($event.target.value)"
+            [(ngModel)]="nidStateApprob"
+          >
+            <option value="0" selected disabled>SELECCIONE</option>
+            <option
+              *ngFor="let Item of lstStateApprobCommission"
+              value="{{ Item.nidstate }}"
+            >
+              {{ Item.sdescription }}
+            </option>
+          </select>
+        </label>
+        <label
+          for="form-aprobacion-obs"
+          class="placeholder upper"
+          aria-placeholder="Observación:"
+        >
+          <textarea
+            id="form-aprobacion-obs"
+            [(ngModel)]="strObservacion"
+            maxlength="250"
+            rows="6"
+          ></textarea>
+        </label>
+        <div class="alert alert-danger" role="alert" *ngIf="this.flagAlerta">
+          <p *ngFor="let mensaje of mensajes_validacion">{{ mensaje }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeEnviar()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default primary"
+          type="button"
+          role="button"
+          [disabled]="bopacitysave"
+          (click)="saveEnviar()"
+        >
+          Guardar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalCorreo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="content-modal modal-update-email">
+    <section>
+      <div class="modal-header">
+        <h6>
+          {{ headMailBroker }}
+        </h6>
+        <button type="button" role="button" (click)="closeModalCorreo()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="form-placeholder">
+          {{ messageMail }} <b *ngIf="!showMail">{{ emailbroker }}</b>
+        </p>
+        <div *ngIf="showMail">
+          <label for="form-update-email" class="placeholder">
+            <input
+              type="email"
+              placeholder="Correo de Facturación"
+              [(ngModel)]="mailOld"
+            />
+          </label>
+          <p *ngIf="messageErrorMail.length > 0" class="messageError">
+            {{ messageErrorMail }}
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default secondary" (click)="closeModalCorreo()">
+          Cancelar
+        </button>
+        <button class="button-default" (click)="ocultarNotificacionMail()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<ng-template #modalConfirmCancelLot>
+  <div class="content-modal modal-confirm-cancel-lot">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModals()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          ¿Estás seguro que desea anular el lote N° {{ selectedLot.idLote }}?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default secondary"
+          type="button"
+          role="button"
+          (click)="closeModals()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button-default"
+          type="button"
+          role="button"
+          (click)="cancelLot()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

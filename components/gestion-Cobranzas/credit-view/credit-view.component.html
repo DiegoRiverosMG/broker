@@ -1,0 +1,111 @@
+
+
+   <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{this.titleCredit }} </h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.close()">
+    <span aria-hidden="true">&times;</span>
+</button>
+  </div>
+  
+  
+ 
+        <div class="grid form-group">
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                           
+                            <div  class="col-sm-4">
+                                <span>RAMO</span>
+                                <select [disabled]="this.isDetail" [(ngModel)]="codBranchSelected" name="codBranchSelected" (change)="onSelectBranch()" class="minimal">
+                                <option value="0" selected>Selecione</option>
+                                <option *ngFor="let item of branchList" value="{{item.NBRANCH}}">
+                                        {{item.SDESCRIPT}}</option>
+                            </select>
+                              </div>
+
+                              <div  class="col-sm-4">
+                                <span>PRODUCTO</span>
+                                <select [disabled]="this.isDetail" [(ngModel)]="codProductSelected" name="codProductSelected" class="minimal">
+                                <option value="0" selected>Selecione</option>
+                                <option *ngFor="let item of productList" value="{{item.COD_PRODUCT}}">
+                                        {{item.DES_PRODUCT}}</option>
+                            </select>
+                              </div>
+                              <div class="col-sm-4">
+                                <span>DESCRIPCIÓN</span>
+                                <input type="text" 
+                              [disabled]="this.isDetail" maxlength="60"
+                              [(ngModel)]="cabCreditView.description" 
+                              (keypress)="textValidate($event, 3)" />
+                              </div>
+                              
+                        </div>
+
+                        <div class="row">
+                           
+                            <div  class="col-sm-4">
+                                <span>TIPO DE RIESGO</span>
+                                <select [disabled]="this.isDetail" [(ngModel)]="codRiskSelected" name="codRiskSelected" class="minimal">
+                                <option value="0" selected>Seleccione</option>
+                                <option *ngFor="let item of riskList" value="{{item.idTypeRish}}">
+                                        {{item.description}}</option>
+                            </select>
+                              </div>
+                              <div class="col-sm-4">
+                                <span>MONTO MÍNIMO</span>
+                                <input type="text" 
+                                FloatDirective maxlength="12"
+                              [(ngModel)]="cabCreditView.montoMinimo" 
+                              />
+                              </div>
+                              <div class="col-sm-4">
+                                <span>MONTO MÁXIMO</span>
+                                <input type="text" 
+                                FloatDirective maxlength="12"
+                              [(ngModel)]="cabCreditView.montoMaximo"
+                               />
+                              </div>
+                              
+                        </div>
+
+                        <div class="row">
+                           
+                            <div class="col-sm-4">
+                                <span>DIAS DE CRÉDITO</span>
+                                <input type="text" 
+                               maxlength="3"
+                              [(ngModel)]="cabCreditView.diasCredito"  
+                              (keypress)="textValidate($event, 1)" />
+                              </div>
+                              
+                              <div class="col-sm-4">
+                                <span>FECHA DE EFECTO</span>
+                                <input type="text" #dp="bsDatepicker"  [bsConfig]="bsConfig"
+                                    [disabled]="this.isDetail"
+                                     bsDatepicker  [(bsValue)]="bsValueIni" 
+                                     value="{{ bsValueIni | date:'dd/MM/yyyy' }}" 
+                                    readonly>
+                              </div>
+                              
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+</div>
+           
+
+            <div [hidden]="!isLoading" class="loadingScreen">
+<div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+</div>
+              </div>
+
+              <div class="modal-footer">
+                <button class="full-color" (click)="onSaveorEditCredit()" style="margin-top: 5px;">
+                    <span>Guardar</span>
+                </button>
+<button (click)="reference.close()"><span>Volver</span></button>
+                  </div>
+

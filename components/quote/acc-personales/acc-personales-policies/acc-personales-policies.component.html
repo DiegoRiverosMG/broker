@@ -1,0 +1,224 @@
+<div class="acc-personales-policies">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <app-nav-menuprod></app-nav-menuprod>
+        </div>
+        <div class="col-lg-9">
+            <div class="container-fluid p-0">
+
+                <panel-header-producto title="Consulta de Transacciones de Pólizas"></panel-header-producto>
+
+                <panel-container>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <form-input-select label="Tipo de transacción"
+                                               [service]="policyemitService"
+                                               method="getTransactionAllList"
+                                               [params]="{}"
+                                               fieldCodigo="NCOD_TRANSAC"
+                                               fieldValor="SDES_TRANSAC"
+                                               [firstSelect]="true"
+                                               [(value)]="filters.tipoTransaccion"
+                                               [disabled]="filters.numPoliza?.length"
+                                               [(clear)]="limpiar.filtros"></form-input-select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <form-input-select label="Ramo"
+                                               [service]="accPersonalesService"
+                                               method="getBranchesList"
+                                               [params]="{
+                                                          branchId: CONSTANTS.RAMO
+                                                         }"
+                                               fieldCodigo="NBRANCH"
+                                               fieldValor="SDESCRIPT"
+                                               [firstSelect]="true"
+                                               [(value)]="filters.ramo"
+                                               [defaultValue]="{codigo:  CONSTANTS.RAMO}"
+                                               [disabled]="filters.numPoliza?.length"
+                                               [(clear)]="limpiar.filtros"></form-input-select>
+                        </div>
+                        <div class="col-sm-3">
+                            <form-input-select label="Producto"
+                                               [service]="accPersonalesService"
+                                               method="getProductList"
+                                               [params]="{
+                                                          productId: storageService.productId,
+                                                          epsId: storageService.epsCode
+                                                         }"
+                                               fieldCodigo="COD_PRODUCT"
+                                               fieldValor="DES_PRODUCT"
+                                               [firstSelect]="true"
+                                               [(value)]="filters.producto"
+                                               [disabled]="filters.numPoliza?.length"
+                                               [(clear)]="limpiar.filtros"></form-input-select>
+                        </div>
+                        <div class="col-sm-3">
+                            <form-input-text label="Nro. Póliza"
+                                             [(value)]="filters.numPoliza"
+                                             (onKeypress)="limpiar.filtros=true"
+                                             (onKeyenter)="clickSearch()"
+                                             [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                             maxCaracter="10"></form-input-text>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <form-search-client label="contratante"
+                                        [(client)]="filters.contratante"
+                                        [disabled]="filters.numPoliza?.length"
+                                        [(clear)]="limpiar.filtros"></form-search-client>
+
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subtitle-underlined">FECHA OPERACIÓN</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <form-input-date label="Desde"
+                                             [todayPreviousMonth]="true"
+                                             [(value)]="filters.fechaDesde"
+                                             [disabled]="filters.numPoliza?.length"
+                                             [maxDate]="filters.fechaHasta"></form-input-date>
+                        </div>
+                        <div class="col-sm-3">
+                            <form-input-date label="Hasta"
+                                             [today]="true"
+                                             [(value)]="filters.fechaHasta"
+                                             [disabled]="filters.numPoliza?.length"
+                                             [minDate]="filters.fechaDesde"></form-input-date>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-12">
+                                <form-button label="Descargar Excel"
+                                             class="pull-right"
+                                             btnClass="btn-secondary"
+                                             (click)="clickExcel()"></form-button>
+                            </div>
+                            <form-button label="Buscar"
+                                         class="pull-right"
+                                         btnClass="btn-primary"
+                                         (click)="clickSearch()"></form-button>
+                        </div>
+                    </div>
+
+                </panel-container>
+
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- <div class="row"
+                                 *ngIf="polizas.length > 0 && CONSTANTS.PERFIL.EXTERNO != storageService.user?.profileId "> -->
+                            <div class="row" *ngIf="polizas.length > 0">
+                                <div class="col-sm-12">
+                                    <div class="btn-group btn-group-toggle margin-top-10  margin-bottom-10 margin-right-10"
+                                         data-toggle="buttons"
+                                         style="float:right">
+                                        <button class="btn btn-secondary"
+                                                (click)="clickTransac(CONSTANTS.TRANSACTION_CODE.RENOVACION, CONSTANTS.MODO_VISTA.POLIZARENOVAR)">
+                                            <input name="options"
+                                                   id="option1"
+                                                   type="radio"> RENOVAR </button>
+                                        <button class="btn btn-secondary"
+                                                (click)="clickTransac(CONSTANTS.TRANSACTION_CODE.INCLUSION, CONSTANTS.MODO_VISTA.POLIZAINCLUIR)">
+                                            <input name="options"
+                                                   id="option2"
+                                                   type="radio"> INCLUIR </button>
+                                        <button class="btn btn-secondary"
+                                                (click)="clickTransac(CONSTANTS.TRANSACTION_CODE.EXCLUSION, CONSTANTS.MODO_VISTA.EXCLUIR)">
+                                            <input name="options"
+                                                   id="option3"
+                                                   type="radio"> EXCLUIR </button>
+                                        <button class="btn btn-secondary"
+                                                (click)="clickTransac(CONSTANTS.TRANSACTION_CODE.ENDOSAR, CONSTANTS.MODO_VISTA.ENDOSO)">
+                                            <input name="options"
+                                                   id="option4"
+                                                   type="radio"> ENDOSO </button>
+                                        <button class="btn btn-secondary"
+                                                (click)="clickTransac(CONSTANTS.TRANSACTION_CODE.ANULACION, CONSTANTS.MODO_VISTA.ANULACION)">
+                                            <input name="options"
+                                                   id="option5"
+                                                   type="radio"> ANULAR </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <panel-table [slim]="true"
+                                         [(items)]="polizas"
+                                         (itemsChange)="verificarPolizas()"
+                                         [(reload)]="reload.cotizaciones"
+                                         [pagination]="true"
+                                         [service]="policyemitService"
+                                         method="GetPolicyTransAllList"
+                                         [params]="polizasParams"
+                                         [(loader)]="show.loader"
+                                         [header]="[
+                                                    'Sel.',
+                                                    'Ramo',
+                                                    'Tipo Producto',
+                                                    'Tipo Perfil',
+                                                    'Nro. Póliza',
+                                                    'Nro. Cotización',
+                                                    'Contratante',
+                                                    'Fecha emisión',
+                                                    'Inicio vigencia',
+                                                    'Fin vigencia',
+                                                    'Inicio vigencia',
+                                                    'Fin vigencia'
+                                                    ]"
+                                         [headerTemplateBefore]="headerTemplatePolizas"
+                                         [bodyTemplate]="bodyTemplatePolizas"
+                                         (clickExpand)="openMovimientos($event)"
+                                         (clickFile)="clickDetail($event)"
+                                         [showDetail]="true || CONSTANTS.PERFIL.TECNICA == storageService.user?.profileId"
+                                         tituloBtnExpand="Movimientos"
+                                         tituloBtnFile="Trama">
+                            </panel-table>
+
+                            <ng-template #headerTemplatePolizas>
+                                <th colspan="8" class="">
+                                <th colspan="2" class="table-th-underlined">PÓLIZA</th>
+                                <th colspan="2" class="table-th-underlined">ASEGURADOS</th>
+                            </ng-template>
+
+                            <ng-template #bodyTemplatePolizas let-item="item">
+                                <td class="text-center">
+                                    <input type="radio"
+                                           value={{item.NID_COTIZACION}}
+                                           name="policy"
+                                           (change)="polizaSeleccionada = item;">
+                                </td>
+                                <td class="text-center">{{item.SRAMO}}</td>
+                                <td class="text-center">{{item.SDES_TYPE_PRODUCT}}</td>
+                                <td class="text-center">{{item.SPRODUCTO}}</td>
+                                <td class="text-center">{{item.NPOLIZA}}</td>
+                                <td class="text-center">{{item.SCOTIZACION}}</td>
+                                <td class="text-center">{{item.SCONTRATANTE}}</td>
+                                <td class="text-center">{{item.DFECHA_EMISION}}</td>
+                                <td class="text-center">{{item.DINICIO_VIGENCIA}}</td>
+                                <td class="text-center">{{item.DFIN_VIGENCIA}}</td>
+                                <td class="text-center">{{item.DINICIO_VIGENCIA_ASEG}}</td>
+                                <td class="text-center">{{item.DFIN_VIGENCIA_ASEG}}</td>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <loading-screen [hidden]="!show.loader"></loading-screen>
+</div>

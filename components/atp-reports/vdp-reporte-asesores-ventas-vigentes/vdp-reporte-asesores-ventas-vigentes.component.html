@@ -1,0 +1,59 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <!-- <navmenusctr></navmenusctr> -->
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Reporte de Asesores Vigentes VDP+</span>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+             <div class="row">
+              <div class="col-sm-6">
+                <span>JEFE</span>
+                <select [(ngModel)]="selectedOption" class="form-control" (change)="onOptionSelected()">
+                  <option [ngValue]="null" disabled selected>Seleccionar</option> <!-- Opción "Seleccionar" por defecto -->
+                  <option [ngValue]="0">TODOS</option> <!-- Opción "TODOS" con valor 0 -->
+                  <option *ngFor="let dato of datosCombo" [value]="dato.cod_jefe">{{ dato.jefe }}</option>
+                </select>
+            </div>
+            <!-- Combo box de supervisores -->
+            <div class="col-sm-6">
+              <span>SUPERVISOR</span>
+              <select [(ngModel)]="selectedSupervisor" class="form-control" (change)="onOptionSelected()">
+                <option [ngValue]="null" disabled selected>Seleccionar</option> <!-- Opción "Seleccionar" por defecto -->
+                <option [ngValue]="0">TODOS</option> <!-- Opción "TODOS" con valor 0 -->
+                <option *ngFor="let dato of supervisores" [value]="dato.cod_supervisor">{{ dato.supervisor }}</option>
+              </select>
+            </div>
+            </div>           
+             <div class="row">        
+              <div class="col-sm-9">                  
+              </div>                            
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="generarReporte()" [disabled]="">
+                  <span>PROCESAR</span>
+                </button>
+              </div>                
+            </div> 
+          </div>            
+        </div>   
+      </div>
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

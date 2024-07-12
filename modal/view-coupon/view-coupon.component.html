@@ -1,0 +1,46 @@
+<!--GCAA INICIO 06022024-->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Exclusión por CUPONERA</h4>   
+</div>
+<div class="modal-body">
+    <h5 class="modal-title" id="modal-basic-title">Se realizará la exclusión a los siguientes recibos:</h5>  
+    <div class="modal-body">
+      
+        <table class="table">
+            <thead>
+                <tr>              
+                <th>Recibo</th>
+                <th>N° Cupón</th>
+                <th>Inicio Vigencia</th>
+                <th>Fin Vigencia</th>
+                <th>Fecha de pago</th>
+                <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="d-flex" *ngIf="CuponesList.length == 0">
+                    <td class="col-sm text-center">No se encuentran Recibos</td>
+                </tr>
+                <tr  *ngFor=" let item of CuponesList; let i = index">                    
+                    <td><span>{{ item.NRECEIPT }}</span></td>
+                    <td><span>{{ item.NCOUPON }}</span></td>
+                    <td><span>{{ item.DEFFECDATE }}</span></td>
+                    <td><span>{{ item.DEXPIRDAT }}</span></td>
+                    <td><span>{{ item.DEXPIRDAT }}</span></td>
+                    <td><span>{{ item.NPREMIUM }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row" >
+            <div class="col-sm-12">
+                <div style="display: flex; float:right">
+                    <button type="button" (click)="OpcionCancelar()"><span>CANCELAR</span></button>
+                    <button type="button" (click)="OpcionAceptar()" class="full-color"><span>ACEPTAR</span></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--GCAA FIN 06022024-->

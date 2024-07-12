@@ -1,0 +1,346 @@
+<div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">{{mtitle}}</h4>
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+        <div class="filter">
+            <div class="card">
+                <div class="card-body">
+                    <div *ngIf="nTipoVentana==2" class="modal-header">
+                        <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Plan N°{{gotNPlan}}</h4>
+                    </div>
+                    <div *ngIf="nTipoVentana!=2" class="row">
+                        <div class="row col-sm-12">
+                            <div class="col-sm-4">
+                                <span>RAMO</span>
+                                <select class="minimal" (change)="ChangeRamo()" [(ngModel)]="mSelectedBranchId" [attr.disabled]="disRamo? true : null">
+                                    <option value="-1" disabled>SELECCIONAR</option>
+                                    <option *ngFor="let item of mbranchTypeList" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>PRODUCTO</span>
+                                <select class="minimal" (change)="ChangeProducto()" [(ngModel)]="mSelectedProductoId"  [attr.disabled]="disProducto? true : null">
+                                    <option value="-1" disabled>SELECCIONAR</option>
+                                    <option *ngFor="let item of mlistProduct" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>PÓLIZA</span>
+                                <input type="text" maxlength="11"
+                                 value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" (keypress)="NPOLIZA=textValidate($event, '1',11);validaCampos();" (paste)="NPOLIZA=onPaste($event, '1',11);validaCampos();" (change)="validaCampos()" [attr.disabled]="disPoliza? true : null">
+                            </div>
+                            <div class="col-sm-4">
+                                <span>N° PLAN</span>
+                                <input type="text" value="{{mSelectedTipoPlanId}}" [(ngModel)]="mSelectedTipoPlanId" [attr.disabled]="true">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <span> </span>
+                                        </div>
+                                        <div class="row">
+                                            <label for="a" class="col-sm-6 espacios-checkboxs">Monto
+                                                <input #ida type="radio" id="a" name="sample" value="a" (change)="onChange($event)" /> 
+                                                <span class="checkmark"></span>
+                                            </label> 
+                                            <label for="b" class="col-sm-6 espacios-checkboxs">Porcentaje
+                                                <input #idb type="radio" id="b" name="sample" value="b" (change)="onChange($event)" /> 
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!mbhabilitar" class="row col-sm-12">
+                            <span class="separacion col-sm-12">&nbsp;</span>
+                            <span class="separacion col-sm-12">&nbsp;</span>
+                            <div class="col-sm-12">
+                                <h4>{{msubtitle}}</h4>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <span>SERVICIO</span>
+                                    <select class="minimal" [(ngModel)]="mselectedServicioId"  [attr.disabled]="this.nTipoVentana==3? true : null">
+                                        <option *ngFor="let item of mlistServicio" value="{{item.Id}}" [hidden]="validaServicios(item.Id)">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <!--<div *ngIf="mselectedServicioId==4" class="col-sm-3">
+                                    <span>Cobertura Adicional</span>
+                                    <select class="minimal" [(ngModel)]="mselectedCoberturaId"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                        <option value="-">Selecciona Cobertura</option>
+                                            <option *ngFor="let item of mlistCobertura" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div> -->
+                                <div *ngIf="mselectedServicioId==4 && this.nTipoVentana!=3" class="col-sm-3">
+                                    <span>&nbsp;</span>
+                                    <button class="full-colorN" (click)="mostrarModal(content)">
+                                        <span>Cobertura Adicional</span>
+                                    </button>
+                                </div>
+                                <div *ngIf="mselectedServicioId==4 && this.nTipoVentana!=3" class="col-sm-6">
+                                    <span>&nbsp;</span>
+                                    <input type="text" [(ngModel)]="coberTextSend" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>MONTO CLIENTE</span>
+                                    <input type="text" (keypress)="valNMontoBrok=textValidate($event, '8',12)" (paste)="valNMontoBrok=onPaste($event, '8',12)"
+                                     value="{{valNMontoBrok}}" [(ngModel)]="valNMontoBrok" [attr.disabled]="this.mtype!='a' || this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>MONTO COMPAÑÍA</span>
+                                    <input type="text" (keypress)="valNMontoCanal=textValidate($event, '8',12)" (paste)="valNMontoCanal=onPaste($event, '8',12)"
+                                     value="{{valNMontoCanal}}" [(ngModel)]="valNMontoCanal" [attr.disabled]="this.mtype!='a' || this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>PORCENTAJE CLIENTE</span>
+                                    <input type="text" (keypress)="valNTasaCli=textValidate($event, '8',3)" (paste)="valNTasaCli=onPaste($event, '8',3)"
+                                    [(ngModel)]="valNTasaCli" [attr.disabled]="this.mtype=='a' || this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>PORCENTAJE COMPAÑIA</span>
+                                    <input type="text" (keypress)="valNTasaComp=textValidate($event, '8',3)" (paste)="valNTasaComp=onPaste($event, '8',3)"
+                                     [(ngModel)]="valNTasaComp" [attr.disabled]="this.mtype=='a' || this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>CRÉDITO MÍNIMO</span>
+                                    <input type="text" (keypress)="valNCuotaMin=textValidate($event, '8',12)" (paste)="valNCuotaMin=onPaste($event, '8',12)"
+                                     value="{{valNCuotaMin}}" [(ngModel)]="valNCuotaMin" [attr.disabled]="this.nTipoVentana==2 || this.nTipoVentana==3? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>CRÉDITO MÁXIMO</span>
+                                    <input type="text" (keypress)="valNCuotaMax=textValidate($event, '8',12)" (paste)="valNCuotaMax=onPaste($event, '8',12)"
+                                     value="{{valNCuotaMax}}" [(ngModel)]="valNCuotaMax" [attr.disabled]="this.nTipoVentana==2 || this.nTipoVentana==3? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>ROL</span>
+                                    <select class="minimal" [(ngModel)]="valNRol"  [attr.disabled]="this.nTipoVentana==2 || this.nTipoVentana==3? true : null">
+                                        <option *ngFor="let item of mlistRoles" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" *ngIf="nTipoVentana==0 && meditando==-1">
+                                <span class="separacion">&nbsp;</span>
+                                <button class="row col-sm-12 full-color"
+                                        (click)="AgregarConfig()"
+                                        [disabled]="">
+                                    <span>+ AGREGAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div *ngIf="nTipoVentana==2" class="grid form-group" >
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Servicio Adicional</td>
+                                    <td class="grid-title-item">Descripción</td>
+                                    <td class="grid-title-item">Usuario</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of mlistServiciosXPlanes" class="grid-title">
+                                    <td>{{ item.NombreServicio }}</td>
+                                    <td>{{ item.Descripcion }}</td>
+                                    <td>{{ item.Usuario }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div *ngIf="nTipoVentana==0 && haymlistValores" class="grid form-group" >
+                    Servicios Adicionales por plan
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <!--td class="grid-title-item">TIPO</td-->
+                                    <!--td class="grid-title-item">GRUPO</td-->
+                                    <td class="grid-title-item">Póliza</td>
+                                    <td class="grid-title-item">Nro. Plan</td>
+                                    <td class="grid-title-item">Servicio adicional</td>
+                                    <td class="grid-title-item">Monto cliente</td>
+                                    <td class="grid-title-item">Monto compañía</td>
+                                    <td class="grid-title-item">Porcentaje cliente</td>
+                                    <td class="grid-title-item">Porcentaje compañía</td>
+                                    <td class="grid-title-item">Crédito mínimo</td>
+                                    <td class="grid-title-item">Crédito máximo</td>
+                                    <td class="grid-title-item">Rol</td>
+                                    <td class="grid-title-item">Acción</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="mlistValores==null || mlistValores.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        
+                        <ng-template #showGrid>
+                            <tbody>
+                                <tr *ngFor="let item of mlistValores">
+                                    <td>{{ NPOLIZA }}</td>
+                                    <td>{{ item.NMODULO }}</td>
+                                    <td>{{ item.SSERVICE }}</td>
+                                    <td>{{ item.NAMOUNT_CLIENT }}</td>
+                                    <td>{{ item.NAMOUNT_COMPANY }}</td>
+                                    <td>{{ item.NTASACLIENTE }}</td>
+                                    <td>{{ item.NTASACOMPANIA }}</td>
+                                    <td>{{ item.NMINCREDITO }}</td>
+                                    <td>{{ item.NMAXCREDITO }}</td>
+                                    <td>{{ item.SROL }}</td>
+                                    <td class="text-center icons-box">
+                                        <img *ngIf="item.NBORRAR" src="assets/icons/anular.png" (click)="Borrar(item.INDICE)" title="Borrar" alt="Borrar" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div [hidden]="!misLoading"
+                    class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px"
+                        class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12 modal-footer" >
+    <div *ngIf="nTipoVentana==0 && meditando==-1 && haymlistValores" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="Guardar()"
+                [disabled]="">
+            <span>GUARDAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana==3" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="ActualizaPlan()"
+                [disabled]="">
+            <span>GUARDAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana==0 && meditando!=-1" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="Actualizar()"
+                [disabled]="">
+            <span>ACTUALIZAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana!=3 && nTipoVentana!=2" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color" (click)="reference.close()">
+            <span>CERRAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana==2" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color" (click)="reference.close()">
+            <span>VOLVER</span>
+        </button>
+    </div>
+</div>
+
+<!-- MODAL -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Coberturas Adicionales
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Ingrese su búsqueda." (keyup)="buscar(searchText)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">Sel.</td>
+                                    <td class="grid-title-item text-center">Descripción</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="mlistToShow == null || mlistToShow.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="2">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of mlistToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="radio" name="cober" (change)="selectCober(item)" />
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.Description }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="mlistToShow != null && mlistToShow.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="agregarCobertura()" (click)="modal.dismiss('Cross click')">
+            Agregar
+        </button>
+    </div>
+</ng-template>
+
+
+
+
+
+

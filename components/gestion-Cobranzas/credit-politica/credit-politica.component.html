@@ -1,0 +1,144 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Políticas de crédito</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                    <div class="filter">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div  class="col-sm-3">
+                                            <span>RAMO</span>
+                                            <select [(ngModel)]="codBranchSelected" name="codBranchSelected" (change)="onSelectBranch()" class="minimal">
+                                            <option value="0" selected>TODOS</option>
+                                            <option *ngFor="let item of branchList" value="{{item.NBRANCH}}">
+                                                    {{item.SDESCRIPT}}</option>
+                                        </select>
+                                          </div>
+
+                                          <div  class="col-sm-3">
+                                            <span>PRODUCTO</span>
+                                            <select [(ngModel)]="codProductSelected" name="codProductSelected" class="minimal">
+                                            <option value="0" selected>TODOS</option>
+                                            <option *ngFor="let item of productList" value="{{item.COD_PRODUCT}}">
+                                                    {{item.DES_PRODUCT}}</option>
+                                        </select>
+                                          </div>
+                                          <div class="col-sm-3">
+                                            <span>FECHA DE EFECTO</span>
+                                            <input type="text" #dp="bsDatepicker"  [bsConfig]="bsConfig"  bsDatepicker
+                                            [(bsValue)]="bsValueIni"   value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                                 readonly>
+                                        </div>
+
+                                          <div class="col-sm-2">
+                                            <span>&nbsp;</span>
+                                            <button class="full-color" (click)="GetListPolicieCredit()" style="margin-top: 5px;">
+                                                <span>Buscar</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <span>&nbsp;</span>
+                                            <button class="full-color" (click)="openModalCreditView(null)" style="margin-top: 5px;">
+                                                <span>Crear</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            </div>
+
+            <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                        <td class="grid-title-item ">ITEM</td>
+                                        <td class="grid-title-item ">RAMO</td>
+                                        <td class="grid-title-item">PRODUCTO</td>
+                                        <td class="grid-title-item">DESCRIPCIÓN</td>
+                                        <td class="grid-title-item">MONTO MÍNIMO</td>
+                                        <td class="grid-title-itemr">MONTO MÁXIMO</td>
+                                        <td class="grid-title-item ">DIAS CRÉDITO</td>
+                                        <td class="grid-title-item">FECHA EFECTO</td>
+                                        <td class="grid-title-item">USUARIO</td>
+                                        <td class="grid-title-item">TIPO RIESGO</td>
+                                        <td class="grid-title-item">FECHA ANULACIÓN</td>
+                                        <td class="grid-title-item">ACCIÓN</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listPolicieCredit!=null && listPolicieCredit.length>0; then showGrid else hideGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr style="text-align: center;">
+                                    <td colspan="12">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody>
+                                <tr *ngFor="let item of listToShow; let row_no = index">
+                                    <td >{{ item.idPolicyCredit }}</td>
+                                    <td >{{ item.desRamo }}</td>
+                                    <td >{{ item.desProduct }}</td>
+                                    <td> {{ item.description }}</td>
+                                    <td class="">{{ item.montoMinimo }}</td>
+                                    <td class="">{{ item.montoMaximo }}</td>
+                                    <td >{{ item.diasCredito }}</td>
+                                    <td >{{ item.FechaEfecto }}</td>
+                                    <td >{{ item.desUsuario }}</td>
+                                    <td >{{ item.desRiesgo }}</td>
+                                    <td >{{ item.fechaAnulacion }}</td>
+                                    <td>
+                                            <a (click)='openModalCreditView(item)'><img alt="Editar" src="assets/icons/editar.png"
+                                                class="" title="Editar" style="cursor: pointer;height: 24px"></a>
+                                                <a (click)='DeleteCredit(item)'><img alt="Editar" src="assets/icons/anular.png"
+                                                    class="" title="Eliminar" style="cursor: pointer;height: 24px"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="listPolicieCredit!=null && listPolicieCredit.length>0; then showPagination"></ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+
+
+                <div [hidden]="!isLoading" class="loadingScreen">
+                        <div style="display:flex;height: 100%;width:100%">
+                          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                        </div>
+                      </div>
+                      <div [hidden]="!isLoading" class="loadingScreen">
+                        <div style="display:flex;height: 100%;width:100%">
+                          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                        </div>
+                      </div>
+
+        </div>
+    </div>
+</div>

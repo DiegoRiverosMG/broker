@@ -1,0 +1,1956 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   INTERFACE-MONITORING.COMPONENT.HTML                                  */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   23-08-2022                                                           */
+/*  VERSIÓN             :   1.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">CONSULTA DE INTERFAZ INMOBILIARIA</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN</span>
+                <select class="form-control" (change)="seleccionarOrigen($event.target.value)" formControlName="NNUMORI">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>INTERFAZ</span>
+                <select class="form-control" (change)="seleccionarInterfaz($event.target.value)" formControlName="NCODGRU">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>SERVICIO</span>
+                <select class="form-control" formControlName="NBRANCH">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>ESTADO EXACTUS</span>
+                <select class="form-control" formControlName="NSTATUS_SEND" >
+                    <option value="null">TODOS</option>
+                    <option *ngFor="let x of estados" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>INICIO PROCESO</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="DPROCESS_INI" [ngClass]="{'error-validate': submitted && (!filterForm.controls.DPROCESS_INI.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.DPROCESS_INI.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('DPROCESS_INI').hasError('required')" class="mensaje-error-control">
+                        La fecha inicial es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.DPROCESS_INI.valid && !filterForm.get('DPROCESS_INI').hasError('required')" class="mensaje-error-control">
+                        La fecha inicial no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha inicial debe ser menor a la fecha final.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FIN PROCESO</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="DPROCESS_FIN" [ngClass]="{'error-validate': submitted && (!filterForm.controls.DPROCESS_FIN.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.DPROCESS_FIN.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('DPROCESS_FIN').hasError('required')" class="mensaje-error-control">
+                        La fecha final es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.DPROCESS_FIN.valid && !filterForm.get('DPROCESS_FIN').hasError('required')" class="mensaje-error-control">
+                        La fecha final no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha final debe ser mayor a la fecha inicial.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>PROCESO</span>
+                <input class="form-control" type="text" placeholder="INGRESAR N° PROCESO" formControlName="NIDPROCESS" (keypress)="soloNumeros($event)" maxlength="10"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.NIDPROCESS.valid || filterForm.hasError('required'))}">
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.NIDPROCESS.valid) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('NIDPROCESS').hasError('pattern')" class="mensaje-error-control">
+                        Solo se aceptan números.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="listarCabeceraInterfaces()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+            <!-- DOCUMENTOS -->
+            <div class="col-sm-3" *ngIf="booleanInterfazRecibo">
+                <span>RECIBO</span>
+                <input class="form-control" type="text" placeholder="INGRESAR N° RECIBO" formControlName="NRECEIPT" maxlength="10" (keypress)="soloNumeros($event)">
+            </div>
+            <div class="col-sm-3" *ngIf="booleanInterfazMemo">
+                <span>SINIESTRO/MEMO</span>
+                <input class="form-control" type="text" placeholder="INGRESAR N° SINIESTRO/MEMO" formControlName="CLAIM_MEMO" maxlength="12">
+            </div>
+            <div class="col-sm-3" *ngIf="booleanInterfazPoliza">
+                <span>CONTRATO</span>
+                <input class="form-control" type="text" placeholder="INGRESAR N° CONTRATO" formControlName="NPOLICY" maxlength="10" (keypress)="soloNumeros($event)">
+            </div>
+            <!-- BÚSQUEDA -->
+            <div class="col-sm-3" *ngIf="booleanInterfazRecibo">
+                <span>&nbsp;</span>
+                <button class="full-colorN" (click)="listarCabeceraInterfacesRecibo()">
+                    <span>BUSCAR POR RECIBO</span>
+                    <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                </button>
+            </div>
+            <div class="col-sm-3" *ngIf="booleanInterfazMemo">
+                <span>&nbsp;</span>
+                <button class="full-colorN" (click)="listarCabeceraInterfacesSiniestro()">
+                    <span>BUSCAR POR SINIESTRO/MEMO</span>
+                    <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                </button>
+            </div>
+            <div class="col-sm-3" *ngIf="booleanInterfazPoliza">
+                <span>&nbsp;</span>
+                <button class="full-colorN" (click)="listarCabeceraInterfacesPoliza()">
+                    <span>BUSCAR POR CONTRATO</span>
+                    <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                </button>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">PROCESO</td>
+                                    <td class="grid-title-item text-center">INTERFAZ</td>
+                                    <td class="grid-title-item text-center">SERVICIO</td>
+                                    <td class="grid-title-item text-center">INICIO PROCESO</td>
+                                    <td class="grid-title-item text-center">FIN PROCESO</td>
+                                    <td class="grid-title-item text-center">PRELIMINAR</td>
+                                    <td class="grid-title-item text-center">ASIENTOS</td>
+                                    <td class="grid-title-item text-center">EXACTUS</td>
+                                    <td class="grid-title-item text-center">INDICADOR</td>
+                                    <!--<td class="grid-title-item text-center">PLANILLA</td>-->
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow == null || listToShow.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="10">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDPROCESS }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCODGRU_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ origenNumber == 1 ? item.SBRANCH_DES : origenText }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DPROCESS_INI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DPROCESS_FIN }}
+                                    </td>
+                                    <td [ngClass]="item.NSTATUS !== 0 ? 'data-table-tr-td onHover' : 'null'" (click)="mostrarModalPreliminar(contentPreliminar, item);">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS == '4'" src="./assets/icons/reproceso.png" />
+                                        &nbsp;{{ item.SSTATUS_DES }}
+                                    </td>
+                                    <td [ngClass]="item.NSTATUS_ASI !== 0 ? 'data-table-tr-td onHover' : 'null'" (click)="mostrarModalAsientosContables(contentAsientosContables, contentAsientosContablesOrdenesPago, item);">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS_ASI == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '4'" src="./assets/icons/reproceso.png" />
+                                        &nbsp;{{ item.SSTATUS_ASI }}
+                                    </td>
+                                    <td [ngClass]="item.NSTATUS_SEND !== 0 ? 'data-table-tr-td onHover' : 'null'" (click)="mostrarModalExactus(contentExactus, contentExactusOrdenesPago, item);">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS_SEND == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '4'" src="./assets/icons/reproceso.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '5'" src="./assets/icons/enviado.png" />
+                                        &nbsp;{{ item.SSTATUS_SEND }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SREPROC }}
+                                    </td>
+                                    <!--
+                                    <td [ngClass]="item.ID_JOB && item.NSTATUS_JOB == 3 ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalPlanilla(contentErroresPlanilla, item);">
+                                        <b [ngClass]="item.NSTATUS_JOB == 3 ? 'red' : 'null'">{{ item.ID_JOB > 0 ? item.ID_JOB : null }}</b>
+                                    </td>
+                                    -->
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow != null && listToShow.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DETALLE PRELIMINAR -->
+<ng-template #contentPreliminar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE INTERFAZ - PRELIMINAR
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalle.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalle.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>SERVICIO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalle.SBRANCH_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>ESTADO</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalle.NSTATUS" (change)="seleccionarEstadoDetalle($event.target.value)" *ngIf="this.loading">
+                        <option value="null">TODOS</option>
+                        <option *ngFor="let x of estados" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loading" id="loadingStyle" />
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>BUSCAR POR</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalle.NTIPO" (change)="seleccionarTipoBusqueda($event.target.value)" *ngIf="this.loading">
+                        <option *ngFor="let x of tipoBusquedasSI" value="{{ x.CODIGO }}">{{ x.DESCRIPCION }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loading" id="loadingStyle" />
+                </div>
+                <div class="col-sm-3">
+                    <span>&nbsp;</span>
+                    <input class="form-control" type="text" placeholder="INGRESAR {{ tipoBusqueda }}" [(ngModel)]="filtroInterfaceCabeceraRecibo.NRECEIPT" maxlength="12" *ngIf="this.loading">
+                    <input class="form-control" type="text" value="INGRESAR DATO" disabled *ngIf="!this.loading" />
+                </div>
+                <div class="col-sm-3">
+                    <span>&nbsp;</span>
+                    <button class="full-color" (click)="buscarDetallePreliminarPorRecibo(filtroInterfaceCabeceraRecibo.NRECEIPT)" *ngIf="this.loading">
+                        <span>BUSCAR</span>
+                    </button>
+                    <button class="full-color" disabled *ngIf="!this.loading">
+                        <span>BUSCAR</span>
+                    </button>
+                </div>
+                <div class="col-sm-3">
+                    <span>&nbsp;</span>
+                    <button class="full-colorN" (click)="getReportFilters()" *ngIf="this.loading">
+                        <span>EXPORTAR EXCEL</span>
+                        <img class="icon-btn" src="./assets/icons/download2.png" />
+                    </button>
+                    <button class="full-colorN" disabled *ngIf="!this.loading">
+                        <span>EXPORTAR EXCEL</span>
+                        <img class="icon-btn" src="./assets/icons/download2.png" />
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" *ngIf="!this.loading">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">DETALLE PROCESO</td>
+                                    <td class="grid-title-item text-center">CONTRATO</td>
+                                    <td class="grid-title-item text-center" *ngIf="booleanInterfazReciboPrel">RECIBO</td>
+                                    <td class="grid-title-item text-center" *ngIf="booleanInterfazMemoPrel">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center" *ngIf="!booleanInterfazReciboPrel && !booleanInterfazMemoPrel">MONEDA</td>
+                                    <td class="grid-title-item text-center" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">TIPO SERVICIO</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" *ngIf="Flg_IsCobra">NRO OPERACIÓN</td>
+                                    <td class="grid-title-item text-center">PRELIMINAR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">Cargando...<img src="./assets/icons/loadingtc.gif" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive" *ngIf="this.loading">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center" style="width: 10%;">DETALLE PROCESO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">CONTRATO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;" *ngIf="booleanInterfazReciboPrel">RECIBO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;" *ngIf="booleanInterfazMemoPrel">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;" *ngIf="!booleanInterfazReciboPrel && !booleanInterfazMemoPrel">MONEDA</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">TIPO SERVICIO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;" *ngIf="Flg_IsCobra">NRO OPERACIÓN</td>
+                                    <td class="grid-title-item text-center" style="width: 20%;">PRELIMINAR</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">
+                                        <input type="checkbox" [(ngModel)]="masterSelected" (change)="checkUncheckAll()" [disabled]="this.masterSelectedBoolean" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetail == null || listToShowDetail.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetail">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDPROCDET }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NPOLICY }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">
+                                        {{ item.NRECEIPT }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="!booleanInterfazReciboPrel && !booleanInterfazMemoPrel">
+                                        {{ item.SCURRENCY_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">
+                                        {{ item.PRODUCTO_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NTYPE_DES }}
+                                    </td>
+                                    <td [ngClass]="item.OPERACION ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalPreliminarOperaciones(contentPreliminarOperaciones, item);" *ngIf="Flg_IsCobra">
+                                        {{ item.OPERACION }}
+                                    </td>
+                                    <td class="data-table-tr-td">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS == '4'" src="./assets/icons/reproceso.png" />
+                                        &nbsp;{{ item.SDESCRIPT }}
+                                    </td>
+                                    <td [ngClass]="item.ERROR ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalPreliminarError(contentPreliminarError, item);">
+                                        {{ item.ERROR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="isAllSelected()" [disabled]="item.NSTATUS == '0' ? true : null || item.NSTATUS == '1' ? true : null || item.NSTATUS == '2' ? true : null || item.NSTATUS == '4' ? true : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetail != null && listToShowDetail.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetail" [pageSize]="itemsPerPageDetail" [collectionSize]="totalItemsDetail" [maxSize]="maxSizeDetail" (pageChange)="pageChangedDetail(currentPageDetail)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="insertarNuevoReproceso()">
+            Reprocesar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE PRELIMINAR OPERACIONES -->
+<ng-template #contentPreliminarOperaciones let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE OPERACIÓN
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>DETALLE PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleOperacion.NIDPROCDET" />
+                </div>
+                <div class="col-sm-3">
+                    <span>RECIBO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleOperacion.NRECEIPT" />
+                </div>
+                <div class="col-sm-3">
+                    <span>TIPO SERVICIO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleOperacion.PRODUCTO_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleOperacion.NTYPE_DES" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° OPERACIÓN</td>
+                                    <td class="grid-title-item text-center" *ngIf="Flg_IsVISA">BANCO</td>
+                                    <td class="grid-title-item text-center">FECHA DE ABONO</td>
+                                    <td class="grid-title-item text-center">MONEDA</td>
+                                    <td class="grid-title-item text-center">MONTO</td>
+                                    <td class="grid-title-item text-center" *ngIf="Flg_IsVISA">CUENTA</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailOperacion == null || listToShowDetailOperacion.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="6">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailOperacion">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CNUMERO_OPERACION }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="Flg_IsVISA">
+                                        {{ item.NID_BANCO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DFECHA_DEPOSITO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCURRENCY_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONTO_BRUTO_DEP }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="Flg_IsVISA">
+                                        {{ item.CNUMERO_CUENTA_EQ }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailOperacion != null && listToShowDetailOperacion.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailOperacion" [pageSize]="itemsPerPageDetailOperacion" [collectionSize]="totalItemsDetailOperacion" [maxSize]="maxSizeDetailOperacion" (pageChange)="pageChangedDetailOperacion(currentPageDetailOperacion)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE PRELIMINAR ERRORES -->
+<ng-template #contentPreliminarError let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>DETALLE PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleError.NIDPROCDET" />
+                </div>
+                <div class="col-sm-3" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">
+                    <span *ngIf="booleanInterfazReciboPrel">RECIBO</span>
+                    <span *ngIf="booleanInterfazMemoPrel">SINIESTRO/MEMO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleError.NRECEIPT" />
+                </div>
+                <div class="col-sm-3" *ngIf="!booleanInterfazReciboPrel && !booleanInterfazMemoPrel">
+                    <span>CONTRATO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleError.NPOLICY" />
+                </div>
+                <div class="col-sm-3" *ngIf="booleanInterfazReciboPrel || booleanInterfazMemoPrel">
+                    <span>TIPO SERVICIO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleError.PRODUCTO_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroDetalleError.NTYPE_DES" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailError == null || listToShowDetailError.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailError">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailError != null && listToShowDetailError.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailError" [pageSize]="itemsPerPageDetailError" [collectionSize]="totalItemsDetailError" [maxSize]="maxSizeDetailError" (pageChange)="pageChangedDetailError(currentPageDetailError)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES -->
+<ng-template #contentAsientosContables let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE INTERFAZ - ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>SERVICIO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.SBRANCH_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>ESTADO</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalleAsientosContables.NSTATUS" (change)="seleccionarEstadoDetalleAsientosContables($event.target.value)" *ngIf="this.loadingAsiento">
+                        <option value="null">TODOS</option>
+                        <option *ngFor="let x of estados" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loadingAsiento" id="loadingStyle" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" *ngIf="!this.loadingAsiento">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center" *ngIf="booleanInterfazSinAsi">SINIESTRO/MEMO</td>
+                                    <!--<td class="grid-title-item text-center">ASIENTO</td>-->
+                                    <td class="grid-title-item text-center">COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center">ASIENTOS</td>
+                                    <td class="grid-title-item text-center">ERROR</td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">Cargando...<img src="./assets/icons/loadingtc.gif" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive" *ngIf="this.loadingAsiento">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center" style="width: 15%;">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;" *ngIf="booleanInterfazSinAsi">SINIESTRO/MEMO</td>
+                                    <!--<td class="grid-title-item text-center" style="width: 15%;">ASIENTO</td>-->
+                                    <td class="grid-title-item text-center" style="width: 15%;">COMPROBANTE</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 20%;">ASIENTOS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ERROR</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">
+                                        <input type="checkbox" [(ngModel)]="masterSelectedAsientosContables" (change)="checkUncheckAllAsientosContables()" [disabled]="this.masterSelectedAsientosContablesBoolean" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContables == null || listToShowDetailAsientosContables.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContables">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NNUMASI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="booleanInterfazSinAsi">
+                                        {{ item.SCLAIM_MEMO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.AST_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MCT_CDESCRI }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ASIENTO ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalAsientosContablesAsiento(contentAsientosContablesAsiento, item);">
+                                        {{ item.DETALLE_ASIENTO }}
+                                    </td>
+                                    <td class="data-table-tr-td">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS == '4'" src="./assets/icons/reproceso.png" />
+                                        &nbsp;{{ item.ASIENTOS }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ERROR ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalAsientosContablesError(contentAsientosContablesError, item);">
+                                        {{ item.DETALLE_ERROR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="isAllSelectedAsientosContables()" [disabled]="item.NSTATUS == '0' ? true : null || item.NSTATUS == '1' ? true : null || item.NSTATUS == '2' ? true : null || item.NSTATUS == '4' ? true : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContables != null && listToShowDetailAsientosContables.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContables" [pageSize]="itemsPerPageDetailAsientosContables" [collectionSize]="totalItemsDetailAsientosContables" [maxSize]="maxSizeDetailAsientosContables" (pageChange)="pageChangedDetailAsientosContables(currentPageDetailAsientosContables)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="insertarNuevoReprocesoAsientosContables()">
+            Reprocesar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES ERRORES -->
+<ng-template #contentAsientosContablesError let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesError.NNUMASI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>COMPROBANTE</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesError.AST_CDESCRI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesError.MCT_CDESCRI" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContablesError == null || listToShowDetailAsientosContablesError.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContablesError">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContablesError != null && listToShowDetailAsientosContablesError.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContablesError" [pageSize]="itemsPerPageDetailAsientosContablesError" [collectionSize]="totalItemsDetailAsientosContablesError" [maxSize]="maxSizeDetailAsientosContablesError" (pageChange)="pageChangedDetailAsientosContablesError(currentPageDetailAsientosContablesError)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES ASIENTO -->
+<ng-template #contentAsientosContablesAsiento let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesAsiento.NNUMASI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>COMPROBANTE</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesAsiento.AST_CDESCRI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesAsiento.MCT_CDESCRI" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center">CENTRO COSTOS</td>
+                                    <td class="grid-title-item text-center">CUENTA CONTABLE</td>
+                                    <td class="grid-title-item text-center">MONTO SOLES</td>
+                                    <td class="grid-title-item text-center">MONTO DÓLARES</td>
+                                    <td class="grid-title-item text-center">TIPO</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContablesAsiento == null || listToShowDetailAsientosContablesAsiento.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="6">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContablesAsiento">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NNUMASI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCENCOS }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCODCTA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONSOL }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONDOL }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.VDEBCRE }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContablesAsiento != null && listToShowDetailAsientosContablesAsiento.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContablesAsiento" [pageSize]="itemsPerPageDetailAsientosContablesAsiento" [collectionSize]="totalItemsDetailAsientosContablesAsiento" [maxSize]="maxSizeDetailAsientosContablesAsiento" (pageChange)="pageChangedDetailAsientosContablesAsiento(currentPageDetailAsientosContablesAsiento)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS -->
+<ng-template #contentExactus let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE INTERFAZ - EXACTUS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>SERVICIO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.SBRANCH_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>ESTADO</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalleExactus.NSTATUS" (change)="seleccionarEstadoDetalleExactus($event.target.value)" *ngIf="this.loadingExactus">
+                        <option value="null">TODOS</option>
+                        <option *ngFor="let x of estadosE" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loadingExactus" id="loadingStyle" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" *ngIf="!this.loadingExactus">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center" *ngIf="booleanInterfazSinExa">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center">COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center">ASIENTO EXACTUS</td>
+                                    <td class="grid-title-item text-center">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center">EXACTUS</td>
+                                    <td class="grid-title-item text-center">ERROR</td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">Cargando...<img src="./assets/icons/loadingtc.gif" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive" *ngIf="this.loadingExactus">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center" style="width: 10%;">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;" *ngIf="booleanInterfazSinExa">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">COMPROBANTE</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ASIENTO EXACTUS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 20%;">EXACTUS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ERROR</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">
+                                        <input type="checkbox" [(ngModel)]="masterSelectedExactus" (change)="checkUncheckAllExactus()" [disabled]="this.masterSelectedExactusBoolean" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactus == null || listToShowDetailExactus.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactus">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NNUMASI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center" *ngIf="booleanInterfazSinExa">
+                                        {{ item.SCLAIM_MEMO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.AST_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MCT_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CASIEXA }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ASIENTO ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalExactusAsiento(contentExactusAsiento, item);">
+                                        {{ item.DETALLE_ASIENTO }}
+                                    </td>
+                                    <td class="data-table-tr-td">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS_SEND == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '4'" src="./assets/icons/reproceso.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '5'" src="./assets/icons/enviado.png" />
+                                        &nbsp;{{ item.EXACTUS }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ERROR ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalExactusError(contentExactusError, item);">
+                                        {{ item.DETALLE_ERROR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="isAllSelectedExactus()" [disabled]="item.NSTATUS_SEND == '0' ? true : null || item.NSTATUS_SEND == '1' ? true : null || item.NSTATUS_SEND == '2' ? true : null || item.NSTATUS_SEND == '4' ? true : null || item.NSTATUS_SEND == '5' ? true : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactus != null && listToShowDetailExactus.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactus" [pageSize]="itemsPerPageDetailExactus" [collectionSize]="totalItemsDetailExactus" [maxSize]="maxSizeDetailExactus" (pageChange)="pageChangedDetailExactus(currentPageDetailExactus)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="insertarNuevoReprocesoExactus()">
+            Reprocesar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS ERRORES -->
+<ng-template #contentExactusError let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusError.NNUMASI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>COMPROBANTE</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusError.AST_CDESCRI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusError.MCT_CDESCRI" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactusError == null || listToShowDetailExactusError.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactusError">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactusError != null && listToShowDetailExactusError.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactusError" [pageSize]="itemsPerPageDetailExactusError" [collectionSize]="totalItemsDetailExactusError" [maxSize]="maxSizeDetailExactusError" (pageChange)="pageChangedDetailExactusError(currentPageDetailExactusError)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS ASIENTO -->
+<ng-template #contentExactusAsiento let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusAsiento.NNUMASI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>COMRPOBANTE</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusAsiento.AST_CDESCRI" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusAsiento.MCT_CDESCRI" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° ASIENTO</td>
+                                    <td class="grid-title-item text-center">CENTRO COSTOS</td>
+                                    <td class="grid-title-item text-center">CUENTA CONTABLE</td>
+                                    <td class="grid-title-item text-center">MONTO SOLES</td>
+                                    <td class="grid-title-item text-center">MONTO DÓLARES</td>
+                                    <td class="grid-title-item text-center">TIPO</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactusAsiento == null || listToShowDetailExactusAsiento.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="6">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactusAsiento">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NNUMASI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCENCOS }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCODCTA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONSOL }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONDOL }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.VDEBCRE }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactusAsiento != null && listToShowDetailExactusAsiento.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactusAsiento" [pageSize]="itemsPerPageDetailExactusAsiento" [collectionSize]="totalItemsDetailExactusAsiento" [maxSize]="maxSizeDetailExactusAsiento" (pageChange)="pageChangedDetailExactusAsiento(currentPageDetailExactusAsiento)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ERRORES PLANILLA -->
+<ng-template #contentErroresPlanilla let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES - PLANILLA
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfacePlanilla.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>PLANILLA</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfacePlanilla.JOB" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfacePlanilla.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>RAMO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfacePlanilla.SBRANCH_DES" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailPlanilla == null || listToShowDetailPlanilla.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailPlanilla">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailPlanilla != null && listToShowDetailPlanilla.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailPlanilla" [pageSize]="itemsPerPageDetailPlanilla" [collectionSize]="totalItemsDetailPlanilla" [maxSize]="maxSizeDetailPlanilla" (pageChange)="pageChangedDetailPlanilla(currentPageDetailPlanilla)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="validarPlanilla()">
+            Validar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES ÓRDENES DE PAGO -->
+<ng-template #contentAsientosContablesOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE INTERFAZ - ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>RAMO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContables.SBRANCH_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>ESTADO</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalleAsientosContables.NSTATUS" (change)="seleccionarEstadoDetalleAsientosContablesOrdenesPago($event.target.value)" *ngIf="this.loadingAsiento">
+                        <option value="null">TODOS</option>
+                        <option *ngFor="let x of estados" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loadingAsiento" id="loadingStyle" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" *ngIf="!this.loadingAsiento">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center">ASIENTOS</td>
+                                    <td class="grid-title-item text-center">ERROR</td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">Cargando...<img src="./assets/icons/loadingtc.gif" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive" *ngIf="this.loadingAsiento">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center" style="width: 15%;">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 20%;">ASIENTOS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ERROR</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">
+                                        <input type="checkbox" [(ngModel)]="masterSelectedAsientosContables" (change)="checkUncheckAllAsientosContables()" [disabled]="this.masterSelectedAsientosContablesBoolean" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContables == null || listToShowDetailAsientosContables.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContables">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDCBTMOVBCO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCLAIM_MEMO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MCT_CDESCRI }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ASIENTO ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalAsientosContablesAsientoOrdenesPago(contentAsientosContablesAsientoOrdenesPago, item);">
+                                        {{ item.DETALLE_ASIENTO }}
+                                    </td>
+                                    <td class="data-table-tr-td">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS_ASI == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS_ASI == '4'" src="./assets/icons/reproceso.png" />
+                                        &nbsp;{{ item.ASIENTOS }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ERROR ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalAsientosContablesErrorOrdenesPago(contentAsientosContablesErrorOrdenesPago, item);">
+                                        {{ item.DETALLE_ERROR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="isAllSelectedAsientosContables()" [disabled]="item.NSTATUS_ASI == '0' ? true : null || item.NSTATUS_ASI == '1' ? true : null || item.NSTATUS_ASI == '2' ? true : null || item.NSTATUS_ASI == '4' ? true : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContables != null && listToShowDetailAsientosContables.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContables" [pageSize]="itemsPerPageDetailAsientosContables" [collectionSize]="totalItemsDetailAsientosContables" [maxSize]="maxSizeDetailAsientosContables" (pageChange)="pageChangedDetailAsientosContables(currentPageDetailAsientosContables)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="insertarNuevoReprocesoAsientosContables()">
+            Reprocesar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES ERRORES ÓRDENES DE PAGO -->
+<ng-template #contentAsientosContablesErrorOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesError.NIDCBTMOVBCO" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesError.MCT_CDESCRI" />
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContablesError == null || listToShowDetailAsientosContablesError.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContablesError">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContablesError != null && listToShowDetailAsientosContablesError.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContablesError" [pageSize]="itemsPerPageDetailAsientosContablesError" [collectionSize]="totalItemsDetailAsientosContablesError" [maxSize]="maxSizeDetailAsientosContablesError" (pageChange)="pageChangedDetailAsientosContablesError(currentPageDetailAsientosContablesError)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE ASIENTOS CONTABLES ASIENTO ÓRDENES DE PAGO -->
+<ng-template #contentAsientosContablesAsientoOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesAsiento.NIDCBTMOVBCO" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleAsientosContablesAsiento.MCT_CDESCRI" />
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center">CENTRO COSTOS</td>
+                                    <td class="grid-title-item text-center">CUENTA CONTABLE</td>
+                                    <td class="grid-title-item text-center">MONEDA</td>
+                                    <td class="grid-title-item text-center">MONTO</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailAsientosContablesAsiento == null || listToShowDetailAsientosContablesAsiento.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="5">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailAsientosContablesAsiento">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDCBTMOVBCO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCENCOS }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCODCTA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCURRENCY_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONTO }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailAsientosContablesAsiento != null && listToShowDetailAsientosContablesAsiento.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailAsientosContablesAsiento" [pageSize]="itemsPerPageDetailAsientosContablesAsiento" [collectionSize]="totalItemsDetailAsientosContablesAsiento" [maxSize]="maxSizeDetailAsientosContablesAsiento" (pageChange)="pageChangedDetailAsientosContablesAsiento(currentPageDetailAsientosContablesAsiento)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS ÓRDENES DE PAGO -->
+<ng-template #contentExactusOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE INTERFAZ - EXACTUS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROCESO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.NIDPROCESS" />
+                </div>
+                <div class="col-sm-3">
+                    <span>INTERFAZ</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.SCODGRU_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>RAMO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactus.SBRANCH_DES" />
+                </div>
+                <div class="col-sm-3">
+                    <span>ESTADO</span>
+                    <select class="form-control" [(ngModel)]="filtroInterfaceDetalleExactus.NSTATUS" (change)="seleccionarEstadoDetalleExactusOrdenesPago($event.target.value)" *ngIf="this.loadingExactus">
+                        <option value="null">TODOS</option>
+                        <option *ngFor="let x of estados" value="{{ x.NESTADO }}">{{ x.SESTADO_DES }}</option>
+                    </select>
+                    <input class="form-control" type="text" value="Cargando..." disabled *ngIf="!this.loadingExactus" id="loadingStyle" />
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" *ngIf="!this.loadingExactus">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center">ASIENTO EXACTUS</td>
+                                    <td class="grid-title-item text-center">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center">EXACTUS</td>
+                                    <td class="grid-title-item text-center">ERROR</td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">Cargando...<img src="./assets/icons/loadingtc.gif" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive" *ngIf="this.loadingExactus">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center" style="width: 10%;">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">SINIESTRO/MEMO</td>
+                                    <td class="grid-title-item text-center" style="width: 15%;">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ASIENTO EXACTUS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">DETALLE ASIENTO</td>
+                                    <td class="grid-title-item text-center" style="width: 20%;">EXACTUS</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">ERROR</td>
+                                    <td class="grid-title-item text-center" style="width: 10%;">
+                                        <input type="checkbox" [(ngModel)]="masterSelectedExactus" (change)="checkUncheckAllExactus()" [disabled]="this.masterSelectedExactusBoolean" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactus == null || listToShowDetailExactus.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="8">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactus">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDCBTMOVBCO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCLAIM_MEMO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MCT_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CNUMEXA }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ASIENTO ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalExactusAsientoOrdenesPago(contentExactusAsientoOrdenesPago, item);">
+                                        {{ item.DETALLE_ASIENTO }}
+                                    </td>
+                                    <td class="data-table-tr-td">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img *ngIf="item.NSTATUS_SEND == '0'" src="./assets/icons/pend.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '1'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '2'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '3'" src="./assets/icons/process-error.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '4'" src="./assets/icons/reproceso.png" />
+                                        <img *ngIf="item.NSTATUS_SEND == '5'" src="./assets/icons/enviado.png" />
+                                        &nbsp;{{ item.ASIENTOS }}
+                                    </td>
+                                    <td [ngClass]="item.DETALLE_ERROR ? 'data-table-tr-td text-center onHover' : 'text-center'" (click)="mostrarModalExactusErrorOrdenesPago(contentExactusErrorOrdenesPago, item);">
+                                        {{ item.DETALLE_ERROR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="isAllSelectedExactusOP()" [disabled]="item.NSTATUS_SEND == '0' ? true : null || item.NSTATUS_SEND == '1' ? true : null || item.NSTATUS_SEND == '2' ? true : null || item.NSTATUS_SEND == '4' ? true : null || item.NSTATUS_SEND == '5' ? true : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactus != null && listToShowDetailExactus.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactus" [pageSize]="itemsPerPageDetailExactus" [collectionSize]="totalItemsDetailExactus" [maxSize]="maxSizeDetailExactus" (pageChange)="pageChangedDetailExactus(currentPageDetailExactus)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="insertarNuevoReprocesoExactus()">
+            Reprocesar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS ERRORES ÓRDENES DE PAGO -->
+<ng-template #contentExactusErrorOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ERRORES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusError.NIDCBTMOVBCO" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusError.MCT_CDESCRI" />
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO ERROR</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                    <td class="grid-title-item text-center">VALOR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactusError == null || listToShowDetailExactusError.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="3">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactusError">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NERRORNUM }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SMESSAGED }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SVALOR }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactusError != null && listToShowDetailExactusError.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactusError" [pageSize]="itemsPerPageDetailExactusError" [collectionSize]="totalItemsDetailExactusError" [maxSize]="maxSizeDetailExactusError" (pageChange)="pageChangedDetailExactusError(currentPageDetailExactusError)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- DETALLE EXACTUS ASIENTO ÓRDENES DE PAGO -->
+<ng-template #contentExactusAsientoOrdenesPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE ASIENTOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>N° ASIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusAsiento.NIDCBTMOVBCO" />
+                </div>
+                <div class="col-sm-4">
+                    <span>MOVIMIENTO</span>
+                    <input class="form-control" type="text" disabled [(ngModel)]="filtroInterfaceDetalleExactusAsiento.MCT_CDESCRI" />
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">N° CORRELATIVO</td>
+                                    <td class="grid-title-item text-center">CENTRO COSTOS</td>
+                                    <td class="grid-title-item text-center">CUENTA CONTABLE</td>
+                                    <td class="grid-title-item text-center">MONEDA</td>
+                                    <td class="grid-title-item text-center">MONTO</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShowDetailExactusAsiento == null || listToShowDetailExactusAsiento.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="5">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDetailExactusAsiento">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDCBTMOVBCO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCENCOS }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CCODCTA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCURRENCY_DES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NMONTO }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShowDetailExactusAsiento != null && listToShowDetailExactusAsiento.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDetailExactusAsiento" [pageSize]="itemsPerPageDetailExactusAsiento" [collectionSize]="totalItemsDetailExactusAsiento" [maxSize]="maxSizeDetailExactusAsiento" (pageChange)="pageChangedDetailExactusAsiento(currentPageDetailExactusAsiento)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+    

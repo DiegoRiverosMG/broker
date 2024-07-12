@@ -1,0 +1,481 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Crear Contratante</span>
+          </div>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm">
+                <h5>Datos del Contratante</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <span>TIPO DOCUMENTO</span>
+                <select class="minimal"
+                        [(ngModel)]="inputsContracting.P_NIDDOC_TYPE"
+                        disabled>
+                  <option *ngFor="let documenttype of documentTypeList"
+                          value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <span>NRO DE DOCUMENTO (*)</span>
+                <input type="text"
+                       placeholder="Nro Documento"
+                       [(ngModel)]="inputsContracting.P_SIDDOC"
+                       disabled />
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="blockDoc"
+                   class="col-sm-4">
+                <span>NOMBRES (*)</span>
+                <input type="text"
+                       placeholder="Nombres"
+                       [ngClass]="{'error-validate': inputsValidate[0]}"
+                       (click)="clearValidate(0)"
+                       (focus)="clearValidate(0)"
+                       [(ngModel)]="inputsContracting.P_SFIRSTNAME"
+                       (keypress)="textValidate($event, 5)" />
+              </div>
+              <div *ngIf="!blockDoc"
+                   class="col-sm-8">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text"
+                       placeholder="Razón Social"
+                       [ngClass]="{'error-validate': inputsValidate[1]}"
+                       (click)="clearValidate(1)"
+                       (focus)="clearValidate(1)"
+                       [(ngModel)]="inputsContracting.P_SLEGALNAME"
+                       (keypress)="textValidate($event, 4)" />
+              </div>
+              <div *ngIf="blockDoc"
+                   class="col-sm-4">
+                <span>APELLIDO PATERNO (*)</span>
+                <input type="text"
+                       placeholder="Apellido Paterno"
+                       [ngClass]="{'error-validate': inputsValidate[2]}"
+                       (click)="clearValidate(2)"
+                       (focus)="clearValidate(2)"
+                       [(ngModel)]="inputsContracting.P_SLASTNAME"
+                       (keypress)="textValidate($event, 5)" />
+              </div>
+              <div *ngIf="blockDoc"
+                   class="col-sm-4">
+                <span>APELLIDO MATERNO (*)</span>
+                <input type="text"
+                       placeholder="Apellido Materno"
+                       [ngClass]="{'error-validate': inputsValidate[3]}"
+                       (click)="clearValidate(3)"
+                       (focus)="clearValidate(3)"
+                       [(ngModel)]="inputsContracting.P_SLASTNAME2"
+                       (keypress)="textValidate($event, 5)" />
+              </div>
+              <div class="col-sm-4">
+                <span>NACIONALIDAD (*)</span>
+                <select [(ngModel)]="inputsContracting.P_NNATIONALITY"
+                        class="minimal">
+                  <option *ngFor="let nacionality of nacionalityList"
+                          value="{{nacionality.NNATIONALITY}}">
+                    {{nacionality.SDESCRIPT}}</option>
+                </select>
+              </div>
+              <div *ngIf="blockDoc"
+                   class="col-sm-4">
+                <span>GÉNERO (*)</span>
+                <select [(ngModel)]="inputsContracting.P_SSEXCLIEN"
+                        class="minimal">
+                  <option *ngFor="let gender of genderList"
+                          value="{{gender.SSEXCLIEN}}">{{gender.SDESCRIPT}}</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <span>{{lblBirthday}}</span>
+                <input type="text"
+                       placeholder="dd/MM/yyyy"
+                       #dp="bsDatepicker"
+                       [bsConfig]="bsConfig"
+                       bsDatepicker
+                       [(bsValue)]="bsValueFNac"
+                       value="{{ bsValueFNac | date:'dd/MM/yyyy' }}"
+                       [ngClass]="{'error-validate': inputsValidate[4]}"
+                       (click)="clearValidate(4)"
+                       (focus)="clearValidate(4)"
+                       readonly />
+              </div>
+              <div class="col-sm-4">
+                <span>TIPO DE CUENTA (*)</span>
+                <select [(ngModel)]="inputsContracting.P_SISCLIENT_GBD"
+                        class="minimal">
+                  <option value="0"
+                          disabled>Seleccionar</option>
+                  <option value="2">PRIVADO</option>
+                  <option value="1">GOBIERNO</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockDoc"
+                   class="col-sm-4">
+                <span>ESTADO CIVIL (*)</span>
+                <select [(ngModel)]="inputsContracting.P_NCIVILSTA"
+                        class="minimal">
+                  <option *ngFor="let civilStatus of civilStatusList"
+                          value="{{civilStatus.NCIVILSTA}}">
+                    {{civilStatus.SDESCRIPT}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-9">
+                <h5>Datos de Teléfono</h5>
+              </div>
+              <div class="col-sm-3">
+                <button class="full-color pull-right"
+                        (click)="openModal('add-telephone')">
+                  <img src="assets/icons/add.png" />
+                  <span>Agregar Teléfono</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 mt-15">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+                        <td scope="col">N°</td>
+                        <td scope="col"
+                            class="text-center">Tipo</td>
+                        <td scope="col"
+                            class="text-center">Número/Anexo</td>
+                        <td scope="col"
+                            class="text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let telefono of inputsContracting.EListPhoneClient; let row = index">
+                      <tr class="{{telefono.P_CLASS}}">
+                        <td scope="row">{{row +  1}}</td>
+                        <td class="text-center">{{telefono.P_DESTIPOTLF}}</td>
+                        <td class="text-center">{{telefono.P_SPHONE}} <label
+                                 *ngIf="telefono.P_NEXTENS1 != '' && telefono.P_NEXTENS1 != null">/</label>
+                          {{telefono.P_NEXTENS1}}</td>
+                        <td class="text-center">
+                          <img *ngIf="telefono.P_CLASS == ''"
+                               src="assets/icons/editar.png"
+                               (click)="editPhone(telefono.P_NROW)"
+                               title="Editar"
+                               alt="Editar" /> &nbsp;
+                          <img *ngIf="telefono.P_CLASS == ''"
+                               src="assets/icons/anular.png"
+                               (click)="deletePhone(row)"
+                               title="Eliminar"
+                               alt="Eliminar" />
+                          <input *ngIf="telefono.P_CLASS != ''"
+                                 (click)="revertPhone(telefono.P_NROW)"
+                                 type="button"
+                                 value="Revertir"
+                                 class="btn-revertir" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="inputsContracting.EListPhoneClient.length == 0">
+                      <tr>
+                        <td colspan="4"
+                            class="text-center">No tiene Teléfonos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-9">
+                <h5>Datos de Correo</h5>
+              </div>
+              <div class="col-sm-3">
+                <button class="full-color pull-right"
+                        (click)="openModal('add-email')">
+                  <img src="assets/icons/add.png" />
+                  <span>Agregar Correo</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 mt-15">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+                        <td scope="col">N°</td>
+                        <td scope="col"
+                            class="text-center">Tipo</td>
+                        <td scope="col"
+                            class="text-center">Correo Electrónico</td>
+                        <td scope="col"
+                            class="text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let correo of inputsContracting.EListEmailClient; let row = index">
+                      <tr class="{{correo.P_CLASS}}">
+                        <td scope="row">{{row +  1}}</td>
+                        <td class="text-center">{{correo.P_DESTICORREO}}</td>
+                        <td class="text-center">{{correo.P_SE_MAIL}}</td>
+                        <td class="text-center">
+                          <img *ngIf="correo.P_CLASS == ''"
+                               src="assets/icons/editar.png"
+                               (click)="editEmail(correo.P_NROW)"
+                               title="Editar"
+                               alt="Editar" /> &nbsp;
+                          <img *ngIf="correo.P_CLASS == ''"
+                               src="assets/icons/anular.png"
+                               (click)="deleteEmail(row)"
+                               title="Eliminar"
+                               alt="Eliminar" />
+                          <input *ngIf="correo.P_CLASS != ''"
+                                 (click)="revertEmail(correo.P_NROW)"
+                                 type="button"
+                                 value="Revertir"
+                                 class="btn-revertir" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="inputsContracting.EListEmailClient.length == 0">
+                      <tr>
+                        <td colspan="4"
+                            class="text-center">No tiene Correos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-9">
+                <h5>Datos de Dirección (*)</h5>
+              </div>
+              <div class="col-sm-3">
+                <button class="full-color pull-right"
+                        (click)="openModal('add-address')">
+                  <img src="assets/icons/add.png" />
+                  <span>Agregar Dirección</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 mt-15">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+                        <td scope="col">N°</td>
+                        <td scope="col"
+                            class="text-center">Tipo</td>
+                        <td scope="col"
+                            class="text-center">Dirección</td>
+                        <td scope="col"
+                            class="text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let direccion of inputsContracting.EListAddresClient; let row = index">
+                      <tr class="{{direccion.P_CLASS}}">
+                        <td scope="row">{{row +  1}}</td>
+                        <td class="text-center">{{direccion.P_DESTIDIRE}}</td>
+                        <td class="text-center">{{direccion.P_SDESDIREBUSQ}}</td>
+                        <td class="text-center">
+                          <img *ngIf="direccion.P_CLASS == ''"
+                               src="assets/icons/editar.png"
+                               (click)="editAddress(direccion.P_NROW)"
+                               title="Editar"
+                               alt="Editar" /> &nbsp;
+                          <img *ngIf="direccion.P_CLASS == ''"
+                               src="assets/icons/anular.png"
+                               (click)="deleteAddress(row)"
+                               title="Eliminar"
+                               alt="Eliminar" />
+                          <input *ngIf="direccion.P_CLASS != ''"
+                                 (click)="revertAddress(direccion.P_NROW)"
+                                 type="button"
+                                 value="Revertir"
+                                 class="btn-revertir" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="inputsContracting.EListAddresClient.length == 0">
+                      <tr>
+                        <td colspan="4"
+                            class="text-center">No tiene Direcciones</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-9">
+                <h5>Datos de Contacto del Cliente</h5>
+              </div>
+              <div class="col-sm-3">
+                <button class="full-color pull-right"
+                        (click)="openModal('add-contact')">
+                  <img src="assets/icons/add.png" />
+                  <span>Agregar Contacto</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 mt-15">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+                        <td scope="col">N°</td>
+                        <td scope="col"
+                            class="text-center">Parentesco</td>
+                        <td scope="col"
+                            class="text-center">Nombres y Apellidos</td>
+                        <td scope="col"
+                            class="text-center">Teléfono</td>
+                        <td scope="col"
+                            class="text-center">Correo Electrónico</td>
+                        <td scope="col"
+                            class="text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let contacto of inputsContracting.EListContactClient; let row = index">
+                      <tr class="{{contacto.P_CLASS}}">
+                        <td scope="row">{{row +  1}}</td>
+                        <td class="text-center">{{contacto.P_DESTICONTACTO}}</td>
+                        <td class="text-center">{{contacto.P_SNOMBRES}} {{contacto.P_SAPEPAT}} {{contacto.P_SAPEMAT}}
+                        </td>
+                        <td class="text-center">{{contacto.P_SPHONE}}</td>
+                        <td class="text-center">{{contacto.P_SE_MAIL}}</td>
+                        <td class="text-center">
+                          <img *ngIf="contacto.P_CLASS == ''"
+                               src="assets/icons/editar.png"
+                               (click)="editContact(contacto.P_NROW)"
+                               title="Editar"
+                               alt="Editar" /> &nbsp;
+                          <img *ngIf="contacto.P_CLASS == ''"
+                               src="assets/icons/anular.png"
+                               (click)="deleteContact(row)"
+                               title="Eliminar"
+                               alt="Eliminar" />
+                          <input *ngIf="contacto.P_CLASS != ''"
+                                 (click)="revertContact(contacto.P_NROW)"
+                                 type="button"
+                                 value="Revertir"
+                                 class="btn-revertir" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="inputsContracting.EListContactClient.length == 0">
+                      <tr>
+                        <td colspan="6"
+                            class="text-center">No tiene Contactos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card">
+          <div class="card-body" [ngClass]="{'error-validate': inputsValidate[5]}" (click)="clearValidate(5)">
+            <div class="row">
+              <div class="col-sm-9">
+                <h5>Datos de Sedes</h5>
+              </div>
+              <div class="col-sm-3">
+                <button class="full-color pull-right" (click)="openModal('add-sede')" (click)="clearValidate(5)">
+                  <img src="assets/icons/add.png" />
+                  <span>Agregar Sede</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 mt-15">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+                        <td scope="col">N°</td>
+                        <td scope="col" class="text-center">Descripción</td>
+                        <td scope="col" class="text-center">Dirección</td>
+                        <td scope="col" class="text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let sede of listaSedes; let row = index">
+                      <tr class="{{sede.P_CLASS}}">
+                        <td scope="row">{{sede.P_NROW}}</td>
+                        <td class="text-center">{{sede.Description}}</td>
+                        <td class="text-center">{{sede.Address}}</td>
+                        <td class="text-center">
+                          <img *ngIf="sede.P_CLASS == ''" src="assets/icons/editar.png"
+                            (click)="editarSede(sede.P_NROW)" title="Editar" alt="Editar" /> &nbsp;
+                          <input *ngIf="sede.P_CLASS != ''" (click)="revertirSede(sede.P_NROW)" type="button"
+                            value="Revertir" class="btn-revertir" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="listaSedes.length == 0">
+                      <tr>
+                        <td colspan="4" class="text-center">No tiene Sedes</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <br>
+        <div class="row pull-right">
+          <button (click)="back()">
+            <span>Volver</span>
+          </button>
+          <button class="full-color"
+                  (click)="eventSave($event)">
+            <span>Guardar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="loadingScreen"
+     class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px"
+       class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

@@ -1,0 +1,164 @@
+<div class="panel-info-contratante">
+    <panel-widget title="Datos del contratante">
+        <div class="row"
+             *ngIf="!detail">
+            <div class="col-sm-12">
+                <form-input-radio label="BÚSQUEDA"
+                                  [items]="CONSTANTS.TIPOS_BUSQUEDA"
+                                  [(value)]="contratante.codTipoBusqueda"
+                                  (onSelect)="onClear(1); clearInfoContratante()"></form-input-radio>
+            </div>
+        </div>
+
+        <div [hidden]="!(detail || contratante.codTipoBusqueda == CONSTANTS.TIPO_BUSQUEDA.DOCUMENTO)"
+             class="row">
+            <div class="col-sm-3">
+                <form-input-select label="Tipo de documento"
+                                   [service]="clientInformationService"
+                                   method="getDocumentTypeList"
+                                   [params]="codProducto"
+                                   fieldCodigo="Id"
+                                   fieldValor="Name"
+                                   [firstSelect]="true"
+                                   [(value)]="contratante.tipoDocumento"
+                                   [required]="true"
+                                   [updateModelOnChange]="true"
+                                   (onSelect)="cambiarContratante()"
+                                   [detail]="detail"></form-input-select>
+            </div>
+            <div class="col-sm-3">
+                <form-input-text label="Nro de documento"
+                                 [(value)]="contratante.numDocumento"
+                                 [patternPrevent]="CONSTANTS.REGEX[contratante.tipoDocumento?.Id]"
+                                 (onKeyenter)="clickBuscar()"
+                                 (onKeypressNoEnter)="clearInfoContratante()"
+                                 [(clear)]="clear.contratante"
+                                 [required]="true"
+                                 [disabled]="detail"></form-input-text>
+            </div>
+            <div class="col-sm-3"
+                 *ngIf="!detail">
+                <form-button label="Buscar"
+                             icon="search"
+                             [inlineInput]="true"
+                             (click)="clickBuscar()"></form-button>
+            </div>
+            <div class="col-sm-3"
+                 *ngIf="!cotizacion.esEstudiantil && contratante.creditHistory!=null && !storageService.esBroker">
+                <form-input-text label="Tipo riesgo"
+                                 [value]="contratante.creditHistory?.sdescript"
+                                 classInput="{{contratante.creditHistory.nflag == 0 ? 'text-danger' : 'text-success'}}"
+                                 [disabled]="true"></form-input-text>
+            </div>
+        </div>
+        <div *ngIf="contratante.codTipoBusqueda == CONSTANTS.TIPO_BUSQUEDA.NOMBRE"
+             class="row">
+            <div class="col-sm-3">
+                <form-input-select label="Tipo de persona"
+                                   [items]="CONSTANTS.TIPOS_PERSONA"
+                                   [(value)]="contratante.tipoPersona"
+                                   [(clear)]="clear.contratante"
+                                   (onSelect)="clearInfoContratante()"
+                                   [disabled]="detail"
+                                   [required]="true"></form-input-select>
+            </div>
+            <div class="col-sm-3"
+                 *ngIf="!detail">
+                <form-button label="Buscar"
+                             icon="search"
+                             [inlineInput]="true"
+                             (click)="clickBuscar()"></form-button>
+            </div>
+        </div>
+
+        <div *ngIf="!detail">
+            <div class="row"
+                 [hidden]="!(contratante.tipoPersona?.codigo != CONSTANTS.TIPO_PERSONA.JURIDICA && !(contratante.numDocumento || '').startsWith('20'))">
+                <div class="col-sm-3">
+                    <form-input-text label="Nombres"
+                                     [(value)]="contratante.nombres"
+                                     [(clear)]="clear.contratanteInfo"
+                                     (onKeyenter)="clickBuscar()"
+                                     [required]="true"
+                                     [disabled]="!!contratante.id || disabled.nombre || detail"></form-input-text>
+                </div>
+                <div class="col-sm-3">
+                    <form-input-text label="Apellido paterno"
+                                     [(value)]="contratante.apellidoPaterno"
+                                     [(clear)]="clear.contratanteInfo"
+                                     (onKeyenter)="clickBuscar()"
+                                     [required]="true"
+                                     [disabled]="!!contratante.id || disabled.apePaterno || detail"></form-input-text>
+                </div>
+                <div class="col-sm-3">
+                    <form-input-text label="Apellido materno"
+                                     [(value)]="contratante.apellidoMaterno"
+                                     [(clear)]="clear.contratanteInfo"
+                                     (onKeyenter)="clickBuscar()"
+                                     [required]="false"
+                                     [disabled]="!!contratante.id || disabled.apeMaterno || detail"></form-input-text>
+                </div>
+            </div>
+
+            <div class="row"
+                 [hidden]="!(contratante.tipoPersona?.codigo == CONSTANTS.TIPO_PERSONA.JURIDICA || (contratante.numDocumento || '').startsWith('20'))">
+                <div class="col-sm-9">
+                    <form-input-text label="Razón social"
+                                     [(value)]="contratante.razonSocial"
+                                     [(clear)]="clear.contratanteInfo"
+                                     [required]="true"
+                                     [disabled]="!!contratante.id || disabled.razonSocial || detail"></form-input-text>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="detail"
+             class="row">
+            <div class="col-sm-9">
+                <form-input-text label="Nombres y apellidos / Razón social"
+                                 [value]="contratante.NOMBRE_RAZON"
+                                 [disabled]="true"></form-input-text>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <form-input-text label="Dirección"
+                                 [(value)]="contratante.direccion"
+                                 [(clear)]="clear.contratanteInfo"
+                                 [required]="false"
+                                 [disabled]="true"></form-input-text>
+            </div>
+            <div class="col-sm-3">
+                <form-input-text label="Correo electronico"
+                                 [(value)]="contratante.email"
+                                 [(clear)]="clear.contratanteInfo"
+                                 [required]="false"
+                                 [disabled]="!contratante.id || disabled.email"></form-input-text>
+            </div>
+            <div class="col-sm-3"
+                 *ngIf="flagJuridico && contratante.id">
+                <form-input-text label="Tipo de cuenta"
+                                 [value]="contratante.id ? CONSTANTS.TIPO_CUENTA[contratante.codTipoCuenta || CONSTANTS.TIPO_CUENTA.PRIVADO] : ''"
+                                 [disabled]="true"></form-input-text>
+            </div>
+        </div>
+
+        <div class="row"
+             *ngIf="contratante.id">
+            <div class="col-sm-6">
+                <form-input-text label="Ubigeo"
+                                 [value]="contratante.ubigeo"
+                                 [(clear)]="clear.contratanteInfo"
+                                 [disabled]="true"></form-input-text>
+            </div>
+            <!-- <div class="col-sm-3"> -->
+            <!-- <form-input-text -->
+            <!-- label="Tipo de intermediación" -->
+            <!-- [value]="storageService.esBroker ? 'BROKER' : 'DIRECTO'"  -->
+            <!-- [disabled]="true" -->
+            <!-- ></form-input-text> -->
+            <!-- </div> -->
+        </div>
+
+    </panel-widget>
+</div>

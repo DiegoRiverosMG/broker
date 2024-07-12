@@ -1,0 +1,277 @@
+.nav-user {
+  margin: 0;
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.nav-user .user-log {
+  padding: 25px 25px;
+  border-radius: 50%;
+  background: rgb(128, 110, 160);
+  vertical-align: middle;
+  font-family: sans-serif;
+  font-size: 18px;
+  color: #fff;
+  font-weight: bold;
+  width: 74px;
+  height: 74px;
+}
+
+.nav-user .user-info {
+  display: block;
+  height: 55px;
+  padding: 3px 8px;
+  margin: 10px 5px;
+}
+
+.nav-user .user-info span {
+  display: block;
+  color: #553d81;
+  font-size: 13px;
+  line-height: 15px;
+  font-family: "Bliss Pro";
+}
+
+.nav-user .user-info .user-name {
+  font-size: 17px;
+  margin-top: 5px;
+  margin-left: -2px;
+  text-transform: capitalize;
+}
+
+.nav-user .user-notification {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 50%;
+  height: 30px;
+  margin: 17px 0px 17px 15px;
+  background: rgb(212, 208, 224);
+}
+
+.nav-user .user-notification img {
+  display: block;
+  padding: 4px 0;
+}
+
+.nav-user .user-notification span {
+  position: absolute;
+  font-size: 10px;
+  display: block;
+  padding: 1px 4px;
+  border-radius: 50%;
+  background: rgb(236, 108, 6);
+  color: #fff;
+  margin-top: -35px;
+  margin-left: 9px;
+  border: 1px solid #fff;
+}
+
+.menu-ul {
+  padding: 2px 0;
+  list-style: none;
+  width: 100%;
+}
+
+.menu-ul li {
+}
+
+.menu-ul li a {
+  display: block;
+  padding-left: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.menu-ul li a .li-space {
+  width: 12px;
+  display: table-cell;
+}
+
+.li-line {
+  border-bottom: 1px solid rgb(199, 197, 210);
+  margin-left: 12px;
+}
+
+.menu-ul li a .li-img {
+  display: block;
+  transition: border 0.8s;
+  height: 48px;
+  width: 48px;
+  margin-top: auto;
+  margin-bottom: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: table-cell;
+}
+
+.menu-ul li a .li-span {
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  color: rgb(123, 112, 149);
+  display: table-cell;
+}
+
+.menu-ul li a .li-span div {
+  padding: 15px 0px 0px 14px;
+}
+
+.menu-ul li a:hover {
+  background: rgb(128, 110, 160);
+  cursor: pointer;
+}
+
+.menu-ul li a:hover > .li-span {
+  color: #fff;
+}
+
+.close-window {
+}
+
+.close-window a {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.close-window span {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+}
+
+.close-window span:hover {
+  cursor: pointer;
+}
+
+li .glyphicon {
+  margin-right: 10px;
+}
+
+.main-nav {
+  display: flex;
+  color: #333;
+  float: left;
+  border-right: solid;
+  border-right-width: 1px;
+  width: 100%;
+  padding-left: 20px;
+}
+
+#sidebarContainer {
+  margin-right: 0px;
+  padding-right: 0px;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.icon-home .li-img {
+  background-image: url(assets/main/mipanel.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-productos .li-img {
+  background-image: url(assets/main/productos.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-productos:hover .li-img,
+.icon-productos.active .li-img {
+  background-image: url(assets/main/productos_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-home:hover .li-img,
+.icon-home.active .li-img {
+  background-image: url(assets/main/mipanel_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-historial .li-img {
+  background-image: url(assets/main/historialventas.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-historial:hover .li-img,
+.icon-historial.active .li-img {
+  background-image: url(assets/main/historialventas_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-planillas .li-img {
+  background-image: url(assets/main/misplanillas.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-planillas:hover .li-img,
+.icon-planillas.active .li-img {
+  background-image: url(assets/main/misplanillas_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-rv-cliente-final .li-img,
+.icon-rv-canal-ventas .li-img,
+.icon-rv-protecta .li-img,
+.icon-rc-protecta .li-img,
+.icon-rc-canal-ventas .li-img {
+  background-image: url(assets/main/misproductos.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-rv-cliente-final:hover .li-img,
+.icon-rv-canal-ventas:hover .li-img,
+.icon-rv-protecta:hover .li-img,
+.icon-rc-protecta:hover .li-img,
+.icon-rc-canal-ventas:hover .li-img,
+.icon-rv-cliente-final.active .li-img,
+.icon-rv-canal-ventas.active .li-img,
+.icon-rv-protecta.active .li-img,
+.icon-rc-protecta.active .li-img,
+.icon-rc-canal-ventas.active .li-img {
+  background-image: url(assets/main/misproductos_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-pre-planillas .li-img {
+  background-image: url(assets/main/coin.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.icon-pre-planillas:hover .li-img,
+.icon-pre-planillas.active .li-img {
+  background-image: url(assets/main/coin_hover.svg) !important;
+  background-repeat: no-repeat !important;
+}
+
+.active {
+  background: rgb(128, 110, 160);
+  color: #fff !important;
+}
+
+.active a,
+.active a .li-span {
+  color: #fff !important;
+}
+
+.user-wrap {
+  margin-left: 24px;
+  display: inline-flex;
+}
+
+.log-circle {
+  text-transform: uppercase;
+}
+
+.link_ruta {
+  text-decoration: none;
+}
+
+.menuprofile {
+  color: #ed6e00 !important;
+  font-weight: bold;
+}
+
+.menu-ul .menuprofile li a:hover > .li-span {
+  color: #fff;
+}

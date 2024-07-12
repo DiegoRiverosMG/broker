@@ -1,0 +1,10 @@
+<div class="select-container form-input-text-re" (click)="toggleInput()">
+    <span>{{label}} <ng-template [ngIf]='detail === true && required === true'>(*)</ng-template></span>
+    <input type="text" [placeholder]="placeholderValue">
+    <div *ngIf="mostrarInput" class="options">
+        <input  type="text" [(ngModel)]="filtro" (input)="filtrarOpciones()" (ngModelChange)="valueChange.emit($event); varifyConditions()" (click)="stopPropagation($event)">
+        <ul>
+        <li *ngFor="let item of opcionesFiltradas" (click)="seleccionarItem(item.valor)">{{isValue ? item : item?.text}}</li>
+        </ul>
+    </div>
+</div>

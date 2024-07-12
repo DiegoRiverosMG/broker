@@ -1,0 +1,1618 @@
+<div class="row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="header-content mb-3 mt-3">
+      <div class="containt-item">
+        <div class="headiter-em">
+          <span  class="atras-re" (click)="atras()"
+            ><img
+              src="assets/rentas/arrow_back_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            Atras</span
+          >
+        </div>
+        <div class="container-buttons">
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'ASIGNAR', ticket)"
+            [class.disabled]="items.ASIGNAR !== 'TRUE'"
+            [style.background]="
+              items.ASIGNAR == 'TRUE' && listActions.ASIGNAR == 'TRUE'
+                ? '#27246D'
+                : '#B7B7B7'
+            "
+            class="button-re button-violet"
+          >
+            <img src="assets/rentas/visibility_white_.svg" alt="autorenew" />
+            <span>Asignar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'APROBAR', ticket)"
+            [class.disabled]="items.APROBAR !== 'TRUE'"
+
+            [style.background]="
+              items.APROBAR == 'TRUE' && listActions.APROBAR == 'TRUE'
+                ? '#79CB33'
+                : '#B7B7B7'
+            "
+            class="button-re"
+          >
+            <img
+              src="assets/rentas/check_circle_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="more_vert"
+            />
+            <span>Aprobar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'RECHAZAR', ticket)"
+            [class.disabled]="items.RECHAZAR !== 'TRUE'"
+
+            [style.background]="
+              items.RECHAZAR == 'TRUE' && listActions.RECHAZAR == 'TRUE'
+                ? '#DB4343'
+                : '#B7B7B7'
+            "
+            class="button-re button-red"
+          >
+            <img
+              src="assets/rentas/cancel_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            <span>Rechazar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'CONFIRMAR', ticket)"
+            [class.disabled]="items.CONFIRMAR !== 'TRUE'"
+
+            [style.background]="
+              items.CONFIRMAR == 'TRUE' && listActions.CONFIRMAR == 'TRUE'
+                ? '#79CB33'
+                : '#B7B7B7'
+            "
+            class="button-re button-green"
+          >
+            <img
+              src="assets/rentas/recommend_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            <span>Confirmar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'CANCELAR', ticket)"
+            [class.disabled]="items.CANCELAR !== 'TRUE'"
+
+            [style.background]="
+              items.CANCELAR == 'TRUE' && listActions.CANCELAR == 'TRUE'
+                ? '#DB4343'
+                : '#B7B7B7'
+            "
+            class="button-re button-red"
+          >
+            <img
+              src="assets/rentas/block_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            <span>Cancelar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'OBSERVAR', ticket)"
+            [class.disabled]="items.OBSERVAR !== 'TRUE'"
+
+            [style.background]="
+              items.OBSERVAR == 'TRUE' && listActions.OBSERVAR == 'TRUE'
+                ? '#27246D'
+                : '#B7B7B7'
+            "
+            class="button-re button-violet"
+          >
+            <img src="assets/rentas/visibility_white_.svg" alt="autorenew" />
+            <span>Observar</span>
+          </button>
+          <button
+            (click)="calcular()"
+            [class.disabled]="items.CALCULAR !== 'TRUE'"
+
+            [style.background]="
+              items.CALCULAR == 'TRUE' && listActions.CALCULAR == 'TRUE'
+                ? '#27246D'
+                : '#B7B7B7'
+            "
+            class="button-re button-violet"
+          >
+            <img
+              src="assets/rentas/autorenew_FILL1_wght400_GRAD0_opsz24.svg"
+              alt="autorenew"
+            />
+            <span>Calcular</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'DERIVAR', ticket)"
+            [class.disabled]="items.DERIVAR !== 'TRUE'"
+
+            [style.background]="
+              items.DERIVAR == 'TRUE' && listActions.DERIVAR == 'TRUE'
+                ? '#27246D'
+                : '#B7B7B7'
+            "
+            class="button-re button-red"
+          >
+            <img
+              src="assets/rentas/mode_comment_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            <span>Derivar</span>
+          </button>
+          <button
+            (click)="updStatusTicket(ticket.SCODE_JIRA, 'CERRAR', ticket)"
+            [class.disabled]="items.CERRAR !== 'TRUE'"
+
+            [style.background]="
+              items.CERRAR == 'TRUE' && listActions.CERRAR == 'TRUE'
+                ? '#DB4343'
+                : '#B7B7B7'
+            "
+            class="button-re button-red"
+          >
+            <img
+              src="assets/rentas/cancel_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+              alt="autorenew"
+            />
+            <span>Cerrar</span>
+          </button>
+          <div class="button-re label-button">
+            <img src="assets/rentas/today.svg" alt="today" />
+            <span>{{ today }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pestanas">
+      <ul>
+        <li
+          class="tab-title"
+          [class.active]="pestaActiva === 1"
+          (click)="cambiarPestana(1)"
+        >
+          Detalle del ticket
+        </li>
+        <li
+        
+          class="tab-title"
+          [class.active]="pestaActiva === 2"
+          (click)="cambiarPestana(2)"
+        >
+          Detalle de la póliza/ contrante
+        </li>
+        <li
+          class="tab-title"
+          [class.active]="pestaActiva === 3"
+          (click)="cambiarPestana(3)"
+        >
+          Datos del pago
+        </li>
+        <li
+          class="tab-title"
+          [class.active]="pestaActiva === 4"
+          (click)="cambiarPestana(4)"
+        >
+          Historial de estados
+        </li>
+        <li
+          class="tab-title"
+          [class.active]="pestaActiva === 5"
+          (click)="cambiarPestana(5)"
+        >
+          Datos del pago 2
+        </li>
+      </ul>
+      <div class="contenido">
+        <div *ngIf="pestaActiva == 1">
+          <div>
+            <input class="collapse-open" type="checkbox" id="detalle" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="detalle"
+              >Detalle del ticket
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos">
+                <div>
+                  <h5 class="h-text">Ticket Jira</h5>
+                  <p class="b-text">{{ ticket.SCODE_JIRA }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Usuario</h5>
+                  <p class="b-text">{{ ticket.USUARIO_REGISTRO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Estado</h5>
+                  <p class="b-text">{{ ticket.ESTADO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Canal</h5>
+                  <p class="b-text">{{ ticket.CANAL }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Fecha de Recepción</h5>
+                  <p class="b-text">{{ ticket.FECHA_RECEPCION }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Vía de recepción</h5>
+                  <p class="b-text">{{ ticket.VIA_RECEPCION }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="datos" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datos"
+              >Datos del reclamo
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos margin-botton">
+                <div>
+                  <h5 class="h-text">Plazo de atención SLA</h5>
+                  <p class="b-text">{{ ticket.ATENCION_SLA }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Forma de cálculo</h5>
+                  <p class="b-text">{{ ticket.FORM_CALCULO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Motivo</h5>
+                  <p *ngIf="!edit2" class="b-text">{{ ticket.MOTIVO }}</p>
+                  <form-input-select-re
+                    *ngIf="edit2"
+                    [items]="opcionesMotivos"
+                    [itemsArray]="true"
+                    fieldCodigo="codigo"
+                    fieldValor="valor"
+                    label="Motivos"
+                    [defaultValue]="{ codigo: ticket.NMOTIVO }"
+                    (onSelect)="changeMotivo(inputs.P_NMOTIVO)"
+                    [firstSelect]="true"
+                    [disabled]="listActions.MOTIVO_DET == 'TRUE' ? false : true"
+                    [(value)]="inputs.P_NMOTIVO"
+                  ></form-input-select-re>
+                </div>
+                <div>
+                  <h5 class="h-text">Detalle de ubigeo</h5>
+                  <p class="b-text">{{ ticket.DET_UBIGEO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Código de reclamo</h5>
+                  <p class="b-text">{{ ticket.COD_RECLAMO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Canal de operación</h5>
+                  <p class="b-text">{{ ticket.CANAL_OPERACION }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Submotivo</h5>
+                  <p *ngIf="!edit2" class="b-text">{{ ticket.SUBMOTIVO }}</p>
+                  <form-input-select-re
+                    *ngIf="edit2"
+                    [items]="opcionesSubMotivos"
+                    [itemsArray]="true"
+                    fieldCodigo="codigo"
+                    fieldValor="valor"
+                    label="Submotivos"
+                    [disabled]="
+                      listActions.SUBMOTIVO_DET == 'TRUE' ? false : true
+                    "
+                    [defaultValue]="{ codigo: inputs.P_SSUBMOTIVO }"
+                    [(value)]="inputs.P_SSUBMOTIVO"
+                    [firstSelect]="true"
+                  ></form-input-select-re>
+                </div>
+                <div>
+                  <h5 class="h-text">Imp. Devolución</h5>
+                  <p class="b-text">{{ ticket.IMP_DEVOLUCION }}</p>
+                </div>
+              </div>
+              <div class="edit">
+                <img
+                  [ngClass]="{ disabled: listActions?.EDITAR_MOT !== 'TRUE' }"
+                  *ngIf="!edit2"
+                  class="clickable"
+                  (click)="edit_fields2()"
+                  title="Editar"
+                  src="assets/rentas/edit.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_MOT_OK !== 'TRUE'
+                  }"
+                  *ngIf="edit2"
+                  class="clickable"
+                  (click)="confirm_edit_fields2()"
+                  title="Confirmar"
+                  src="assets/rentas/check_circle.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{ disabled: listActions?.EDITAR_MOT_X !== 'TRUE' }"
+                  *ngIf="edit2"
+                  class="clickable"
+                  (click)="cancel_edit_fields2()"
+                  title="Cancelar"
+                  src="assets/rentas/cancel.svg"
+                  alt="autorenew"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="datostramites" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datostramites"
+              >Datos del trámites de renta
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos">
+                <div>
+                  <h5 class="h-text">Tipo de trámite de renta</h5>
+                  <p class="b-text">{{ ticket.TIPO_TRAMITE }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Tipo de pensión</h5>
+                  <p class="b-text">{{ ticket.TIPO_PENSION }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Tipo de prestación</h5>
+                  <p class="b-text">{{ ticket.TIPO_PRESTACION }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Canal de ingreso del trámite</h5>
+                  <p class="b-text">{{ ticket.CANAL_INGRESO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Descripción</h5>
+                  <p *ngIf="!edit" class="b-text">{{ ticket.DESCRIPCION }}</p>
+                  <form-input-textarea-re
+                    [disabled]="
+                      listActions.DESCRIPCION_DET == 'TRUE' ? false : true
+                    "
+                    rows="6"
+                    *ngIf="edit"
+                    [(value)]="ticket.DESCRIPCION"
+                  ></form-input-textarea-re>
+                </div>
+              </div>
+              <div class="edit">
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_DESCRIPCION !== 'TRUE'
+                  }"
+                  *ngIf="!edit"
+                  class="clickable"
+                  (click)="edit_fields()"
+                  title="Editar"
+                  src="assets/rentas/edit.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_DESCRIPCION_OK !== 'TRUE'
+                  }"
+                  *ngIf="edit"
+                  class="clickable"
+                  (click)="confirm_edit_fields()"
+                  title="Confirmar"
+                  src="assets/rentas/check_circle.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_DESCRIPCION_X !== 'TRUE'
+                  }"
+                  *ngIf="edit"
+                  class="clickable"
+                  (click)="cancel_edit_fields()"
+                  title="Cancelar"
+                  src="assets/rentas/cancel.svg"
+                  alt="autorenew"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="documentos" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="documentos"
+              >Documentos registrados
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive">
+                <table class="table mb-none">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Documento</td>
+                      <td class="grid-title-item">Tamaño</td>
+                      <td class="grid-title-item">Acciones</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container *ngFor="let doc of doc_registrados">
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">{{ doc.SNAME }}</td>
+                        <td class="grid-item">{{ doc.SSIZE }}</td>
+                        <td class="grid-item">
+                          <a
+                            [ngClass]="{
+                              disabled: listActions?.SUBIR_ADJ !== 'TRUE'
+                            }"
+                            class="clickable"
+                            (click)="uploadFile2(doc.file); uploadFile(doc)"
+                          >
+                            <img
+                              *ngIf="doc.isNew"
+                              title="Cargar"
+                              src="assets/rentas/cloud_upload.svg"
+                              alt="autorenew"
+                            />
+                          </a>
+
+                          <a
+                            [ngClass]="{
+                              disabled: listActions?.DESCARJAR_ADJ !== 'TRUE'
+                            }"
+                            *ngIf="!doc.isNew"
+                            class="clickable"
+                            (click)="downloadFile(doc.SPATH)"
+                          >
+                            <img
+                              title="Descargar"
+                              src="assets/rentas/cloud_download_20dp_FILL1_wght400_GRAD0_opsz20.svg"
+                              alt="autorenew"
+                            />
+                          </a>
+                          <a
+                            [ngClass]="{
+                              disabled: listActions?.ELIMINAR_ADJ !== 'TRUE'
+                            }"
+                            class="clickable"
+                            (click)="deleteFile(doc); delTickAdjunt(doc.NID)"
+                          >
+                            <img
+                              title="Eliminar"
+                              src="assets/rentas/delete.svg"
+                              alt="autorenew"
+                            />
+                          </a>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+                <div
+                  [ngClass]="{
+                    disabled: listActions?.ADJUNTAR_ARCHIVO !== 'TRUE'
+                  }"
+                  class="new-document clickable"
+                  (click)="fileInput.click()"
+                >
+                  Añadir documento
+                </div>
+                <p>Formatos permitidos: {{ getDisplayFileFormats() }}</p>
+                <input
+                  type="file"
+                  #fileInput
+                  (change)="onFileSelected($event, P_SCODE)"
+                  style="display: none"
+                  [accept]="getAcceptedFileFormats()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="pestaActiva == 2">
+          <div class="button-re label-button">
+            <span>{{ ticket.STYPE_SYSTEM }}</span>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="datoscontacto" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datoscontacto"
+              >Datos del contacto
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos">
+                <div>
+                  <h5 class="h-text">Documento</h5>
+                  <p class="b-text">{{ ticket.DOCUMENTO_CONT }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Nombre</h5>
+                  <p class="b-text">{{ ticket.NOMBRE_CONT }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Correo electrónico</h5>
+                  <p class="b-text">{{ ticket.CORREO_ELECTRONICO_CONT }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="datoscontratante"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datoscontratante"
+              >Datos contratante/ asegurado
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos">
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Nº solicitud</h5>
+                  <p class="b-text">{{ ticket.NROSOL_CONTR }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Póliza</h5>
+                  <p class="b-text">{{ ticket.POLIZA_CONTR }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Contratante</h5>
+                  <p class="b-text">{{ ticket.CONTRATANTE }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Asegurado</h5>
+                  <p class="b-text">{{ ticket.ASESEGURADO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Nº Identidad Asegurado</h5>
+                  <p class="b-text">{{ ticket.NROIDENTI_ASE }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Endoso</h5>
+                  <p class="b-text">{{ ticket.ENDOSO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Consultor Referente</h5>
+                  <p class="b-text">{{ ticket.CONSULTOR_REFE }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="datospoliza" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datospoliza"
+              >Datos de la póliza
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel">
+              <div class="campos">
+                <div>
+                  <h5 class="h-text">Ramo</h5>
+                  <p class="b-text">{{ ticket.RAMO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Producto</h5>
+                  <p class="b-text">{{ ticket.PRODUCTO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Póliza</h5>
+                  <p class="b-text">{{ ticket.POLIZA }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Estado de la póliza</h5>
+                  <p class="b-text">{{ ticket.ESTADO_POLIZA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Frecuencia de pago</h5>
+                  <p class="b-text">{{ ticket.FRECUENCIA_PAGO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Prima</h5>
+                  <p class="b-text">{{ ticket.PRIMA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Moneda</h5>
+                  <p class="b-text">{{ ticket.MONEDA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Pensión Escalonada</h5>
+                  <p class="b-text">{{ ticket.MONTO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">% devolución</h5>
+                  <p class="b-text">{{ ticket.PORC_DEVOLUCION }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">F. Inicio Vigencia</h5>
+                  <p class="b-text">{{ ticket.INI_VIGENCIA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">F. Fin Vigencia</h5>
+                  <p class="b-text">{{ ticket.FIN_VIGENCIA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Fecha de abono</h5>
+                  <p class="b-text">{{ ticket.FIN_FINABONO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Periodo de vigencia</h5>
+                  <p class="b-text">{{ ticket.PERIODO_VIGENCIA }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Fecha de devengue</h5>
+                  <p class="b-text">{{ ticket.FCH_DEVENGUE }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Diferimiento (años)</h5>
+                  <p class="b-text">{{ ticket.DIFERIMIENTO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Años tmp</h5>
+                  <p class="b-text">{{ ticket.ANO_TMP }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Años garantiza</h5>
+                  <p class="b-text">{{ ticket.ANO_GARANTIZA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Pensión</h5>
+                  <p class="b-text">{{ ticket.PENSION }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">% de seguro de vida</h5>
+                  <p class="b-text">{{ ticket.PROC_SEGURO_VIDA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">% seguro accidentes</h5>
+                  <p class="b-text">{{ ticket.PROC_SEGURO_ACC }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">% ajuste anual</h5>
+                  <p class="b-text">{{ ticket.PROC_AJUSTE_CAN }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Gasto de sepelio</h5>
+                  <p class="b-text">{{ ticket.GASTO_SEPELIO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Gratificación</h5>
+                  <p class="b-text">{{ ticket.GRATIFICACION }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Póliza menor de edad</h5>
+                  <p class="b-text">{{ ticket.POLIZA_MENOR_EDAD }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Nº endoso</h5>
+                  <p class="b-text">{{ ticket.NRO_ENDOSO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tipo de pensión</h5>
+                  <p class="b-text">{{ ticket.TIPO_PENSION_TCK }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tipo de renta</h5>
+                  <p class="b-text">{{ ticket.TIPO_RENTA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Modalidad</h5>
+                  <p class="b-text">{{ ticket.MODALIDAD }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Nº de Beneficiarios de póliza</h5>
+                  <p class="b-text">{{ ticket.NROS_BENEFECIER }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">AFP</h5>
+                  <p class="b-text">{{ ticket.AFP }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tasa cto reaseguro</h5>
+                  <p class="b-text">{{ ticket.TASA_CTO_REASEGURO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tasa cto equivalente</h5>
+                  <p class="b-text">{{ ticket.TATA_CTO_EQUIVALENTE }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Monto de prima</h5>
+                  <p class="b-text">{{ ticket.MONTO_PRIMA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Meses diferidos</h5>
+                  <p class="b-text">{{ ticket.MESES_DIFERIDOS }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Meses garantizados</h5>
+                  <p class="b-text">{{ ticket.MESES_GARANTIZADOS }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Solicitud del dev</h5>
+                  <p class="b-text">{{ ticket.SOLICITUD_DEV }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tasa de venta</h5>
+                  <p class="b-text">{{ ticket.TASA_VENTA }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Tasa de int periodo garantizado</h5>
+                  <p class="b-text">{{ ticket.POLIZA_MENOR_EDAD }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Monto de pensión</h5>
+                  <p class="b-text">{{ ticket.TASA_PERIODO_GARAN }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Asesor</h5>
+                  <p class="b-text">{{ ticket.ASESOR }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="datosbeneficiarios"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datosbeneficiarios"
+              >Datos Beneficiarios
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Nombres</td>
+                      <td class="grid-title-item">Nº identidad</td>
+                      <td class="grid-title-item">Parentesco</td>
+                      <td class="grid-title-item">% pensión</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container *ngFor="let beneficiary of beneficiaries">
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">{{ beneficiary.NOMBRES }}</td>
+                        <td class="grid-item">
+                          {{ beneficiary.NRO_IDENTIDAD }}
+                        </td>
+                        <td class="grid-item">{{ beneficiary.PARENTESCO }}</td>
+                        <td class="grid-item">
+                          {{ beneficiary.PROC_PENSION }}
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="detallemovimientopoliza"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="detallemovimientopoliza"
+              >Detalle movimiento de la poliza
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Índice</td>
+                      <td class="grid-title-item">Fecha</td>
+                      <td class="grid-title-item">Estado</td>
+                      <td class="grid-title-item">Usuario</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container *ngFor="let history of history_pol">
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">{{ history.INDICE }}</td>
+                        <td class="grid-item">{{ history.FECHA }}</td>
+                        <td class="grid-item">{{ history.ESTADO }}</td>
+                        <td class="grid-item">{{ history.USUARIO }}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="pestaActiva == 3">
+          <div>
+            <input class="collapse-open" type="checkbox" id="datospago" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datospago"
+              >Datos para el pago
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel margin-botton">
+              <div class="campos">
+                <div>
+                  <div>
+                    <h5 class="h-text">Fecha de pago</h5>
+                    <form-input-date-re
+                      *ngIf="edit3"
+                      [disabled]="
+                        listActions.FECHA_PAGO_DET == 'TRUE' ? false : true
+                      "
+                      [(value)]="inputs.FECHA_PAGO"
+                      [todayPreviousMonth]="true"
+                    ></form-input-date-re>
+                    <p *ngIf="!edit3" class="b-text">{{ today }}</p>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="h-text">Imp. Devolución</h5>
+                  <p class="b-text">{{ ticket.IMP_DEVOLUCION }}</p>
+                </div>
+              </div>
+              <div class="edit">
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO !== 'TRUE'
+                  }"
+                  *ngIf="!edit3"
+                  class="clickable"
+                  (click)="edit_fields3()"
+                  title="Editar"
+                  src="assets/rentas/edit.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO_OK !== 'TRUE'
+                  }"
+                  *ngIf="edit3"
+                  class="clickable"
+                  (click)="confirm_edit_fields3()"
+                  title="Confirmar"
+                  src="assets/rentas/check_circle.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO_X !== 'TRUE'
+                  }"
+                  *ngIf="edit3"
+                  class="clickable"
+                  (click)="cancel_edit_fields3()"
+                  title="Cancelar"
+                  src="assets/rentas/cancel.svg"
+                  alt="autorenew"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="datoscontratante"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datoscontratante"
+              >Datos contratante/ asegurado
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel margin-botton">
+              <div class="campos">
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Nº solicitud</h5>
+                  <p class="b-text">{{ ticket.NROSOL_CONTR }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Póliza</h5>
+                  <p class="b-text">{{ ticket.POLIZA_CONTR }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Contratante</h5>
+                  <p class="b-text">{{ ticket.CONTRATANTE }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Asegurado</h5>
+                  <p class="b-text">{{ ticket.ASESEGURADO }}</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Nº Identidad Asegurado</h5>
+                  <p class="b-text">{{ ticket.NROIDENTI_ASE }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1">
+                  <h5 class="h-text">Endoso</h5>
+                  <p class="b-text">{{ ticket.ENDOSO }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 2">
+                  <h5 class="h-text">Consultor Referente</h5>
+                  <p class="b-text">{{ ticket.CONSULTOR_REFE }}</p>
+                </div>
+                <div *ngIf="ticket.NTYPE_SYSTEM == 1"></div>
+                <div>
+                  <h5 class="h-text">Tipo de Pago</h5>
+                  <p class="b-text">CHEQUE DE TESORERÍA</p>
+                </div>
+                <div>
+                  <h5 class="h-text">Banco de origen</h5>
+                  <p class="b-text">BBVA</p>
+                </div>
+              </div>
+              <div class="edit">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <td class="h-text">Guardado</td>
+                      <td class="h-text">Confirmar</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="grid-item">
+                        <img
+                          class="clickable"
+                          title="Confirmar"
+                          src="assets/rentas/check_circle.svg"
+                          alt="autorenew"
+                        />
+                      </td>
+                      <td class="grid-item">
+                        <input
+                          [disabled]="
+                            listActions?.CONFIRMAR_DATOS_C == 'FALSE'
+                              ? true
+                              : false
+                          "
+                          type="checkbox"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="datosbeneficiarios"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datosbeneficiarios"
+              >Datos de Beneficiarios
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive mb-none">
+                <table class="table">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Nombres</td>
+                      <td class="grid-title-item">Nº identidad</td>
+                      <td class="grid-title-item">Parentesco</td>
+                      <td class="grid-title-item">% pensión</td>
+                      <td class="grid-title-item">Tipo de Pago</td>
+                      <td class="grid-title-item">Banco de origen</td>
+                      <td class="grid-title-item">Tipo de cuenta</td>
+                      <td class="grid-title-item">Cuenta Bancaria</td>
+                      <td class="grid-title-item">CCI</td>
+                      <td class="grid-title-item">Titular de la cuenta</td>
+                      <td class="grid-title-item">Nº identidad Titular</td>
+                      <td class="grid-title-item">Guardado</td>
+                      <td class="grid-title-item">Confirmar</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">DIEGO RIVEROS</td>
+                        <td class="grid-item">12574824</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">Mancomunada</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">87764824</td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input
+                            [disabled]="
+                              listActions?.CONFIRMAR_DATOS_B == 'FALSE'
+                                ? true
+                                : false
+                            "
+                            type="checkbox"
+                          />
+                        </td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">JAIME OLIVARES</td>
+                        <td class="grid-item">87459865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">CHEQUE TESORERÍA</td>
+                        <td class="grid-item">BCP</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input type="checkbox" />
+                        </td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">34343865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">40%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">AHORROS</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input type="checkbox" />
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input class="collapse-open" type="checkbox" id="datosherederos" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datosherederos"
+              >Datos de Herederos
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive mb-none">
+                <table class="table">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Nombres</td>
+                      <td class="grid-title-item">Nº identidad</td>
+                      <td class="grid-title-item">Parentesco</td>
+                      <td class="grid-title-item">% pensión</td>
+                      <td class="grid-title-item">Tipo de Pago</td>
+                      <td class="grid-title-item">Banco de origen</td>
+                      <td class="grid-title-item">Tipo de cuenta</td>
+                      <td class="grid-title-item">Cuenta Bancaria</td>
+                      <td class="grid-title-item">CCI</td>
+                      <td class="grid-title-item">Titular de la cuenta</td>
+                      <td class="grid-title-item">Nº identidad Titular</td>
+                      <td class="grid-title-item">Guardado</td>
+                      <td class="grid-title-item">Confirmar</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">DIEGO RIVEROS</td>
+                        <td class="grid-item">12574824</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">Mancomunada</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">87764824</td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input
+                            [disabled]="
+                              listActions?.CONFIRMAR_DATOS_H == 'FALSE'
+                                ? true
+                                : false
+                            "
+                            type="checkbox"
+                          />
+                        </td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">JAIME OLIVARES</td>
+                        <td class="grid-item">87459865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">CHEQUE TESORERÍA</td>
+                        <td class="grid-item">BCP</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input type="checkbox" />
+                        </td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">34343865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">40%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">AHORROS</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">
+                          <img
+                            class="clickable"
+                            title="Confirmar"
+                            src="assets/rentas/check_circle.svg"
+                            alt="autorenew"
+                          />
+                        </td>
+                        <td class="grid-item">
+                          <input type="checkbox" />
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="new-document clickable" (click)="fileInput.click()">
+            Confirmar datos de pago
+          </div>
+        </div>
+        <div *ngIf="pestaActiva == 4">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="t-head">
+                <tr class="grid-title">
+                  <td class="grid-title-item">Numero de secuencia</td>
+                  <td class="grid-title-item">Estado</td>
+                  <td class="grid-title-item">Fecha</td>
+                  <td class="grid-title-item">Usuario</td>
+                  <td class="grid-title-item">Tipo de comentario</td>
+                  <td class="grid-title-item">Comentario</td>
+                  <td class="grid-title-item">Intervalo días</td>
+                </tr>
+              </thead>
+              <tbody></tbody>
+              <tbody>
+                <ng-container *ngFor="let history of displayedStatusHistory">
+                  <tr class="grid-title row-item">
+                    <td class="grid-item">{{ history.NTRANSAC }}</td>
+                    <td class="grid-item">{{ history.ESTADO }}</td>
+                    <td class="grid-item">{{ history.FECHA_REGISTO }}</td>
+                    <td class="grid-item">{{ history.USUARIO }}</td>
+                    <td class="grid-item">{{ history.STYPECOMMENT }}</td>
+                    <td class="grid-item">{{ history.SCOMMETS }}</td>
+                    <td class="grid-item">{{ history.INTER_DAYS }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div class="container-pagination" *ngIf="showPagination">
+              <label class="labelPagination" for="itemsPerPage"
+                >Registros por página:</label
+              >
+              <input
+                class="paginationInput"
+                type="number"
+                id="itemsPerPage"
+                [(ngModel)]="itemsPerPage"
+                (change)="changeItemsPerPage()"
+              />
+              <span class="labelPagination"
+                >1 - {{ currentPage }} de {{ totalPage }}</span
+              >
+              <button
+                class="containerArrow"
+                (click)="changePage(currentPage - 1)"
+                [disabled]="currentPage === 1"
+                [style.background]="currentPage === 1 ? '#E6E7FF' : '#27246D'"
+              >
+                <img
+                  src="assets/rentas/arrow_back_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt="more_vert"
+                />
+              </button>
+              <button
+                class="containerArrow"
+                (click)="changePage(currentPage + 1)"
+                [disabled]="currentPage * pageSize >= totalStatusHistory"
+                [style.background]="
+                  currentPage * pageSize >= totalStatusHistory
+                    ? '#E6E7FF'
+                    : '#27246D'
+                "
+              >
+                <img
+                  src="assets/rentas/arrow_forward_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt="more_vert"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="pestaActiva == 5">
+          <div>
+            <input class="collapse-open" type="checkbox" id="datospago" />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datospago"
+              >Datos para el pago
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel margin-botton">
+              <div class="campos">
+                <div>
+                  <div>
+                    <h5 class="h-text">Póliza</h5>
+                    <p class="b-text">{{ ticket.POLIZA_CONTR }}</p>
+                  </div>
+                  <div>
+                    <h5 class="h-text">Fecha de pago</h5>
+                    <form-input-date-re
+                      *ngIf="edit3"
+                      [disabled]="
+                        listActions.FECHA_PAGO_DET == 'TRUE' ? false : true
+                      "
+                      [(value)]="inputs.FECHA_PAGO"
+                      [todayPreviousMonth]="true"
+                    ></form-input-date-re>
+                    <p *ngIf="!edit3" class="b-text">{{ today }}</p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <h5 class="h-text">Imp. Devolución</h5>
+                    <p class="b-text">{{ ticket.IMP_DEVOLUCION }}</p>
+                  </div>
+                  <div>
+                    <h5 class="h-text">% Anticipo</h5>
+                    <p class="b-text">20%</p>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    [ngClass]="{
+                      disabled: listActions?.BUSCAR_POR_CLIENT !== 'TRUE'
+                    }"
+                    class="container"
+                    >Pago unico
+                    <input
+                      value="1"
+                      type="radio"
+                      checked="checked"
+                      name="radio"
+                    />
+                    <span class="checkmark"></span>
+                  </label>
+                  <label
+                    [ngClass]="{
+                      disabled: listActions?.BUSCAR_POR_CLIENT !== 'TRUE'
+                    }"
+                    class="container"
+                    >Renta Mensual
+                    <input value="2" type="radio" name="radio" />
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="edit">
+                <h5 class="h-text">Confirmado</h5>
+                <img
+                  class="clickable"
+                  title="Confirmar"
+                  src="assets/rentas/check_circle.svg"
+                  alt="autorenew"
+                />
+
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO !== 'TRUE'
+                  }"
+                  *ngIf="!edit3"
+                  class="clickable"
+                  (click)="edit_fields3()"
+                  title="Editar"
+                  src="assets/rentas/edit.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO_OK !== 'TRUE'
+                  }"
+                  *ngIf="edit3"
+                  class="clickable"
+                  (click)="confirm_edit_fields3()"
+                  title="Confirmar"
+                  src="assets/rentas/check_circle.svg"
+                  alt="autorenew"
+                />
+                <img
+                  [ngClass]="{
+                    disabled: listActions?.EDITAR_FECHA_PAGO_X !== 'TRUE'
+                  }"
+                  *ngIf="edit3"
+                  class="clickable"
+                  (click)="cancel_edit_fields3()"
+                  title="Cancelar"
+                  src="assets/rentas/cancel.svg"
+                  alt="autorenew"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              class="collapse-open"
+              type="checkbox"
+              id="datosbeneficiarios"
+            />
+            <label
+              class="collapse-btn container-button-collapse subtitle-re"
+              for="datosbeneficiarios"
+              >Receptores del pago
+              <i
+                class="fa fa-angle-down pull-right icon-collapse"
+                style="position: relative; top: 4px"
+              ></i>
+              <i
+                class="fa fa-angle-up pull-right icon-expand"
+                style="position: relative; top: 4px"
+              ></i>
+            </label>
+            <div class="collapse-panel-table">
+              <div class="table-responsive mb-none">
+                <table class="table">
+                  <thead class="t-head">
+                    <tr class="grid-title">
+                      <td class="grid-title-item">Tipo Receptor</td>
+                      <td class="grid-title-item">Nombres</td>
+                      <td class="grid-title-item">Documento de identidad</td>
+                      <td class="grid-title-item">Parentesco</td>
+                      <td class="grid-title-item">% pensión</td>
+                      <td class="grid-title-item">Tipo de Pago</td>
+                      <td class="grid-title-item">Banco de origen</td>
+                      <td class="grid-title-item">Tipo de cuenta</td>
+                      <td class="grid-title-item">Cuenta Bancaria</td>
+                      <td class="grid-title-item">CCI</td>
+                      <td class="grid-title-item">Titular de la cuenta</td>
+                      <td class="grid-title-item">Nº identidad Titular</td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tbody>
+                    <ng-container>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">BENEFICIARIO</td>
+                        <td class="grid-item">DIEGO RIVEROS</td>
+                        <td class="grid-item">DNI-12574824</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">MANCOMUNADA</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">DNI-87764824</td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">BENEFICIARIO</td>
+                        <td class="grid-item">JAIME OLIVARES</td>
+                        <td class="grid-item">DNI-87459865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">30%</td>
+                        <td class="grid-item">CHEQUE TESORERÍA</td>
+                        <td class="grid-item">BCP</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                      </tr>
+                      <tr class="grid-title row-item">
+                        <td class="grid-item">BENEFICIARIO</td>
+                        <td class="grid-item">CHRISTIAN ROMERO</td>
+                        <td class="grid-item">DNI-34343865</td>
+                        <td class="grid-item">HERMANO</td>
+                        <td class="grid-item">40%</td>
+                        <td class="grid-item">TRANSFERENCIA</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item">AHORROS</td>
+                        <td class="grid-item">123-45678901-23</td>
+                        <td class="grid-item">00112345678901234567</td>
+                        <td class="grid-item"></td>
+                        <td class="grid-item"></td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="new-document clickable" (click)="fileInput.click()">
+            Confirmar datos de pago
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

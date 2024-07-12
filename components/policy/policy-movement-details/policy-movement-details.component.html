@@ -1,0 +1,131 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Movimientos de Póliza</h4>
+  <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid" style="margin-bottom: 10px;">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <h5>Detalle Contratante</h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <span>PRODUCTO</span>
+              <input type="text" placeholder="Producto" [(ngModel)]="inputsPolicy.P_PRODUCTO" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>NRO. PÓLIZA</span>
+              <input type="text" placeholder="Nro. Póliza" [(ngModel)]="inputsPolicy.P_POLIZA" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>CONTRATANTE</span>
+              <input type="text" placeholder="Contratante" [(ngModel)]="inputsPolicy.P_CONTRATANTE" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>SEDE</span>
+              <input type="text" placeholder="Sede" [(ngModel)]="inputsPolicy.P_SEDE" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="grid form-group">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Detalle Movimiento</h5>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item text-center">Nro.</td>
+                <td class="grid-title-item">Movimiento</td>
+                <td class="grid-title-item">Constancia</td>
+                <td class="grid-title-item text-center">Ini. Cobertura</td>
+                <td class="grid-title-item text-center">Fin Cobertura</td>
+                <td class="grid-title-item text-center">Fecha Mov.</td>
+                <td class="grid-title-item">Observaciones</td>
+                <td class="grid-title-item text-center">Usuario</td>
+                <td class="grid-title-item text-center">Documentos</td>
+                <ng-container *ngIf="canCancelMovements">
+                  <td class="grid-title-item" *ngIf="!flagAnular && template.ins_anularMovimiento">Anular</td>
+                </ng-container>
+                <td class="grid-title-item text-center">Facturar</td>
+                <!-- <td class="grid-title-item">Relanzar</td> -->
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container
+                *ngIf="policyMovementList!=null && policyMovementList.length>0; then showGrid else hideGrid">
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #hideGrid>
+          <tr>
+            <td colspan="9" class="text-center">
+              No se encontraron registros
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template #showGrid>
+          <tr *ngFor="let item of listToShow; let row_no = index">
+            <td class="text-center">{{ item.NRO }}</td>
+            <td>{{ item.TIPO_TRANSACCION }}</td>
+            <td class="text-center">{{ item.CONSTANCIA }}</td>
+            <td class="text-center">{{ item.INICIO_COBERTURA }}</td>
+            <td class="text-center">{{ item.FIN_COBERTURA }}</td>
+            <td class="text-center">{{ item.FECHA_TRANSACCION }}</td>
+            <td>{{ item.RECIBO }}</td>
+            <td>{{ item.USUARIO }}</td>
+            <td class="text-center"><img alt="Ver Documentos" src="assets/icons/preview_soat_box.png"
+                title="Ver Documentos" (click)="verDocumentos(item)" style="cursor: pointer;height: 24px;width: 24px">
+            </td>
+            <ng-container *ngIf="canCancelMovements">
+              <td *ngIf="!flagAnular && template.ins_anularMovimiento" class="text-center">
+                <img *ngIf="item.MOV_ANULADO == 0 && item.COD_TRANSAC != 9" src="assets/icons/anular.png"
+                  (click)="anularMov(item, 6)" title="Anular" alt="Anular" style="cursor: pointer;" />
+                <label *ngIf="item.MOV_ANULADO != 0 || item.COD_TRANSAC == 9 "><b>--</b></label>
+              </td>
+            </ng-container>
+            <td class="text-center">
+              <img *ngIf="item.FACTURAR == 1" src="assets/icons/facturar.png" (click)="facturarMov(item, 10)"
+                title="Facturar" alt="Facturar" style="cursor: pointer;" />
+              <label *ngIf="item.FACTURAR == 0 || item.RECIBO == '' "><b>--</b></label>
+            </td>
+            <!-- <td class="text-center">
+              <img src="assets/icons/update-file.png" (click)="relanzarDocumento(item)" title="Relanzar documentos"
+                alt="Relanzar documentos" style="cursor: pointer; margin: -10px auto 0; text-align: center;" />
+            </td> -->
+          </tr>
+        </ng-template>
+        <ng-container *ngIf="policyMovementList!=null && policyMovementList.length>0; then showPagination">
+        </ng-container>
+        <ng-template #showPagination>
+          <div class="row mt-4">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button (click)="reference.close()">Regresar</button>
+</div>

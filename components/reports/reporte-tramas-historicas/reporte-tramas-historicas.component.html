@@ -1,0 +1,243 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   REPORTE-TRAMAS-HISTORICAS.COMPONENT.HTML                             */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   17-01-2023                                                           */
+/*  VERSIÓN             :   1.0 - REPORTE DE TRAMAS HISTÓRICAS                                   */
+/************************************************************************************************-->
+
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">REPORTE DE TRAMAS HISTÓRICAS</span>
+                </div>
+            </div>
+            <div class="containt-item">
+                <button class="full-colorN buttonN pull-right mr-2" (click)="listarReportes()">
+                    <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                    <span>BUSCAR</span>
+                </button>
+                <button class="full-colorN buttonN pull-right" (click)="generarCabecera()">
+                    <img class="icon-btn" src="./assets/icons/download2.png" />
+                    <span>GENERAR REPORTE</span>
+                </button>
+            </div>
+        </div>
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>TIPO PRODUCTO</span>
+                <select class="form-control" formControlName="P_NPRODUCT" [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_NPRODUCT.valid || filterForm.hasError('required'))}">
+                    <option value="" disabled>SELECCIONE PRODUCTO</option>
+                    <option *ngFor="let item of productos" value="{{ item.NPRODUCT }}">{{ item.SDESCRIPT }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NPRODUCT.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NPRODUCT').hasError('required')" class="mensaje-error-control">
+                        El producto es requerido.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>TIPO MOVIMIENTO</span>
+                <select class="form-control" formControlName="P_STYPE_ENDOSO" [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_STYPE_ENDOSO.valid || filterForm.hasError('required'))}">
+                    <option value="" disabled>SELECCIONE MOVIMIENTO</option>
+                    <option *ngFor="let item of endosos" value="{{ item.NTYPE_MOVEMENT }}">{{ item.SDESCRIPT }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_STYPE_ENDOSO.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_STYPE_ENDOSO').hasError('required')" class="mensaje-error-control">
+                        El movimiento es requerido.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>RUC</span>
+                <input type="text" class="form-control" placeholder="INGRESAR N° RUC" formControlName="P_SCLINUMDOCU" (keypress)="soloNumeros($event)" (keyup)="enabledRuc($event.target.value)" maxlength="11" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_SCLINUMDOCU.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_SCLINUMDOCU').hasError('pattern')" class="mensaje-error-control">
+                        Solo se aceptan números.
+                    </span>
+                    <span *ngSwitchCase="filterForm.get('P_SCLINUMDOCU').hasError('minlength')" class="mensaje-error-control">
+                        Ingrese 11 caracteres.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>NRO. PÓLIZA</span>
+                <input type="text" class="form-control" placeholder="INGRESAR N° PÓLIZA" formControlName="P_NPOLICY" (keypress)="soloNumeros($event)" (keyup)="enabledPolicy($event.target.value)" maxlength="10" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NPOLICY.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NPOLICY').hasError('pattern')" class="mensaje-error-control">
+                        Solo se aceptan números.
+                    </span>
+                    <span *ngSwitchCase="filterForm.get('P_NPOLICY').hasError('minlength')" class="mensaje-error-control">
+                        Ingrese 10 caracteres.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA DESDE</span>
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="P_DSTARTDATE" [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_DSTARTDATE.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_DSTARTDATE.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_DSTARTDATE').hasError('required')" class="mensaje-error-control">
+                        La fecha de inicio es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.P_DSTARTDATE.valid && !filterForm.get('P_DSTARTDATE').hasError('required')" class="mensaje-error-control">
+                        La fecha de inicio no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha de inicio debe ser menor a la fecha de fin.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA HASTA</span>
+                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="P_DEXPIRDAT" [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_DEXPIRDAT.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_DEXPIRDAT.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_DEXPIRDAT').hasError('required')" class="mensaje-error-control">
+                        La fecha de fin es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.P_DEXPIRDAT.valid && !filterForm.get('P_DEXPIRDAT').hasError('required')" class="mensaje-error-control">
+                        La fecha de fin no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha de fin debe ser mayor a la fecha de inicio.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>RECIBO</span>
+                <input type="text" class="form-control" placeholder="INGRESAR N° RECIBO" formControlName="P_NRECEIPT" (keypress)="soloNumeros($event)" (keyup)="enabledReceipt($event.target.value)" maxlength="10" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NRECEIPT.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NRECEIPT').hasError('pattern')" class="mensaje-error-control">
+                        Solo se aceptan números.
+                    </span>
+                    <span *ngSwitchCase="filterForm.get('P_NRECEIPT').hasError('minlength')" class="mensaje-error-control">
+                        Ingrese 10 caracteres.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>COMPROBANTE</span>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" placeholder="TIPO" formControlName="TIPO" (keypress)="soloNumeros($event)" (keyup)="enabledVoucherTipo($event.target.value)" maxlength="1" />
+                        <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.TIPO.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                            <span *ngSwitchCase="filterForm.get('TIPO').hasError('pattern')" class="mensaje-error-control">
+                                Solo se aceptan números.
+                            </span>
+                        </ng-container>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" placeholder="SERIE" formControlName="SERIE" (keypress)="soloNumeros($event)" (keyup)="enabledVoucherSerie($event.target.value)" maxlength="5" />
+                        <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.SERIE.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                            <span *ngSwitchCase="filterForm.get('SERIE').hasError('pattern')" class="mensaje-error-control">
+                                Solo se aceptan números.
+                            </span>
+                        </ng-container>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" placeholder="DOCUMENTO" formControlName="DOCUMENTO" (keypress)="soloNumeros($event)" (keyup)="enabledVoucherDocumento($event.target.value)" maxlength="10" />
+                        <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.DOCUMENTO.valid || filterForm.hasError('pattern')) && !filterForm.valid">
+                            <span *ngSwitchCase="filterForm.get('DOCUMENTO').hasError('pattern')" class="mensaje-error-control">
+                                Solo se aceptan números.
+                            </span>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">ESTADO</td>
+                                    <td class="grid-title-item text-center">ID</td>
+                                    <td class="grid-title-item text-center">PRODUCTO</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO</td>
+                                    <td class="grid-title-item text-center">INICIO VIGENCIA</td>
+                                    <td class="grid-title-item text-center">FIN VIGENCIA</td>
+                                    <td class="grid-title-item text-center">CANT. ASEGURADOS</td>
+                                    <td class="grid-title-item text-center">ASEGURADOS REGISTRADOS</td>
+                                    <td class="grid-title-item text-center">ASEGURADOS NO REGISTRADOS</td>
+                                    <td class="grid-title-item text-center">REPORTE</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid1 else showGrid1"></ng-container>
+                        </table>
+                        <ng-template #hideGrid1>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="10">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid1>
+                            <tbody *ngFor="let item of listToShow" style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        <img *ngIf="item.ESTADO == 1" src="assets/icons/loadingtc.gif" title="En proceso" alt="En proceso" />
+                                        <img *ngIf="item.ESTADO == 2" src="assets/icons/verifyct.png" title="Finalizado" alt="Finalizado" />
+                                        <img *ngIf="item.ESTADO == 3" src="assets/icons/incorrecttc.png" title="Incorrecto" alt="Incorrecto" />
+                                        <img *ngIf="item.ESTADO == 4" src="assets/icons/warntc.png" title="Reporte sin datos" alt="Reporte sin datos"/>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NID_CAB }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.PROD }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.ENDO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.INI_VIG | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.FIN_VIG | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CANT_ASEG }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.ASEG_REG }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.ASEG_NOREG }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <img *ngIf="item.ESTADO == 2" src="assets/icons/download2.png" title="Descargar" alt="Descargar"
+                                            style="cursor: pointer; padding: 0px 18px 0px 18x;" (click)="getFileReporteTramasHistoricas(item.NID_CAB)" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow!=null && listToShow.length>0" class="row" style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

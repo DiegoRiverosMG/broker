@@ -1,0 +1,402 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="head">
+        <h1 class="container-title">
+          <i class="fa fa-car mr-2" aria-hidden="true"></i>
+          Dashboard SOAT
+        </h1>
+      </div>
+      <div *ngIf="bMostrarPuntoVentas" class="form-group row">
+        <div class="col-lg-12">
+          <div class="content__point">
+            <div class="title-salepoint">
+              <label for="disabledTextInput" class="label-formulario"
+                >Escoger punto de venta:
+              </label>
+            </div>
+            <div class="rectangle-copy-parrafo-ini">
+              <select
+                [(ngModel)]="cboPuntoVenta"
+                class="form-control select-formulario"
+                (change)="setPuntoVenta($event.target.value)"
+              >
+                <option value="undefined" disabled selected>
+                  Seleccione punto de venta
+                </option>
+                <option
+                  *ngFor="let channelPoint of ListChannelPoint"
+                  value="{{ channelPoint.nnumpoint }}"
+                >
+                  {{ channelPoint.sdescript }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="items_ventas row justify-content-center">
+          <div
+            class="col-xls-3 items_ventas--col"
+            *ngFor="let data of itemsVentas"
+          >
+            <ngx-skeleton-loader
+              *ngIf="itemsVentas.length == 0"
+              [theme]="{
+                width: '200px',
+                'border-radius': '10px',
+                height: '100px',
+                'margin-bottom': '10px'
+              }"
+            ></ngx-skeleton-loader>
+            <div class="rectangle venta">
+              <div class="title-rectangle">
+                <!-- <a>Compra un Certificado para <br />un tercero DIGITAL</a>
+              <img src="assets/icons/help-orange.png"
+                   class=".img-help" /> -->
+                <span>{{ data.title }}</span>
+              </div>
+              <div class="venta__item">
+                <div class="cabera">
+                  <!-- <img [src]="data.image"
+                     class="fill-18 "
+                     [attr.alt]="data.image" /> -->
+                  <i class="fa fa-trophy" aria-hidden="true"></i>
+                </div>
+                <div class="content-info-cert">
+                  <div class="content-rectagle">
+                    <div class="rectangle-copy-left">
+                      <div class="rectangle-copy-numero">
+                        {{ textAmmountVenta(data.porVender) }}
+                      </div>
+                      <p class="rectangle-copy-parrafo">
+                        {{ textItemVenta(data.ventas) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rectangle-footer">
+                <button
+                  type="button"
+                  *ngIf="data.type == 1"
+                  [disabled]="
+                    data.porVender == 0 ||
+                    (!cboPuntoVenta && bMostrarPuntoVentas)
+                  "
+                  class="btn-compra active"
+                  (click)="onComprarAll(data.action, data.porVender)"
+                >
+                  Comprar
+                </button>
+                <button
+                  type="button"
+                  *ngIf="data.type == 2"
+                  [disabled]="
+                    data.porVender == 0 ||
+                    (!cboPuntoVenta && bMostrarPuntoVentas)
+                  "
+                  class="btn-compra active"
+                  (click)="onComprarAll(data.action, data.porVender)"
+                >
+                  Comprar
+                </button>
+                <button
+                  type="button"
+                  *ngIf="data.type == 3"
+                  [disabled]="
+                    data.porVender == 0 ||
+                    (!cboPuntoVenta && bMostrarPuntoVentas)
+                  "
+                  class="btn-compra active"
+                  (click)="onComprarAll(data.action, data.porVender)"
+                >
+                  Comprar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-score row mt-4">
+        <div *ngIf="dataGeneral.manejaCredito" class="col-lg-4 credit">
+          <div class="rectangle content__score">
+            <div class="content__face">
+              <div class="title-rectangle">SCORE DE VENTAS GENERAL</div>
+              <div>
+                <i
+                  *ngIf="!dataGeneral.bloqueado"
+                  class="fa fa-smile-o"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  *ngIf="dataGeneral.bloqueado"
+                  class="fa fa-frown-o"
+                  aria-hidden="true"
+                ></i>
+              </div>
+            </div>
+            <div class="content-rectagle content-rectagle-score">
+              <div
+                class="rectangle-light-box bloqueomovil"
+                [ngClass]="{
+                  'rectangle-light-box-success': !dataGeneral.bloqueado,
+                  'rectangle-light-box-danger': dataGeneral.bloqueado
+                }"
+              >
+                <p class="saldos">
+                  Línea de crédito:
+                  {{ dataGeneral.montoCredito | number : "1.2-2" }}
+                  <br />
+                  Monto no pagado:
+                  {{ dataGeneral.montoDeuda | number : "1.2-2" }}
+                  <br />
+                  Días sin reportar: {{ dataGeneral.diasSinReportar }} (Max.
+                  {{ dataGeneral.diasCredito }} )
+                  <br />
+                  Bloqueado: {{ dataGeneral.bloqueado ? "Si" : "No" }}
+                </p>
+                <p
+                  class="rectangle-light-box-parrafo"
+                  [ngClass]="{
+                    'text-success': !dataGeneral.bloqueado,
+                    'text-danger': dataGeneral.bloqueado
+                  }"
+                >
+                  {{ dataGeneral.mensaje }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="dataEstado?.length" class="col-lg-4 credit">
+          <div class="rectangle content__score">
+            <div class="content__face">
+              <div class="title-rectangle">SCORE DE VENTAS DEL ESTADO</div>
+              <div>
+                <i
+                  *ngIf="!itemStateSelected?.bloqueado"
+                  class="fa fa-smile-o"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  *ngIf="itemStateSelected?.bloqueado"
+                  class="fa fa-frown-o"
+                  aria-hidden="true"
+                ></i>
+              </div>
+            </div>
+            <div class="content-rectagle content-rectagle-score">
+              <div
+                class="rectangle-light-box bloqueomovil"
+                [ngClass]="{
+                  'rectangle-light-box-success': !itemStateSelected?.bloqueado,
+                  'rectangle-light-box-danger': itemStateSelected?.bloqueado
+                }"
+              >
+                <select
+                  class="form-control select-formulario mt-4"
+                  (change)="setItemState($event.target.value)"
+                >
+                  <option
+                    value="{{ itemStateSelected.idLineaCredito }}"
+                    disabled
+                    selected
+                    hidden
+                  >
+                    {{ itemStateSelected.dataSelect }}
+                  </option>
+                  <option
+                    *ngFor="let item of dataEstado"
+                    value="{{ item.idLineaCredito }}"
+                  >
+                    {{ item.dataSelect }}
+                  </option>
+                </select>
+                <p class="saldos">
+                  Contratante: {{ itemStateSelected?.contratante || "-" }}
+                  <br />
+                  TDR: {{ itemStateSelected?.tdr || "-" }}
+                  <br />
+                  TC: {{ itemStateSelected?.tipoContrato || "-" }}
+                  <br />
+                  Línea de crédito: S/.
+                  {{
+                    (itemStateSelected?.lineaCredito | number : "1.2-2") || "-"
+                  }}
+                  <br />
+                  Monto no pagado: S/.
+                  {{ (itemStateSelected?.deuda | number : "1.2-2") || "-" }}
+                  <br />
+                  Fecha Fin: {{ itemStateSelected?.fechaFin || "-" }}
+                  <br />
+                  Bloqueado:
+                  {{ itemStateSelected?.bloqueado ? "Sí" : "No" }}
+                </p>
+                <p
+                  class="rectangle-light-box-parrafo"
+                  [ngClass]="{
+                    'text-success': !itemStateSelected?.bloqueado,
+                    'text-danger': itemStateSelected?.bloqueado
+                  }"
+                >
+                  {{ itemStateSelected?.mensaje || "" }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 d-flex justify-content-center">
+        <div class="col-lg-10 body-grafico">
+          <button class="btn-export" (click)="exportToExcel()">
+            <i class="fa fa-download" aria-hidden="true"></i> Exportar
+          </button>
+          <select
+            [(ngModel)]="anioSelected"
+            class="form-control select-formulario select-year-graph"
+            (change)="prepareData($event.target.value)"
+          >
+            <option value="undefined" disabled selected>
+              Seleccione un año
+            </option>
+            <option *ngFor="let anio of anios" value="{{ anio }}">
+              {{ anio }}
+            </option>
+          </select>
+          <div class="form-group row message">
+            <div
+              class="col-lg-12 contenido-modal header-historial-venta"
+              id="msjEmail"
+            >
+              <form class="radios-type" [formGroup]="formTypeChar">
+                <div class="radio">
+                  <input
+                    type="radio"
+                    formControlName="type"
+                    value="quantity"
+                    class="chk"
+                    id="quantity"
+                  />
+                  <label for="quantity" class="radiografica chk-style">
+                    Cantidad
+                  </label>
+                </div>
+                <div class="radio">
+                  <input
+                    type="radio"
+                    formControlName="type"
+                    value="ammount"
+                    class="chk"
+                    id="ammount"
+                  />
+                  <label for="ammount" class="radiografica chk-style">
+                    Monto
+                  </label>
+                </div>
+              </form>
+
+              <div style="display: block" *ngIf="showGraph">
+                <canvas
+                  baseChart
+                  height="100"
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalGrafica="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md div-grafica">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mis Ventas
+        </h4>
+        <div class="col-sm-1 col-lg-2 center-anio" id="msjEmail">
+          <select
+            [(ngModel)]="anioSelected"
+            class="form-control select-formulario select-formulario-graph select-year-graph"
+            (change)="prepareData($event.target.value)"
+          >
+            <option value="undefined" disabled selected>
+              Seleccione un año
+            </option>
+            <option *ngFor="let anio of anios" value="{{ anio }}">
+              {{ anio }}
+            </option>
+          </select>
+        </div>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeGrafica()"
+        >
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div
+            class="col-lg-12 contenido-modal header-historial-venta"
+            id="msjEmail"
+          >
+            <div class="radios-type">
+              <div class="radio">
+                <input type="radio" name="q" value="true" checked="checked" />
+                <label class="radiografica"> Cantidad </label>
+              </div>
+              <div class="radio">
+                <input type="radio" name="q" value="false" />
+                <label class="radiografica"> Monto </label>
+              </div>
+            </div>
+            <div style="display: block" *ngIf="showGraph">
+              <canvas
+                baseChart
+                height="200"
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [legend]="barChartLegend"
+                [chartType]="barChartType"
+              >
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

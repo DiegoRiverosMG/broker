@@ -1,0 +1,113 @@
+<main class="ps-container">
+  <app-nav-menuprod></app-nav-menuprod>
+  <section class="section">
+    <div class="navigation">
+      <app-breadcrumb>
+        <a routerLink="/extranet/vidadevolucion/prospectos">
+          <i class="fa fa-home" aria-hidden="true"></i>
+          VIDA DEVOLUCIÓN PROTECTA <sup>+</sup>
+        </a>
+        <a routerLink="/extranet/vidadevolucion/prospectos"> Mis prospectos </a>
+      </app-breadcrumb>
+      <button
+        class="button secondary no-border fit orange"
+        (click)="backToInit()"
+      >
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Regresar a la bandeja
+      </button>
+    </div>
+    <h2 class="step">
+      <span>1</span>
+      Datos básicos del asegurado
+    </h2>
+    <app-contratante-form
+      (contractorDataChange)="contractorFormValues($event)"
+      [contractorData]="contractor"
+    >
+    </app-contratante-form>
+    <div class="terms-container my-3">
+      <input
+        type="checkbox"
+        id="terms"
+        class="mark-u orange fit"
+        disabled
+        [checked]="acceptTerms"
+        (change)="acceptTerms = $event.target.checked"
+      />
+      <label for="terms">
+        Acepto los
+        <a class="ml-1" (click)="downloadTerms()"> términos y condiciones</a>
+      </label>
+    </div>
+    <small class="has-error">
+      {{ message }}
+    </small>
+    <div class="actions">
+      <button class="button secondary fit orange mr-3" (click)="backToInit()">
+        Cancelar
+      </button>
+      <button
+        class="button primary orange fit"
+        [disabled]="!isValidForm"
+        (click)="onSubmit()"
+      >
+        Siguiente
+      </button>
+    </div>
+  </section>
+</main>
+<ng-template #modalMessage>
+  <div class="content-modal-u">
+    <section class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div  style="text-align: center;" class="dal__body">
+          El cliente {{nombreyapellido}} cuenta con {{numpolizascontratadas}} pólizas contratadas por una suma asegurada de S/ {{currencyformat(totalsumapolizas)}} . Puede comprar una cobertura máxima de S/ {{currencyformat(sumasuperada2)}} adicionales
+          <p class="paragraph"></p>
+      </div>
+      <!-- <div *ngIf="NoValido" style="text-align: center;" class="dal__body">
+        Hola. Tu solicitud ha sido recepcionada por un asesor de Protecta Security, nos estaremos comunicando contigo en un máximo de 2 días laborables.
+        <p class="paragraph"></p>
+    </div> -->
+      <div class="modal__footer">
+        <button
+          class="button secondary fit"
+          (click)="closeModal()"
+          style="margin: 20px"
+        >
+          Cancelar
+        </button>
+        <button *ngIf="SuperCumulo" class="button primary fit" (click)="newPolice()">
+          Nueva póliza
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+<ng-template #modalClientNotValid>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close" (click)="closeModals()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">
+          No se puede continuar con la compra, el cliente es riesgoso.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="button primary fit" (click)="closeModals()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,17 @@
+<div class="form-input-textarea">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+  <textarea
+    type="text"
+    maxlength="4000"
+    placeholder="{{placeholder || label}}"
+    [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)"
+    rows="6"
+    (keypress)="onKey($event);"
+    (keydown)="onKeydown($event);"
+    (blur)="onBlur.emit()"
+    (focus)="onFocus.emit()"
+    (paste)="onPaste($event)"
+    [disabled]="disabled"
+
+    ></textarea>
+</div>

@@ -1,0 +1,85 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Consulta de Cruce de Interfaces</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="filter">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!--Búsqueda por fechas-->
+                            <div class="row">
+                                <!--Activar Tipo de Búqueda por Factura-->
+                                <div>
+                                    &nbsp;<input type="checkbox" class="checkbox"
+                                        (change)="setControlsForCommission($event)"
+                                        [(ngModel)]="SearchByCommissionsActivated" name="SearchByCommission">
+                                    &nbsp;Reporte de Comisiones SCTR
+                                </div>
+                                <br>
+                                <div>
+                                    &nbsp; <input type="checkbox" class="checkbox"
+                                        (change)="setControlsForAdvisory($event)"
+                                        [(ngModel)]="SearchByAdvisoryActivated" name="SearchByAdvisory"> &nbsp;Reporte de Asesorías Visanet
+                                </div>
+                                <div>
+                                    &nbsp; <input type="checkbox" class="checkbox"
+                                        (change)="setControlsForCollection($event)"
+                                        [(ngModel)]="SearchByCollectionsActivated" name="SearchByCollection">
+                                    &nbsp;Cobranzas SCTR y otros
+                                </div>
+                                <div>
+                                    &nbsp; <input type="checkbox" class="checkbox"
+                                        (change)="setControlsForPremiums($event)"
+                                        [(ngModel)]="SearchByPremiumsActivated" name="SearchByPremiums"> &nbsp;Reporte de Primas
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!--Filtro de fechas-->
+                                <div class="col-sm-2">
+                                    <span>FECHA DE INICIO(*)</span>
+                                    <input type="text" #dp="bsDatepicker"
+                                        [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                        value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                        readonly>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>FECHA DE FIN(*)</span>
+                                    <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                                        bsDatepicker [(bsValue)]="bsValueFin"
+                                        value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                        readonly>
+                                </div>
+                                <div class="col-sm-5">
+                                </div>
+                                <!--Boton que Lista el Reporte en acuerdo a las fechas ingresadas-->
+                                <div class="col-sm-2">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="GetProcess()" style="margin-top: 5px;">
+                                        <span>DESCARGAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+        <div [hidden]="!isLoading" class="loadingScreen">
+            <div style="display:flex;height: 100%;width:100%">
+                <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,214 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <!-- <navmenusctr></navmenusctr> -->
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">MANTENIMIENTO DE COMISIONES DIFERENCIADAS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="row col-sm-10">
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-4">
+                                        <span>RAMO</span>
+                                        <select class="minimal" (change)="ChangeRamo()" [(ngModel)]="SelectedBranchId" >
+                                            <option value="-">SELECCIONAR</option>
+                                            <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>PRODUCTO</span>
+                                        <select class="minimal" [(ngModel)]="SelectedProductoId" >
+                                            <option value="-">SELECCIONAR</option>
+                                            <option *ngFor="let item of listProduct" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>NRO. PÓLIZA</span>
+                                        <input type="text" maxlength="11" (keypress)="NPOLIZA=textValidate($event, '1',11)" (paste)="NPOLIZA=onPaste($event, '1',11)" value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <span *ngIf="bhabilitar != null">ESTADO:   
+                                                    <span *ngIf="!bhabilitar" class="green">HABILITADO</span>
+                                                    <span *ngIf="bhabilitar" class="red">INHABILITADO</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row col-sm-2">
+                                <span class="separacion" [ngStyle]="{'display': bhabilitar == null? 'none':'' }">&nbsp;</span>
+                                <button 
+                                class="row col-sm-12"
+                                        [ngStyle]="{'display': bhabilitar == null? 'none':'' }"
+                                        (click)="ProcessHabilitar()"
+                                        [disabled]="">
+                                        <span *ngIf="!bhabilitar">INHABILITAR</span>
+                                        <span *ngIf="bhabilitar">HABILITAR</span>
+                                </button>
+                                <span class="separacion">&nbsp;</span>
+                                <button class="row col-sm-12"
+                                        (click)="ProcessRegistrar()"
+                                        [disabled]="">
+                                    <span>REGISTRAR</span>
+                                </button>
+                                <span class="separacion">&nbsp;</span>
+                                <button class="row col-sm-12 full-color"
+                                        (click)="ProcessBuscar()"
+                                        [disabled]="">
+                                    <span>BUSCAR</span>
+                                </button>
+                            </div>
+                    </div>
+                </div>
+                
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead *ngIf="!comisionesDiferenciadasResultsHeader==null && comisionesDiferenciadasResultsHeader.length!=0">
+                                <tr class="grid-title" *ngFor="let item of HeadToShow">
+                                    
+                                    <td class="grid-title-item">{{ item.STIPO }}</td>
+                                    <td class="grid-title-item">{{ item.SGRUPO }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNMODULO">{{ item.NMODULO }}</td>
+                                    <td class="grid-title-item" *ngIf="hayDINIVIG">{{ item.DINIVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayDFINVIG">{{ item.DFINVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="haySESTADO">{{ item.SESTADO }}</td>
+                                    
+                                    <td class="grid-title-item" *ngIf="hayNINIVIG">{{ item.NINIVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNFINVIG">{{ item.NFINVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNTASACLIENTE">{{ item.NTASACLIENTE }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNTASACOMPANIA">{{ item.NTASACOMPANIA }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNMINCREDITO">{{ item.NMINCREDITO }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNMAXCREDITO">{{ item.NMAXCREDITO }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNPORCENTAJECANAL">{{ item.NPORCENTAJECANAL }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNPORCENTAJEBROKER">{{ item.NPORCENTAJEBROKER }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNMONTOCANAL">{{ item.NMONTOCANAL }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNMONTOBROKER">{{ item.NMONTOBROKER }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNAGE_MIN">{{ item.NAGE_MIN }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNAGE_MAX">{{ item.NAGE_MAX }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNANIOINI">{{ item.NINIVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNANIOFIN">{{ item.NFINVIG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNSUMAASEG">{{ item.NSUMAASEG }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNEDADMIN">{{ item.NEDADMIN }}</td>
+                                    <td class="grid-title-item" *ngIf="hayNEDADMAX">{{ item.NEDADMAX }}</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <thead *ngIf="(comisionesDiferenciadasResultsHeader==null || comisionesDiferenciadasResultsHeader.length==0) && (comisionesDiferenciadasResults==null || comisionesDiferenciadasResults.length==0)">
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">TIPO</td>
+                                    <td class="grid-title-item">GRUPO</td>
+                                    <td class="grid-title-item">Módulo</td>
+                                    <td class="grid-title-item">Fecha inicio de vigencia</td>
+                                    <td class="grid-title-item">Fecha fin de vigencia</td>
+                                    <td class="grid-title-item">Tasa neta cliente</td>
+                                    <td class="grid-title-item">% Comisión Broker / M. Broker</td>
+                                    <td class="grid-title-item">% Comisión Canal / M. Canal</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <thead *ngIf="comisionesDiferenciadasResults.length!=0">
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">TIPO</td>
+                                    <td class="grid-title-item">GRUPO</td>
+                                    <td class="grid-title-item" *ngIf="hayNMODULO">Módulo</td>
+                                    <td class="grid-title-item" *ngIf="hayNANIOINI">Inicio crédito</td>
+                                    <td class="grid-title-item" *ngIf="hayNANIOFIN">Fin crédito</td>
+                                    <td class="grid-title-item" *ngIf="hayDINIVIG">Fecha inicio de vigencia</td>
+                                    <td class="grid-title-item" *ngIf="hayDFINVIG">Fecha fin de vigencia</td>
+                                    <!--td class="grid-title-item" *ngIf="haySESTADO">{{ item.SESTADO }}</td-->
+                                    
+                                    <!--td class="grid-title-item" *ngIf="hayNINIVIG">Inicio de Crédito</td-->
+                                    <!--td class="grid-title-item" *ngIf="hayNFINVIG">Fin de Crédito</td-->
+                                    <td class="grid-title-item" *ngIf="hayNMINCREDITO">Monto min crédito</td>
+                                    <td class="grid-title-item" *ngIf="hayNMAXCREDITO">Monto max crédito</td>
+                                    <td class="grid-title-item" *ngIf="hayNTASACLIENTE">Tassa neta cliente</td>
+                                    <td class="grid-title-item" *ngIf="hayNTASACOMPANIA">Tasa Compañía</td>
+                                    <td class="grid-title-item" *ngIf="hayNSUMAASEG">TIPO CAPITAL</td>
+                                    <td class="grid-title-item" *ngIf="hayNPORCENTAJECANAL">% Com. Canal</td>
+                                    <td class="grid-title-item" *ngIf="hayNPORCENTAJEBROKER">% Com. Broker</td>
+                                    <td class="grid-title-item" *ngIf="hayNMONTOCANAL">Monto Broker</td>
+                                    <td class="grid-title-item" *ngIf="hayNMONTOBROKER">Monto Canal / GROSS UP</td>
+                                    <!--td class="grid-title-item" *ngIf="hayNAGE_MIN">Edad mínima</td-->
+                                    <!--td class="grid-title-item" *ngIf="hayNAGE_MAX">Edad máxima</td-->
+                                    <td class="grid-title-item" *ngIf="hayNEDADMIN">Edad mínima</td>
+                                    <td class="grid-title-item" *ngIf="hayNEDADMAX">Edad máxima</td>
+                                    <td class="grid-title-item" *ngIf="hayNROL">Rol</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="comisionesDiferenciadasResults==null || comisionesDiferenciadasResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td>{{ item.STIPO }}</td>
+                                    <td>{{ item.SGRUPO }}</td>
+                                    <td *ngIf="hayNMODULO">{{ item.NMODULO }}</td>
+                                    <td *ngIf="hayNANIOINI">{{ item.NINIVIG }}</td>
+                                    <td *ngIf="hayNANIOFIN">{{ item.NFINVIG }}</td>
+                                    <td *ngIf="hayDINIVIG">{{ item.DINIVIG | date:'dd/MM/yyyy' }}</td>
+                                    <td *ngIf="hayDFINVIG">{{ item.DFINVIG | date:'dd/MM/yyyy' }}</td>
+                                    <!--td *ngIf="haySESTADO">{{ item.SESTADO }}</td-->
+                                    
+                                    <!--td *ngIf="hayNINIVIG">{{ item.NINIVIG }}</td-->
+                                    <!--td *ngIf="hayNFINVIG">{{ item.NFINVIG }}</td-->
+                                    <td *ngIf="hayNMINCREDITO">{{ item.NMINCREDITO }}</td>
+                                    <td *ngIf="hayNMAXCREDITO">{{ item.NMAXCREDITO }}</td>
+                                    <td *ngIf="hayNTASACLIENTE">{{ item.NTASACLIENTE }}</td>
+                                    <td *ngIf="hayNTASACOMPANIA">{{ item.NTASACOMPANIA }}</td>
+                                    <td *ngIf="hayNSUMAASEG">{{ item.NSUMAASEG }}</td>
+                                    <td *ngIf="hayNPORCENTAJECANAL">{{ item.NPORCENTAJECANAL }}</td>
+                                    <td *ngIf="hayNPORCENTAJEBROKER">{{ item.NPORCENTAJEBROKER }}</td>
+                                    <td *ngIf="hayNMONTOCANAL">{{ item.NMONTOCANAL }}</td>
+                                    <td *ngIf="hayNMONTOBROKER">{{ item.NMONTOBROKER }}</td>
+                                    <!--td *ngIf="hayNAGE_MIN">{{ item.NAGE_MIN }}</td-->
+                                    <!--td *ngIf="hayNAGE_MAX">{{ item.NAGE_MAX }}</td-->
+                                    <td *ngIf="hayNEDADMIN">{{ item.NEDADMIN }}</td>
+                                    <td *ngIf="hayNEDADMAX">{{ item.NEDADMAX }}</td>
+                                    <td *ngIf="hayNROL">{{ item.NROL }}</td>
+                                    <td class="text-center icons-box" style="padding: 15px 0px;">
+                                        <img src="assets/icons/see.svg" (click)="Ver(item.NTIPO,item.NGRUPO,item)" title="Ver" alt="Ver" />
+                                        <img *ngIf="!bhabilitar" src="assets/icons/editar.png" (click)="Editar(item.NTIPO,item.NGRUPO,item)" title="Editar" alt="Editar" />
+                                        <img src="assets/icons/anular.png" (click)="Borrar(item.NTIPO,item.NGRUPO,item)" title="Borrar" alt="Borrar" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div [hidden]="!isLoading"
+                 class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px"
+                       class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

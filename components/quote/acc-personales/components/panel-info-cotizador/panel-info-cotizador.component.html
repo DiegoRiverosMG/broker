@@ -1,0 +1,815 @@
+<div class="panel-info-cotizador">
+    <panel-widget title="COTIZADOR">
+
+        <!-- <panel-table [items]="[{}]"
+                     [headerTemplate]="headerTemplateGeneral"
+                     [bodyTemplate]="bodyTemplateGeneral">
+        </panel-table>
+
+        <ng-template #headerTemplateGeneral>
+        </ng-template>
+
+        <ng-template #bodyTemplateGeneral>
+        </ng-template> -->
+
+        <div class="row">
+            <div class="col-sm-8 col-md-8 " *ngIf="this.cotizacion.modoVista != this.CONSTANTS.MODO_VISTA.EXCLUIR">
+                <div class="table-responsive">
+                    <table class="table table-hover"
+                           style="border: 1px solid #ececec;">
+                        <thead>
+                            <th *ngIf="(cotizacion.esEstudiantil || verificarPerfilAforo()) && !poliza.checkbox1?.POL_MAT"
+                                class="text-center width-140">Tipo de plan</th>
+                            <th *ngIf="!cotizacion.esEstudiantil || CONSTANTS.RAMO != CONSTANTS.RAMO_COMERCIAL.VIDA_GRUPO"
+                                class="text-center width-140">Número de asegurados</th>
+                            <th *ngIf="cotizacion.esEstudiantil && CONSTANTS.RAMO == CONSTANTS.RAMO_COMERCIAL.VIDA_GRUPO"
+                                class="text-center width-140">Número de alumnos</th>
+                            <th *ngIf="((cotizacion.esEstudiantil || verificarPerfilAforo()) && poliza.checkbox1?.POL_MAT) ||
+                                       (cotizacion.esEstudiantil && CONSTANTS.RAMO != CONSTANTS.RAMO_COMERCIAL.VIDA_GRUPO)"
+                                class="text-center width-140">Monto max. de pensión</th>
+                            <th *ngIf="cotizacion.esEstudiantil && poliza.checkbox1?.POL_MAT"
+                                class="text-center width-140">Tipo de plan</th>
+                            <th *ngIf="cotizacion.esEstudiantil && poliza.listReglas.flagTasa"
+                                class="text-center width-140">Tasa Comercial</th>
+                            <th *ngIf="cotizacion.esEstudiantil || verificarPerfilAforo()"
+                                class="text-center width-140">Prima Comercial Unit.</th>
+                            <th *ngIf="cotizacion.esEstudiantil || verificarPerfilAforo()"
+                                class="text-center width-140">Prima Comercial Total</th>
+                            <th *ngIf="!cotizacion.esEstudiantil && !verificarPerfilAforo()"
+                                class="text-center width-140">Prima</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let itemDet of cotizador.cotizadorDetalleList; let last = last; let i = index">
+                                <td *ngIf="(cotizacion.esEstudiantil || verificarPerfilAforo()) && !poliza.checkbox1?.POL_MAT"
+                                    class="text-center">
+                                    <span *ngIf="this.CONSTANTS.RAMO != this.CONSTANTS.RAMO_COMERCIAL.ACC_PERSONALES; else elseTipoPlan">
+                                        Pensión - {{ poliza.moneda.SSYMBOL || 'S/'}}{{itemDet.MONT_PLANILLA || '0' | prettyNumberApVg:2}}
+                                    </span>
+                                    <ng-template #elseTipoPlan>
+                                        1
+                                    </ng-template>
+                                </td>
+                                <td class="text-center width-140">
+                                    <span *ngIf="!poliza.checkbox1?.POL_MAT">{{itemDet.TOT_ASEGURADOS || '0'}}</span>
+                                    <form-input-text *ngIf="trama && poliza.checkbox1?.POL_MAT"
+                                                     placeholder="0"
+                                                     (change)="trabajadoresChange($event, 1, i)"
+                                                     [(value)]="detail ? itemDet.TOT_ASEGURADOS : trama.TOT_ASEGURADOS"
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                                     [disabled]="validateDisabled()"
+                                                     maxCaracter="6"></form-input-text>
+                                </td>
+                                <td *ngIf="((cotizacion.esEstudiantil || verificarPerfilAforo()) && poliza.checkbox1?.POL_MAT) ||
+                                           ((cotizacion.esEstudiantil || verificarPerfilAforo()) && CONSTANTS.RAMO != CONSTANTS.RAMO_COMERCIAL.VIDA_GRUPO)"
+                                    class="text-center width-140">
+                                    <!--*ngIf="trama && poliza.checkbox1?.POL_MAT"-->
+                                    <form-input-text 
+                                                     placeholder="0"
+                                                     (change)="trabajadoresChange($event, 2, i)"
+                                                     [(value)]="detail ? itemDet.MONT_PLANILLA : trama.MONT_PLANILLA "
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                                     [disabled]="validateDisabled()"
+                                                     maxCaracter="6"></form-input-text>
+                                </td>
+                                <td *ngIf="cotizacion.esEstudiantil && poliza.checkbox1?.POL_MAT"
+                                    class="text-center">
+                                    <span *ngIf="this.CONSTANTS.RAMO != this.CONSTANTS.RAMO_COMERCIAL.ACC_PERSONALES; else elseTipoPlan2">
+                                        Pensión - {{ poliza.moneda.SSYMBOL || 'S/' }}{{ detail ? itemDet.MONT_PLANILLA : trama.MONT_PLANILLA || '0' | prettyNumberApVg:2}}
+                                    </span>
+                                    <ng-template #elseTipoPlan2>
+                                        1
+                                    </ng-template>
+                                </td>
+                                <td *ngIf="cotizacion.esEstudiantil && poliza.listReglas.flagTasa" class="text-center">
+                                    <span>{{itemDet.TASA || '0' | prettyNumberApVg:2}} %</span>
+                                </td>
+                                <td *ngIf="cotizacion.esEstudiantil || verificarPerfilAforo()"
+                                    class="text-center">
+                                    <span>{{itemDet.PRIMA_UNIT || '0' | prettyNumberApVg:2}}</span>
+                                </td>
+                                <td *ngIf="cotizacion.esEstudiantil || verificarPerfilAforo()"
+                                    class="text-center">
+                                    <span>{{itemDet.PRIMA || '0' | prettyNumberApVg:2}}</span>
+                                </td>
+                                <td *ngIf="!cotizacion.esEstudiantil && !verificarPerfilAforo()"
+                                    class="text-center">
+                                    <span>{{itemDet.PRIMA || '0' | prettyNumberApVg:2}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-sm-4 text-center">
+                <div *ngIf="!detail || verificarProponer(1)">
+                    <form-button *ngIf="this.cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZARENOVAR && cotizacion.tipoTransaccion != 4 && (verificarProponer(1) || !detail &&  trama?.validado || !detail && cotizador?.calculado) ||
+                                        this.cotizacion.modoVista == CONSTANTS.MODO_VISTA.POLIZARENOVAR && cotizacion.tipoTransaccion == 4 && (trama?.validado || cotizador?.calculado)"
+                                 label="Ver coberturas"
+                                 (click)="clickProponer()"
+                                 btnClass="btn-primary"></form-button>
+
+                    <form-button *ngIf="((!!poliza.primaPropuesta || poliza.checkbox1?.POL_MAT) && !cotizador.calculado && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZAINCLUIR && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZARENOVAR) ||
+                                        (this.validarMontoPrima(1))"
+                                 label="Calcular"
+                                 (click)="!poliza.checkbox1?.POL_MAT ? clickCalcular() : clickCalcularSinTrama(true)"
+                                 btnClass="btn-primary"></form-button>
+                </div>
+            </div>
+        </div>
+        <!-- </ng-template> -->
+
+        <panel-modal title="Información de coberturas"
+                     [(open)]="show.coberturas"
+                     btnConfirmLabel="Cerrar"
+                     [templateBody]="templateCoberturas"></panel-modal>
+
+        <ng-template #templateCoberturas>
+            <div class="container">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           [ngClass]="{'active': tabCoberturas === true}"
+                           data-toggle="tab"
+                           (click)="showTabs('1');">COBERTURAS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           [ngClass]="{'active': tabAsistencias === true}"
+                           data-toggle="tab"
+                           (click)="showTabs('2');">ASISTENCIAS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           [ngClass]="{'active': tabBeneficios === true}"
+                           data-toggle="tab"
+                           (click)="showTabs('3');">BENEFICIOS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           [ngClass]="{'active': tabRecargos === true}"
+                           data-toggle="tab"
+                           (click)="showTabs('4');">RECARGOS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           [ngClass]="{'active': tabServAdicionales === true}"
+                           data-toggle="tab"
+                           (click)="showTabs('5');">SERVICIOS ADICIONALES</a>
+                    </li>
+                </ul>
+                <div id="myTabContent"
+                     class="tab-content">
+                    <div class="tab-pane fade"
+                         [ngClass]="{'show active': tabCoberturas === true}"
+                         *ngIf="tabCoberturas === true">
+                        <div class="container mt-3">
+                            <panel-table [(items)]="coberturas"
+                                         [reload]="true"
+                                         [pagination]="true"
+                                         [service]="accPersonalesService"
+                                         method="getTiposCoberturas"
+                                         [params]="{
+                                            planId: poliza.tipoPlan?.ID_PLAN,
+                                            IdProc: trama.NIDPROC,
+                                            codBranch: CONSTANTS.RAMO,
+                                            tipoProducto: poliza.tipoPoliza?.codigo,
+                                            codPerfil: poliza.tipoPerfil?.NIDPLAN,
+                                            monedaId: poliza.moneda?.NCODIGINT,
+                                            tipoTransac: cotizacion.transac,
+                                            tipoModalidad: poliza.modalidad?.ID,
+                                            ciiuId: '',
+                                            tipoEmpleado: '1',
+                                            fechaEfecto: fechaActual,
+                                            billingType: poliza.tipoFacturacion?.id,
+                                            channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0,
+                                            codproducto: poliza.producto?.COD_PRODUCT,
+                                            sclient: cotizacion.contratante.id,
+                                            idTariff: poliza.id_tarifario,
+                                            versionTariff: poliza.version_tarifario,
+                                            visualizar: visualizarData()
+                                        }"
+                                         [headerTemplate]="headerTemplateGeneral"
+                                         [bodyTemplate]="bodyTemplateCoberturas">
+                            </panel-table> <!--AVS - RENTAS-->
+
+                            <ng-template #headerTemplateGeneral>
+                                <th class="text-center"> Sel.</th>
+                                <th class="">Código</th>
+                                <th class="">Coberturas</th>
+                                <th class="text-center">TIPO DE S.A.</th> <!--AVS - RENTAS-->
+                                <!--<th class="">S.A.</th>-->
+                                <th *ngIf="CONSTANTS.PERFIL.EXTERNO !== storageService.user?.profileId"
+                                    class="text-center width-140">
+                                    <span> {{ verificarTextSA() }} </span>
+                                </th>
+                                <th class=""></th><!--GCAA - 01032024-->
+                            </ng-template>
+
+                            <ng-template #bodyTemplateCoberturas
+                                         let-item="item">
+                                <td class="text-center">
+                                    <form-input-checkbox [items]="[
+                                                                    { codigo: 'checked',
+                                                                    valor: '',
+                                                                    disabled: verificarFlag(item, 1),
+                                                                    isSelected: item.cobertura_adi == 1 ? true : false
+                                                                    }
+                                                                  ]"
+                                                         (change)="clickCalcularPrima($event.target, 'coberturas', item.codCobertura);">
+                                    </form-input-checkbox>
+                                </td>
+                                <td class="text-center">{{item.ncover}}</td>
+                                <td class="">{{item.descripcion}}
+                                    <!-- <span class="message-validation">{{item.message}}</span> -->
+                                </td>
+                                <td class="text-center" style="width: 124px;">{{item.sdes_cover}}</td> <!--AVS - RENTAS-->
+                                <!--<td class="text-center">{{item.ncover}}</td>-->
+                                <td *ngIf="CONSTANTS.PERFIL.EXTERNO !== storageService.user?.profileId && verificarColumnPropuesto() && !verificarEstudiantilVG()"
+                                    class="text-center padding-top-0 padding-bottom-0">
+                                   <!-- GCAA 20032024
+                                   <form-input-text [(value)]="item.id_cover=='FIXED_INSURED_SUM_PERCENTAGE' ? item.porcen_prop : 
+                                                                item.id_cover=='FIXED_PENSION_QUANTITY' ? item.pension_prop :
+                                                                item.id_cover=='MAXIMUM_PENSION_QUANTITY' ? item.pension_prop :
+                                                                item.capital_aut > 0 ? item.capital_aut : item.capital_prop > 0 ? item.capital_prop : item.capital"
+                                                     [disabled]="verificarInputSA(item)"
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.DECIMAL"
+                                                     placeholder="0"
+                                                     (change)="clickCalcularPrima($event, 'recoberturas', item.codCobertura);"
+                                                     maxCaracter="6"></form-input-text>-->
+                                    <!-- GCAA 20032024-->
+                                    <form-input-text [(value)]="item.id_cover=='FIXED_INSURED_SUM_PERCENTAGE' ? item.porcen_prop : 
+                                                     item.id_cover=='FIXED_PENSION_QUANTITY' ? item.pension_prop :
+                                                     item.id_cover=='MAXIMUM_PENSION_QUANTITY' ? item.pension_prop :
+                                                     item.capital_prop > 0 ? item.capital_prop : item.capital_aut > 0 ? item.capital_aut : item.capital"
+                                          [disabled]="verificarInputSA(item)"
+                                          [onlyInput]="true"
+                                          [patternPrevent]="CONSTANTS.REGEX.DECIMAL"
+                                          placeholder="0"
+                                          (change)="clickCalcularPrima($event, 'recoberturas', item.codCobertura);"
+                                          maxCaracter="6"></form-input-text>
+                                </td>
+                                <td *ngIf="verificarEstudiantilVG()"
+                                    class="text-center padding-top-0 padding-bottom-0">
+                                    <!--AVS - RENTAS-->
+                                    <!--<form-input-text [(value)]="item.nfactor"
+                                                     [disabled]="verificarInputFactor(item)"
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                                     placeholder="0"
+                                                     (change)="clickCalcularPrima();"
+                                                     maxCaracter="6"></form-input-text>-->
+                                    <!-- GCAA 20032024
+                                        <form-input-text [(value)]="item.id_cover=='FIXED_INSURED_SUM_PERCENTAGE' ? item.porcen_prop : 
+                                                                item.id_cover=='FIXED_PENSION_QUANTITY' ? item.pension_prop :
+                                                                item.id_cover=='MAXIMUM_PENSION_QUANTITY' ? item.pension_prop :
+                                                                item.capital_aut > 0 ? item.capital_aut : item.capital_prop > 0 ? item.capital_prop : item.capital"                                                                
+                                                     [disabled]="verificarInputFactor(item)"
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                                     placeholder="0"
+                                                     (change)="inputValorOri = ['1001', '1002', '1003'].includes(item.codCobertura) ? $event.target.value : null; clickCalcularPrima($event, 'recoberturas', item.codCobertura);"
+                                                     maxCaracter="6"></form-input-text>-->
+                                    <!-- GCAA 20032024-->
+                                    <form-input-text [(value)]="item.id_cover=='FIXED_INSURED_SUM_PERCENTAGE' ? item.porcen_prop : 
+                                                     item.id_cover=='FIXED_PENSION_QUANTITY' ? item.pension_prop :
+                                                     item.id_cover=='MAXIMUM_PENSION_QUANTITY' ? item.pension_prop :
+                                                     item.capital_prop > 0 ? item.capital_prop : item.capital_aut > 0 ? item.capital_aut : item.capital"                                                                
+                                          [disabled]="verificarInputFactor(item)"
+                                          [onlyInput]="true"
+                                          [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                                          placeholder="0"
+                                          (change)="inputValorOri = ['1001', '1002', '1003'].includes(item.codCobertura) ? $event.target.value : null; clickCalcularPrima($event, 'recoberturas', item.codCobertura);"
+                                          maxCaracter="6"></form-input-text>
+                                </td>
+                                <td *ngIf="!verificarColumnPropuesto() && !verificarEstudiantilVG()"
+                                    class="text-center">{{item.id_cover=='FIXED_INSURED_SUM_PERCENTAGE' ? item.porcen_prop : 
+                                                          item.id_cover=='FIXED_PENSION_QUANTITY' ? item.pension_prop :
+                                                          item.id_cover=='MAXIMUM_PENSION_QUANTITY' ? item.pension_prop :
+                                                          item.capital_aut > 0 ? item.capital_aut : item.capital_prop > 0 ? item.capital_prop : item.capital }}
+                                    <!--{{item.capital_aut > 0 ? item.capital_aut : item.capital_prop >0 ? item.capital_prop : item.capital}}--></td>
+                                    <td *ngIf="item.id_cover == 'FIXED_INSURED_SUM_PERCENTAGE'">%</td><!--GCAA - 01032024-->
+                                    <td *ngIf="item.id_cover != 'FIXED_INSURED_SUM_PERCENTAGE'"></td><!--GCAA - 01032024-->
+
+                            </ng-template>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade"
+                         [ngClass]="{'show active': tabAsistencias === true}"
+                         *ngIf="tabAsistencias === true">
+                        <div class="container mt-3">
+                            <panel-table [(items)]="asistencias"
+                                         [reload]="true"
+                                         [pagination]="true"
+                                         [service]="accPersonalesService"
+                                         fieldItems="ListAssists"
+                                         method="getAssits"
+                                         [params]="{
+                                                codProduct: poliza.producto?.codigo,
+                                                planId: poliza.tipoPlan?.ID_PLAN,
+                                                IdProc: trama.NIDPROC,
+                                                codBranch: CONSTANTS.RAMO,
+                                                policyType: poliza.tipoPoliza?.codigo,
+                                                profile: poliza.tipoPerfil?.NIDPLAN,
+                                                currency: poliza.moneda?.NCODIGINT,
+                                                tipoTransac: cotizacion.transac,
+                                                collocationType: poliza.modalidad?.ID,
+                                                ciiuId: '',
+                                                tipoEmpleado: '1',
+                                                fechaEfecto: fechaActual,
+                                                billingType: poliza.tipoFacturacion?.id,
+                                                channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0,
+                                                idTariff: poliza.id_tarifario,
+                                                versionTariff: poliza.version_tarifario,
+                                                visualizar: visualizarData()
+                                            }"
+                                         [headerTemplate]="headerTemplateGeneral"
+                                         [bodyTemplate]="bodyTemplateAsistencias">
+                            </panel-table>
+
+                            <ng-template #headerTemplateGeneral>
+                                <th class="text-center"> Sel.</th>
+                                <th class="">Código</th>
+                                <th class="">Asistencias</th>
+
+                            </ng-template>
+
+                            <ng-template #bodyTemplateAsistencias
+                                         let-item="item">
+                                <td class="text-center">
+
+                                    <form-input-checkbox [items]="[
+                                                                { codigo: 'checked',
+                                                                    valor: '',
+                                                                    disabled: verificarFlag(item, 2),
+                                                                    isSelected: item.sMark == '1' ? true : false
+                                                                }
+                                                            ]"
+                                                         (change)="clickCalcularPrima($event.target, 'asistencias', item.codAssist);">
+                                    </form-input-checkbox>
+
+                                </td>
+                                <td class="">{{item.num}}</td>
+                                <td class="">{{item.desAssist}}</td>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade"
+                         [ngClass]="{'show active': tabBeneficios === true}"
+                         *ngIf="tabBeneficios === true">
+                        <div class="container mt-3"> <!--AVS - RENTAS-->
+                            <panel-table [(items)]="beneficios"
+                                         [reload]="true"
+                                         [pagination]="true"
+                                         [service]="accPersonalesService"
+                                         fieldItems="ListBenefits"
+                                         method="getBenefits"
+                                         [params]="{
+                                                codProduct: poliza.producto?.codigo,
+                                                planId: poliza.tipoPlan?.ID_PLAN,
+                                                IdProc: trama.NIDPROC,
+                                                codBranch: CONSTANTS.RAMO,
+                                                policyType: poliza.tipoPoliza?.codigo,
+                                                profile: poliza.tipoPerfil?.NIDPLAN,
+                                                codPerfil: poliza.tipoPerfil?.NIDPLAN,
+                                                currency: poliza.moneda?.NCODIGINT,
+                                                tipoTransac: cotizacion.transac,
+                                                collocationType: poliza.modalidad?.ID,
+                                                ciiuId: '',
+                                                tipoEmpleado: '1',
+                                                fechaEfecto: fechaActual,
+                                                billingType: poliza.tipoFacturacion?.id,
+                                                channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0,
+                                                idTariff: poliza.id_tarifario,
+                                                versionTariff: poliza.version_tarifario,
+                                                varExec: coberturas,
+                                                visualizar: visualizarData()
+                                            }"
+                                         [headerTemplate]="headerTemplateGeneral"
+                                         [bodyTemplate]="bodyTemplateBenefits">
+                            </panel-table>
+
+                            <ng-template #headerTemplateGeneral>
+                                <th class="text-center"> Sel.</th>
+                                <th class="">Código</th>
+                                <th class="">Beneficios</th>
+                            </ng-template>
+<!-- (change)="clickCalcularPrima($event.target, 'beneficios', item.codBenefit);" -->
+                            <ng-template #bodyTemplateBenefits
+                                         let-item="item">
+                                <td class="text-center">
+                                    <ng-container *ngIf="visualizarData() == true; else elseVista">
+                                        <form-input-checkbox [items]="[
+                                                                        { 
+                                                                            codigo: 'checked',
+                                                                            valor: '',
+                                                                            disabled : verificarFlag(item, 3),
+                                                                            isSelected: item.sMark == '1' ? true : false
+                                                                        }
+                                                                    ]"
+                                                                    (change)="clickCalcularPrima($event.target, 'beneficios', item.codBenefit);">
+                                        </form-input-checkbox>
+                                    </ng-container>
+                                    <ng-template #elseVista>
+                                        <ng-container *ngIf="valAlertaBeneficio(item) == false; else elseBlock">
+                                            <form-input-checkbox [items]="[
+                                                                            { 
+                                                                                codigo: 'checked',
+                                                                                valor: '',
+                                                                                isSelected: item.sMark == '1' ? true : false
+                                                                            }
+                                                                        ]"
+                                                                        (change)="clickCalcularPrima($event.target, 'beneficios', item.codBenefit);">
+                                            </form-input-checkbox>
+                                        </ng-container>
+                                        <ng-template #elseBlock>
+                                            <input type="checkbox" (mousedown)="preventCheckboxChange($event, item)">
+                                        </ng-template>
+                                    </ng-template>                                    
+                                </td>                                
+                                <td class="">{{item.num}}</td>
+                                <td class="">{{item.desBenefit}}</td>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade"
+                         [ngClass]="{'show active': tabRecargos === true}"
+                         *ngIf="tabRecargos === true">
+                        <div class="container mt-3">
+                            <panel-table [(items)]="recargos"
+                                         [reload]="true"
+                                         [pagination]="true"
+                                         [service]="accPersonalesService"
+                                         fieldItems="ListSurcharges"
+                                         method="getSurcharges"
+                                         [params]="{
+                                            codProduct: poliza.producto?.codigo,
+                                            planId: poliza.tipoPlan?.ID_PLAN,
+                                            IdProc: trama.NIDPROC,
+                                            codBranch: CONSTANTS.RAMO,
+                                            policyType: poliza.tipoPoliza?.codigo,
+                                            profile: poliza.tipoPerfil?.NIDPLAN,
+                                            codPerfil: poliza.tipoPerfil?.NIDPLAN,
+                                            currency: poliza.moneda?.NCODIGINT,
+                                            tipoTransac: cotizacion.transac,
+                                            collocationType: poliza.modalidad?.ID,
+                                            ciiuId: '',
+                                            tipoEmpleado: '1',
+                                            fechaEfecto: fechaActual,
+                                            billingType: poliza.tipoFacturacion?.id,
+                                            channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0,
+                                            idTariff: poliza.id_tarifario,
+                                            versionTariff: poliza.version_tarifario,
+                                            visualizar: visualizarData()
+                                        }"
+                                         [headerTemplate]="headerTemplateGeneral"
+                                         [bodyTemplate]="bodyTemplateSurcharges">
+                            </panel-table>
+
+                            <ng-template #headerTemplateGeneral>
+                                <th class="text-center"> Sel.</th>
+                                <th class="">Código</th>
+                                <th class="">Recargos</th>
+                                <th class="text-center">Monto</th>
+                            </ng-template>
+                            <ng-template #bodyTemplateSurcharges
+                                         let-item="item">
+                                <td class="text-center">
+
+                                    <form-input-checkbox [items]="[
+                                                            { codigo: 'checked',
+                                                            valor: '',
+                                                            disabled: verificarFlag(item, 5),
+                                                            isSelected: item.sMark == '1' ? true : false
+                                                            }
+                                                        ]"
+                                                         (change)="clickCalcularPrima($event.target, 'recargos', item.codSurcharge);">
+                                    </form-input-checkbox>
+                                </td>
+                                <td class="">{{item.order}}</td>
+                                <td class="">{{item.desSurcharge}}</td>
+                                <td class="text-center">{{item.value}} %</td>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade"
+                         [ngClass]="{'show active': tabServAdicionales === true}"
+                         *ngIf="tabServAdicionales === true">
+                        <div class="container mt-3">
+                            <panel-table [(items)]="servAdicionales"
+                                         [reload]="true"
+                                         [pagination]="true"
+                                         [service]="accPersonalesService"
+                                         fieldItems="ListAdditionalService"
+                                         method="getAdditionalServices"
+                                         [params]="{
+                                            codProduct: poliza.producto?.codigo,
+                                            planId: poliza.tipoPlan?.ID_PLAN,
+                                            IdProc: trama.NIDPROC,
+                                            codBranch: CONSTANTS.RAMO,
+                                            policyType: poliza.tipoPoliza?.codigo,
+                                            profile: poliza.tipoPerfil?.NIDPLAN,
+                                            codPerfil: poliza.tipoPerfil?.NIDPLAN,
+                                            currency: poliza.moneda?.NCODIGINT,
+                                            tipoTransac: cotizacion.transac,
+                                            collocationType: poliza.modalidad?.ID,
+                                            ciiuId: '',
+                                            tipoEmpleado: '1',
+                                            fechaEfecto: fechaActual,
+                                            billingType: poliza.tipoFacturacion?.id,
+                                            channel: cotizacion.brokers.length > 0 ? cotizacion.brokers[0].COD_CANAL : 0,
+                                            idTariff: poliza.id_tarifario,
+                                            versionTariff: poliza.version_tarifario,
+                                            visualizar: visualizarData()
+                                        }"
+                                         [headerTemplate]="headerTemplateGeneral"
+                                         [bodyTemplate]="bodyTemplateSurcharges">
+                            </panel-table>
+
+                            <ng-template #headerTemplateGeneral>
+                                <th class="text-center"> Sel.</th>
+                                <th class="">Código</th>
+                                <th class="">Servicios Adicionales</th>
+                                <th class="text-center">Horas totales del Servicio</th>
+                            </ng-template>
+                            <ng-template #bodyTemplateSurcharges
+                                         let-item="item">
+                                <td class="text-center">
+
+                                    <form-input-checkbox [items]="[
+                                                            { codigo: 'checked',
+                                                            valor: '',
+                                                            isSelected: item.sMark == '1' ? true : false,
+                                                            disabled: verificarFlag(item, 6)
+                                                            }
+                                                        ]"
+                                                         (change)="clickCalcularPrima($event.target, 'servAdicionales', item.codServAdicionales);">
+                                    </form-input-checkbox>
+                                </td>
+                                <td class="">{{item.codServAdicionales}}</td>
+                                <td class="">{{item.desServAdicionales}}</td>
+                                <!-- <td class="text-center">{{item.value}}</td> -->
+                                <td class="text-center padding-top-0 padding-bottom-0">
+                                    <form-input-text [(value)]="item.amount"
+                                                     [onlyInput]="true"
+                                                     [patternPrevent]="CONSTANTS.REGEX.DECIMAL"
+                                                     [disabled]="verificarInputServiciosAdicionales(item)"
+                                                     placeholder="1"
+                                                     maxCaracter="3"
+                                                     (change)="clickCalcularPrima();"></form-input-text>
+                                </td>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4 float-right">
+                    <form-input-text label="prima comercial"
+                                     [value]="primaNeta | prettyNumberApVg:2"
+                                     [disabled]="true"
+                                     [onlyInput]="true"
+                                     [patternPrevent]="CONSTANTS.REGEX.DECIMAL"
+                                     placeholder="0"></form-input-text>
+                </div>
+            </div>
+        </ng-template>
+
+        <div class="row margin-bottom-15">
+            <div class="col-md-6">
+                <b style="text-transform: uppercase"
+                   *ngIf="trama?.validado || cotizador?.calculado">Detalle de primas</b>
+            </div>
+            <div class="col-md-6 text-right"
+                 *ngIf="detail && verificarProponer(2)">
+                <form-button label="Ver coberturas"
+                             (click)="clickProponer()"
+                             btnClass="btn-primary coberturas-cal"></form-button>
+            </div>
+        </div>
+
+        <!-- Tabla de cotizacion -->
+        <div class="row" *ngIf="!detail && (trama?.validado || cotizador?.calculado) || cotizacion.modoVista == CONSTANTS.MODO_VISTA.POLIZARENOVAR && cotizacion.calcularCober">
+            <div [ngClass]="{'col-md-6' : cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 6, 'col-md-12' :  cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6}">
+                <div class="table-responsive">
+                    <table class="table table-hover" style="border: 1px solid #ececec;">
+                        <thead>
+                            <tr style="color: #212529; background-color: rgba(0,0,0,.075);">
+                                <th>Tipo de plan</th>
+                                <th>&nbsp;</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 5 ? 'borderSidesHeader text-center' : 'text-center'">
+                                    Mensual</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 4 ? 'borderSidesHeader text-center' : 'text-center'">
+                                    Bimestral</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 3 ? 'borderSidesHeader text-center' : 'text-center'">
+                                    Trimestral</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 2 ? 'borderSidesHeader text-center' : 'text-center'">
+                                    Semestral</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 1 ? 'borderSidesHeader text-center' : 'text-center'">
+                                    Anual</th>
+                                <th *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 6"
+                                    class="borderSidesHeader text-center">Especial</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of trama?.amountPremiumList; let index = index;">
+                                <td>{{item.SCATEGORIA}}</td>
+                                <td>{{item.DES_TASA}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 5 ? 'borderSides text-center' : 'text-center'">
+                                    {{item.NPREMIUMN_MEN | prettyNumberApVg:2}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 4 ? 'borderSides text-center' : 'text-center'">
+                                    {{item.NPREMIUMN_BIM | prettyNumberApVg:2}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 3 ? 'borderSides text-center' : 'text-center'">
+                                    {{item.NPREMIUMN_TRI | prettyNumberApVg:2}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 2 ? 'borderSides text-center' : 'text-center'">
+                                    {{item.NPREMIUMN_SEM | prettyNumberApVg:2}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA != 6"
+                                    [className]="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 1 ? 'borderSides text-center' : 'text-center'">
+                                    {{item.NPREMIUMN_ANU | prettyNumberApVg:2}}</td>
+                                <td *ngIf="cotizacion.poliza.frecuenciaPago.COD_TIPO_FRECUENCIA == 6"
+                                    class="borderSidesHeader text-center">{{item.NPREMIUMN_ESP | prettyNumberApVg:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row margin-bottom-15" *ngIf="detail && (trama?.validado || cotizador?.calculado || cotizacion.modoTrama) && !cotizacion.calcularCober">
+            <div class="col-sm-4"
+                 [ngClass]="{'col-sm-6' : cotizacion.modoVista == CONSTANTS.MODO_VISTA.EXCLUIR}">
+                <div class="table-responsive">
+                    <table class="table table-hover"
+                           style="border: 1px solid #ececec;">
+                        <thead>
+                            <tr style="color: #212529; background-color: rgba(0,0,0,.075);">
+                                <th>Tipo plan</th>
+                                <th style="text-align: right;"
+                                    *ngIf="cotizacion.modoVista !== CONSTANTS.MODO_VISTA.EXCLUIR">Prima
+                                    {{cotizacion?.poliza?.frecuenciaPago?.DES_TIPO_FRECUENCIA}}</th>
+                                <th style="text-align: right;"
+                                    *ngIf="cotizacion.modoVista == CONSTANTS.MODO_VISTA.EXCLUIR">MONTO A DEVOLVER</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of cotizador.amountPremiumListAnu; let last = last; let i = index"
+                                [class.font-bold]="last">
+                                <!--GCAA 18032024-->
+                                <!--<td *ngIf="i == 0">Plan Maestro</td>-->
+                                <td *ngIf="i > 0">{{item.DES_TASA || (item.CAPITAL | prettyNumberApVg:2)}}</td>
+                                <!--GCAA 18032024-->
+                                <td *ngIf="i > 0" class="text-right">{{item.NPREMIUMN_ANU | prettyNumberApVg:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-4"
+                 *ngIf="cotizacion.modoTrama != true && CONSTANTS.MODO_VISTA.POLIZARENOVAR !== cotizacion.modoVista && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.EXCLUIR  && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZAINCLUIR">
+                <div class="table-responsive">
+                    <table class="table table-hover"
+                           style="border: 1px solid #ececec;">
+                        <thead>
+                            <tr style="color: #212529; background-color: rgba(0,0,0,.075);">
+                                <!-- <th>S.A propuesta</th> -->
+                                <th>Tipo plan</th>
+                                <th style="text-align: right;">Prima prop.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of cotizador.amountPremiumListProp; let last = last; let i = index"
+                                [class.font-bold]="last">
+                                <!--GCAA 18032024-->
+                                  <!--<td *ngIf="i == 0">Plan Maestro</td>-->
+                                <td *ngIf="i > 0">{{item.DES_TASA || (item.CAPITAL | prettyNumberApVg:2)}}</td>
+                                <!--GCAA 18032024-->
+                                <td *ngIf="i > 0" class="text-right">{{item.NPREMIUMN_ANU | prettyNumberApVg:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-4"
+                 *ngIf="cotizacion.modoTrama != true && CONSTANTS.MODO_VISTA.POLIZARENOVAR !== cotizacion.modoVista && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.EXCLUIR  && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZAINCLUIR">
+                <div class="table-responsive">
+                    <table class="table table-hover"
+                           style="border: 1px solid #ececec;">
+                        <thead>
+                            <tr style="color: #212529; background-color: rgba(0,0,0,.075);">
+                                <!-- <th>S.A Autorizada</th> -->
+                                <th>Tipo plan</th>
+                                <th style="text-align: right;">Prima aut.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of cotizador.amountPremiumListAut; let last = last; let i = index"
+                                [class.font-bold]="last">
+                                <!--GCAA 18032024-->
+                                  <!--<td *ngIf="i == 0">Plan Maestro</td>-->
+                                <td *ngIf="i > 0">{{item.DES_TASA || (item.CAPITAL | prettyNumberApVg:2)}}</td>
+                                <!--GCAA 18032024-->
+                                <td *ngIf="i > 0" class="text-right">{{item.NPREMIUMN_ANU | prettyNumberApVg:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row"
+             *ngIf="cotizacion.modoTrama != true && CONSTANTS.MODO_VISTA.POLIZARENOVAR !== cotizacion.modoVista && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.EXCLUIR && cotizacion.modoVista !== CONSTANTS.MODO_VISTA.POLIZAINCLUIR">
+            <div class="col-sm-6"
+                 *ngIf="!!detail">
+                <h5 style="font-size: 14px;">ARCHIVO ADJUNTOS </h5>
+                <table class="table table-borderless riesgo tblbroker">
+                    <thead>
+                        <tr class="d-flex">
+                            <th class="col-sm text-center"><label>Nombre del archivo</label>
+                            </th>
+                            <th class="col-sm text-center"><label>Descargar</label></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let filePath of cotizador.files"
+                            class="d-flex">
+                            <td class="col-sm text-center">
+                                <span>{{ filePath | fileName }}</span>
+                            </td>
+                            <td class="col-sm text-center"><a (click)="downloadFile(filePath)"><img
+                                         src="assets/icons/imprimir.png"
+                                         title="Descargar"
+                                         style="cursor:pointer;"
+                                         alt="Descargar" /></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="!cotizador?.files?.length">
+                        <tr class="d-flex">
+                            <td colspan="2"
+                                class="col-sm text-center"><span>No se encontraron archivos</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-{{detail ? 6 : 12}}">
+                <form-input-textarea label="Comentario"
+                                     [(value)]="cotizador.comentario"
+                                     [disabled]="detail"
+                                     [patternPrevent]="CONSTANTS.REGEX.LEGALNAME"></form-input-textarea>
+            </div>
+        </div>
+        <div class="row"
+             *ngIf="cotizacion.activarFormaPago">
+            <div class="col-md-12">
+                <b style="text-transform: uppercase">Pago adelantado</b>
+            </div>
+            <div class="col-sm-3 margin-top-10">
+                <form-input-checkbox [items]="[
+            { codigo: 'PAGO_ADEL',
+              valor: 'Pago Adelantado',
+              disabled: !!cotizacion.modoVista ? cotizacion.modoVista == 'Evaluar': false,
+              isSelected: !!cotizacion.modoVista ? cotizacion.modoVista == 'Evaluar': false
+            }
+          ]"
+                                     [disabled]="false"
+                                     [(mapSelected)]="cotizador.checkbox"></form-input-checkbox>
+            </div>
+        </div>
+
+        <div class="row"
+             *ngIf="verificarFlag(null, 4)">
+            <div class="col-sm-12">
+                <form-input-file label="Documento de siniestralidad"
+                                 [multiple]="false"
+                                 [siniestralidad]="true"
+                                 [(value)]="cotizador.file_siniestralidad"></form-input-file>
+            </div>
+        </div>
+
+        <div class="row"
+             *ngIf="!detail">
+            <div class="col-sm-12">
+                <form-input-file label="Documentos de los asegurados"
+                                 [multiple]="true"
+                                 [siniestralidad]="false"
+                                 [(value)]="cotizador.files"></form-input-file>
+            </div>
+        </div>
+
+    </panel-widget>
+</div>

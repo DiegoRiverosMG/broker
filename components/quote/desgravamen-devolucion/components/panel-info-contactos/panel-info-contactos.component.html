@@ -1,0 +1,144 @@
+<div class="panel-info-contactos">
+  <panel-widget
+    title="Datos del contacto del contratante">
+
+    <div class="row">
+      <div class="col-sm-12">
+
+        <form-button
+          *ngIf="(!contactos?.length && modoVista == CONSTANTS.MODO_VISTA.COTIZAR) || (!contactos?.length && modoVista == CONSTANTS.MODO_VISTA.EVALUAR) || (!contactos?.length && modoTrama) || !contactos?.length"
+          class="pull-right"
+          label="Agregar Contacto"
+          (click)="clickAdd()"
+        ></form-button>
+
+        <panel-table
+          classTable="margin-top-20"
+          [items]="contactos"
+          [numeration]="true"
+          [detail]="detail"
+          [header]="[
+            'Parentesco',
+            'Nombres y Apellidos',
+            'Teléfono',
+            'Correo Electrónico'
+          ]"
+          (clickEdit)="clickEdit()"
+          (clickDelete)="clickDelete()"
+          [bodyTemplate]="bodyTemplate">
+        </panel-table>
+
+        <ng-template #bodyTemplate let-item="item">
+          <td class="text-center">{{item.P_DESTICONTACTO}}</td>
+          <td class="text-center">{{item.P_SNOMBRES}} {{item.P_SAPEPAT}} {{item.P_SAPEMAT}}</td>
+          <td class="text-center">{{item.P_SPHONE}}</td>
+          <td class="text-center">{{item.P_SE_MAIL}}</td>
+        </ng-template>
+
+        <!-- <panel-modal
+          [(open)]="open.contacto"
+          title="Agregar Contacto"
+          [templateBody]="templateBodyModal"
+          btnConfirmLabel="Agregar contacto"
+          (clickConfirm)="addContacto()"
+        ></panel-modal>
+
+        <ng-template #templateBodyModal>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-6">
+                <form-input-select
+                  label="Parentesco"
+                  [service]="clientInformationService"
+                  method="getContactTypeList"
+                  [params]="{
+                    P_NIDDOC_TYPE: contratante.tipoDocumento.Id,
+                    P_SIDDOC: contratante.numDocumento
+                  }"
+                  fieldCodigo="NCODIGO"
+                  fieldValor="SDESCRIPT"
+                  [(value)]="contacto.parentesco"
+                ></form-input-select>
+              </div>
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Nombres"
+                  [(value)]="contacto.P_SNOMBRES"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Apellido paterno"
+                  [(value)]="contacto.P_SAPEPAT"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Apellido materno"
+                  [(value)]="contacto.P_SAPEMAT"
+                ></form-input-text>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <form-input-select
+                  label="Tipo documento"
+                  [service]="clientInformationService"
+                  method="getDocumentTypeList"
+                  params="0"
+                  fieldCodigo="Id"
+                  fieldValor="Name"
+                  [(value)]="contacto.tipoDocumento"
+                ></form-input-select>
+              </div>
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Documento"
+                  [(value)]="contacto.P_SIDDOC"
+                ></form-input-text>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Área"
+                  [(value)]="contacto.P_SNAMEAREA"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Cargo"
+                  [(value)]="contacto.P_SNAMEPOSITION"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Teléfono"
+                  [(value)]="contacto.P_SPHONE"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+              <div class="col-sm-6">
+                <form-input-text
+                  label="Correo electrónico"
+                  [(value)]="contacto.P_SE_MAIL"
+                  [required]="true"
+                ></form-input-text>
+              </div>
+            </div>
+          </div>
+        </ng-template> -->
+
+      </div>
+    </div>
+
+  </panel-widget>
+</div>

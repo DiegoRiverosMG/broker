@@ -1,0 +1,166 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Detalle Proforma - {{proforma.proforma}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.close(interval)">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div>
+    <div class="filter">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span><strong>PÓLIZA:</strong> {{proforma.policy}}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span><strong>PROFORMA:</strong> {{proforma.proforma}}</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><strong>TIP.COMPROBANTE:</strong> {{proforma.billType}}</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span><strong>SERIE:</strong> {{proforma.serieNumber}}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span><strong>NRO.COMPROBANTE:</strong> {{proforma.billNumber}}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span><strong>TIP.SOLICITUD:</strong> {{proforma.requestType}}</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><strong>FEC.FACTURA:</strong> {{proforma.billDate}}</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span><strong>PRIMA BRUTA:</strong> {{proforma.grossPremium}}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span><strong>PRIMA NETA:</strong> {{proforma.purePremium}}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span><strong>DERECHO EMISIÓN:</strong> {{proforma.rightIssue}}</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><strong>FEC.INI.RECIBO:</strong> {{proforma.startReceipt}}</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span><strong>IGV:</strong> {{proforma.igv}}</span>
+                    </div>
+                   
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span><strong>FEC.FIN.RECIBO:</strong> {{proforma.endReceipt}}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span><strong>TIP.DOC:</strong> {{proforma.docType}}</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><strong>CONTRATANTE:</strong> {{proforma.clientName}} </span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span><strong>N.DOC:</strong> {{proforma.docNumber}}</span>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Grilla del reporte-->
+<div class="grid form-group">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr class="grid-title">
+                    <td class="grid-title-item text-center">N.Cert</td>
+                    <td class="grid-title-item text-center">Ini.Vig.Cert</td>
+                    <td class="grid-title-item text-center">Fin.Vig.Cert</td>
+                    <td class="grid-title-item text-center">Estado</td>
+                    <td class="grid-title-item text-center">Tip.Doc</td>
+                    <td class="grid-title-item text-center">Nro.Doc</td>
+                    <td class="grid-title-item text-center">Asegurado</td>
+                    <td class="grid-title-item text-center">Planilla</td>
+                    <td class="grid-title-item text-center">P.Neta</td>
+                    <td class="grid-title-item text-center">D.E.</td>
+                    <td class="grid-title-item text-center">P.Bruta</td>
+                    <td class="grid-title-item text-center">Tip.Riesgo</td>
+                    <td class="grid-title-item text-center">Tasa Riesgo</td>
+                    <td class="grid-title-item text-center">Fec.Anulación</td>
+
+                </tr>
+            </thead>
+            <ng-container *ngIf="processDetailList!=null && processDetailList.length>0; then showGrid else hideGrid">
+            </ng-container>
+        </table>
+        <ng-template #hideGrid>
+            <tbody>
+                <tr style="text-align: center;">
+                    <td colspan="10"></td>
+                </tr>
+            </tbody>
+        </ng-template>
+        <ng-template #showGrid>
+            <tbody>
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                    <td class="text-center">{{ item.certificatNumber }}</td>
+                    <td class="text-center">{{ item.startDateValidity }}</td>
+                    <td class="text-center">{{ item.endDateValidity }}</td>
+                    <td class="text-center">{{ item.statusCertificat }}</td>
+                    <td class="text-center">{{ item.documentType }}</td>
+                    <td class="text-center">{{ item.IdDocument }}</td>
+                    <td class="text-center">{{ item.insured }}</td>
+                    <td class="text-center">{{ item.payroll }}</td>
+                    <td class="text-center">{{ item.purePremium }}</td>
+                    <td class="text-center">{{ item.rightIssue }}</td>
+                    <td class="text-center">{{ item.grossPremium }}</td>
+                    <td class="text-center">{{ item.kindRisk }}</td>
+                    <td class="text-center">{{ item.rateRisk }}</td>
+                    <td class="text-center">{{ item.nullDate }}</td>
+                </tr>
+            </tbody>
+        </ng-template>
+    </div>
+</div>
+<!--Aqui se realiza la paginación-->
+<ng-container *ngIf="processDetailList!=null && processDetailList.length>0; then showPagination">
+</ng-container>
+<ng-template #showPagination>
+    <div class="row mt-4">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-12">
+            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</ng-template>
+<div class="row">
+    <div class="col-sm-1">
+    </div>
+    <div class="col-sm-2">
+        <span>DESCARGA DE REGISTROS</span>
+        <img src="assets/icons/exceltc.png" height="40" width="40" title="Descargar Excel" alt="Descargar Excel"
+            style="cursor: pointer;" (click)="downloadModalListToExcel()" />
+        &nbsp;
+        &nbsp;
+        <!-- <img src="assets/icons/printertc.png" height="40" width="40" title="Descargar PDF" alt="Descargar PDF"
+            style="cursor: pointer;" (click)="downloadModalListToPDF()" /> -->
+    </div>
+</div>
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button (click)="reference.close(interval)"><span>Volver</span></button>
+</div>

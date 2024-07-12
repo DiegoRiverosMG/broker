@@ -1,0 +1,38 @@
+.clear-row {
+  margin-bottom: 0px !important;
+  margin-right: 0px !important;
+}
+
+.clear-row.row {
+  margin-right: 0px !important;
+}
+
+.no-padding-left .col-lg-12 {
+  padding-left: 0px !important;
+}
+
+.no-pl {
+  padding-left: 0px !important;
+}
+
+.container-fluid {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.col-clear {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+@media (min-width: 0px) {
+  .row {
+    margin-right: 0px !important;
+  }
+}
+
+.error {
+  font-size: 11px;
+  margin-left: 2px;
+  color: red;
+}

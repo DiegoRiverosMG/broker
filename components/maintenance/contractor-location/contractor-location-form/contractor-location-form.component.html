@@ -1,0 +1,316 @@
+<div class="modal-header">
+    <h4 class="modal-title"
+        id="modal-basic-title">{{title}}</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="formModalReference.close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="filter">
+        <div class="card">
+            <div class="card-body"
+                 [formGroup]="mainFormGroup">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h5>Datos de Sede</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span>TIPO SEDE (*)</span>
+                        <select formControlName="type"
+                                [(ngModel)]="currentLocation.TypeId"
+                                class="minimal">
+                            <option disabled
+                                    value="0">Seleccionar</option>
+                            <option *ngFor="let item of contractorLocationTypeList"
+                                    value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <span>DESCRIPCIÓN (*)</span>
+                        <input formControlName="description"
+                               [(ngModel)]="currentLocation.Description"
+                               type="text"
+                               (focus)="clearDescriptionValidators()"
+                               placeholder="Descripción"
+                               maxlength="32"
+                               [ngClass]="{'error-validate': !mainFormGroup.get('description').valid && mainFormGroup.get('description').touched}">
+                        <span *ngIf="mainFormGroup.get('description').errors!=null && mainFormGroup.get('description').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('description').hasError('required'); then required_description else invalid_description">
+                            </ng-container>
+                            <ng-template #required_description>La descripción es requerida.</ng-template>
+                            <ng-template #invalid_description>La descripción no es válida.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span>DEPARTAMENTO (*)</span>
+                        <select formControlName="department"
+                                [(ngModel)]="currentLocation.DepartmentId"
+                                (change)="getProvinceList()"
+                                (focus)="clearDepartmentValidators()"
+                                [ngClass]="{'error-validate': !mainFormGroup.get('department').valid && mainFormGroup.get('department').touched}"
+                                class="minimal">
+                            <option disabled
+                                    value="0">Seleccionar</option>
+                            <option *ngFor="let item of departmentList"
+                                    value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                        <span *ngIf="mainFormGroup.get('department').errors!=null && mainFormGroup.get('department').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('department').hasError('required'); then required_department else invalid_department">
+                            </ng-container>
+                            <ng-template #required_department>El departamento es requerido.</ng-template>
+                            <ng-template #invalid_department>El departamento no es válido.</ng-template>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span>PROVINCIA (*)</span>
+                        <select formControlName="province"
+                                [(ngModel)]="currentLocation.ProvinceId"
+                                (change)="getDistrictList()"
+                                (focus)="clearProvinceValidators()"
+                                [ngClass]="{'error-validate': !mainFormGroup.get('province').valid && mainFormGroup.get('province').touched}"
+                                class="minimal">
+                            <option disabled
+                                    value="0">Seleccionar</option>
+                            <option *ngFor="let item of provinceList"
+                                    value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                        <span *ngIf="mainFormGroup.get('province').errors!=null && mainFormGroup.get('province').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('province').hasError('required'); then required_province else invalid_province">
+                            </ng-container>
+                            <ng-template #required_province>La provincia es requerida.</ng-template>
+                            <ng-template #invalid_province>La provincia no es válida.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span>DISTRITO (*)</span>
+                        <select formControlName="district"
+                                [(ngModel)]="currentLocation.DistrictId"
+                                [ngClass]="{'error-validate': !mainFormGroup.get('district').valid && mainFormGroup.get('district').touched}"
+                                (focus)="clearDistrictValidators()"
+                                class="minimal">
+                            <option disabled
+                                    value="0">Seleccionar</option>
+                            <option *ngFor="let item of districtList"
+                                    value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                        <span *ngIf="mainFormGroup.get('district').errors!=null && mainFormGroup.get('district').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('district').hasError('required'); then required_district else invalid_district">
+                            </ng-container>
+                            <ng-template #required_district>El distrito es requerido.</ng-template>
+                            <ng-template #invalid_district>El distrito no es válido.</ng-template>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span>DIRECCIÓN (*)</span>
+                        <input formControlName="address"
+                               [(ngModel)]="currentLocation.Address"
+                               type="text"
+                               placeholder="Dirección"
+                               (focus)="clearAddressValidators()"
+                               maxlength="60"
+                               [ngClass]="{'error-validate': !mainFormGroup.get('address').valid && mainFormGroup.get('address').touched}">
+                        <span *ngIf="mainFormGroup.get('address').errors!=null && mainFormGroup.get('address').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('address').hasError('required'); then required_address else invalid_address">
+                            </ng-container>
+                            <ng-template #required_address>La dirección es requerida.</ng-template>
+                            <ng-template #invalid_address>La dirección no es válida.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span style="margin-bottom: 7px">ACTIVIDAD A REALIZAR (*)</span>
+                        <ng-select formControlName="technicalActivity"
+                                   [items]="technicalActivityList"
+                                   class="border-ng"
+                                   [(ngModel)]="currentLocation.TechnicalActivityId"
+                                   (focus)="clearEconomicActivityValidators()"
+                                   (change)="fillEconomicActivityList($event)"
+                                   [clearable]="true"
+                                   placeholder="Seleccionar"
+                                   dropdownPosition="bottom"
+                                   notFoundText="No hay resultados"
+                                   title="{{activityMain}}"
+                                   bindLabel="Name"
+                                   bindValue="Id"
+                                   [ngClass]="{'error-validate': !mainFormGroup.get('technicalActivity').valid && mainFormGroup.get('technicalActivity').touched}">
+                            <ng-template ng-option-tmp
+                                         let-item="item">
+                                <div title="{{item.Name}}">{{item.Name}}</div>
+                            </ng-template>
+                        </ng-select>
+                        <span *ngIf="mainFormGroup.get('technicalActivity').errors!=null && mainFormGroup.get('technicalActivity').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('technicalActivity').hasError('required'); then required_technicalActivity else invalid_technicalActivity">
+                            </ng-container>
+                            <ng-template #required_technicalActivity>La actividad a realizar es requerida.</ng-template>
+                            <ng-template #invalid_technicalActivity>La actividad a realizar no es válida.</ng-template>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span style="margin-bottom: 7px">SUB-ACTIVIDADES (*)</span>
+                        <ng-select formControlName="economicActivity"
+                                   class="border-ng"
+                                   [items]="economicActivityList"
+                                   bindLabel="Name"
+                                   bindValue="Id"
+                                   [(ngModel)]="currentLocation.EconomicActivityId"
+                                   (focus)="clearEconomicActivityValidators()"
+                                   (change)="getSubActivity($event)"
+                                   [clearable]="true"
+                                   placeholder="Seleccionar"
+                                   dropdownPosition="bottom"
+                                   notFoundText="No hay resultados"
+                                   title="{{subActivity}}"
+                                   [ngClass]="{'error-validate': !mainFormGroup.get('economicActivity').valid && mainFormGroup.get('economicActivity').touched}">
+                            <ng-template ng-option-tmp
+                                         let-item="item">
+                                <div title="{{item.Name}}">{{item.Name}}</div>
+                            </ng-template>
+                        </ng-select>
+                        <span *ngIf="mainFormGroup.get('economicActivity').errors!=null && mainFormGroup.get('economicActivity').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('economicActivity').hasError('required'); then required_economicActivity else invalid_economicActivity">
+                            </ng-container>
+                            <ng-template #required_economicActivity>La actividad económica es requerida.</ng-template>
+                            <ng-template #invalid_economicActivity>La actividad económica no es válida.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6"
+                         *ngIf="openedInEditMode==true && willBeSaved==true">
+                        <span>ESTADO (*)</span>
+                        <select formControlName="state"
+                                [(ngModel)]="currentLocation.StateId"
+                                [ngClass]="{'error-validate': !mainFormGroup.get('state').valid && mainFormGroup.get('state').touched}"
+                                class="minimal">
+                            <option disabled
+                                    value="0">Seleccionar</option>
+                            <option value="1">Activo</option>
+                            <option value="2">Inactivo</option>
+                        </select>
+                        <span *ngIf="mainFormGroup.get('state').errors!=null && mainFormGroup.get('state').touched"
+                              class="mensaje-error-control">
+                            <ng-container
+                                          *ngIf="mainFormGroup.get('state').hasError('required'); then required_state else invalid_state">
+                            </ng-container>
+                            <ng-template #required_state>El estado es requerido.</ng-template>
+                            <ng-template #invalid_state>El estado no es válido.</ng-template>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="grid form-group">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h5>Datos de Contactos</h5>
+                </div>
+                <div class="col-sm-4 offset-sm-3 mb-2">
+                    <button (click)="getContact(false,null) ">
+                        <span>Agregar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class="grid-title">
+                            <td class="grid-title-item">Nombres</td>
+                            <td class="grid-title-item">Teléfono</td>
+                            <td class="grid-title-item">Email</td>
+                            <td class="grid-title-item">Opciones</td>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="itemsWereFound; then showContent;else hideContent"></ng-container>
+                    <ng-template #showContent>
+                        <tbody *ngFor="let item of currentLocation.ContactList; let row_no = index">
+                            <tr>
+                                <td>{{item.FullName}}</td>
+                                <td>{{item.PhoneNumber}}</td>
+                                <td>{{item.Email}}</td>
+                                <td *ngIf="openedInEditMode==true && willBeSaved==true"
+                                    class="data-table-tr-td">
+                                    <img src="assets/icons/editar.png"
+                                         title="Editar"
+                                         alt="Editar"
+                                         style="cursor: pointer;"
+                                         (click)="getContact(true,item.Id) " />
+                                    <img src="assets/icons/anular.png"
+                                         title="Eliminar"
+                                         alt="Eliminar"
+                                         style="cursor: pointer;margin-left:7px"
+                                         (click)="confirmDeletion(item.Id, false)" />
+                                </td>
+                                <td *ngIf="openedInEditMode==false || willBeSaved==false"
+                                    class="data-table-tr-td">
+                                    <img src="assets/icons/editar.png"
+                                         title="Editar"
+                                         alt="Editar"
+                                         style="cursor: pointer;"
+                                         (click)="editContactInView(row_no) " />
+                                    <img src="assets/icons/anular.png"
+                                         title="Eliminar"
+                                         alt="Eliminar"
+                                         style="cursor: pointer;margin-left:7px"
+                                         (click)="confirmDeletion(row_no, true)" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #hideContent>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">No se encontraron registros</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </table>
+            </div>
+            <ng-container *ngIf="itemsWereFound && openedInEditMode==true && willBeSaved==true; then showPagination">
+            </ng-container>
+            <ng-template #showPagination>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage"
+                                        [pageSize]="itemsPerPage"
+                                        [collectionSize]="totalItems"
+                                        (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>Anterior</ng-template>
+                            <ng-template ngbPaginationNext>Siguiente</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="formModalReference.close()"><span>Volver</span></button>
+    <button (click)="updateContractorLocation(currentLocation)"
+            class="full-color"><span>Guardar</span></button>
+</div>

@@ -1,0 +1,39 @@
+<div class="panel-info-colegio">
+    <panel-widget title="Datos del Colegio">
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <form-button *ngIf="colegios.length < 1 && !detail"
+                             class="pull-right"
+                             label="Agregar"
+                             (click)="clickAdd()"></form-button>
+
+                <panel-table classTable="margin-top-20"
+                             [items]="colegios"
+                             [detail]="detail"
+                             [headerTemplate]="headerTemplateGeneral"
+                             (clickDelete)="clickDelete($event)"
+                             [showDelete]="vista.modoVista == ''"
+                             [bodyTemplate]="bodyTemplateColegio">
+                </panel-table>
+
+                <ng-template #headerTemplateGeneral>
+                    <th class="text-center">Tipo documento</th>
+                    <th class="text-center">Nro documento</th>
+                    <th class="text-center">Razón social</th>
+                </ng-template>
+
+                <ng-template #bodyTemplateColegio
+                             let-item="item">
+                    <td class="text-center vertical-center">{{item.tipDoc | typeDocument}}</td>
+                    <td class="text-center vertical-center">{{item.document}}</td>
+                    <td class="text-center vertical-center">{{item.legalName}}</td>
+                </ng-template>
+
+
+            </div>
+        </div>
+
+    </panel-widget>
+</div>

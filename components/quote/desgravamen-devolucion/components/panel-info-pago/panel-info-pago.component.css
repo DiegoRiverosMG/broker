@@ -1,0 +1,23 @@
+.panel-info-pago {
+
+}
+
+.container-fluid .col-sm-12{
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding-bottom: 20px;
+}
+
+/* .panel-info-pago .btn-visa input {
+  position: relative;
+  top: -20px;
+}
+
+.panel-info-pago .btn-visa form {
+  display: inline-block;
+}
+
+.panel-info-pago .btn-visa form button{
+  background-size: contain;
+  display: inline-block;
+} */

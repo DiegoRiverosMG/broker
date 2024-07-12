@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="title-principal">
+        <a>Recuperar Contrase&ntilde;a</a>
+      </div>
+      <div class="sub-title">
+        Este servicio te permite generar de forma segura tu contraseña necesaria
+        para ingresar al portal de Protecta.
+      </div>
+      <hr class="hdivider" />
+      <app-retrieve-miga-pan [step]="2"></app-retrieve-miga-pan>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="sub-title">
+        Estaremos enviando a tu correo electr&oacute;nico un link para la
+        generaci&oacute;n de tu nueva contraseña.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="email-text">Correo electr&oacute;nico: {{ email }}</div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="email-warning">
+        <i class="fa fa-lock-alt"></i>
+        Por tu seguridad hemos ocultado con asteriscos parte de la
+        direcci&oacute;n de correo electr&oacute;nico.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="sub-title">
+        Si no recibes el correo electr&oacute;nico o tus datos no est&aacute;n
+        actualizados, por favor ponte en contacto con nosotros llamando a
+        Nuestro Canal Corporativo 01-391-3005 o escribi&eacute;ndonos a:
+        <a href="mailto:canalcorporativo@protectasecurity.pe"
+          >canalcorporativo@protectasecurity.pe</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-4"></div>
+    <div class="col-sm-12 col-lg-4">
+      <button
+        type="button"
+        class="btn btn-warning btn-block"
+        (click)="sendEmail()"
+        [disabled]="loading"
+      >
+        Enviar
+      </button>
+    </div>
+    <div class="col-sm-12 col-lg-4"></div>
+  </div>
+</div>
+
+<div class="modal fade" bsModal #modalWindow="bs-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeMessage()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido text-center">
+        <h5>{{ message }}</h5>
+      </div>
+      <div
+        class="modal-footer modal-foot-confirm d-flex align-items-center justify-content-center"
+      >
+        <button type="button" class="btn btn-orange" (click)="closeMessage()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-overlay [visible]="loading"></app-overlay>

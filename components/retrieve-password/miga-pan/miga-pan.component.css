@@ -1,0 +1,25 @@
+.migapan {
+  color: #22B7D5;
+  font-weight: bold;
+  text-align: center;
+}
+
+.migapan ul {
+  list-style-type: none;
+}
+
+.migapan ul li {
+  display: inline;
+  text-align: center;
+}
+
+.migapan ul li span {
+  width: 20px !important;
+  height:20px !important;
+  color: #E4DA00;
+}
+
+.migapan .disabled,
+.migapan ul li.disabled span {
+  color: #CED4D4 !important;
+}

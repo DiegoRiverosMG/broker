@@ -1,0 +1,174 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr">
+      <div class="row group1">
+        <h1 class="title">Aprobaciones pendientes</h1>
+        <div class="container-btn"></div>
+      </div>
+
+      <!-- FILTROS -->
+
+      <form class="row group2" [formGroup]="FormFilter">
+        <div class="inputs">
+          <div class="conten-input input1">
+            <label
+              for="type-document"
+              class="placeholder-u"
+              aria-placeholder="TIPO DE DOCUMENTO:"
+            >
+              <select
+                id="type-document"
+                class="input-u"
+                formControlName="type_document"
+              >
+                <option value="null" selected disabled hidden>
+                  SELECCIONE
+                </option>
+                <option value="0">TODOS</option>
+                <option value="2">DNI</option>
+                <option value="4">C.E.</option>
+              </select>
+            </label>
+          </div>
+          <div class="conten-input input2">
+            <label
+              for="document-number"
+              class="placeholder-u"
+              aria-placeholder="NÚMERO DE DOCUMENTO:"
+            >
+              <input
+                type="text"
+                id="document-number"
+                class="input-u"
+                autocomplete="off"
+                [minlength]="LimitdocumentNumber.min"
+                [maxlength]="LimitdocumentNumber.max"
+                formControlName="document_number"
+              />
+            </label>
+          </div>
+          <div class="conten-input input3">
+            <label
+              for="reason"
+              class="placeholder-u"
+              aria-placeholder="ESTADO:"
+            >
+              <select id="reason" class="input-u" formControlName="reason">
+                <option [value]="null" selected disabled hidden>TODOS</option>
+              </select>
+            </label>
+          </div>
+          <div
+            style="
+              width: 70%;
+              display: flex;
+              justify-content: flex-end;
+              margin-top: 38px;
+            "
+          >
+            <button
+              class="btn-primary-u"
+              style="width: 190px; height: 48px"
+              (click)="buscar()"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA -->
+
+      <div
+        class="grid form-group row"
+        style="
+          border-top: 1px solid rgb(84, 61, 129);
+          margin-top: 25px;
+          margin-right: 0px;
+        "
+      >
+        <div class="table-responsive div-tableban" id="table-scroll">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Código de cliente</td>
+                <td class="grid-title-item">Nombre del cliente</td>
+                <td class="grid-title-item">Tipo de documento</td>
+                <td class="grid-title-item">DNI/CE</td>
+                <td class="grid-title-item">Fecha de solicitud</td>
+                <td class="grid-title-item">Prima anual</td>
+                <td class="grid-title-item">Motivos</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Acciones</td>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!data?.length">
+                <tr class="grid-body">
+                  <td
+                    class="grid-body-item"
+                    colspan="9"
+                    style="text-align: center"
+                  >
+                    No hay informacion para mostrar
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="!!data?.length">
+                <tr
+                  class="grid-body"
+                  *ngFor="
+                    let data of data
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: p,
+                            totalItems: data.length,
+                            id: 'bdj'
+                          }
+                  "
+                >
+                  <td class="grid-title-item">{{ data.number_caso }}</td>
+                  <td class="grid-title-item">{{ data.name_cliente }}</td>
+                  <td class="grid-title-item">{{ data.type_document }}</td>
+                  <td class="grid-title-item">{{ data.dni_ce }}</td>
+                  <td class="grid-title-item">{{ data.date_create }}</td>
+                  <td class="grid-title-item">{{ data.prima }}</td>
+                  <td class="grid-title-item">{{ data.motivo_rechazo }}</td>
+                  <td class="grid-title-item">{{ data.state_cotizacion }}</td>
+                  <td class="grid-title-item">
+                    <a
+                      style="margin-right: 8px; cursor: pointer"
+                      (click)="atender(data.number_caso)"
+                    >
+                      <i title="Atender" class="fa fa-check fa-lg"></i> Atender
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content-pagination pag-ban">
+        <pagination-controls
+          class="my-pagination"
+          id="bdj"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+          (pageChange)="currentPage = $event"
+          *ngIf="!!data?.length"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

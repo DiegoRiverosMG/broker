@@ -1,0 +1,204 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 content">
+      <section class="header-u">
+        <div class="header__left">
+          <h1 class="title-u">Detalle de carga masiva</h1>
+        </div>
+        <div class="header__right">
+          <button class="button-default" (click)="backPage()">
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+            Regresar
+          </button>
+        </div>
+      </section>
+      <div class="content-actions" *ngIf="detail$?.canGenerate">
+        <button class="button-default" (click)="openModalConfirmCharge()">
+          Generar carga masiva
+        </button>
+      </div>
+      <div class="content-tabs">
+        <ng-container *ngIf="detail$?.type == 'detail'">
+          <button
+            class="button-tab"
+            [class.active]="tab == 'detail'"
+            (click)="tab = 'detail'"
+          >
+            Detalle
+          </button>
+        </ng-container>
+        <ng-container *ngIf="detail$?.type == 'errors'">
+          <button
+            class="button-tab"
+            [class.active]="tab == 'errors'"
+            (click)="tab = 'errors'"
+          >
+            Errores
+          </button>
+        </ng-container>
+      </div>
+      <div class="table-container">
+        <div class="content-table">
+          <ng-container *ngIf="tab == 'detail'">
+            <table class="table-u" @fade>
+              <thead>
+                <tr>
+                  <th>Índice</th>
+                  <th>Tipo documento</th>
+                  <th>Número documento</th>
+                  <th>Correo electrónico</th>
+                  <th>Celular</th>
+                  <th>Asesor asignado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="!detail$?.detail.length">
+                  <tr>
+                    <td colspan="6">No hay información para mostrar</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="detail$?.detail.length">
+                  <tr
+                    *ngFor="
+                      let item of detail$?.detail
+                        | paginate
+                          : {
+                              id: 'pagination-detail',
+                              totalItems: detail$?.detail.length,
+                              itemsPerPage: 10,
+                              currentPage: currentPage
+                            }
+                    "
+                  >
+                    <td>{{ item.indice }}</td>
+                    <td>{{ item.tipoDocumento }}</td>
+                    <td>{{ item.numeroDocumento }}</td>
+                    <td>{{ item.correo }}</td>
+                    <td>{{ item.celular }}</td>
+                    <td>{{ item.asesor }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+          <ng-container *ngIf="tab == 'errors'">
+            <table class="table-u" @fade>
+              <thead>
+                <tr>
+                  <th>Índice</th>
+                  <th>Campo</th>
+                  <th class="col-error">Mensaje de error</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="!detail$?.errors.length">
+                  <tr>
+                    <td colspan="3">No hay información para mostrar</td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="detail$?.errors.length">
+                  <tr
+                    *ngFor="
+                      let item of detail$?.errors
+                        | paginate
+                          : {
+                              id: 'pagination-errors',
+                              totalItems: detail$?.errors.length,
+                              itemsPerPage: 10,
+                              currentPage: currentPageErrors
+                            }
+                    "
+                  >
+                    <td>{{ item.indice }}</td>
+                    <td>{{ item.campo }}</td>
+                    <td class="col-error">{{ item.mensajeError }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+        </div>
+        <pagination-controls
+          id="pagination-detail"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          (pageChange)="currentPage = $event"
+          *ngIf="tab == 'detail'"
+        ></pagination-controls>
+        <pagination-controls
+          id="pagination-errors"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          (pageChange)="currentPageErrors = $event"
+          *ngIf="tab == 'errors'"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalMessage>
+  <div class="content-modal">
+    <section class="modal-message">
+      <div class="modal-header">
+        <button (click)="closeModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="messageInfo$.success">
+          <img
+            src="assets/backoffice/check-success.png"
+            alt="error png"
+            width="140"
+            height="140"
+          />
+        </ng-container>
+        <ng-container *ngIf="!messageInfo$.success">
+          <img
+            src="assets/backoffice/check-error.png"
+            alt="error png"
+            width="140"
+            height="140"
+          />
+        </ng-container>
+        <p class="paragraph">
+          {{ messageInfo$.message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default" (click)="closeModals()">Aceptar</button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmCharge>
+  <div class="content-modal">
+    <section class="modal-confirm-charge">
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button (click)="closeModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          ¿Estás seguro que desea generar la carga masiva la
+          {{ detail$?.detail.length }} prospectos?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default secondary" (click)="closeModals()">
+          Cancelar
+        </button>
+        <button class="button-default" (click)="generateMassiveCharge()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

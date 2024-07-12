@@ -1,0 +1,90 @@
+<div class="row">
+            <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+            </div>
+
+            <div class="col-md-9">
+                <div class="container-fluid">
+                    <div class="header-content">
+                        <div class="containt-item">
+                            <div class="header-item">
+                            <span class="title">Adjuntar archivos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                            <div  class="col-sm-3">
+                                    <span>PRODUCTO</span>
+                    <select [(ngModel)]="idEntity" name="Entity" (change)="ChangeEntity()" class="minimal">
+									<option value="" selected disabled>Seleccionar</option>
+									<option *ngFor="let item of listToEntity" value="{{item.IdEntity}}">
+                                            {{item.Description}}</option>
+                                </select>
+                                  </div>
+                    </div>
+
+                    <div class="filter">
+                        <div class="card">
+                    <div class="card-body">
+                                <div class="inline-block">
+                                    <div class="inline-block">
+                                        <button type="button" (click)="fileInput.click()" style="margin: 10px 0;">
+                                            <span>Seleccionar Archivo</span></button>
+
+                                <input hidden #fileInput type="file" multiple class="mt-10" #myInput
+                                    (change)="UploadFile($event.target.files)" accept=".csv">
+                                    </div>
+                                </div>
+
+                                <div *ngIf="files.length > 0">
+                                    <div style="margin-bottom: 0px">
+                                        <h6>Archivos Seleccionados ({{ files.length }})</h6>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Tipo</th>
+                                                    <th>Tamaño</th>
+                                                    <th>Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of files;let i=index">
+                                                    <td>
+                                                        <strong>{{ item.name }}</strong>
+                                                    </td>
+                                                    <td>
+                                                        {{ item.type }}
+                                                    </td>
+                                                    <td nowrap>
+                                                        {{ item.size/1024/1024 | number:'.2' }} MB
+                                                    </td>
+                                                    <td><img src="assets/icons/anular.png" (click)="deteleFile(item,i)"
+                                                            title="Eliminar" alt="Eliminar" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+							    </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row pull-right">
+
+                        <button class="full-color" (click)="eventSave($event)" [disabled]="">
+                            <span>Procesar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+</div>
+<div [hidden]="!isLoading" class="loadingScreen">
+            <div style="display:flex;height: 100%;width:100%">
+              <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+            </div>
+</div>

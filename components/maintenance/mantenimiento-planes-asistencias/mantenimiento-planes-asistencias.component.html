@@ -1,0 +1,535 @@
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">MANTENIMIENTO DE PLANES Y TASA POR PÓLIZA</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="row col-sm-12">
+                    <div class="col-sm-3">
+                        <span>RAMO</span>
+                        <select class="minimal" (change)="ChangeRamo()" [(ngModel)]="SelectedBranchId">
+                            <option value="-1" disabled>SELECCIONAR</option>
+                            <option *ngFor="let item of branchTypeList" value="{{item.Id}}">{{ item.Description }}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>PRODUCTO</span>
+                        <select class="minimal" [(ngModel)]="SelectedProductoId">
+                            <option value="-1" disabled>SELECCIONAR</option>
+                            <option *ngFor="let item of listProduct" value="{{item.Id}}">{{ item.Description }}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>NRO. PÓLIZA</span>
+                        <input type="text" maxlength="11" (keypress)="NPOLIZA=textValidate($event, '1',11)" (paste)="NPOLIZA=onPaste($event, '1',11)" value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" />
+                    </div>
+                    </div>
+                    <div class="row col-sm-12">
+                    <div class="col-sm-3">
+                            <span>TIPO DE BÚSQUEDA</span>
+                            <select class="minimal" [(ngModel)]="SelectedTipBusquedaId" (change)="ChangeTipBusqueda()">
+                                <option *ngFor="let item of busquedaTypeList" value="{{item.Id}}">{{ item.Description }}</option>
+                            </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>N° PLAN</span>
+                            <input type="text" maxlength="4" (keypress)="SelectedPlanId=textValidate($event, '1',4)" 
+                            (paste)="SelectedPlanId=onPaste($event, '1',4)" value="{{SelectedPlanId}}" [(ngModel)]="SelectedPlanId" 
+                            [disabled]="bloqueadoPlan" id="tipBusqueda"/>
+                    </div>
+                        <div class="col-sm-3"><span>&nbsp;</span></div>
+                    <div class="col-sm-3">
+                        <span>&nbsp;</span>
+                        <button class="full-color" (click)="ProcessBuscar()">
+                            <span>BUSCAR</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3">
+                    <button class="full-color" (click)="ProcessRegistrar()">
+                        <span>REG. PLAN</span>
+                    </button>
+                </div>
+                <div class="col-sm-3">
+                    <button class="full-color" (click)="ProcessRegistrarTasa(content0)">
+                        <span>REG. TASA</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td style="display:none;"></td>
+                                    <td style="display:none;"></td>
+                                    <td style="display:none;"></td>
+                                    <td style="display:none;"></td>
+                                    <td style="display:none;"></td>
+                                    <td class="grid-title-item">Ramo</td>
+                                    <td class="grid-title-item">Producto</td>
+                                    <td class="grid-title-item">Póliza</td>
+                                    <td class="grid-title-item">Nro. de Plan o Modulo</td>
+                                    <td class="grid-title-item">Servicios Adicionales</td>
+                                    <td class="grid-title-item">Monto Cliente</td>
+                                    <td class="grid-title-item">Monto Compañía</td>
+                                    <td class="grid-title-item">Porcentaje Cliente</td>
+                                    <td class="grid-title-item">Porcentaje Compañía</td>
+                                    <td class="grid-title-item">Monto de Mínimo Crédito</td>
+                                    <td class="grid-title-item">Monto de Máximo Crédito</td>
+                                    <td class="grid-title-item">Rol</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="planesAsistenciasResults==null || planesAsistenciasResults.length==0; then hideGrid else showGrid"></ng-container>
+                        </table>
+    
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="13">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item0 of listToShow">
+                                <tr>
+                                    <td style="display:none;">{{item0.NTYPEPLAN}}</td>
+                                    <td style="display:none;">{{item0.NBRANCH}}</td>
+                                    <td style="display:none;">{{item0.NPRODUCT}}</td>
+                                    <td style="display:none;">{{item0.NROL}}</td>
+                                    <td style="display:none;">{{item0.NTYPE_DIVISOR}}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.SBRANCH }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.SPRODUCT }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NPOLICY }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NMODULO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.SSERVICE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NAMOUNT_CLIENT }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NAMOUNT_COMPANY }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NTASACLIENTE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NTASACOMPANIA }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NMINCREDITO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.NMAXCREDITO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item0.SROL }}</td>
+                                    <td class="data-table-tr-td text-center text-center icons-box">
+                                        <img  src="assets/icons/editar.png" (click)="Editar(item0.NMODULO,item0,content1)" title="Editar" alt="Editar" />
+                                        <img src="assets/icons/see.svg" (click)="Ver(item0.NMODULO,item0,item0.SSERVICE,content3)" title="Ver Servicios" alt="Ver Servicios" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        </div>
+</div>
+
+<!-- REGISTRAR TASA A LA PÓLIZA -->
+<ng-template #content0 
+    let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="cerrarTasa(content0)" >
+        <h4 class="modal-title" id="modal-basic-title" style="text-align: left">REGISTRAR TASA A LA PÓLIZA</h4>
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <span>RAMO</span>
+                                    <select class="minimal" (change)="ChangeRamo2()" [(ngModel)]="mSelectedBranchId" [attr.disabled]="disRamo? true : null">
+                                        <option value="-1" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PRODUCTO</span>
+                                    <select class="minimal" (change)="ChangeProducto()" [(ngModel)]="mSelectedProductoId"  [attr.disabled]="disProducto? true : null">
+                                        <option value="-1" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of listProduct2" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PÓLIZA</span>
+                                    <input type="text" maxlength="11"
+                                        value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" (keypress)="NPOLIZA=textValidate($event, '1',11);validaCampos();" (paste)="NPOLIZA=onPaste($event, '1',11);validaCampos();" (change)="validaCampos()" [attr.disabled]="disPoliza? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>MÓDULO</span>
+                                    <input type="text" (keypress)="ModuloId=textValidate($event, '8',3)" maxlength="4" 
+                                    value="{{ModuloId}}" [(ngModel)]="ModuloId" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <div class="col-sm-12">
+                                    <h4>Registrar configuración</h4>
+                                </div>
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE CLIENTE</span>
+                                        <input type="text" (keypress)="NporCli=textValidate($event, '8',3)" (paste)="valNTasaCli=onPaste($event, '8',3)"
+                                        [(ngModel)]="NporCli">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE COMPAÑIA</span>
+                                        <input type="text" (keypress)="NporCam=textValidate($event, '8',3)" (paste)="valNTasaComp=onPaste($event, '8',3)"
+                                            [(ngModel)]="NporCam" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA INICIO DE VIGENCIA</span>
+                                        <input type="text" formControlName="startDate" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                                        bsDatepicker [(bsValue)]="bsValueIni" value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        readonly
+                                        [(ngModel)]="DINIVIG" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA FIN DE VIGENCIA</span>
+                                        <input type="text" formControlName="endDate" #dp="bsDatepicker"  [bsConfig]="bsConfig"
+                                        bsDatepicker 
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        [(ngModel)]="DFINVIG" >
+                                    </div>
+                                </div>
+                                <div class="row col-sm-12">    
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÍNIMO</span>
+                                        <input type="text" (keypress)="NcreMin=textValidate($event, '8',12)" (paste)="NcreMin=onPaste($event, '8',12)"
+                                            value="{{NcreMin}}" [(ngModel)]="NcreMin" >
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÁXIMO</span>
+                                        <input type="text" (keypress)="NcreMax=textValidate($event, '8',12)" (paste)="NcreMax=onPaste($event, '8',12)"
+                                            value="{{NcreMax}}" [(ngModel)]="NcreMax">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>ROL</span>
+                                        <select class="minimal" [(ngModel)]="NRol" >
+                                            <option *ngFor="let item of mlistRoles" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>FACTOR DIVISOR</span>
+                                        <select class="minimal" [(ngModel)]="NfacDiv" >
+                                            <option *ngFor="let item of mlistDiv" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="full-color" (click)="GuardarTasa()">
+                    <span>GUARDAR</span>
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <button class="full-color" (click)="cerrarTasa(content0)">
+                    <span>CERRAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- ACTUALIZAR TASA -->
+<ng-template #content1 
+    let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="cerrarTasa(content1)" >
+        <h4 class="modal-title" id="modal-basic-title" style="text-align: left">ACTUALIZAR TASA</h4>
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <span>RAMO</span>
+                                    <select class="minimal" (change)="ChangeRamo2()" [(ngModel)]="mSelectedBranchId" [attr.disabled]="disRamo? true : null">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PRODUCTO</span>
+                                    <select class="minimal" (change)="ChangeProducto()" [(ngModel)]="mSelectedProductoId"  [attr.disabled]="disProducto? true : null">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of listProduct2" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PÓLIZA</span>
+                                    <input type="text" maxlength="11"
+                                        value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" (keypress)="NPOLIZA=textValidate($event, '1',11);validaCampos();" (paste)="NPOLIZA=onPaste($event, '1',11);validaCampos();" (change)="validaCampos()" [attr.disabled]="disPoliza? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>MÓDULO</span>
+                                    <input type="text" (keypress)="ModuloId=textValidate($event, '8',3)" maxlength="4" 
+                                    value="{{ModuloId}}" [(ngModel)]="ModuloId" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <div class="col-sm-12">
+                                    <h4>Configuración</h4>
+                                </div>
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE CLIENTE</span>
+                                        <input type="text" (keypress)="NporCli=textValidate($event, '8',3)" (paste)="valNTasaCli=onPaste($event, '8',3)"
+                                        [(ngModel)]="NporCli">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE COMPAÑIA</span>
+                                        <input type="text" (keypress)="NporCam=textValidate($event, '8',3)" (paste)="valNTasaComp=onPaste($event, '8',3)"
+                                            [(ngModel)]="NporCam" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA INICIO DE VIGENCIA</span>
+                                        <input type="text" formControlName="startDate" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                                        bsDatepicker [(bsValue)]="bsValueIni" value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        readonly
+                                        [(ngModel)]="DINIVIG" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA FIN DE VIGENCIA</span>
+                                        <input type="text" formControlName="endDate" #dp="bsDatepicker"  [bsConfig]="bsConfig"
+                                        bsDatepicker 
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        [(ngModel)]="DFINVIG" >
+                                    </div>
+                                </div>
+                                <div class="row col-sm-12">    
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÍNIMO</span>
+                                        <input type="text" (keypress)="NcreMin=textValidate($event, '8',12)" (paste)="NcreMin=onPaste($event, '8',12)"
+                                            value="{{NcreMin}}" [(ngModel)]="NcreMin" >
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÁXIMO</span>
+                                        <input type="text" (keypress)="NcreMax=textValidate($event, '8',12)" (paste)="NcreMax=onPaste($event, '8',12)"
+                                            value="{{NcreMax}}" [(ngModel)]="NcreMax">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>ROL</span>
+                                        <select class="minimal" [(ngModel)]="NRol" >
+                                            <option *ngFor="let item of mlistRoles" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>FACTOR DIVISOR</span>
+                                        <select class="minimal" [(ngModel)]="NfacDiv" >
+                                            <option *ngFor="let item of mlistDiv" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="full-color" (click)="actualizarTasa()">
+                    <span>ACTUALIZAR</span>
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <button class="full-color" (click)="cerrarTasa(content1)">
+                    <span>CERRAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- ver TASA -->
+<ng-template #content3 
+    let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="cerrarTasa(content3)" >
+        <h4 class="modal-title" id="modal-basic-title" style="text-align: left">DETALLE TASA</h4>
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="row col-sm-12">
+                                <div class="col-sm-4">
+                                    <span>RAMO</span>
+                                    <select class="minimal" (change)="ChangeRamo2()" [(ngModel)]="mSelectedBranchId" [attr.disabled]="disRamo? true : null">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PRODUCTO</span>
+                                    <select class="minimal" (change)="ChangeProducto()" [(ngModel)]="mSelectedProductoId"  [attr.disabled]="disProducto? true : null">
+                                        <option value="" disabled>SELECCIONAR</option>
+                                        <option *ngFor="let item of listProduct2" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>PÓLIZA</span>
+                                    <input type="text" maxlength="11"
+                                        value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" (keypress)="NPOLIZA=textValidate($event, '1',11);validaCampos();" (paste)="NPOLIZA=onPaste($event, '1',11);validaCampos();" (change)="validaCampos()" [attr.disabled]="disPoliza? true : null">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>MÓDULO</span>
+                                    <input type="text" (keypress)="ModuloId=textValidate($event, '8',3)" maxlength="4" 
+                                    value="{{ModuloId}}" [(ngModel)]="ModuloId" />
+                                </div>
+                            </div>
+                            <div class="row col-sm-12">
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <span class="separacion col-sm-12">&nbsp;</span>
+                                <div class="col-sm-12">
+                                    <h4>Configuración</h4>
+                                </div>
+                                <div class="row col-sm-12">
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE CLIENTE</span>
+                                        <input type="text" (keypress)="NporCli=textValidate($event, '8',3)" (paste)="valNTasaCli=onPaste($event, '8',3)"
+                                        [(ngModel)]="NporCli">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>PORCENTAJE COMPAÑIA</span>
+                                        <input type="text" (keypress)="NporCam=textValidate($event, '8',3)" (paste)="valNTasaComp=onPaste($event, '8',3)"
+                                            [(ngModel)]="NporCam" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA INICIO DE VIGENCIA</span>
+                                        <input type="text" formControlName="startDate" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                                        bsDatepicker [(bsValue)]="bsValueIni" value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        readonly
+                                        [(ngModel)]="DINIVIG" >
+                                    </div>
+                                    <div class="col-sm-3" [formGroup]="filterForm">
+                                        <span>FECHA FIN DE VIGENCIA</span>
+                                        <input type="text" formControlName="endDate" #dp="bsDatepicker"  [bsConfig]="bsConfig"
+                                        bsDatepicker 
+                                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                        [(ngModel)]="DFINVIG" >
+                                    </div>
+                                </div>
+                                <div class="row col-sm-12">    
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÍNIMO</span>
+                                        <input type="text" (keypress)="NcreMin=textValidate($event, '8',12)" (paste)="NcreMin=onPaste($event, '8',12)"
+                                            value="{{NcreMin}}" [(ngModel)]="NcreMin" >
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>CRÉDITO MÁXIMO</span>
+                                        <input type="text" (keypress)="NcreMax=textValidate($event, '8',12)" (paste)="NcreMax=onPaste($event, '8',12)"
+                                            value="{{NcreMax}}" [(ngModel)]="NcreMax">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>ROL</span>
+                                        <select class="minimal" [(ngModel)]="NRol" >
+                                            <option *ngFor="let item of mlistRoles" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>FACTOR DIVISOR</span>
+                                        <select class="minimal" [(ngModel)]="NfacDiv" >
+                                            <option *ngFor="let item of mlistDiv" value="{{item.Id}}">
+                                                {{item.Description}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="full-color" (click)="cerrarTasa(content3)">
+                    <span>CERRAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+            <div style="display: flex; height: 100%; width: 100%">
+                <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+            </div>
+</div>

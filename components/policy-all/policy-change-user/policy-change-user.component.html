@@ -1,0 +1,88 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Cambio de Asegurado</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <span>TIPO DE DOCUMENTO</span>
+                        <select class="minimal" [(ngModel)]="searchInsured.P_NIDDOC_TYPE" (ngModelChange)="changeType()">
+                            <option *ngFor="let type of typeDocuments" [value]="type.Id" style="text-transform: uppercase;">{{type.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5">
+                        <span>NRO DE DOCUMENTO</span>
+                        <input type="text" [(ngModel)]="searchInsured.P_SIDDOC" (keypress)="textValidate($event)" maxlength={{maxlength}}>
+                    </div>
+                    <div class="col-sm-2">
+                        <span>&nbsp;</span>
+                        <button class="full-color" style="width: 20px !important; min-width: 150px !important;" (click)="search()">
+                            <span>BUSCAR</span>
+                        </button>
+                    </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="card">
+            <div class="grid form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h5>Datos del Asegurado</h5>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item text-center">NOMBRES</td>
+                                <td class="grid-title-item text-center">APELLIDOS</td>
+                                <td class="grid-title-item text-center">NRO. DOCUMENTO</td>
+                                <td class="grid-title-item text-center">FECHA NACIMIENTO</td>
+                                <td *ngIf="!exist"></td>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="listInsured.length > 0">
+                            <tr *ngFor="let ins of listInsured">
+                                <td class="text-center">{{ins.P_SFIRSTNAME}}</td>
+                                <td class="text-center">{{ins.P_SLASTNAME}} {{ins.P_SLASTNAME2}}</td>
+                                <td class="text-center">{{ins.P_SIDDOC}}</td>
+                                <td class="text-center">{{ins.P_DBIRTHDAT}} </td>
+                                <td *ngIf="!exist" style="cursor: pointer; color: rgba(42, 18, 99, 0.78); font-weight: bold;" (click)="createInsured(ins)">
+                                    Agregar Asegurado
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="listInsured.length == 0">
+                            <tr>
+                              <td colspan="14" class="text-center">
+                                No se encontraron registros
+                              </td>
+                            </tr>
+                          </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="listInsured.length > 0 && exist">
+            <div class="col-sm-12 text-end" align="end">
+                <button class="full-color pull-right mt-4" (click)="changeInsured()">
+                    <span>REEMPLAZAR</span>
+                </button>
+            </div>
+          </div>
+
+    </div>
+</div>
+
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>

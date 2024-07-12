@@ -1,0 +1,21 @@
+.volver {
+  width: 100%;
+  height: 16px;
+  margin-bottom: 30px;
+}
+
+.volver a {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.volver a img {
+  float: left;
+  margin-left: 5px;
+  margin-top: 5px;
+}

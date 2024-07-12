@@ -1,0 +1,143 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   MODULE-REPORTS-OPERACIONES.COMPONENT.HTML                            */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   01-09-2022                                                           */
+/*  VERSIÓN             :   1.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">REPORTES</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN</span>
+                <select class="form-control" (change)="selectOrigen($event.target.value)" formControlName="P_NNUMORI"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_NNUMORI.valid || filterForm.hasError('required'))}">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NNUMORI.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NNUMORI').hasError('required')" class="mensaje-error-control">
+                        El origen es requerido.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>INTERFAZ (*)</span>
+                <select class="form-control" (change)="selectInterfaz($event.target.value)" formControlName="P_NCODGRU"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_NCODGRU.valid || filterForm.hasError('required'))}">
+                    <option value="" disabled selected>SELECCIONE INTERFAZ</option>
+                    <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NCODGRU.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NCODGRU').hasError('required')" class="mensaje-error-control">
+                        La interfaz es requerida.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA DESDE</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="P_FECHAINI"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_FECHAINI.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_FECHAINI.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_FECHAINI').hasError('required')" class="mensaje-error-control">
+                        La fecha inicial es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.P_FECHAINI.valid && !filterForm.get('P_FECHAINI').hasError('required')" class="mensaje-error-control">
+                        La fecha inicial no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha inicial está después de la fecha final.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA HASTA</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" formControlName="P_FECHAFIN"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_FECHAFIN.valid || filterForm.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_FECHAFIN.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_FECHAFIN').hasError('required')" class="mensaje-error-control">
+                        La fecha final es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.P_FECHAFIN.valid && !filterForm.get('P_FECHAFIN').hasError('required')" class="mensaje-error-control">
+                        La fecha final no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                        La fecha final está antes de la fecha inicial.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>RAMO (*)</span>
+                <select class="form-control" (change)="selectRamo($event.target.value)" formControlName="P_NBRANCH"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_NBRANCH.valid || filterForm.hasError('required')) && !filterForm.controls.P_NBRANCH.disabled}">
+                    <option value="" disabled selected>SELECCIONE RAMO</option>
+                    <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NBRANCH.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NBRANCH').hasError('required')" class="mensaje-error-control">
+                        El ramo es requerido.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3" *ngIf="productBool">
+                <span>PRODUCTO (*)</span>
+                <select class="form-control" formControlName="P_NPRODUCT"
+                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.P_NPRODUCT.valid || filterForm.hasError('required')) && !filterForm.controls.P_NPRODUCT.disabled}">
+                    <option value="" disabled selected>SELECCIONE PRODUCTO</option>
+                    <option *ngFor="let x of products" value="{{ x.NVALOR }}">{{ x.SDESCRIPT }}</option>
+                </select>
+                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.P_NPRODUCT.valid || filterForm.hasError('required')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('P_NPRODUCT').hasError('required')" class="mensaje-error-control">
+                        El producto es requerido.
+                    </span>
+                </ng-container>
+            </div>
+            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-6'">
+                <span>&nbsp;</span>
+                <span>
+                    <span class="box" *ngIf="flagOperativo">
+                        <input type="checkbox" formControlName="CHK_OPERATIVO" />
+                        <label class="control-label ml-3">OPERATIVO</label>
+                    </span>
+                    <span class="box" *ngIf="flagContable">
+                        <input type="checkbox" formControlName="CHK_CONTABLE" />
+                        <label class="control-label ml-3">CONTABLE</label>
+                    </span>
+                    <span class="box" *ngIf="flagControlBancario">
+                        <input type="checkbox" formControlName="CHK_CONTROL_BANCARIO" />
+                        <label class="control-label ml-3">CONTROL BANCARIO</label>
+                    </span>
+                    <span class="box" *ngIf="flagCheques">
+                        <input type="checkbox" formControlName="CHK_CHEQUES" />
+                        <label class="control-label ml-3">CHEQUES</label>
+                    </span>
+                    <span class="box" *ngIf="flagTransferencias">
+                        <input type="checkbox" formControlName="CHK_TRANSFERENCIAS" />
+                        <label class="control-label ml-3">TRANSFERENCIAS</label>
+                    </span>
+                    <span class="box" *ngIf="flagCuentasCobrar">
+                        <input type="checkbox" formControlName="CHK_CUENTAS_COBRAR" />
+                        <label class="control-label ml-3">CUENTAS COBRAR</label>
+                    </span>
+                </span>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="descargarReporte()">
+                    <span>DESCARGAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

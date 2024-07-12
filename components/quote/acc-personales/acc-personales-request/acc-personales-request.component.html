@@ -1,0 +1,189 @@
+<div class="acc-personales-request">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <app-nav-menuprod></app-nav-menuprod>
+        </div>
+        <div class="col-lg-9">
+
+
+            <panel-header-producto title="Consulta Solicitudes de Cotización"></panel-header-producto>
+
+            <panel-container>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <form-input-select label="Producto"
+                                           [service]="accPersonalesService"
+                                           method="getProductListForBranch"
+                                           [params]="{
+                  branch:  CONSTANTS.RAMO
+                }"
+                                           fieldCodigo="COD_PRODUCT"
+                                           fieldValor="DES_PRODUCT"
+                                           [firstSelect]="true"
+                                           [(value)]="filters.tipoProducto"
+                                           [disabled]="filters.numCotizacion?.length"></form-input-select>
+                    </div>
+                    <div class="col-sm-3">
+                        <form-input-select label="Estado"
+                                           [service]="accPersonalesService"
+                                           method="getQuotationStatusList"
+                                           [params]="{
+                    certype: 3,
+                    productId: storageService.productId
+                    }"
+                                           fieldCodigo="Id"
+                                           fieldValor="Name"
+                                           [firstSelect]="true"
+                                           [(value)]="filters.estado"
+                                           [disabled]="filters.numCotizacion?.length"></form-input-select>
+                    </div>
+                    <div class="col-sm-3">
+                        <form-input-text label="Nro. Cotización"
+                                         [(value)]="filters.numCotizacion"
+                                         maxCaracter="10"
+                                         (onKeyenter)="clickSearch()"
+                                         [patternPrevent]="CONSTANTS.REGEX.NUMBER"></form-input-text>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <form-input-date label="Desde"
+                                         [todayPreviousMonth]="true"
+                                         [(value)]="filters.fechaDesde"
+                                         [disabled]="filters.numCotizacion?.length"
+                                         [maxDate]="filters.fechaHasta"></form-input-date>
+                    </div>
+                    <div class="col-sm-3">
+                        <form-input-date label="Hasta"
+                                         [today]="true"
+                                         [(value)]="filters.fechaHasta"
+                                         [disabled]="filters.numCotizacion?.length"
+                                         [minDate]="filters.fechaDesde"></form-input-date>
+                    </div>
+                </div>
+
+                <br>
+
+                <form-search-client label="contratante"
+                                    [(client)]="filters.contratante"
+                                    [disabled]="filters.numCotizacion?.length"></form-search-client>
+
+                <br>
+
+                <form-search-client label="broker"
+                                    [(client)]="filters.broker"
+                                    [disabled]="filters.numCotizacion?.length"></form-search-client>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form-button label="Descargar Excel"
+                                     class="pull-right"
+                                     btnClass="btn-secondary"
+                                     (click)="clickExcel()"></form-button>
+                        <form-button label="Buscar"
+                                     class="pull-right"
+                                     btnClass="btn-primary"
+                                     (click)="clickSearch()"></form-button>
+                    </div>
+                </div>
+
+            </panel-container>
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <panel-table [slim]="true"
+                                     (itemsChange)="validarItems($event)"
+                                     [(reload)]="reload.cotizaciones"
+                                     [pagination]="true"
+                                     [service]="quotationService"
+                                     method="getQuotationList"
+                                     [params]="cotizacionesParams"
+                                     fieldItems="GenericResponse"
+                                     [(loader)]="show.loader"
+                                     [header]="[
+                                                'Cotización',
+                                                'Póliza',
+                                                'Producto',
+                                                'Contratante',
+                                                'Nro. asegurados',
+                                                'Broker',
+                                                'Trx. Pendiente',
+                                                'Estado',
+                                                'Fecha Aprobación'
+                                               ]"
+                                     [bodyTemplate]="bodyTemplateCotizaciones"
+                                     (clickExpand)="selectCotizacion($event)"
+                                     (clickDetail)="clickDetail($event)"
+                                     (clickFile)="clickFile($event)"
+                                     fieldDetailTitle="Mode">
+                        </panel-table>
+
+                        <ng-template #bodyTemplateCotizaciones
+                                     let-item="item">
+                            <td class="text-center">{{item.QuotationNumber}}</td>
+                            <td class="text-center">{{item.PolicyNumber}}</td>
+                            <td class="text-center">{{item.ProductName}}</td>
+                            <td class="text-center">{{item.ContractorFullName}}</td>
+                            <!-- <td class="text-center">{{item.Rate | prettyNumber:2}}</td> -->
+                            <td class="text-center">{{item.WorkersCount}}</td>
+                            <td class="text-center">{{item.BrokerFullName}}</td>
+                            <td class="text-center">{{ item.TypeTransac}}</td>
+                            <td class="text-center">{{item.Status}}</td>
+                            <td class="text-center">{{item.ApprovalDate | date:'dd/MM/yyyy, h:mm a'}}</td>
+                        </ng-template>
+                    </div>
+                </div>
+
+            </div>
+
+            <panel-modal title="Detalle de Movimientos"
+                         [(open)]="show.movimientos"
+                         [templateBody]="templateBodyMovimientos"
+                         btnConfirmLabel="Volver"></panel-modal>
+
+            <ng-template #templateBodyMovimientos>
+                <panel-card>
+                    <ng-container header>
+                        Cotización N° {{cotizacionSeleccionada.QuotationNumber}}
+                    </ng-container>
+
+                    <ng-container body>
+                        <panel-table [slim]="true"
+                                     [reload]="true"
+                                     [pagination]="true"
+                                     [reloadByPagination]="false"
+                                     [service]="quotationService"
+                                     method="getTrackingList"
+                                     fieldItems="GenericResponse"
+                                     [params]="{QuotationNumber: cotizacionSeleccionada?.QuotationNumber}"
+                                     [(loader)]="show.loader"
+                                     [header]="[
+                                                    'Índice',
+                                                    'Fecha',
+                                                    'Estado',
+                                                    'Usuario'
+                                                ]"
+                                     [bodyTemplate]="bodyTemplateMovimientos"></panel-table>
+
+                        <ng-template #bodyTemplateMovimientos
+                                     let-item="item"
+                                     let-index="indexWithPagination">
+                            <td class="text-center">{{index + 1}}</td>
+                            <td class="text-center">{{item.EventDate | date: 'dd/MM/yyyy, h:mm a' }}</td>
+                            <td class="text-center">{{item.Status}}</td>
+                            <td class="text-center">{{item.User}}</td>
+                        </ng-template>
+
+                    </ng-container>
+                </panel-card>
+            </ng-template>
+
+
+        </div>
+    </div>
+
+    <loading-screen [hidden]="!show.loader"></loading-screen>
+</div>

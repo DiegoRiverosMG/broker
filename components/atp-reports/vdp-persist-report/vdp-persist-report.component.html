@@ -1,0 +1,106 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Reporte de Persistencia Vida Devolución Protecta+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- INI AGF 23062023 agregando opciones reporte persistencia -->
+                        <div class="row">
+                            <fieldset class="col-sm-2">
+                                <input type="radio" id="report_by_period" name="type_report" value="1"
+                                    (change)="changeHandlerByType(1)" checked="true">
+                                <label for="report_by_period" class="mx-1">Por periodo</label>
+                            </fieldset>
+                            <fieldset class="col-sm-2">
+                                <input type="radio" id="report_by_dates" name="type_report" value="2"
+                                    (change)="changeHandlerByType(2)">
+                                <label for="report_by_dates" class="mx-1">Por fechas</label>
+                            </fieldset>
+                        </div>
+                        <!-- FIN AGF 23062023 agregando opciones reporte persistencia -->
+                        <div class="row">
+                            <fieldset class="col-sm-2">
+                                <br>
+                                <div>
+                                    <input type="radio" id="consultar" name="process" value="1" (change)="changeHandler(1)"
+                                        checked="true" [disabled]="!dissabled_type ? true:false">
+                                    &nbsp;
+                                    <label for="consultar">Consultar </label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="procesar" name="process" value="2" (change)="changeHandler(2)"
+                                        [disabled]="!dissabled_type ? true:false">
+                                    &nbsp;
+                                    <label for="procesar">Procesar </label>
+                                </div>
+                            </fieldset>
+                            <div _ngcontent-nhb-c8="" class="col-sm-2">
+                                <span>AÑO</span>
+                                <select (change)="getSupervisor()" [(ngModel)]="consultaBusqueda.ANIO"
+                                    [disabled]="!dissabled_type ? true:false">
+                                    <option _ngcontent-dok-c9="" disabled="" value="" ng-reflect-value="">Seleccionar</option>
+                                    <option *ngFor="let item of filtroBusqueda" [value]="item.codigo"> {{item.nombres}}</option>
+                                </select>
+                            </div>
+                            <div _ngcontent-nhb-c8="" class="col-sm-2">
+                                <span>MES</span>
+                                <select [(ngModel)]="consultaBusqueda.MES" [disabled]="!dissabled_type ? true:false">
+                                    <option _ngcontent-dok-c9="" disabled="" value="" ng-reflect-value="">Seleccionar</option>
+                                    <option *ngFor="let item of filtroBusquedaMes" [value]="item.nombres"> {{item.mes}}</option>
+                                </select>
+                            </div>
+                            <div _ngcontent-nhb-c8="" class="col-sm-2">
+                                <span>DÍA</span>
+                                <input type="text" placeholder="NÚMERO" [(ngModel)]="consultaBusqueda.DIA" OnlyNumberDirective
+                                    maxlength="2" [disabled]="entrada || !dissabled_type ? true:false">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="processReports()">
+                                        <span>PROCESAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- INI AGF 23062023 agregando opciones reporte persistencia -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>FECHA DE INICIO</span>
+                                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                    value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [disabled]="dissabled_type ? true:false">
+                            </div>
+                            <div class="col-sm-6">
+                                <span>FECHA DE FIN</span>
+                                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueFin"
+                                    value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [disabled]="dissabled_type ? true:false">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIN AGF 23062023 agregando opciones reporte persistencia -->
+                </div>
+            </div>
+            <div [hidden]="!isLoading" class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

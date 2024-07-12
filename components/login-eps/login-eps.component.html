@@ -1,0 +1,116 @@
+<div class="content">
+  <main class="content__main">
+    <div class="mxwd">
+      <section class="content__info">
+        <img src="assets/images/login-banner-eps.png"
+             alt="login eps banner"
+             class="content__info__banner">
+      </section>
+      <div class="content__login">
+        <section class="content__login__header">
+          <a href="https://protectasecurity.pe"
+             target="_blank">
+            <img class="content__login__header--logo"
+                 src="assets/logos/logo-latest.png"
+                 alt="logo partner"
+                 width="320">
+          </a>
+        </section>
+
+        <section class="content__login__partner">
+          <p class="paragraph">En alianza estratégica con</p>
+          <img class="content__login__partner--logo"
+               src="assets/logos/grandia-eps.svg"
+               alt="logo partner"
+               width="240">
+        </section>
+
+        <h2 class="subtitle">Inicia sesión</h2>
+
+        <form class="content__login__form"
+              @fadeIn
+              [formGroup]="form"
+              (ngSubmit)="onSubmit()">
+          <!-- *Username input -->
+          <label for="form-username"
+                 class="placeholder"
+                 aria-placeholder="Nombre de usuario:">
+            <div class="content-input">
+              <input type="text"
+                     id="form-username"
+                     placeholder="Ingrese su nombre de usuario"
+                     formControlName="username">
+            </div>
+
+            <!-- *Username errors -->
+            <ng-container *ngIf="formControl['username'].errors && formControl['username'].touched">
+              <small class="has-error">
+                Este campo es obligatorio
+              </small>
+            </ng-container>
+          </label>
+
+          <!-- *Password input -->
+          <label for="form-password"
+                 class="placeholder"
+                 aria-placeholder="Contraseña:">
+            <div class="content-input">
+              <input type="password"
+                     id="form-password"
+                     placeholder="Ingrese su contraseña"
+                     autocomplete="new-password"
+                     #inputPassword
+                     formControlName="password">
+              <button class="button-icon"
+                      type="button"
+                      (click)="toggleShowPassword()">
+                <i class="fa fa-eye"
+                   [class.fa-eye-slash]="inputPassword.type == 'text'"
+                   aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <!-- *Password errors -->
+            <ng-container *ngIf="formControl['password'].errors && formControl['password'].touched">
+              <small class="has-error">
+                Este campo es obligatorio
+              </small>
+            </ng-container>
+          </label>
+
+          <div class="content__login__form--retrieve">
+            <div class="selection">
+              <input type="checkbox"
+                     id="chk-forward"
+                     formControlName="forward">
+
+              <label for="chk-forward">
+                Recuérdame
+              </label>
+            </div>
+            <a class="button fit"
+               routerLink="/extranet/retrieve">
+              Olvidé mi contraseña
+            </a>
+          </div>
+
+          <button class="button primary orange"
+                  type="submit"
+                  [disabled]="form.invalid">
+            Ingresar
+          </button>
+
+          <span class="content__login__form--response has-error"
+                @fadeIn
+                *ngIf="responseInfo">
+          {{ responseInfo }}
+        </span>
+        </form>
+
+        <div class="content__login__copyright">
+          <small class="content__login_copyright--text">© 2024 Protecta Security</small>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

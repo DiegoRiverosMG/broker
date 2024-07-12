@@ -1,0 +1,15 @@
+<div class="form-input-multi-select-re">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+  <textarea
+    type="text"
+    maxlength="4000"
+    placeholder="{{placeholder || label}}"
+    [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)"
+    [rows]="rows || 6"
+    (keypress)="onKey($event);"
+    (keydown)="onKeydown($event);"
+    (blur)="onBlur.emit()"
+    (focus)="onFocus.emit()"
+    [disabled]="disabled"
+    ></textarea>
+</div>

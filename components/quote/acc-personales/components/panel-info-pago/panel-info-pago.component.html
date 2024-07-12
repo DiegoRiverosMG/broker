@@ -1,0 +1,381 @@
+<div class="panel-info-pago"
+     *ngIf="!!tipoPago">
+    <panel-modal title="Información del pago"
+                 size="lg"
+                 style="height:260px;"
+                 [cotizacion]="cotizacion"
+                 [(open)]="abrir"
+                 (openChange)="abrirChange.emit($event)"
+                 [templateBody]="templatePago"
+                 [templateFooterAntes]="templateFooterAntes"
+                 (clickConfirm)="confirmar.emit()"
+                 [tipoPago]="tipoPago"
+                 [visaDisabled]="cotizacion.poliza.pagoElegido || 'default'"
+                 [disabled]="!cotizacion.file">
+    </panel-modal>
+
+    <ng-template #templatePago>
+        <div class="row"
+             *ngIf="!!cotizacion.prepago">
+            <div class="container-fluid">
+                <div class="col-md-12">
+                    <p>{{cotizacion.prepago.msjCotizacion}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row text-center">
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagvisa && codProducto != 4">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <img src="assets/soat/img/visa.png"
+                             alt="Visa"
+                             height="48"
+                             appVisaButton
+                             *ngIf="!!tipoPago && !!tipoPago.ObjVisa"
+                             [config]="tipoPago.ObjVisa"
+                             [amount]="tipoPago.ObjVisa.amount"
+                             (myClick)="visaClick()" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagvisa && codProducto == 4">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <img class="visa-image"
+                             role="button"
+                             title="visa logo"
+                             src="assets/soat/img/visa-logo.png"
+                             #visaPay
+                             (click)="insertVisaScript()" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagpagoefectivo && flagKushki == false">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <div style="position: relative;z-index: 1;">
+                            <a class="margin-left-10"
+                               title="Pago Efectivo">
+                                <img src="assets/soat/img/pago-efectivo.png"
+                                     alt="Pago Efectivo"
+                                     style="cursor: pointer; width: 161px;"
+                                     (click)="pagoEfectivo()" />
+                            </a>
+                        </div>
+                        <div style="position: relative;top: -35px;right: -100px;width: 100%;cursor: pointer;">
+                            <img src="assets/soat/img/info.png"
+                                 alt="PagoEfectivo"
+                                 height="12"
+                                 title="Información"
+                                 (click)="infoPagoEfectivo()"
+                                 class="cursor: pointer;" />
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagpagoefectivocredito">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <div style="position: relative;z-index: 1;">
+                            <a class="margin-left-10"
+                               title="Pago Efectivo">
+                                <img src="assets/soat/img/pago-efectivo.png"
+                                     alt="Pago Efectivo"
+                                     style="cursor: pointer; width: 161px;"
+                                     (click)="pagoEfectivoNC()" />
+                            </a>
+                        </div>
+                        <div style="position: relative;top: -35px;right: -100px;width: 100%;cursor: pointer;">
+                            <img src="assets/soat/img/info.png"
+                                 alt="PagoEfectivo"
+                                 height="12"
+                                 title="Información"
+                                 (click)="infoPagoEfectivo()"
+                                 class="cursor: pointer;" />
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagvoucher">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <a class="margin-left-10"
+                           title="Voucher">
+                            <img src="assets/soat/img/p-voucher.png"
+                                 alt="Voucher"
+                                 style="cursor: pointer; width: 76px;"
+                                 (click)="pagoVoucher()" />
+                        </a>
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagpagoefectivo && flagKushki">
+                <div class="btn-pago-efectivo row">
+                    <div style="position: relative;z-index: 1;" class="col-md-6">
+                        <a class="margin-left-10"
+                           title="Transferencia">
+                            <img src="assets/soat/img/Kushki_trans.png"
+                                 alt="Transferencia"
+                                 style="cursor: pointer; width: 85px;"
+                                 (click)="pagoKushki('3')" />
+                        </a>
+                    </div>
+                    <div style="position: relative;z-index: 1;" class="col-md-6">
+                        <a class="margin-left-10"
+                           title="Cash">
+                           <img src="assets/soat/img/Kushki_cash.png"
+                                alt="Cash"
+                                style="cursor: pointer; width: 85px;"
+                                (click)="pagoKushki('2')" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagdirecto">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <div>
+                            <a class="margin-left-10"
+                               title="Antes: Directo">
+                                <img src="assets/soat/img/credito_exdirecto.png"
+                                     alt="Emisión Directa"
+                                     style="cursor: pointer; width: 85px;"
+                                     (click)="pagoDirecto()" />
+                            </a>
+                        </div>
+                        <div style="position: absolute;top: 10px; right: 120px; width: 15px;cursor: pointer;">
+                            <img src="assets/soat/img/info.png"
+                                 alt="Info Emisión Directa"
+                                 height="12"
+                                 (click)="infoDirecto()"
+                                 title="Información"
+                                 class="cursor: pointer;" />
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md text-center"
+                 *ngIf="tipoPago.flagcredito">
+                <div class="btn-pago-efectivo">
+                    <label>
+                        <div>
+                            <a class="margin-left-10"
+                               title="Crédito">
+                                <img src="data:image/png;base64,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"
+                                     alt="Nota de Credito"
+                                     style="cursor: pointer; width: 70px;"
+                                     (click)="alertaCredito(contentAlert)" />
+                            </a>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <ng-template #contentAlert
+                         let-c="close"
+                         let-d="dismiss">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                    <h2 class="CreTitulo">¿Estás seguro de continuar con la transacción?</h2>
+                    <p class="parrafo">No podras retornar la transacción</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="Boton_Confirmar"
+                            id="this.flagBotonNC"
+                            (click)="openCred(contentCred)">CONTINUAR</button>
+                    <button type="button"
+                            class="Boton_Cancelar"
+                            (click)="c('Save click')">CANCELAR</button>
+                </div>
+            </ng-template>
+
+
+            <ng-template #contentCred
+                         let-c="close"
+                         let-d="dismiss">
+                <div class="modal-header">
+                    <h4 class="modal-title"
+                        id="modal-basic-title"
+                        style="font-family: Bliss Pro; text-align: center; font-size: 24px">Pago con nota de crédito
+                    </h4>
+                    <div style="position:absolute;top: 21px; right: 850px; width: 20px;cursor: pointer;">
+                        <img src="assets/soat/img/info.png"
+                             alt="Info Emisión Crédito"
+                             height="18"
+                             (click)="infoCredito()"
+                             title="Información"
+                             class="cursor: pointer;" />
+                    </div>
+                </div>
+
+                <div class="grid form-group">
+                    <div class="table-responsive"
+                         style="height:195px;overflow: auto;">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">SEL.</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">DOCUMENTO</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">RAMO</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">PRODUCTO</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">CONTRATANTE</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">MONEDA</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">MONTO</td>
+                                    <td class="grid-title-item"
+                                        style="text-align: center;">FORMA DE PAGO</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                          *ngIf="creditosList!=null && creditosList.length>0; then showGrid else hideGrid"></ng-container>
+                        </table>
+
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10"
+                                        style="font-size:25px; text-align:center; padding-top:50px;">No se encontraron
+                                        registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+                        <ng-template #showGrid>
+                            <tbody class="TableNota">
+                                <tr *ngFor="let item of creditosList; let row_no = index">
+                                    <td *ngIf="userType!==137"
+                                        class="text-center">
+                                        <input type="checkbox"
+                                               class="chk"
+                                               [id]="'credito'+ creditosList.DOCUMENTO_FAVOR"
+                                               [value]="item.DOCUMENTO_FAVOR"
+                                               [disabled]="item.MARCADO == 0 && true == this.flagPAGADONC"
+                                               (click)="guardarList(item,$event.target.checked)" />
+                                    </td>
+                                    <td class="text-center">{{ item.NC }}</td>
+                                    <td class="text-center">{{ item.DES_RAMO }}</td>
+                                    <td class="text-center">{{ item.DES_PROD }}</td>
+                                    <td class="text-center">{{ item.CONTRATANTE }}</td>
+                                    <td class="text-center">{{ item.MONEDA }}</td>
+                                    <td class="text-center">{{ item.MONTO | number:'1.2-2' }}</td>
+                                    <td class="text-center">{{ item.FORMA_PAGO }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="totalCRE">
+                        <p><label>TOTAL:</label></p>
+                    </div>
+                    <div class="totalCRE2">
+                        <p><label>{{ cotizacion.poliza.moneda?.SSYMBOL || 'S/' }} {{lblPagos | number:'1.2-2'}}</label></p>
+                    </div>
+                    <div class="totalCRE3">
+                        <p><label>{{ cotizacion.poliza.moneda?.SSYMBOL || 'S/' }} {{lblPagos2}}</label></p>
+                    </div>
+                    <div><button id="btnPagar"
+                                [disabled]="this.flagDisabledBotonNC"
+                                type="button"
+                                class="Boton_Confirmar"
+                                (click)="alertaCheck(notList)">PAGAR</button></div>
+                    <div><button type="button"
+                                class="Boton_Cancelar"
+                                (click)="closeModalPrincipal();">REGRESAR</button></div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="row text-center"
+             *ngIf="cotizacion.poliza.pagoElegido == CONSTANTS.PAGO_ELEGIDO.VOUCHER">
+            <div class="container-fluid">
+                <div class="col-sm-12">
+                    <form-input-file label="Voucher"
+                                     [(value)]="cotizacion.file"
+                                     [required]="true"></form-input-file>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #templateFooterAntes>
+        <form-button *ngIf="tipoPago.flagOmitir"
+                     (click)="omitirClick();"
+                     btnClass="btn-secondary"
+                     label="Omitir "></form-button>
+    </ng-template>
+
+    <ng-template #modalEfectivo>
+        <div class="modal-body">
+            <img src="assets/soat/img/pago-efectivo-info.png"
+                 height="250"
+                 alt="PagoEfectivo" />
+        </div>
+        <div class="modal-footer footer-pe">
+            <div class="row align-self-center mx-auto">
+                <button class="soat-button ripple btn-pe"
+                        (click)="modalRef.hide()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+
+
+    <ng-template #modalDirecto>
+        <div class="modal-body">
+            <p>Permitirá realizar la transacción (emisión, renovación, declaración e inclusión) de la póliza de forma
+                Directa,
+                es decir sin un pago previo.</p>
+        </div>
+        <div class="modal-footer footer-pe">
+            <div class="row align-self-center mx-auto">
+                <button class="soat-button ripple btn-pe"
+                        (click)="modalRef.hide()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #modalInfoCredito>
+        <div class="modal-body">
+            <p>En esta pantalla podra elegir las notas de crédito que cuente para que pueda realizar el pago de la
+                poliza</p>
+        </div>
+        <div class="modal-footer footer-pe">
+            <div class="row align-self-center mx-auto">
+                <button class="soat-button ripple btn-pe"
+                        (click)="modalRef.hide()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>

@@ -1,0 +1,1487 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content mx-0 px-0">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Nuevas planillas contratadas</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <div class="header-item right-item">
+              <a class="button secondary"
+                 routerLink="/extranet/payroll">
+                <i class="fa fa-angle-left"
+                   aria-hidden="true"></i>
+                Regresar a Mis Planillas
+              </a>
+              <!-- <button (click)="CancelaryRegresar()">
+                 <img alt="" src= "assets/icons/arrow-left.png" />
+                <span>Regresar a Mis Planillas</span>
+              </button>-->
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="showFiltrosEnviar">
+          <div class="content-sub-header">
+            <div class="content-sub-header__left">
+              <h3>CERTIFICADOS</h3>
+            </div>
+            <div class="content-sub-header__right">
+              <button
+                class="button secondary"
+                (click)="onEventSearch()"
+                *ngIf="bBotonesActividad"
+              >
+                <i class="fa fa-search"
+                   aria-hidden="true"></i>
+                Buscar
+              </button>
+              <button
+                class="button secondary"
+                (click)="btn_Incluir()"
+                *ngIf="bBotonesActividad"
+              >
+                <i class="fa fa-plus"
+                   aria-hidden="true"></i>
+                Incluir en Planilla
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-container">
+            <!-- *Filtro canal de venta -->
+            <div class="field-container">
+              <label
+                class="field-container__label text-uppercase"
+                for="filter-sales-channels"
+              >Canal</label
+              >
+              <select
+                id="filter-sales-channels"
+                class="field-container__input"
+                (change)="onSelectChannelSales($event.target.value)"
+                [disabled]="lockfilter"
+              >
+                <option
+                  *ngFor="let channelsales of ListChannelSales"
+                  [selected]="channelsales.nchannel == channelSalesId"
+                  [value]="channelsales.nchannel"
+                >
+                  {{ channelsales.sdescript }}
+                </option>
+              </select>
+            </div>
+
+            <!-- *Filtro punto de venta -->
+            <div class="field-container">
+              <label
+                class="field-container__label text-uppercase"
+                for="point-sale-filter"
+              >Punto de venta</label
+              >
+              <select
+                class="field-container__input"
+                id="point-sale-filter"
+                (change)="onSelectChannelPoint($event.target.value)"
+                [(ngModel)]="salesPointIdSelected"
+                [disabled]="blockfilter"
+              >
+                <option
+                  *ngFor="let channelpoint of ListChannelPoint"
+                  [value]="channelpoint.nnumpoint"
+                >
+                  {{ channelpoint.sdescript }}
+                </option>
+              </select>
+            </div>
+
+            <!-- *Fltro Ramo -->
+            <div class="field-container">
+              <label
+                for="branch-filter"
+                class="field-container__label text-uppercase"
+              >Ramo</label
+              >
+              <select
+                id="branch-filter"
+                class="field-container__input"
+                (change)="onSelectBranch($event.target.value, true)"
+                [disabled]="lockfilter"
+              >
+                <option
+                  *ngFor="let Item of lstBranch"
+                  [selected]="Item.nid == branchId"
+                  [value]="Item.nid"
+                >
+                  {{ Item.sdescript }}
+                </option>
+              </select>
+            </div>
+
+            <!-- *Fltro Producto -->
+            <div class="field-container">
+              <label
+                for="product-filter"
+                class="field-container__label text-uppercase"
+              >Producto</label
+              >
+              <select
+                id="product-filter"
+                class="field-container__input"
+                (change)="onSelectProduct($event.target.value)"
+                [disabled]="lockfilter"
+              >
+                <option
+                  *ngFor="let Item of lstProduct"
+                  [selected]="Item.nid == productId"
+                  [value]="Item.nid"
+                >
+                  {{ Item.sdescript }}
+                </option>
+              </select>
+            </div>
+
+            <!-- *Fltro Moneda -->
+            <div class="field-container">
+              <label
+                for="currency-filter"
+                class="field-container__label text-uppercase"
+              >Moneda</label
+              >
+              <select
+                id="currency-filter"
+                class="field-container__input"
+                (change)="onSelectCurrency($event.target.value)"
+                [disabled]="lockfilter"
+              >
+                <option
+                  *ngFor="let currency of lstCurrency"
+                  [selected]="currency.nidcurrency == currencyId"
+                  [value]="currency.nidcurrency"
+                >
+                  {{ currency.sdescript }}
+                </option>
+              </select>
+            </div>
+
+            <!-- *Fltro Fecha desde -->
+            <div class="field-container">
+              <label
+                for="start-date-filter"
+                class="field-container__label text-uppercase"
+              >Desde</label
+              >
+              <input
+                type="text"
+                id="start-date-filter"
+                class="field-container__input"
+                displayFormat="DD/MM/YYYY"
+                #dp="bsDatepicker"
+                bsDatepicker
+                [bsConfig]="bsConfig"
+                [(bsValue)]="bsValueIni"
+                [value]="bsValueIni | date : 'dd/MM/yyyy'"
+                [disabled]="blockfilter"
+              />
+            </div>
+
+            <!-- *Fltro Fecha hasta -->
+            <div class="field-container">
+              <label
+                for="end-date-filter"
+                class="field-container__label text-uppercase"
+              >Hasta</label
+              >
+              <input
+                id="end-date-filter"
+                class="field-container__input"
+                type="text"
+                #dp="bsDatepicker"
+                bsDatepicker
+                [bsConfig]="bsConfig"
+                [(bsValue)]="bsValueFin"
+                [value]="bsValueFin | date : 'dd/MM/yyyy'"
+                [disabled]="blockfilter"
+              />
+            </div>
+
+            <!-- *Fltro Cliente -->
+            <div class="field-container contractor-filter">
+              <label
+                for="contractor-filter"
+                class="field-container__label text-uppercase"
+              >Contratante</label
+              >
+
+              <div class="field-container-input">
+                <i class="fa fa-search"
+                   aria-hidden="true"></i>
+                <input
+                  type="text"
+                  id="contractor-filter"
+                  class="field-container__input"
+                  [class.active]="contractorSelected.id"
+                  [class.cursor-default]="contractorSelected.id"
+                  readonly
+                  placeholder="Buscar contratante"
+                  [formControl]="contractorControl"
+                  [disabled]="blockfilter"
+                  (click)="showHideModalContractor(true)"
+                />
+
+                <button
+                  class="button search-contractor"
+                  (click)="removeContractorSelected()"
+                  *ngIf="contractorSelected.id"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            <!-- *Fltro Póliza -->
+            <div class="field-container"
+                 *ngIf="profileId === 28">
+              <label
+                for="policy-filter"
+                class="field-container__label text-uppercase"
+              >N° Póliza</label
+              >
+              <input
+                type="text"
+                id="policy-filter"
+                class="field-container__input"
+                placeholder="Nro. Póliza"
+                [(ngModel)]="npolicy"
+                (keypress)="
+                  this.utilityService._kpPolicy($event, planillaBuscar)
+                "
+              />
+            </div>
+          </div>
+
+          <div class="grid form-group row">
+            <div class="table-responsive">
+              <div class="payroll-content">
+                <div class="result-content">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr class="tr-title">
+                          <td class="td-tittle">#</td>
+                          <td class="td-tittle">
+                            <input
+                              type="checkbox"
+                              [(ngModel)]="selectedAll"
+                              (change)="selectAll()"
+                            />
+                          </td>
+                          <td class="td-tittle">Ramo</td>
+                          <td class="td-tittle">Producto</td>
+                          <td class="td-tittle">Nro. Póliza</td>
+                          <!-- <td class="td-tittle">Certificado</td> -->
+                          <td class="td-tittle">Proforma</td>
+                          <td class="td-tittle">Fecha de emisión</td>
+                          <td class="td-tittle"
+                              *ngIf="showColumnsSOAT">
+                            Placa
+                          </td>
+                          <td class="td-tittle">Contratante</td>
+                          <td class="td-tittle">Vigencia</td>
+                          <td class="td-tittle">Moneda</td>
+                          <td class="td-tittle">Importe</td>
+                          <td class="td-tittle"
+                              *ngIf="showColumnsSOAT">Uso
+                          </td>
+                          <td class="td-tittle"
+                              *ngIf="showColumnsSOAT">
+                            Clase
+                          </td>
+                          <td class="td-tittle"
+                              *ngIf="showColumnsSOAT">
+                            Tipo de emisión
+                          </td>
+                          <td class="td-tittle"
+                              *ngIf="showColumnsSOAT">
+                            Punto de Venta
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody
+                        *ngFor="
+                          let result of ListCertificado;
+                          let index = index
+                        "
+                      >
+                        <tr>
+                          <td>{{ index + 1 }}</td>
+                          <td>
+                            <input
+                              type="checkbox"
+                              [(ngModel)]="result.selected"
+                              (change)="checkIfAllSelected()"
+                            />
+                          </td>
+                          <td>{{ result.sbranch }}</td>
+                          <td>{{ result.sproduct }}</td>
+                          <td>{{ result.npolicy }}</td>
+                          <!-- <td>{{ result.ncertif }}</td> -->
+                          <td>{{ result.nreceipt }}</td>
+                          <td>{{ result.ddateorigi | date : "dd/MM/yyyy" }}</td>
+                          <td *ngIf="showColumnsSOAT">{{ result.sregist }}</td>
+                          <td>{{ result.snamecomplete }}</td>
+                          <td>
+                            {{ result.dstartdate | date : "dd/MM/yyyy" }} -
+                            {{ result.dexpirdat | date : "dd/MM/yyyy" }}
+                          </td>
+                          <td>{{ result.scurrency }}</td>
+                          <td>
+                            {{ result.sshortcurrency }}
+                            {{ result.npremium | number : "1.2-2" }}
+                          </td>
+                          <td *ngIf="showColumnsSOAT">{{ result.suso }}</td>
+                          <td *ngIf="showColumnsSOAT">{{ result.sclase }}</td>
+                          <td *ngIf="showColumnsSOAT">
+                            {{ result.ssalemode }}
+                          </td>
+                          <td *ngIf="showColumnsSOAT">
+                            {{ result.spointname }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row mt-4">
+          <div class="col-lg-7">
+            <div class="float-left">
+              <span class="spantitlecertificado">GENERACIÓN DE PLANILLAS</span>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div
+              class="float-right"
+              *ngIf="showbtnEliminardePlanilla"
+              class="btn-grupo"
+            >
+              <button (click)="btn_Eliminar()"
+                      class="btn-planilla">
+                <img
+                  alt=""
+                  src="assets/icons/delete.png"
+                  style="display: inline"
+                />
+                <span style="display: inline">Eliminar de Planilla</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="table-responsive">
+            <div class="payroll-content">
+              <div class="result-content">
+                <table>
+                  <thead>
+                    <tr class="tr-title">
+                      <td class="td-tittle">#</td>
+                      <td class="td-tittle"
+                          *ngIf="showCheckbox">
+                        <input
+                          type="checkbox"
+                          [(ngModel)]="selectedAllPlanilla"
+                          (change)="selectAllPlanilla()"
+                        />
+                      </td>
+                      <td class="td-tittle">Ramo</td>
+                      <td class="td-tittle">Producto</td>
+                      <td class="td-tittle">Nro. Póliza</td>
+                      <!--<td class="td-tittle">Certificado</td>-->
+                      <td class="td-tittle">Proforma</td>
+                      <td class="td-tittle">Fecha de emisión</td>
+                      <td class="td-tittle"
+                          *ngIf="showColumnsSOAT">Placa
+                      </td>
+                      <td class="td-tittle">Contratante</td>
+                      <td class="td-tittle">Vigencia</td>
+                      <td class="td-tittle">Moneda</td>
+                      <td class="td-tittle">Importe</td>
+                      <td class="td-tittle"
+                          *ngIf="showColumnsSOAT">Uso
+                      </td>
+                      <td class="td-tittle"
+                          *ngIf="showColumnsSOAT">Clase
+                      </td>
+                      <td class="td-tittle"
+                          *ngIf="showColumnsSOAT">
+                        Tipo de emisión
+                      </td>
+                      <td class="td-tittle"
+                          *ngIf="showColumnsSOAT">
+                        Punto de Venta
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody
+                    *ngFor="let result of listPayrollDetail; let index = index"
+                  >
+                    <tr>
+                      <td>{{ index + 1 }}</td>
+                      <td *ngIf="showCheckbox">
+                        <input
+                          type="checkbox"
+                          [(ngModel)]="result.selected"
+                          (change)="checkIfAllSelectedPlanilla()"
+                        />
+                      </td>
+                      <td>{{ result.sbranch }}</td>
+                      <td>{{ result.sproduct }}</td>
+                      <td>{{ result.npolicy }}</td>
+                      <!--<td>{{ result.ncertif }}</td>-->
+                      <td>{{ result.nreceipt }}</td>
+                      <td>{{ result.ddateorigi | date : "dd/MM/yyyy" }}</td>
+                      <td *ngIf="showColumnsSOAT">{{ result.sregist }}</td>
+                      <td>{{ result.snamecomplete }}</td>
+                      <td>
+                        {{ result.dstartdate | date : "dd/MM/yyyy" }} -
+                        {{ result.dexpirdat | date : "dd/MM/yyyy" }}
+                      </td>
+
+                      <td>{{ result.scurrency }}</td>
+                      <td>{{ result.sshortcurrency }} {{ result.npremium }}</td>
+                      <td *ngIf="showColumnsSOAT">{{ result.suso }}</td>
+                      <td *ngIf="showColumnsSOAT">{{ result.sclase }}</td>
+                      <td *ngIf="showColumnsSOAT">{{ result.ssalemode }}</td>
+                      <td *ngIf="showColumnsSOAT">{{ result.spointname }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <div class="float-left">
+              <span class="title-count"
+              >Cantidad de certificados en planilla:</span
+              >
+              <span class="span-count">{{ listPayrollDetail.length }}</span>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="float-right">
+              <span class="title-count">Importe total de planilla:</span>
+              <span class="span-amount"
+              >{{ currencyAcron }}
+                {{ totalplanilla | number : "1.2-2" }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="generate-content"
+             *ngIf="showbtnGenerarPlanilla && bMostrarButtons">
+          <div class="payment-methods">
+            <button class="button primary"
+                    (click)="confirmarMedioPago('3', false)">
+              Pago Efectivo
+              <img src="./assets/payment-methods/pagoefectivo.svg"
+                   alt="pagoefectivo logo">
+            </button>
+            <button class="button primary"
+                    (click)="confirmarMedioPago('2', false)">
+              Pago con Visa
+              <img src="./assets/payment-methods/visa.svg"
+                   alt="visa logo">
+            </button>
+            <button class="button primary"
+                    (click)="confirmarMedioPago('9', false)">
+              Pago con Yape
+              <img src="./assets/payment-methods/yape.svg"
+                   alt="yape logo">
+            </button>
+            <ng-container *ngIf="paymentType$.kushkiCash">
+              <button class="button primary"
+                      (click)="confirmarMedioPago('5', false)">
+                Pago con Efectivo
+                <img src="./assets/payment-methods/cash.svg"
+                     alt="visa logo">
+              </button>
+            </ng-container>
+            <ng-container *ngIf="paymentType$.kushkiTransfer">
+              <button class="button primary"
+                      (click)="confirmarMedioPago('6', false)">
+                Pago con Transferencia
+                <img src="./assets/payment-methods/transfer.svg"
+                     alt="visa logo">
+              </button>
+            </ng-container>
+            <button class="button primary"
+                    (click)="confirmarMedioPago('1', true)">
+              Generar Planilla
+            </button>
+          </div>
+        </div>
+        <div class="btn-visa"
+             hidden></div>
+        <!--<div *ngIf="!bMostrarButtons">
+          <div *ngIf="bMostrarButtonPE"
+               class="btn-pago-efectivo">
+            <a (click)="pagarConPagoEfectivo()">
+              <img
+                alt=""
+                src="assets/images/logo_pagoefectivo_112x52.png"
+                alt="PagoEfectivo"
+              />
+            </a>
+          </div>
+        </div>-->
+
+        <div *ngIf="bLoading"
+             class="loading">
+          <img alt=""
+               src="assets/icons/loading.gif"/>
+          <p>Por favor espere unos segundos...</p>
+        </div>
+
+        <div *ngIf="showDatosLiquidacion">
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <span class="spantitlecertificado">DATOS DE LIQUIDACIÓN</span>
+            </div>
+          </div>
+          <div *ngIf="showFiltrosLiquidacion">
+            <!-- <form [ngClass]="{ 'was-validated': f.submitted }" (ngSubmit)="f.form.valid && AgregarDatosLiquidacion()" #f="ngForm" novalidate> -->
+            <div class="form-group row">
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion"
+                >TIPO DE MONEDA</label
+                >
+                <app-currencytype
+                  [currenId]="currencyId"
+                  (evResultCurrencyType)="onVotedCurrentType($event)"
+                >
+                </app-currencytype>
+              </div>
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion">IMPORTE</label>
+                <input
+                  type="text"
+                  id="NAMOUNT"
+                  (keypress)="
+                    this.utilityService._kpImporteTwoD(
+                      $event,
+                      payrollPaymentAdd.NAMOUNT
+                    )
+                  "
+                  name="NAMOUNT"
+                  #NAMOUNT="ngModel"
+                  required
+                  autofocus
+                  class="form-control"
+                  [(ngModel)]="payrollPaymentAdd.NAMOUNT"
+                  placeholder="Ingresa el importe"
+                />
+                <!-- <div *ngIf="f.submitted && !NAMOUNT.valid" class="invalid-feedback d-block">Ingresa el importe</div> -->
+              </div>
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion"
+                >TIPO DE PAGO</label
+                >
+                <app-paymenttype
+                  [payrollView]="true"
+                  (evResultPaymentType)="onVotedParentPaymentType($event)"
+                  required
+                  autofocus
+                ></app-paymenttype>
+              </div>
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion">BANCO</label>
+                <app-bank
+                  (evResultBank)="onVotedParentBank($event)"
+                  (evResultAccountBank)="onVotedParentAccountBank($event)"
+                ></app-bank>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion"
+                >NRO. DE OPERACIÓN</label
+                >
+                <input
+                  type="text"
+                  (keypress)="
+                    this.utilityService._kpPolicy($event, planillaBuscar)
+                  "
+                  id="SOPERATION_NUMBER"
+                  name="SOPERATION_NUMBER"
+                  maxlength="13"
+                  class="form-control"
+                  [(ngModel)]="payrollPaymentAdd.SOPERATIONNUMBER"
+                  placeholder="Ingresa el número de operación"
+                  #SOPERATIONNUMBER="ngModel"
+                  required
+                  autofocus
+                />
+                <!-- <div *ngIf="f.submitted && !SOPERATIONNUMBER.valid" class="invalid-feedback d-block">Ingresa el número de operación</div> -->
+              </div>
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion"
+                >FECHA DE OPERACIÓN</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  [bsConfig]="bsConfig"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [(bsValue)]="bsValueFecOp"
+                  [(maxDate)]="bsValueFin"
+                  value="{{ bsValueFecOp | date : 'dd/MM/yyyy' }}"
+                />
+                <!-- <input type="date" id="DOPERATION_DATE" name="DOPERATION_DATE" class="form-control" [(ngModel)]="payrollPaymentAdd.DOPERATIONDATE"
+                              placeholder="Ingresa fecha de operación" #DOPERATIONDATE="ngModel"  required autofocus> -->
+                <!-- <div *ngIf="f.submitted && !DOPERATIONDATE.valid" class="invalid-feedback d-block">Ingresa fecha de operación</div> -->
+              </div>
+              <div class="col-lg-3">
+                <label for=""
+                       class="label-datos-liquidacion">REFERENCIA</label>
+                <input
+                  type="text"
+                  id="SREFERENCE"
+                  name="SREFERENCE"
+                  class="form-control"
+                  [(ngModel)]="payrollPaymentAdd.SREFERENCE"
+                  placeholder="Ingresa la referencia"
+                  #SREFERENCE="ngModel"
+                  maxlength="20"
+                  required
+                  autofocus
+                />
+                <!-- <div *ngIf="f.submitted && !SREFERENCE.valid" class="invalid-feedback d-block">Ingresa la referencia</div> -->
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-12">
+                <div class="float-left btn-grupo">
+                  <button
+                    (click)="AgregarDatosLiquidacion()"
+                    class="full-color btn-planilla"
+                  >
+                    <span>Agregar</span>
+                  </button>
+                  <button
+                    (click)="QuitarDatosLiquidacion()"
+                    class="btn-planilla"
+                  >
+                    <span>Eliminar</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- <div class="col-md-3 col-sm-12">
+                    <button (click)="AgregarDatosLiquidacion()" class="full-color" >
+                        <span>Agregar</span>
+                      </button>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <button (click)="QuitarDatosLiquidacion()" >
+                        <span>Eliminar</span>
+                      </button>
+                </div>-->
+            </div>
+          </div>
+          <!-- </form> -->
+
+          <!--   <div class="table-responsive">
+              <div class="payroll-content">
+                <div class="result-content">
+                  <div class="table-responsive">
+                    <table class="table"> -->
+
+          <div class="grid form-group row">
+            <div class="table-responsive">
+              <div class="payroll-content">
+                <div class="result-content">
+                  <table class="table">
+                    <!--Cabecera de Grilla-->
+                    <thead>
+                      <tr class="tr-title">
+                        <td class="data-table-tr-td data-table-title-td">
+                          <span>#</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-radio"
+                          *ngIf="showCheckbox"
+                        >
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="selectedAllPaymentRows"
+                            (change)="selectAllPayment()"
+                          />
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Tipo de pago</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Importe</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Moneda</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Banco</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Operación</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Referencia</span>
+                        </td>
+                        <td
+                          class="data-table-tr-td data-table-title-td td-tittle"
+                        >
+                          <span>Fecha</span>
+                        </td>
+                        <!-- <td class="data-table-tr-td data-table-title-td">
+                                    <span class="tittle-label">Estado voucher</span>
+                                  </td> -->
+                      </tr>
+                    </thead>
+                    <!--Contenido de Grilla-->
+                    <tbody
+                      *ngFor="
+                        let result of listpayrollPaymentAdd;
+                        let index = index
+                      "
+                    >
+                      <tr>
+                        <td>{{ index + 1 }}</td>
+                        <td *ngIf="showCheckbox">
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="result.selected"
+                            (change)="checkIfAllSelectedPayment()"
+                          />
+                        </td>
+                        <td>{{ result.nidpaidtypetext }}</td>
+                        <td>{{ result.namount }}</td>
+                        <td>{{ result.ncurrencytext }}</td>
+                        <td>{{ result.nbanktext }}</td>
+                        <td>{{ result.soperationnumber }}</td>
+                        <td>{{ result.sreference }}</td>
+                        <td>{{ result.doperationdate }}</td>
+                        <!-- <td>{{result.nbanktext}}</td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <span class="spantitlecertificado">IMPORTE DE LIQUIDACIÓN</span>
+            </div>
+          </div>
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Total del importe a liquidar:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount">{{
+                    totalplanilla | number : "1.2-2"
+                  }}</span>
+                <span class="type-money-span"> {{ scurrency }}</span>
+                <!-- <span class="title-count">Importe total de planilla:</span>
+                                <span class="span-amount">S/.{{ totalplanilla }}</span> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Total del importe declarado:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount"
+                >{{ totaldeclarado | number : "1.2-2" }}
+                </span>
+                <span class="type-money-span"> {{ scurrency }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row totales">
+            <div class="col-lg-6">
+              <div class="float-left">
+                <span class="title-count">Diferencia de pago pendiente:</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="float-right">
+                <span class="span-amount">{{ saldo | number : "1.2-2" }}</span>
+                <span class="type-money-span"> {{ scurrency }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <span class="spantitlecertificado"
+                    *ngIf="showTitleEvaluacion"
+              >EVALUACIÓN</span
+              >
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-6">
+              <div style="float: left; width: 100%"
+                   *ngIf="showSelected">
+                <div class="form-group row">
+                  <label for=""
+                         class="col-lg-4 label-datos-liquidacion"
+                  >POR ESTADO:</label
+                  >
+                  <div class="col-lg-8">
+                    <select (change)="onSelectState($event.target.value)">
+                      <option value="0"
+                              selected>--SELECCIONE--
+                      </option>
+                      <option
+                        *ngFor="let Item of lstStateChannel"
+                        value="{{ Item.nidstate }}"
+                      >
+                        {{ Item.sdescription }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for=""
+                         class="col-lg-12 label-datos-liquidacion"
+                  >OBSERVACION:</label
+                  >
+                </div>
+                <div class="form-group row">
+                  <div class="col-lg-12">
+                    <textarea
+                      name=""
+                      id=""
+                      [(ngModel)]="strObservacion"
+                      class="form-control"
+                      maxlength="250"
+                      rows="6"
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-lg-12"
+                       style="text-align: center">
+                    <button
+                      style="width: 50%"
+                      class="full-color"
+                      (click)="derivarPlanilla()"
+                    >
+                      <span>Enviar Planilla</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6"
+                 *ngIf="showbtnGrabarTodo">
+              <div class="float-right"
+                   class="btn-grupo">
+                <button (click)="CancelaryRegresar()"
+                        class="btn-planilla">
+                  <span>Cancelar</span>
+                </button>
+                <button
+                  class="full-color"
+                  (click)="grabarTodo()"
+                  class="full-color btn-planilla"
+                >
+                  <img
+                    alt=""
+                    src="assets/icons/grabar_todo.png"
+                    style="display: inline"
+                  />
+                  <span style="display: inline">Grabar todo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalLiquidacion>
+  <div class="content-modal modal-liquidacion">
+    <section>
+      <div class="modal-header">
+        <div class="title">
+          <span> Mensaje </span>
+        </div>
+        <button
+          type="button"
+          class="modal__header--close"
+          aria-label="Close"
+          (click)="aceptarmsginfo()"
+        >
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png"/>
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <p class="message-body">{{ message }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button class="button primary orange"
+                  (click)="aceptarmsginfo()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </section>
+    >
+  </div>
+</ng-template>
+
+<ng-template #modalInfo>
+  <div class="content-modal modal-info">
+    <section>
+      <div class="modal-header">
+        <div class="title">
+          <span>Mensaje</span>
+        </div>
+
+        <button
+          type="button"
+          class="modal__header--close"
+          aria-label="Close"
+          (click)="aceptar()"
+        >
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png"/>
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span class="message-body">{{ messageinfo }}</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button class="button primary orange"
+                  (click)="aceptar()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmasivo>
+  <div class="content-modal modal-confirmMasivo">
+    <section>
+      <div class="modal-header">
+        <div class="title">
+          <span>Mensaje de Confirmación</span>
+        </div>
+        <button
+          type="button"
+          class="modal__header--close"
+          aria-label="Close"
+          (click)="closeconfirm()"
+        >
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png"/>
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span class="message-body">{{ message }}</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-option">
+          <div>
+            <button class="button primary orange"
+                    (click)="confirm()">
+              Si
+            </button>
+          </div>
+          <div>
+            <button class="button-close"
+                    (click)="closeconfirm()">No
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalResultadoPE>
+  <div class="content-modal modal-pagoEfectivo">
+    <section>
+      <div class="modal-header">
+        <h4 class="title">{{ message }}</h4>
+      </div>
+      <div class="modal-body">
+        <iframe
+          *ngIf="showModalPE"
+          [src]="paymentUrl"
+          width="100%"
+          height="100%"
+          frameborder="0"
+        ></iframe>
+      </div>
+      <div class="modal-footer">
+        <button class="button primary orange"
+                (click)="finalizar()">
+          Finalizar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalContractor>
+  <div class="content-modal">
+    <section class="modal-contractor">
+      <div class="modal-header">
+        <h6>Buscar contratante</h6>
+      </div>
+      <div class="modal-body">
+        <form class="form-contractor"
+              [formGroup]="formContractor">
+          <label class="placeholder"
+                 aria-label="Buscar por:">
+            <div class="content-search-type">
+              <div class="selection radio">
+                <input
+                  type="radio"
+                  id="search-by-document"
+                  [value]="SEARCHTYPES.document"
+                  formControlName="searchType"
+                />
+                <label for="search-by-document">Documento</label>
+              </div>
+              <div class="selection radio">
+                <input
+                  type="radio"
+                  id="search-by-names"
+                  [value]="SEARCHTYPES.names"
+                  formControlName="searchType"
+                />
+                <label for="search-by-names">{{
+                    formContractorControl["personType"].value ==
+                    PERSONTYPES.business
+                      ? "Razón Social"
+                      : "Nombres y Apellidos"
+                  }}</label>
+              </div>
+            </div>
+          </label>
+
+          <ng-container
+            *ngIf="
+              formContractorControl['searchType'].value == SEARCHTYPES.document
+            "
+          >
+            <div class="content-document">
+              <label for=""
+                     class="placeholder select">
+                <select
+                  type="text"
+                  class="field-container__input"
+                  formControlName="documentType"
+                >
+                  <option value="1">RUC</option>
+                  <option value="2">DNI</option>
+                  <option value="4">CE</option>
+                </select>
+              </label>
+
+              <label
+                for="form-contractor-document-number"
+                class="placeholder inside"
+                [class.active]="formContractorControl['documentNumber'].value"
+                aria-label="Número de documento"
+              >
+                <input
+                  type="text"
+                  id="form-contractor-document-number"
+                  class="field-container__input upper"
+                  [maxlength]="documentNumberContractorValidations.maxLength"
+                  formControlName="documentNumber"
+                  (blur)="getDocumentInfo()"
+                />
+              </label>
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              formContractorControl['searchType'].value == SEARCHTYPES.names
+            "
+          >
+            <label class="placeholder"
+                   aria-label="Tipo de persona">
+              <select
+                class="field-container__input upper"
+                formControlName="personType"
+              >
+                <option [value]="PERSONTYPES.natural">Persona Natural</option>
+                <option [value]="PERSONTYPES.business">Persona Jurídica</option>
+              </select>
+            </label>
+            <ng-container
+              *ngIf="
+                formContractorControl['personType'].value ==
+                PERSONTYPES.business
+              "
+            >
+              <label class="placeholder"
+                     aria-label="Razón Social:">
+                <input
+                  type="text"
+                  class="field-container__input upper"
+                  formControlName="legalName"
+                />
+              </label>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                formContractorControl['personType'].value == PERSONTYPES.natural
+              "
+            >
+              <label class="placeholder"
+                     aria-label="Nombres:">
+                <input
+                  type="text"
+                  class="field-container__input upper"
+                  formControlName="names"
+                />
+              </label>
+              <div class="content-names">
+                <label class="placeholder"
+                       aria-label="Apellido Paterno:">
+                  <input
+                    type="text"
+                    class="field-container__input upper"
+                    formControlName="apePat"
+                  />
+                </label>
+                <label class="placeholder"
+                       aria-label="Apellido Materno:">
+                  <input
+                    type="text"
+                    class="field-container__input upper"
+                    formControlName="apeMat"
+                  />
+                </label>
+              </div>
+            </ng-container>
+
+            <button
+              class="button primary"
+              [disabled]="formContractor.invalid"
+              (click)="getDocumentInfo()"
+              *ngIf="
+                formContractorControl['searchType'].value == SEARCHTYPES.names
+              "
+            >
+              Buscar
+            </button>
+          </ng-container>
+        </form>
+
+        <div class="content-table">
+          <table class="table-u table-contractors">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Documento</th>
+                <th>Contratante</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!listContractors$.length">
+                <tr>
+                  <td colspan="3">No se encontraron resultados</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="listContractors$.length">
+                <tr
+                  class="list-contractors-row"
+                  *ngFor="
+                    let item of listContractors$
+                      | paginate
+                        : {
+                            id: 'current-page-list-contractors',
+                            itemsPerPage: 4,
+                            currentPage: currentPageListContractors,
+                            totalItems: listContractors$.length
+                          };
+                    let index = index
+                  "
+                >
+                  <td>
+                    <div class="selection radio">
+                      <input
+                        type="radio"
+                        name="contractor-radio"
+                        [attr.id]="'select-contractor-' + index"
+                        [value]="item.clientCode"
+                        [formControl]="clientCodeContractorControl"
+                        (change)="onChangeSelectContractor(item)"
+                      />
+                      <label [attr.for]="'select-contractor-' + index"></label>
+                    </div>
+                  </td>
+                  <td>
+                    {{ DOCUMENTTYPES[item.documentType] }} -
+                    {{ item.documentNumber }}
+                  </td>
+                  <td>{{ item.contractor }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <ng-container *ngIf="listContractors$.length">
+          <pagination-controls
+            id="current-page-list-contractors"
+            [autoHide]="true"
+            (pageChange)="currentPageListContractors = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+          ></pagination-controls>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button secondary"
+          (click)="showHideModalContractor(false)"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button primary"
+          [disabled]="!contractorSelected.id"
+          (click)="selectContractor()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalKushkiCard>
+  <div class="content-modal modal-kushkiCard">
+    <section>
+      <div class="modal-header">
+        <button
+          class="modal__header--close"
+          aria-label="close"
+          (click)="closeconfirm()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <img
+          src="./assets/logos/logo-PS.svg"
+          alt="logo protecta"
+          class="logo-protecta"
+        />
+        <form [formGroup]="kushkiForm">
+          <div class="content-input">
+            <label
+              class="placeholder inside"
+              [class.active]="kushkiFormControl['cardNumber'].value"
+              aria-placeholder="Número de tarjeta"
+            >
+              <input
+                type="text"
+                formControlName="cardNumber"
+                [class.has-error]="
+                  kushkiFormControl['cardNumber'].touched &&
+                  kushkiFormControl['cardNumber'].errors
+                "
+                maxlength="16"
+                autocomplete="nope"
+                (blur)="binInfo()"
+              />
+              <i class="fa fa-credit-card"
+                 aria-hidden="true"></i>
+              <ng-container *ngIf="cardType">
+                <img
+                  [src]="'./assets/logos/payments/visa.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'visa'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/mastercard.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'mastercard'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/diners.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'diners'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/amex.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'amex'"
+                />
+              </ng-container>
+            </label>
+          </div>
+          <div class="content-expiredate-cvv">
+            <div class="content-input">
+              <label
+                class="placeholder inside"
+                [class.active]="kushkiFormControl['dueDate'].value"
+                aria-placeholder="MM/AA"
+              >
+                <input
+                  type="text"
+                  formControlName="dueDate"
+                  [class.has-error]="
+                    kushkiFormControl['dueDate'].touched &&
+                    kushkiFormControl['dueDate'].errors
+                  "
+                  autocomplete="nope"
+                />
+                <i class="fa fa-calendar-o"
+                   aria-hidden="true"></i>
+              </label>
+            </div>
+            <div class="content-input">
+              <label
+                class="placeholder inside"
+                [class.active]="kushkiFormControl['cvv'].value"
+                aria-placeholder="CVV"
+              >
+                <input
+                  type="password"
+                  formControlName="cvv"
+                  [class.has-error]="
+                    kushkiFormControl['cvv'].touched &&
+                    kushkiFormControl['cvv'].errors
+                  "
+                  autocomplete="nope"
+                  maxlength="4"
+                />
+                <i class="fa fa-lock"
+                   aria-hidden="true"></i>
+              </label>
+            </div>
+          </div>
+          <button
+            class="button primary orange"
+            [disabled]="kushkiForm.invalid"
+            (click)="kushkiCardSubmit()"
+          >
+            {{ currencyAcron }} {{ totalplanilla | number : "1.2-2" }}
+          </button>
+          <small class="has-error"
+                 *ngIf="messageInfoKushki">
+            {{ messageInfoKushki }}
+          </small>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer__left">
+          <img
+            src="./assets/logos/pci_certificate.svg"
+            alt="pci certificate"
+            width="72"
+          />
+        </div>
+        <div class="modal-footer__right">
+          <img
+            src="./assets/logos/payments/diners.svg"
+            class="diners logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/amex.svg"
+            class="amex logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/visa-2.svg"
+            alt="visa logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/mastercard.svg"
+            alt="mastercard logo"
+            width="43"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>

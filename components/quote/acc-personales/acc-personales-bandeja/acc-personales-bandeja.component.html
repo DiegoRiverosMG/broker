@@ -1,0 +1,134 @@
+<div class="acc-personales-bandeja">
+  <div class="form-group row">
+    <div class="col-lg-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+      <div class="container-fluid p-0">
+
+        <panel-header-producto
+          title="Bandeja"
+        ></panel-header-producto>
+
+        <panel-container>
+          <div class="row">
+            <div class="col-sm-3">
+              <form-input-select
+                label="Tipo producto"
+                [service]="accPersonalesService"
+                method="getProductListForBranch"
+                [params]="{
+                  branch: CONSTANTS.RAMO
+                }"
+                fieldCodigo="COD_PRODUCT"
+                fieldValor="DES_PRODUCT"
+                [firstSelect]="true"
+                [(value)]="filters.tipoProducto"
+              ></form-input-select>
+            </div>
+            <div class="col-sm-3">
+              <form-input-select
+                label="Estado"
+                [service]="accPersonalesService"
+                method="getQuotationStatusList"
+                [params]="{
+                  certype: CONSTANTS.CERTYPE,
+                  productId: storageService.productId
+                }"
+                fieldCodigo="Id"
+                fieldValor="Name"
+                [(value)]="filters.estado"
+                [firstSelect]="true"
+              ></form-input-select>
+            </div>
+            <div class="col-sm-3">
+              <form-input-text
+                label="Nro. Cotización"
+                [(value)]="filters.numCotizacion"
+                (onKeyenter)="clickSearch()"
+                [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+                maxCaracter="10"
+              ></form-input-text>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-3">
+              <form-input-date
+              label="Desde"
+              [todayPreviousMonth]="true"
+              [(value)]="filters.fechaDesde"
+              [disabled]="filters.numCotizacion?.length"
+              [maxDate]="filters.fechaHasta"
+              ></form-input-date>
+            </div>
+            <div class="col-sm-3">
+              <form-input-date
+              label="Hasta"
+              [today]="true"
+              [(value)]="filters.fechaHasta"
+              [disabled]="filters.numCotizacion?.length"
+              [minDate]="filters.fechaDesde"
+              ></form-input-date>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <form-button
+                label="Buscar"
+                class="pull-right"
+                btnClass="btn-primary"
+                (click)="clickSearch()"
+              ></form-button>
+            </div>
+          </div>
+
+        </panel-container>
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <panel-table
+                [slim]="true"
+                [(reload)]="reload.cotizaciones"
+                [pagination]="true"
+                [service]="quotationService"
+                method="getBandejaList"
+                [params]="cotizacionesParams"
+                [(loader)]="show.loader"
+                [header]="[
+                  'Cotización',
+                  'Producto',
+                  'Contratante',
+                  'Prima mínima',
+                  'Nro. Asegurados',
+                  'Broker',
+                  'Estado',
+                  'Fecha Aprobación'
+                ]"
+                [bodyTemplate]="bodyTemplateCotizaciones"
+                (clickDetail)="clickDetail($event)"
+                fieldDetailTitle="MODO"
+                >
+              </panel-table>
+
+              <ng-template #bodyTemplateCotizaciones let-item="item">
+                <td class="text-center">{{item.NUM_COTIZACION}}</td>
+                <td class="text-center">{{item.NOMBRE_PRODUCT}}</td>
+                <td class="text-center">{{item.NOMBRE_CONTRATANTE}}</td>
+                <td class="text-center">{{item.PRIMA_MINIMA | prettyNumber:2}}</td>
+                <td class="text-center">{{item.NOM_TOTAL_TRAB}}</td><!-- <td class="text-center">{{(item.WorkersCount * item.Rate) | prettyNumber:2}}</td> (planilla) -->
+                <td class="text-center">{{item.CLIENT_BROKER}}</td>
+                <td class="text-center">{{item.DES_ESTADO}}</td>
+                <td class="text-center">{{item.FECHA_APROBACION }}</td>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <loading-screen [hidden]="!show.loader"></loading-screen>
+</div>

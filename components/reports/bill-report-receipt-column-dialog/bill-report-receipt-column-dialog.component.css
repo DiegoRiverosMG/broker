@@ -1,0 +1,57 @@
+.form-check hr {
+  margin-bottom: 0rem;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 14px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 200px;
+  height: 45px;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+}
+
+button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: rgb(83, 66, 121);
+}
+
+.header-content .header-item button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  height: 45px;
+}
+
+.right-item {
+  float: right;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #2b0d61 !important;
+}
+
+.custom-checkbox
+  .custom-control-input:checked:focus
+  ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgb(128, 110, 160);
+}
+.custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgb(128, 110, 160);
+}
+.custom-checkbox .custom-control-input:active ~ .custom-control-label::before {
+  background-color: #2b0d61;
+}

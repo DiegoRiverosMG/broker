@@ -1,0 +1,218 @@
+<div class="modal-header">
+    <span class="title">
+        <h6 class="modal-title">Actividades de Alto Riesgo</h6>       
+    </span>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="comb"/>
+                    <label class="collapse-btn title" for="comb">Actividades de Alto Riesgo<i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                               <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span style="display: inline-block;">Filtrar: </span>
+                                            <input type="text" placeholder="Filtrar" [(ngModel)]="activityFilter"
+                                                (keyup)="onFilterActivity($event)">
+                                        </div>
+                                    </div>
+                            
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <label class="radio-inline pl-2">
+                                                <input type="radio" name="rb1" id="rb11" class="radio-inline" [(ngModel)]="mining" (change)="updateCheck()"
+                                                    [value]="1">&nbsp;&nbsp;&nbsp;Trabajos en Mina&nbsp;&nbsp;&nbsp;                                               
+                                            </label>
+                                            <label class="radio-inline pl-2">
+                                                <input type="radio" name="rb1" id="rb12" class="radio-inline" [(ngModel)]="mining" (change)="updateCheck()"
+                                                [value]="0">&nbsp;&nbsp;&nbsp;Actividades de alto riesgo
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="grid form-group">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr class="grid-title">
+                                                                <td class="grid-title-item">CÓDIGO</td>
+                                                                <td class="grid-title-item">ACTIVIDAD A REALIZAR (*)</td>
+                                                                <td class="grid-title-item" *ngIf="viewMode != 1">SELEC.</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let item of activityListToShow">
+                                                                <td>{{item.SCOD_ACTIVITY_TEC}}</td>
+                                                                <td>{{item.SDESCRIPT}}</td>
+                                                                <td *ngIf="viewMode != 1"><input type="checkbox"  [(ngModel)]="item.CHK"
+                                                                     (change)="changeStatus(item,mining,$event)" [disabled]="disable(disableFlags.CHK)" ></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>                                            
+                                            <ng-container *ngIf="activityList !=null && activityList.length>0 && (this.activityFilter == '' || this.activityFilter == undefined); then showPagination"></ng-container>
+                                            <ng-template #showPagination>
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-8">
+                                                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage"
+                                                            [collectionSize]="totalItems" [maxSize]="maxSize"
+                                                            (pageChange)="pageChanged(currentPage)">
+                                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                                        </ngb-pagination>
+                                                    </div>
+                                                </div>
+                                                <!--div class="row">
+                                                    <div class="col-sm-4">
+                                                        <span style="display: inline-block;">Mostrar: </span>
+                                                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal"
+                                                            (change)="mostrarMas()"
+                                                            style="display: inline-block; width: 50%; position: relative; top: -10px;">
+                                                            <option value="5">5</option>
+                                                            <option value="10">10</option>
+                                                            <option value="15">15</option>
+                                                            <option value="20">20</option>
+                                                        </select>
+                                                    </div>
+                            
+                                                </div-->
+                                            </ng-template>
+                                            <ng-template #hidePagination>
+                            
+                                            </ng-template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <span>INICIO DE VIGENCIA</span>
+                                            <input type="text" [disabled]="disable(disableFlags.INICIO_VIGENCIA)" [(ngModel)]="data.INICIO_VIGENCIA"
+                                                   #dp="bsDatepicker" [bsConfig]="bsConfig" [(minDate)]="minDate" bsDatepicker>
+                                        </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-lg-12">
+                                           <span>COMENTARIO</span>
+                                           <textarea maxlength="1000" placeholder="COMENTARIO" [(ngModel)]="data.COMENTARIO" 
+                                               [disabled]="disable(disableFlags.COMENTARIOS)"></textarea>
+                                        </div>
+                                   </div>
+                                   <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="text-right">
+                                                <span style="text-transform: uppercase">Transacción: {{this.data.SDESCRIPT_TRANSAC}}</span>
+                                                <span style="text-transform: uppercase">Perfil: {{this.data.SDESCRIPT_PERFIL}}</span>
+                                            </p>
+                                        </div>
+                                   </div>
+                                </div>
+                            </div>
+                            
+                           
+                            <div class="row">
+                                
+                                <div class="col-lg-6">
+                                    
+                                </div>
+                            </div>
+                           <div class="row mt-2">
+                               <div class="col-lg-12">
+                                   <button class="pull-right full-color" *ngIf="this.data.USER_ACCESS == 1" (click)="enableAll()" [hidden]="disableFlag == 0">
+                                       <span>Nueva</span>
+                                   </button>
+                                   <button class="pull-right full-color" (click)="save()" [hidden]="disableFlag != 0">
+                                       <span>Agregar</span>
+                                   </button>
+                                   <button class="pull-right" (click)="reference.dismiss('Cross click')">
+                                       <span>Regresar</span>
+                                   </button>
+                               </div>
+ 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <input class="collapse-open" type="checkbox" id="historial"/>
+                    <label class="collapse-btn title" for="historial">HISTORIAL<i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                   <div class="collapse-panel">
+                       <div class="collapse-inner collapse-border">
+                           <div class="row">
+                               <div class="col-sm-12">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title">
+                                                    <td class="grid-title-item text-center">Número</td>
+                                                    <td class="grid-title-item text-center">Estado</td>
+                                                    <td class="grid-title-item text-center">Fecha Modif.</td>
+                                                    <td class="grid-title-item text-center">Actividad a realizar</td>
+                                                    <td class="grid-title-item text-center">Inicio de Vigencia</td>                                                    
+                                                    <td class="grid-title-item text-center">Fin de Vigencia</td>
+                                                    <td class="grid-title-item text-center">Comentario</td>
+                                                    <td class="grid-title-item text-center">Usuario</td>
+                                                    <td class="grid-title-item text-center">Perfil</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of combActivityList" [className]="item.ESTADO == 'ACTIVO' ? 'table-success' : ''">
+                                                    <td class="text-center">{{item.NMOVEMENT}}</td>
+                                                    <td class="text-center">{{item.ESTADO}}</td>
+                                                    <td class="text-center">{{item.FECHA_MODIF}}</td>
+                                                    <td class="text-center">
+                                                        <a *ngIf="this.viewMode == 1" (click)="seeMovement(item)"><img alt="Ver"
+                                                            src="assets/icons/preview_soat_box.png" title="Ver"
+                                                            style="cursor: pointer;height: 24px"></a>
+                                                    </td>
+                                                    <td class="text-center">{{item.DEFFECDATE}}</td>                                                    
+                                                    <td class="text-center">{{item.DFIN_VIGENCIA}}</td>
+                                                    <td class="text-center">{{item.SCOMMENT}}</td>
+                                                    <td class="text-center">{{item.USUARIO}}</td>
+                                                    <td class="text-center">{{item.PERFIL}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>    
+                                <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+                                    <div class="col-sm-10">
+                                        <ngb-pagination [(page)]="currentPage2" [pageSize]="itemsPerPage2" [collectionSize]="totalItems2"
+                                            [maxSize]="maxSize2" (pageChange)="pageChanged2(currentPage2)">
+                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                        </ngb-pagination>
+                                    </div>      
+                                    <div class="col-sm-2">
+                                        <span style="display: inline-block;">Mostrar: </span>
+                                        <select [(ngModel)]="itemsPerPage2" name="LimitPerPage" class="minimal" (change)="mostrarMas2()"
+                                            style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>                              
+                                </div>                               
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

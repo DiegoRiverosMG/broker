@@ -1,0 +1,476 @@
+
+/*BEGIN Reports
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  font-size: 11px;
+}*/
+
+.title-principal{
+    height: auto;
+    width: 100%;
+    color: #2B0D61;
+    font-family: "Bliss Pro";
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 24px;
+    text-align: left;
+    padding: 12px 226px;
+  }
+  
+  ::placeholder{
+    color: rgb(146, 138, 163);
+  }
+  
+  .header{
+    width: 90%;
+    margin: 20px auto;
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .header div h2{
+    margin-left: 15px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .header div button{
+    outline: none;
+    padding: 10px 15px;
+    border:none;
+    background: rgb(84, 61, 129);
+    color:#fff;
+    border-radius: 3px;
+  }
+  
+  .header div button:hover{
+    cursor: pointer;
+  }
+  
+  .filter{
+    width: 100%;
+    margin: 10px auto;
+    border-bottom: 1px solid rgb(84, 61, 129);
+    padding: 15px 0;
+  }
+  
+  .filter .filter-row{
+    width: 100%;
+    display: flex;
+    margin: 0px;
+  }
+  
+  .filter .filter-row .filter-row-cell{
+    padding: 8px 5px;
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex input[type="text"]{
+    width: 50%;
+    color: rgb(146, 138, 163);
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-right{
+    border-radius: 3px 0 0 3px;
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-left{
+    border-radius: 0 3px 3px 0;
+  }
+  
+  .filter .filter-row .filter-row-cell span{
+    width: 100%;
+    color: #2B0D61;
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    height: 24px;
+    line-height: 24px;
+  }
+  
+  .filter .filter-row .filter-row-cell input[type="text"]{
+    border: none;
+    border-radius: 2px;
+    padding: 7px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid #AA9EC0;
+    color: #AA9EC0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+  }
+  
+  
+  .grid {
+    width: 100%;
+    margin: 20px auto;
+    font-size: 14px;
+    font-weight: 300;
+  }
+  
+  .grid table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .grid table tr td {
+    padding: 15px 15px;
+    text-align: center;
+    color: rgb(146, 138, 163);
+  }
+  
+  .grid table .grid-title td {  
+    font-family: "Bliss Pro";
+    padding: 25px 15px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(42, 18, 99, 0.78);
+  }
+  
+  .grid table tr td button{
+    border:none;
+    display: block;
+    padding: 7px 9px;
+    border-radius: 3px;
+    background: rgb(169, 157, 192);
+    color:#fff;
+    margin: 0 2px;
+    outline: none;
+    height: 30px;
+    width: 25px;
+  }
+  
+  .grid table tr .flex{
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  
+  /*END Reports*/
+  
+  /*Header*/
+  
+  .header-content{
+    width: 100%;
+    margin-top: 10px;
+    border-bottom: 1px solid rgb(109, 99, 129);
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0px;
+  }
+  
+  .header-content .containt-item{
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .header-content .header-item{
+    display: block;
+    padding: 5px 0;
+  }
+  
+  .header-content .header-item .title{
+    color:#553D81;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 31px;
+    display: block;
+    margin-top: 8px;
+    margin-right: 18px;
+  }
+  
+  .header-content .header-item button{
+    display: flex;
+    justify-content: center;
+    border:1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #fff;
+    padding: 8px 5px;
+    min-width: 177px;
+    height: 45px;
+    outline: none;
+  }
+  
+  .header-content .header-item button:hover{
+    cursor: pointer;
+  }
+  
+  .header-content .header-item button span{
+    display: block;
+    margin-left: 10px;
+    font-weight: 600;
+    color: rgb(83, 66, 121);
+  }
+  
+  .header-content .header-item .purple{
+    background: #553D81;
+  }
+  
+  .header-content .header-item .purple span{
+    color:#fff;
+  }
+  
+  .header-content .rigth-item{
+    float: right;
+  }
+  
+  .terminos-titulo-factura {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+  /* background-color: #553D81;*/
+  }
+  
+  
+  .terminos-titulo-factura h1 {
+    color: #FFFFFF ;
+    font-family: "Bliss Pro" ;
+    font-size: 25px ;
+    font-weight: 900 ;
+    /*line-height: 30px;*/
+    text-align: center;
+    padding-top: 10px;  
+  }
+  
+  .terminos-titulo-factura h3 {
+  /*color: #553D81;
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 31px;
+      display: block;
+      margin-top: 8px;
+      margin-right: 18px;*/
+  
+      color: #2b0d61;
+  font-family: Bliss Pro;
+  font-size: 25px;
+  font-weight: 900;
+  text-align: center;
+  padding-top: 10px;
+  }
+  
+  .botones {
+    width: 100%;
+    margin-top: 3%;
+  }
+  
+  .btn-orange {
+    text-decoration: none;
+    color: #FFFFFF;
+    /*font-family: "Bliss Pro";*/
+    font-size: 15px;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 6px;
+    background-color: #e68531;
+    cursor: pointer;
+    width: 120px;
+  }
+  
+  .form-group{
+    margin-bottom: 0.2rem;
+  
+  }
+  .label-datos-factura
+  {
+    font-family: Arial, Helvetica, sans-serif;
+    /*padding: 25px 15px;*/
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(42, 18, 99, 0.78);  
+  }
+  
+  .input-datos-factura{
+    outline: auto;
+      border: none;
+      border-radius: 3px;
+      /*padding: 7px 5px;*/
+      margin-top: 2px;
+      border: 1px solid rgb(146, 138, 163);
+      color: rgb(146, 138, 163);
+      font-size: 11px;
+      height: 25px;
+      padding: 0 5px;
+      text-transform: uppercase;
+      font-weight: normal; 
+  }
+  
+  
+  
+  .modal-factura{
+    width: 100%;
+    margin: 10px auto;  
+    padding: 10px 0 15px 0;
+  }
+  
+  .modal-factura .row{
+    width: 100%;
+    display: flex;
+    margin-bottom: 0px;
+  }
+  /*
+  .modal-factura  .row .row-cell{
+    padding: 8px 5px;
+  }*/
+  /*
+  .modal-factura  .row .row-cell .filter-row-cell-flex{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex input[type="text"]{
+    width: 50%;
+    color: rgb(146, 138, 163);
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-right{
+    border-radius: 3px 0 0 3px;
+  }
+  
+  .filter .filter-row .filter-row-cell .filter-row-cell-flex .radius-left{
+    border-radius: 0 3px 3px 0;
+  }*/
+  
+  .modal-factura .row .row-cell span{
+    width: 100%;
+    color: #2B0D61;
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    height: 24px;
+    line-height: 24px;
+  }
+  
+  .modal-factura .row .row-cell input[type="text"]{
+    outline: auto;
+    border:none;
+    border-radius: 3px;
+    padding: 7px 5px;
+    /*margin-top: 5px;*/
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    font-size: 11px;
+    width: 100%;
+  }
+  
+  .modal-body1{
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 15px;
+  }
+  
+  .modal-content1{
+  position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid rgba(0,0,0,.2);
+      border-radius: .3rem;
+      outline: 0;
+    }
+  
+  .modal-factura .row .row-cell input[type="date"]{
+    border: none;
+    border-radius: 2px;
+    padding: 6px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #AA9EC0;
+    color: #AA9EC0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+  }
+  
+  .messageinfo{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: rgb(127, 112, 157);
+    font-weight: 600;
+  }
+  
+  .messageValidate
+  {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: rgb(255,0,0);
+    font-weight: 600;
+  
+  }
+  
+  select{
+    width: 100% ;
+    border: none;
+    display: block ;
+    border: 1px solid rgb(146, 138, 163);
+    border-radius: 2px;
+    margin-top: 5px ;
+    color: rgb(146, 138, 163);
+    border: 1px solid #AA9EC0;
+    font-size: 14px;
+    font-weight: 300;
+    height: 45px ;
+    padding-left: 12px;
+    color: #AA9EC0;
+  }
+  
+  .filter .filter-row .filter-row-cell input[type="date"]{
+    border: none;
+    border-radius: 2px;
+    padding: 6px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #AA9EC0;
+    color: #AA9EC0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+  }
+  
+  
+  
+  select{
+    width: 100% ;
+    border: none;
+    display: block ;
+    border: 1px solid rgb(146, 138, 163);
+    border-radius: 2px;
+    margin-top: 5px ;
+    color: rgb(146, 138, 163);
+    border: 1px solid #AA9EC0;
+    font-size: 14px;
+    font-weight: 300;
+    height: 45px ;
+    padding-left: 12px;
+    color: #AA9EC0;
+  }
+  

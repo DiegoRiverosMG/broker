@@ -1,0 +1,248 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Consulta de Transacciones de Póliza SCTR</span>
+          </div>
+        </div>
+        <p class="eps-title">{{lblProducto}}<span>{{lblFecha}}</span></p>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <span>TIPO PRODUCTO</span>
+                <select [disabled]="stateSearch" [(ngModel)]="inputsSearch.P_NPRODUCT" class="minimal">
+                  <option value="0" *ngIf="productList.length > 1" selected>AMBOS</option>
+                  <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                    {{product.DES_PRODUCT}}</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <span>NRO. PÓLIZA</span>
+                <input type="text" placeholder="Nro. Póliza" [(ngModel)]="inputsSearch.P_NPOLICY"
+                  (ngModelChange)="changePolicy($event)" (keyup.enter)="buscarPoliza()" OnlyNumberDirective>
+              </div>
+              <div class="col-sm-3">
+                <span>DESDE </span>
+                <input type="text" #dp="bsDatepicker" (ngModelChange)="valInicio($event)" [bsConfig]="bsConfig"
+                  bsDatepicker [(ngModel)]="bsValueIni" [(maxDate)]="bsValueIniMax"
+                  value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [disabled]="stateSearch" #desde readonly>
+              </div>
+              <div class="col-sm-3">
+                <span>HASTA</span>
+                <input type="text" [(ngModel)]="bsValueFin" [bsConfig]="bsConfig" #dp="bsDatepicker"
+                  (ngModelChange)="valFin($event)" bsDatepicker [(bsValue)]="bsValueFin"
+                  value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(minDate)]="bsValueFinMin" [(maxDate)]="bsValueFinMax"
+                  [disabled]="stateSearch" #hasta readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <span>TIPO DE TRANSACCIÓN</span>
+                <select (change)="onSelectTypePerson()" [(ngModel)]="inputsSearch.P_NIDTRANSACCION"
+                  [disabled]="stateSearch" class="minimal">
+                  <option value="0" selected>TODAS</option>
+                  <option *ngFor="let transaccion of transaccionList" value="{{transaccion.COD_TIPO_TRANSACCION}}">
+                    {{transaccion.DES_TIPO_TRANSACCION}}</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <span>BUSCAR CONTRATANTE</span>
+                <select [disabled]="stateSearch" (change)="onSelectTypeSearch()"
+                  [(ngModel)]="inputsSearch.P_TYPE_SEARCH">
+                  <option value="1" selected>Por Nro. de Documento</option>
+                  <option value="2">Por Nombres</option>
+                </select>
+              </div>
+              <div *ngIf="blockSearch" class="col-sm-3">
+                <span>TIPO DOCUMENTO</span>
+                <select [disabled]="stateSearch" [(ngModel)]="inputsSearch.P_NIDDOC_TYPE"
+                  (ngModelChange)="onSelectTypeDocument()" class="minimal">
+                  <option value="-1" selected>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+              <div *ngIf="!blockSearch" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="onSelectTypePerson()" [(ngModel)]="inputsSearch.P_PERSON_TYPE"
+                  [disabled]="stateSearch" class="minimal">
+                  <option value="1" selected>Persona Natural</option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+              <div *ngIf="blockSearch" class="col-sm-3">
+                <span>NRO. DOCUMENTO</span>
+                <input type="text" placeholder="Nro Documento" [(ngModel)]="inputsSearch.P_SIDDOC"
+                  (keypress)="documentNumberKeyPress($event)" (keyup.enter)="buscarPoliza()" maxlength={{maxlength}}
+                  [disabled]="stateSearch" />
+              </div>
+            </div>
+            <div class="row" *ngIf="!blockSearch">
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>NOMBRES</span>
+                <input type="text" placeholder="Nombres" [disabled]="stateSearch"
+                  [(ngModel)]="inputsSearch.P_SFIRSTNAME" (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="!blockDoc" class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" [disabled]="stateSearch"
+                  [(ngModel)]="inputsSearch.P_SLEGALNAME" (keyup.enter)="buscarPoliza()" LegalNameDirective />
+              </div>
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>APELLIDO PATERNO</span>
+                <input type="text" placeholder="Apellido Paterno" [disabled]="stateSearch"
+                  [(ngModel)]="inputsSearch.P_SLASTNAME" (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" [disabled]="stateSearch"
+                  [(ngModel)]="inputsSearch.P_SLASTNAME2" (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-sm-12">
+                <button class="full-color pull-right" (click)="buscarPoliza()">
+                  <span>Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid form-group">
+        <div *ngIf="userType!=137" class="row">
+          <div class="col-sm-12" *ngIf="policyList.length > 0">
+            <div class="btn-group btn-group-toggle" style="float:right" data-toggle="buttons">
+              <label *ngIf="canRenovate && template.ins_transRenovar" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 4)">
+                <input type="radio" name="options"> Renovar
+              </label>
+              <label *ngIf="canEndorse && template.ins_transEndoso" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 6)">
+                <input type="radio" name="options"> Endoso
+              </label>
+              <label *ngIf="canInclude && template.ins_transIncluir" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 2)">
+                <input type="radio" name="options"> Incluir
+              </label>
+              <label *ngIf="canExclude && template.ins_transExcluir" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 3)">
+                <input type="radio" name="options"> Excluir
+              </label>
+              <label *ngIf="canNetear && template.ins_transNeteo" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 5)">
+                <input type="radio" name="options"> Neteo
+              </label>
+              <label *ngIf="canNullify && template.ins_transAnular" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 1)">
+                <input type="radio" name="options"> Anular
+              </label>
+              <label *ngIf="Nuserpro == codProfileID; else other_content">
+              </label>
+            <ng-template #other_content>
+              <label *ngIf="template.ins_generarRecibo && userType !=  134 && userType !=  32 && userType !=  31" class="btn btn-secondary"
+              (click)="choosePolicyClk($event, selectedPolicy, 9)">
+              <input type="radio" name="options"> Generar recibos
+            </label>
+            </ng-template> 
+            </div>
+          </div>
+        </div>
+        <div class="grid form-group">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td *ngIf="userType!==137" class="grid-title-item text-center">Sel.</td>
+                  <td class="grid-title-item">Producto</td>
+                  <td class="grid-title-item">Póliza</td>
+                  <td class="grid-title-item">Documentos</td>
+                  <td class="grid-title-item">Razón social/Apellidos Nombres</td>
+                  <td class="grid-title-item">Sede</td>
+                  <td *ngIf="userType!=134"  class="grid-title-item text-center">Segmento</td>
+                  <td class="grid-title-item text-center">Fecha Emisión</td>
+                  <td class="grid-title-item text-center">Inicio Vigencia</td>
+                  <td class="grid-title-item text-center">Fin Vigencia</td>
+                  <td class="grid-title-item text-center">Nro. Renovaciones</td>
+                  <td class="grid-title-item text-center">Movimientos</td>
+                </tr>
+              </thead>
+              <ng-container *ngIf="policyList!=null && policyList.length>0; then showGrid else hideGrid">
+              </ng-container>
+            </table>
+          </div>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td colspan="12" class="text-center">
+                  No se encontraron registros
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody>
+              <tr *ngFor="let item of listToShow; let row_no = index">
+                <td *ngIf="userType!==137" class="text-center"><input type="radio" value={{item.NRO_COTIZACION}}
+                    name="policy" [(ngModel)]="selectedPolicy"></td>
+                <td>{{ item.NOMBRE_PRODUCT }}</td>
+                <td>{{ item.POLIZA }}</td>
+                <td>{{ item.DOCUMENTO }}</td>
+                <td>{{ item.NOMBRE_CONTRATANTE }}</td>
+                <td>{{ item.SEDE }}</td>
+                <td *ngIf="userType!=134" class="text-center" title="{{item.SCLIENT_SEG}}">{{ item.SDESCRIPT_SEG }}</td>
+                <td class="text-center">{{ item.FECHA_EMISION }}</td>
+                <td class="text-center">{{ item.INICIO_VIGENCIA }}</td>
+                <td class="text-center">{{ item.FIN_VIGENCIA }}</td>
+                <td class="text-center">{{ item.NRO_RENOVACIONES }}</td>
+                <td class="text-center">
+                  <a (click)="openModal(row_no, item.NRO_COTIZACION)"><img alt="ver"
+                      src="assets/icons/preview_soat_box.png" title="Ver detalle"
+                      style="cursor: pointer;height: 24px;width: 24px"></a>
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-container *ngIf="policyList!=null && policyList.length>0; then showPagination"></ng-container>
+          <ng-template #showPagination>
+            <div class="row mt-4">
+              <div class="col-sm-10">
+                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                  [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                  <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                  <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                </ngb-pagination>
+              </div>
+              <div class="col-sm-2">
+                <span style="display: inline-block;">Mostrar: </span>
+                <select [(ngModel)]="itemsPerPage" class="minimal" (change)="mostrarMas()"
+                  style="display: inline-block; width: 50%; float: right; position: relative; top: -5px;">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla de carga -->
+  <div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>

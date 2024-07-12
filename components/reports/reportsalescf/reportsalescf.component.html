@@ -1,0 +1,182 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Reporte de Ventas - Cliente Final</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item  rigth-item">
+            <button (click)="EventSearch($event)">
+              <img alt="" src="assets/icons/buscar_certificado.png" />
+              <span>Buscar</span>
+            </button>
+          </div>
+          <div class="header-item rigth-item">
+            <button (click)="EventDownload($event)">
+              <img alt="" src="assets/icons/descargar.png" />
+              <span>Descargar Excel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter">
+        <div class="form-group row filter-row">
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR MODALIDAD:</span>
+            <app-salesmode
+              (evResultSalesMode)="onVotedParentSalesMode($event)"
+            ></app-salesmode>
+            <!--<span>POR TIPO:</span>
+                        <app-paymenttype (evResultPaymentType)="onVotedParentPaymentType($event)"></app-paymenttype>-->
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR USO:</span>
+            <app-uso (evResultUso)="onVotedParentUso($event)"></app-uso>
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR ESTADO:</span>
+            <app-statesales
+              (evResultStateSales)="onVotedParentStateSales($event)"
+            ></app-statesales>
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR P&Oacute;LIZA:</span>
+            <input
+              type="text"
+              [(ngModel)]="filter.FPoliza"
+              placeholder="N° Póliza"
+              (keypress)="this.utilityService._kpPolicy($event, filter.FPoliza)"
+            />
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>POR PRIMA:</span>
+            <div class="filter-row-cell-flex">
+              <input
+                type="text"
+                class="radius-right"
+                placeholder="S/ Desde"
+                [(ngModel)]="filter.FPrimaIni"
+                (keypress)="
+                  this.utilityService._kpPrimaSoat($event, filter.FPrimaIni)
+                "
+              />
+              <input
+                type="text"
+                class="radius-left"
+                placeholder="S/ Hasta"
+                [(ngModel)]="filter.FPrimaFin"
+                (keypress)="
+                  this.utilityService._kpPrimaSoat($event, filter.FPrimaFin)
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group row filter-row">
+          <div class="col-lg-2 filter-row-cell">
+            <span>DESDE:</span>
+            <input
+              type="date"
+              [(ngModel)]="filter.FDateIni"
+              value="2017/01/01"
+            />
+          </div>
+          <div class="col-lg-2 filter-row-cell">
+            <span>HASTA:</span>
+            <input type="date" [(ngModel)]="filter.FDateFin" />
+          </div>
+          <div class="col-sm-12 col-lg-6 filter-row-cell">
+            <app-ubigeo
+              (evResultDep)="onVotedParentDep($event)"
+              (evResultPro)="onVotedParentPro($event)"
+              (evResultDis)="onVotedParentDis($event)"
+            ></app-ubigeo>
+          </div>
+        </div>
+        <div *ngIf="!resultError" class="alert alert-danger">
+          <div *ngFor="let err of listErrores">
+            {{ err }}
+          </div>
+        </div>
+      </div>
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Procedencia</td>
+                <td class="grid-title-item">Nro. Póliza</td>
+                <td class="grid-title-item">Prima</td>
+                <td class="grid-title-item">DNI/CE</td>
+                <td class="grid-title-item">Inicio Vigencia</td>
+                <td class="grid-title-item">Fin Vigencia</td>
+                <td class="grid-title-item">Contratante</td>
+                <td class="grid-title-item">Placa</td>
+                <td class="grid-title-item">Modalidad</td>
+                <td class="grid-title-item">Campaña</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Uso</td>
+              </tr>
+            </thead>
+            <div
+              *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+            ></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="10">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let result of ListReportSalesCF">
+              <tr>
+                <td>{{ result.ssource }}</td>
+                <td>{{ result.npolicy }}</td>
+                <td>{{ result.npremium }}</td>
+                <td>{{ result.ndocuments }}</td>
+                <td>{{ result.dstartdate | date: "dd/MM/yyyy" }}</td>
+                <td>{{ result.dexpirdat | date: "dd/MM/yyyy" }}</td>
+                <td>{{ result.snamecomplete }}</td>
+                <td>{{ result.sregist }}</td>
+                <td>{{ result.ssalemode }}</td>
+                <td>{{ result.scmpaigndes }}</td>
+                <td>{{ result.sstatuS_POL_DES }}</td>
+                <td>{{ result.suso }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+
+      <div
+        *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+      ></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination
+              [totalItems]="totalItems"
+              [itemsPerPage]="itemsPerPage"
+              [rotate]="rotate"
+              [maxSize]="maxSize"
+              [(ngModel)]="currentPage"
+              (pageChanged)="pageChanged($event)"
+            ></pagination>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="container-fluid contenido">
+  <div class="row">
+    <div class="col-md-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div *ngIf="bLoading"
+           class="mensaje-carga">
+        <h4>Por favor, espere mientras procesamos su pago...</h4>
+        <img alt=""
+             src="assets/icons/loading.gif" />
+      </div>
+      <!-- <div *ngIf="!bLoading && bAutorizado">
+        <p>Su pago fue autorizado</p>
+      </div> -->
+      <div *ngIf="bshowreport"
+           class="row">
+        <div class="col-sm-9 col-xs-12">
+          <app-visa-result [loading]="bLoading"
+                           [resultOK]="bAutorizado"
+                           [result]="resultado"
+                           [downloadUrl]="downloadPdfUrl"></app-visa-result>
+        </div>
+      </div>
+      <br />
+      <div class="row"
+           *ngIf="!bLoading && !bAutorizado">
+        <div class="col-sm-9 col-xs-12">
+          <button *ngIf="!bLoading"
+                  class="btn-compra"
+                  (click)="Volver()">
+            Intentar de nuevo
+          </button>
+        </div>
+      </div>
+      <div class="row"
+           *ngIf="!bLoading && bAutorizado">
+        <!-- <div *ngIf="!bLoading && !bAutorizado" class="mensaje-denegado">
+        <h4>Su pago fue denegado</h4>
+      </div>
+      <br> -->
+        <div class="col-sm-9 col-xs-12">
+          <button *ngIf="!bLoading"
+                  class="btn-compra"
+                  (click)="irAPlanillas()">
+            Volver al listado de Planillas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background: #553D81;color: white;">
+        <h4 id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          Mensaje
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <button style="min-width: 100%;"
+                    class="full-color"
+                    (click)="aceptarmsginfo()">
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

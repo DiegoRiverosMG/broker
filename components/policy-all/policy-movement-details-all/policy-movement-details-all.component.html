@@ -1,0 +1,191 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">Movimientos de Póliza</h4>
+  <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid" style="margin-bottom: 10px;">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <span>RAMO</span>
+              <input type="text" placeholder="Ramo" [(ngModel)]="InputsPolicy.SRAMO" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>PRODUCTO</span>
+              <input type="text" placeholder="Producto" [(ngModel)]="InputsPolicy.P_PRODUCTO" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>CONTRATANTE</span>
+              <input type="text" placeholder="Contratante" [(ngModel)]="InputsPolicy.P_CONTRATANTE" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>NRO. PÓLIZA</span>
+              <input type="text" placeholder="Nro. Póliza" [(ngModel)]="InputsPolicy.P_POLIZA" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="grid form-group">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Detalle Movimiento</h5>
+              <div *ngIf="NBRANCH == 71">
+                <!-- AF Aprobacion y rechazo 01062023 -->
+                <div class="d-flex flex-row form-group gap-6 ml-3" *ngIf="show_buttons">
+                  <form-button label="Aprobación de Endoso" class="pull-right" btnClass="btn-primary text-nowrap"
+                    (click)="clickAprobar(0)"></form-button>
+                  <form-button label="Rechazo de Endoso" class="ml-2" (click)="clickAprobar(1)"></form-button>
+                </div>
+                <!-- AF Aprobacion y rechazo 01062023 -->
+              </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">ID</td>
+                <td class="grid-title-item">Movimiento</td>
+                <td class="grid-title-item">Transacción</td>
+                <td class="grid-title-item text-center">Ini Vigencia</td>
+                <td class="grid-title-item text-center">Fin Vigencia</td>
+                <td class="grid-title-item text-center">Fecha Mov.</td>
+                <td class="grid-title-item">Observaciones</td>
+                <td class="grid-title-item">Usuario</td>
+                <td class="grid-title-item">Documentos</td>
+                <td class="grid-title-item text-center" *ngIf="canCancelMovements || btnFacturarMovements">Acción</td>
+                <td class="grid-title-item">Relanzar</td>
+                <td class="grid-title-item text-center" *ngIf="[73, 61, 72].includes(NBRANCH) && valFact > 0 && [136, 157, 166].includes(this.codPerfil)">Generar Comprobante</td>
+                <td *ngIf="NBRANCH == 73 && codPerfil == 136" class="grid-title-item text-center">Cambiar Asegurado</td>
+              </tr>
+
+            </thead>
+            <tbody>
+              <ng-container
+                *ngIf="policyMovementList!=null && policyMovementList.length>0; then showGrid else hideGrid">
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #hideGrid>
+          <tr>
+            <td colspan="9" class="text-center">
+              No se encontraron registros
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template #showGrid>
+          <tr *ngFor="let item of listToShow; let row_no = index">
+            <td>{{ item.NIDHEADERPROC }}</td>
+            <td>{{ item.DES_NTYPE_HIST }}</td>
+            <td class="text-center">{{ item.NUM_MOVIMIENTO }}</td>
+            <td class="text-center">{{ item.DINI_VIGENCIA }}</td>
+            <td class="text-center">{{ item.DFIN_VIGENCIA }}</td>
+            <td class="text-center">{{ item.DFECHA_MOVIMIENTO }}</td>
+              <!-- 01062023 Solo para VCF -->
+              <td class="text-center" *ngIf="NBRANCH == 71">{{ item.SOBSERVACIONES }}</td>
+              <!-- 01062023 Solo para VCF -->
+            <td class="text-center" *ngIf="item.FLAG_OBSERVACIONES == 0 && NBRANCH != 71">{{ item.SOBSERVACIONES }}</td>
+            <td class="text-center" *ngIf="item.FLAG_OBSERVACIONES == 1 && NBRANCH != 71">
+              <label>
+                <img src="assets/icons/download2.png" (click)="descargaRecibos(item.SOBSERVACIONES, 'OBSERVACIONES', 'OBSERVACIONES')"
+                title="Recibos" alt="Recibos" style="cursor: pointer;" />
+              </label>
+            </td>
+            <td>{{ item.SUSUARIO }}</td>
+            <td class="text-center">
+              <img *ngIf="item.SRUTA != null || item.SRUTA_CONSTANCIA_ENDOSO != null || NBRANCH != 71" alt="Ver Documentos"
+                src="assets/icons/preview_soat_box.png" title="Ver Documentos" (click)="verDocumentos(item)"
+                style="cursor: pointer;height: 24px;width: 24px">
+            </td>
+            <ng-container *ngIf="canCancelMovements || btnFacturarMovements">
+              <!-- 01062023 Solo para VCF -->
+              <td *ngIf="NBRANCH == 71" class="text-center">
+                <label *ngIf="canCancelMovements" class="pd-1">
+                  <img *ngIf="item?.last_element == 1 && (item?.NTYPEMOVECREDIT == 0 ||item?.NTYPEMOVECREDIT == 1)"
+                    src="assets/icons/anular.png" (click)="anularMov(item, 0)" title="Anular" alt="Anular" style="cursor: pointer;" />
+                  </label>
+                <label class="pl-2" *ngIf="item?.last_element == 1 && (item?.NTYPEMOVECREDIT == 0 ||item?.NTYPEMOVECREDIT == 1)">
+                  <img src="assets/icons/enviar-.png" title="Enviar" alt="Enviar" style="cursor: pointer;" (click)="sendMailConstance(item)" />
+                 </label>
+              </td>
+              <!-- 01062023 Solo para VCF -->
+              <td *ngIf="NBRANCH != 71" class="text-center">
+                <label *ngIf="canCancelMovements" class="pd-1">
+                  <img *ngIf="item.NMOV_ANULADO == 1" src="assets/icons/anular.png" (click)="anularMov(item, 6)"
+                    title="Anular" alt="Anular" style="cursor: pointer;" />
+                  <label *ngIf="item.NMOV_ANULADO == 0"><b>--</b></label>
+                </label>
+                <label *ngIf="btnFacturarMovements" class="">
+                  <label>
+                  <img *ngIf="item.FACTURAR == 1" src="assets/icons/facturar.png" (click)="facturarMov(item, 10)"
+                    title="Facturar" alt="Facturar" style="cursor: pointer; margin-right: 6px;" /> 
+                  </label>
+                  <label>
+                    <img *ngIf="item.RECIBO !== ''" src="assets/icons/download2.png" (click)="descargaRecibos(item.RECIBO, 'RECIBOS', 'NRO_RECIBO')"
+                    title="Recibos" alt="Recibos" style="cursor: pointer;" />
+                  </label>
+                  <label *ngIf="item.FACTURAR == 0 && item.RECIBO == '' "><b>--</b></label>
+                </label>
+              </td>
+            </ng-container>
+
+            <td class="text-center">
+              <label *ngIf="![3, 0].includes(item.NENV_PRINT) && item.NIDHEADERPROC > 0">
+                <img src="assets/icons/ICONO-148.svg" (click)="relanzarDocumento(item)"
+                   title="Relanzar documentos" alt="Relanzar documentos" style="cursor: pointer; margin: -3px auto 0; text-align: center; width: 32px;" /> 
+              </label>
+              <label *ngIf="[3, 0].includes(item.NENV_PRINT) || item.NIDHEADERPROC == 0"><b>--</b></label>              
+            </td>
+
+            <td class="text-center" *ngIf="[73, 61, 72].includes(NBRANCH) && this.valFact > 0 && [136, 157, 166].includes(this.codPerfil)">
+              <img *ngIf="item.FACTURAR == 1" src="assets/icons/facturar.png" (click)="facturarMov(item, 10)" title="Facturar" alt="Facturar"
+                style="cursor: pointer;" />
+                <label *ngIf="item.FACTURAR == 0"><b>--</b></label>
+            </td>
+            <td class="text-center" *ngIf="codPerfil == 136">
+              <div *ngIf="NBRANCH == 73">
+                <img *ngIf="item.NCHANGE_INSURED == 1" src="assets/icons/users.png" title="Cambiar usuario" alt="Cambiar usuario" (click)="ChangeUser(item)"
+                style="cursor: pointer; margin: -3px auto 0; text-align: center; width: 32px" /> 
+                <label *ngIf="item.NCHANGE_INSURED == 0"> <b>--</b> </label>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-container *ngIf="policyMovementList!=null && policyMovementList.length>0; then showPagination">
+        </ng-container>
+        <ng-template #showPagination>
+          <div class="row mt-4">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button (click)="reference.close()">Regresar</button>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!carga"
+     class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%">
+        <i style="margin: auto; font-size: 50px"
+           class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

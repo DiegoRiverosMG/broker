@@ -1,0 +1,919 @@
+@import "../../../../sctr.component.css";
+
+.container {
+  float: left;
+  width: 75%;
+  padding: 10px 30px;
+}
+
+::placeholder {
+  color: rgb(146, 138, 163);
+}
+
+.spn-delimiter {
+  margin-top: 5px;
+  font-size: 13px;
+  color: red;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.filter {
+  width: 100%;
+  margin: 10px auto;
+  border-bottom: 1px solid rgb(84, 61, 129);
+  padding: 10px 0 15px;
+}
+
+.filter-row {
+  width: 100%;
+  display: flex;
+}
+
+.filter-row .filter-row-cell {
+  padding: 8px 5px;
+}
+
+.filter-row .filter-row-cell span {
+  width: 100%;
+  color: #2b0d61;
+  display: block;
+  font-size: 14px;
+  font-weight: 300;
+  height: 24px;
+  line-height: 24px;
+}
+
+.t-search {
+  margin-left: 10px;
+  position: relative;
+  top: 2px;
+}
+
+input[type="text"] {
+  border-radius: 2px !important;
+  padding: 0px 10px 0 12px !important;
+  margin-top: 5px !important;
+  font-size: 14px !important;
+  width: 100%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 40px !important;
+  font-weight: 300 !important;
+  text-transform: uppercase;
+}
+.error-validate {
+  color: #aa9ec0 !important;
+  border-radius: 2px;
+}
+.error-validate::placeholder {
+  color: #aa9ec0 !important;
+}
+.pminima {
+  width: 90% !important;
+  float: right;
+}
+
+.chk input[type="checkbox"] {
+  position: absolute;
+  top: 66%;
+}
+
+.schk {
+  display: inline-block;
+  position: relative;
+  top: -4px;
+  padding: 0 5px;
+}
+
+.checkboxAut-label {
+    display: flex; /* Usa flexbox para alinear elementos horizontalmente */
+    align-items: center; /* Alinea elementos verticalmente al centro */
+    width: auto; /* Puedes ajustar el ancho según sea necesario */
+  }
+  
+.checkboxAut {
+    margin-right: 5px; /* Añade margen a la derecha del checkbox para separarlo del texto */
+}
+  
+
+.checkbox {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  display: inline-block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+}
+
+.checkbox:after {
+  content: "";
+  position: absolute;
+  display: block;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #aa9ec0;
+  border-radius: 2px;
+}
+
+.checkbox[type="checkbox"]:before {
+  background: #2b0d61 url(assets/icons/check.png);
+  background-size: 10px 8px;
+  background-repeat: no-repeat;
+  background-position: 2px 3px;
+  position: absolute;
+  left: 2px;
+  z-index: 2;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  color: #2b0d61;
+}
+
+.checkbox[type="checkbox"]:checked:before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  opacity: 1;
+  left: 0px;
+  border: 1px solid #2b0d61;
+  border-radius: 2px;
+}
+
+.checkbox:disabled {
+  background: #e6e6e6;
+}
+
+.filter input[type="date"] {
+  /* outline: auto; */
+  border: none;
+  border-radius: 2px;
+  padding: 6px 5px;
+  margin-top: 5px;
+  border: 1px solid rgb(146, 138, 163);
+  color: rgb(146, 138, 163);
+  width: 100%;
+  /* margin-left: 5px; */
+  font-size: 14px;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 45px;
+  font-weight: 300;
+  padding-left: 12px;
+}
+
+.ng-select div,
+.ng-select input,
+.ng-select span {
+  text-transform: uppercase !important;
+}
+select:disabled {
+  background-color: rgb(235, 235, 228);
+}
+
+.ctasa span {
+  margin: 3px 0;
+}
+
+span,
+textarea {
+  margin-top: 0.7em;
+  display: block;
+}
+
+.msg-error {
+  font-size: 14px;
+  color: red;
+}
+
+.grid {
+  width: 95%;
+  margin: 20px auto;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.grid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid table tr td {
+  padding: 15px 15px;
+  text-align: center;
+  color: rgb(146, 138, 163);
+}
+
+.grid table .grid-title td {
+  font-family: "Bliss Pro";
+  padding: 25px 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(42, 18, 99, 0.78);
+}
+
+.grid table tr td button {
+  border: none;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 2px;
+  background: rgb(169, 157, 192);
+  color: #fff;
+  margin: 0 2px;
+  height: 30px;
+  width: 25px;
+  font-family: "Bliss Pro";
+}
+
+.grid table tr .flex {
+  display: flex;
+  justify-content: center;
+}
+
+.eps-title {
+  top: 45px;
+  height: 28px;
+  margin: 0;
+}
+
+.header-content {
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 1px solid rgb(109, 99, 129);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0px 0px;
+}
+
+.header-content .containt-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-content .header-item {
+  display: block;
+  padding: 5px 0;
+}
+
+.header-content .header-item .title {
+  color: #553d81;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.header-content .header-item button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 170px;
+  height: 45px;
+}
+
+.header-content .header-item button:hover {
+  cursor: pointer;
+}
+
+.header-content .header-item button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600;
+  color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple {
+  background: #553d81;
+}
+
+.header-content .header-item .purple span {
+  color: #fff;
+}
+
+.header-content .rigth-item {
+  float: right;
+}
+
+.header-content .rigth-item {
+  float: right;
+}
+
+.rigth-item button img {
+  display: table-cell;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.full-color {
+  background: #553d81 !important;
+}
+
+.full-color span {
+  margin: 0 10px;
+  color: #fff !important;
+}
+
+button span {
+  margin: 0 10px;
+}
+
+.full-color img,
+button img {
+  display: table-cell;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.riesgo td,
+.riesgo th {
+  padding: 0.2rem 0.2rem 0.6rem !important;
+}
+
+.file {
+  margin: 0.7em 0;
+}
+
+.header-content .header-item .full-color button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #553d81;
+  color: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+}
+
+.input-date {
+  height: 45px;
+  width: fit-content;
+  display: inline-block;
+  border: 1px solid #aa9ec0;
+  border-radius: 2px;
+}
+
+.div-date {
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.float-right {
+  margin-top: 10px;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  max-width: 200px;
+  width: 100%;
+  height: 45px;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: rgb(83, 66, 121);
+}
+
+span {
+  font-size: 14px;
+}
+
+.loadingScreen {
+  opacity: 0.7;
+  transition: opacity 0.8s ease-in-out;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #000;
+  z-index: 10000000000;
+}
+
+.tblbroker label {
+  font-size: 14px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.tblbroker thead {
+  border-bottom: 1px solid #ddd;
+}
+
+.tblbroker tbody tr {
+  margin-top: 10px;
+}
+
+.tblTasas label {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.tblTasas thead {
+  border-bottom: 1px solid #ddd;
+}
+
+.tblTasas tbody tr {
+  margin-top: 10px;
+}
+
+.btn-danger:not(:disabled):not(.disabled).active,
+.btn-danger:not(:disabled):not(.disabled):active,
+.show > .btn-danger.dropdown-toggle {
+  color: #fff;
+  background-color: #bd2130;
+  border-color: #b21f2d;
+  padding: 5px;
+  min-width: 155px;
+  height: 35px;
+  outline: none;
+}
+
+.collapse {
+  padding: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+  margin-top: -1px;
+}
+
+input[type="text"],
+input[type="password"],
+textarea,
+label,
+.ng-placeholder,
+select,
+textarea {
+  text-transform: uppercase;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  margin-top: 9.79688px;
+  margin-bottom: 0px;
+  min-height: 100px;
+  max-height: 100px;
+}
+.riesgo {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.borderSidesHeader {
+  border-right: 1px solid #a9a9a9;
+  border-left: 1px solid #a9a9a9;
+  border-top: 1px solid #a9a9a9;
+  border-bottom: 1px solid #a9a9a9;
+}
+.btnCotiza-VL {
+  float: right;
+  background: #553d81;
+  border: 0;
+  color: #fff;
+  padding: 5px 15px;
+  align-items: center;
+}
+
+.borderSides {
+  border-right: 1px solid #a9a9a9;
+  border-left: 1px solid #a9a9a9;
+  border-bottom: 1px solid #a9a9a9;
+}
+
+/*AVS - INTERCONEXION SABSA 06/11/2023*/
+
+.titulo-21{
+    color: #989898;
+}
+
+.titulo-salud{
+    color: #5790d3;
+}
+
+.titulo-pension{
+    color: #ff9a3b;
+}
+
+.card-0-SALUD {
+    background-color: #EDF6FF;
+    border-color: #5790D3 !important;
+}
+
+.card-21-SALUD {
+  background-color: #EDF6FF;
+  border-color: #5790D3 !important;
+}
+
+.card-21-PENSION {
+  background-color: #fff6ed;
+  border-color: #ff9a3b !important;
+}
+
+.card-21 {
+    background-color: #f3f3f3;
+    border-color: #8c8c8c !important;
+    border-width: medium !important;
+}
+
+.card-22 {
+  background-color: #ffeeed;
+  border-color: #eb0000 !important;
+  border-width: medium !important;
+}
+
+.card-23 {
+  background-color: #effff6;
+  border-color: #0cb753 !important;
+  border-width: medium !important;
+}
+
+.card-border-21-SALUD {
+  border-color: #cfe3fc !important;
+}
+
+.card-border-21-PENSION {
+  border-color: #ffdfc1 !important;
+}
+
+.card-border-21 {
+    border-color: #dcdcdc !important;
+  }
+
+.card-border-22 {
+  border-color: #f3b6b6 !important;
+}
+
+.card-border-23 {
+  border-color: #bfefd4 !important;
+}
+
+.card-cuadros-21-SALUD {
+  border-color: #cfe3fc !important;
+}
+
+.card-cuadros-21-PENSION {
+  border-color: #ffdfc1 !important;
+}
+
+.card-cuadros-21 {
+    border-color: #dbdbdb !important;
+  }
+
+.card-cuadros-22 {
+  border-color: #f5bebd !important;
+}
+
+.card-cuadros-23 {
+  border-color: #caf3dc !important;
+}
+
+.copy-messageSALUD {
+  position: absolute;
+  top: -60px;
+  right: 10px;
+  padding: 8px;
+  background-color: black;
+  color: white;
+  font-size: 14px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.copy-messageSALUD.show {
+  opacity: 1;
+}
+
+.copy-messagePENSION {
+  position: absolute;
+  top: -60px;
+  right: 10px;
+  padding: 8px;
+  background-color: black;
+  color: white;
+  font-size: 14px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.copy-messagePENSION.show {
+  opacity: 1;
+}
+
+/*CLASES INTERCONEXION SABSA */
+
+.copy-container-eps {
+  /*position: absolute;*/
+  top: 423px !important;
+  right: 9px !important;
+  z-index: 1 !important;
+  width: 194px !important;
+  height: 42px !important;
+  padding: 10px !important;
+  border-radius: 2px !important;
+  display: flex !important;
+  justify-content: flex-end !important; 
+  align-items: center !important; 
+}
+
+.container-vencido {
+    /*position: absolute;*/
+    top: 423px !important;
+    right: 9px !important;
+    z-index: 1 !important;
+    width: 194px !important;
+    height: 42px !important;
+    padding: 10px !important;
+    border-radius: 2px !important;
+    display: flex !important;
+    justify-content: flex-end !important; 
+    align-items: center !important; 
+  }
+
+.copy-container-eps.background-pagado {
+  background-color: #baeed0 !important;
+}
+
+.copy-container-eps.background-pendiente {
+  background-color: #f2b0b0 !important;
+}
+
+.container-vencido.background-vencido {
+    background-color: #553d81 !important;
+}
+
+.container-vencido.relanzar {
+    background-color: white !important;
+}
+
+.copy-container-eps.hidden {
+  display: none !important;
+}
+
+
+.cip-icon-eps {
+  position: relative;
+  right: -140px;
+  width: 43px;
+  top: -1px;
+}
+
+.copy-button-eps {
+  width: 40px;
+  background-color: transparent;
+  border: none;
+  position: relative;
+  top: -2px;
+  margin-left: 140px;
+  right: -12px;
+}
+
+.copy-icon-eps {
+  font-size: 2em; /* El tamaño del ícono */
+}
+.copy-icon-eps.color-pagado {
+  color: #00b44a; /* Cambiar el color si valCIPSCTR_EPS es 23 */
+}
+.copy-icon-eps.color-pendiente {
+  color: #ba0000; /* Cambiar el color si valCIPSCTR_EPS es 22 */
+}
+.copy-icon-eps.hidden {
+  display: none; /* Ocultar el ícono en otros casos */
+}
+
+.cod-cip-eps {
+  font-weight: bold;
+  font-size: 25px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serifL;
+}
+.cod-cip-eps.color-pagado {
+  color: #00b44a; /* Cambiar el color si valCIPSCTR_EPS es 23 */
+}
+.cod-cip-eps.color-pendiente {
+  color: #ba0000; /* Cambiar el color si valCIPSCTR_EPS es 22 */
+}
+.cod-cip-eps.hidden {
+  display: none; /* Ocultar el elemento en otros casos */
+}
+.cod-cip-eps.position-relative {
+  position: relative;
+  top: 6px;
+  right: -147px;
+}
+
+.mensaje-vencido {
+    font-weight: bold;
+    font-size: 23px;
+    color:white;
+    font-family: monospace;
+    position: relative;
+    left: -25px;
+    margin: 0;
+}
+
+.estado-eps {
+  background-color: #eb0000; /* Estilo predeterminado */
+  width: 194px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 4px;
+  display: none; /* Por defecto, ocultar el elemento */
+}
+
+.estado-eps.vencido {
+    background-color: #c4c4c4; /* Cambiar el color si valCIPSCTR_EPS es 23 */
+    display: block; /* Mostrar el elemento si es pagado (23) */
+  }
+
+.estado-eps.pagado {
+  background-color: #00b44a; /* Cambiar el color si valCIPSCTR_EPS es 23 */
+  display: block; /* Mostrar el elemento si es pagado (23) */
+}
+.estado-eps.pendiente {
+  background-color: #eb0000; /* Cambiar el color si valCIPSCTR_EPS es 22 */
+  display: block; /* Mostrar el elemento si es pendiente (22) */
+}
+
+.imagen-estado {
+  position: relative;
+  right: 148px;
+  width: 28px;
+  top: -3px;
+}
+
+.imagen-estado-pen {
+    position: relative;
+    right: 148px;
+    width: 28px;
+    top: -3px;
+}
+
+.imagen-estado-vencido {
+    content: url('assets/icons/vencido_sabsa.png');
+  }
+
+.imagen-estado-pendiente {
+  content: url('assets/icons/cip_pendiente.png');
+}
+
+.imagen-estado-pagado {
+  content: url('assets/icons/cip_pagado.png');
+}
+
+.parrafo-estado {
+  color: white;
+  position: relative;
+  top: -28px;
+  font-size: 15px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serifL;
+}
+
+.parrafo-estado-21 {
+    color: #767676;
+    position: relative;
+    top: -28px;
+    font-size: 15px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serifL;
+  }
+
+.parrafo-estado-pen {
+  color: white;
+  position: relative;
+  top: -28px;
+  font-size: 15px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serifL;
+}
+
+.parrafo-estado-vencido {
+    right: 49px;
+}
+
+.parrafo-estado-pendiente {
+  right: -1px;
+}
+
+.parrafo-estado-pagado {
+  right: 58px;
+}
+
+.btn-link-full-color {
+    background: #28a745 !important;
+    border-radius: 5px !important;
+    display: flex; 
+    align-items: center;
+    margin-top: 25px;
+    margin-left: 15px;
+}
+
+.btn-link-full-color p{
+    all: unset;
+    border-radius: 2px !important;
+    color: #ffffff !important;
+    font-size: 13px;
+}
+
+.white-icon {
+    color: white;
+    padding-right: 2px;
+}
+
+.btn-link-pdf-full-color {
+    border-radius: 5px !important;
+    background: #2b0d61 !important;
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    margin-top: 25px;
+    margin-left: 15px;
+}
+
+.btn-link-pdf-full-color p{
+    all: unset;
+    color: #ffffff !important;
+    font-size: 13px;
+}
+
+.btn-copy-link-full-color {
+    border-radius: 5px !important;
+    background: #2b0d61 !important;
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    margin-top: 25px;
+    width: 30px !important;
+}
+
+.red-icon {
+    color: rgb(255, 0, 0);
+    padding-right: 2px;
+    padding-left: 5px;
+}
+
+.btn-info-full-color {
+    border-radius: 5px !important;
+    background: #f2b0b0 !important;
+    display: flex; 
+    align-items: center;
+    margin-top: 25px;
+    width: 30px !important;
+}
+
+.div-info-red{
+    background: #f2b0b0 !important;
+    display: flex;
+    align-items: center;
+    height: 39px;
+    margin-top: 26px;
+    margin-left: 1px;
+    border-radius: 5px;
+}
+
+.div-info-red p{
+    all: unset;
+    color: rgb(255, 0, 0);
+    display: flex;
+    padding-right: 5px;
+    font-size: 13px;
+}
+
+
+
+
+
+

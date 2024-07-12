@@ -1,0 +1,36 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-sm-12 col-lg-9">
+    <!-- *REDISEÑO -->
+    <main class="content">
+      <section class="content__header">
+        <div class="content__header--left">
+          <h1 class="title">Gestor de crédito</h1>
+        </div>
+      </section>
+      <div class="content__tabs">
+        <a class="button-default tab">
+          <div
+            routerLink="/extranet/gestion-creditos/general"
+            routerLinkActive="bg-active"
+          >
+            <i class="fa fa-signal" aria-hidden="true"></i>
+            Línea de crédito general
+          </div>
+        </a>
+        <a class="button-default tab">
+          <div
+            routerLink="/extranet/gestion-creditos/estado"
+            routerLinkActive="bg-active"
+          >
+            <i class="fa fa-cog" aria-hidden="true"></i>
+            Línea de crédito Estado
+          </div>
+        </a>
+      </div>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

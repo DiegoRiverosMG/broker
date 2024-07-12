@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Filtro de Columnas</h4>
+</div>
+<div class="modal-body">
+    <div class="card">
+        <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" [(ngModel)]="selectAllCheckbox" (click)="selectAll()" id="cAll" />
+            <label class="custom-control-label" for="cAll">Seleccionar todos</label>
+        </div>
+        <div  *ngFor="let c of columnas" class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" [(ngModel)]="c.value" (click)="selectColumnList(c)" id="{{c.id}}">
+            <label class="custom-control-label" for="{{c.id}}">{{c.name}}</label>
+       </div>
+    </div>
+</div>
+<div class="right-item">
+    <button (click)="reference.dismiss('Cross click')">
+        <span>Regresar</span>
+    </button>
+</div> 

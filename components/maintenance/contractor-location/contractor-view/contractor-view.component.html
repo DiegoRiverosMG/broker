@@ -1,0 +1,132 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Detalle Contratante</h4>
+  <button type="button" class="close" aria-label="Close" (click)="reference.close(hasChanges)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <h5>Datos de Contratante</h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <span>TIPO DOCUMENTO</span>
+              <input [(ngModel)]="contractor.DocumentType" type="text" placeholder="Tipo Documento" disabled>
+            </div>
+            <div class="col-sm-3">
+              <span>NÚMERO DOCUMENTO</span>
+              <input [(ngModel)]="contractor.DocumentNumber" type="text" placeholder="Número Documento" disabled>
+            </div>
+            <div class="col-sm-6">
+              <span>CONTRATANTE</span>
+              <input [(ngModel)]="contractor.FullName" type="text" placeholder="Contratante" disabled>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <span>DIRECCIÓN </span>
+              <input [(ngModel)]="contractor.Address" type="text" placeholder="" disabled>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <span>CORREO ELECTRÓNICO</span>
+              <input [(ngModel)]="contractor.Email" type="text" placeholder="Correo Electrónico" disabled>
+            </div>
+            <div class="col-sm-4">
+              <span>TELÉFONO</span>
+              <input [(ngModel)]="contractor.Phone" type="text" placeholder="Teléfono" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <div class="card">
+      <div class="grid form-group">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Datos de Sedes</h5>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Código</td>
+                <td class="grid-title-item">Tipo</td>
+                <td class="grid-title-item">Descripción</td>
+                <td class="grid-title-item">Sub Actividad</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Opciones</td>
+              </tr>
+            </thead>
+            <ng-container *ngIf="contractorLocationList==null || contractorLocationList.length==0; then hideGrid else showGrid">
+            </ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td class="text-center" colspan="6">No se encontraron registros.</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody *ngFor="let item of listToShow">
+              <tr>
+                <td>{{item.Id}}</td>
+                <td>{{item.Type}}</td>
+                <td>{{item.Description}}</td>
+                <td>{{item.EconomicActivity}}</td>
+                <td>{{item.State}}</td>
+                <td class="data-table-tr-td" style="display:flex">
+                  <img src="assets/icons/editar.png" title="Editar" alt="Editar" style="cursor: pointer;"
+                    (click)="getContractorLocation(item.Id,true)" />
+                  <img src="assets/icons/anular.png" title="Eliminar" alt="Eliminar"
+                    style="cursor: pointer;margin-left:7px" (click)="confirmDeletion(item.Id)" />
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+
+        </div>
+        <div *ngIf="contractorLocationList!=null && contractorLocationList.length>0" class="row" style="display:flex">
+            <div class="col-sm-9">
+                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                </ngb-pagination>
+            </div>
+            <div class="col-sm-3">
+                <span style="display: inline-block;">Mostrar: </span>
+                <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal"
+                    (change)="mostrarMas()"
+                    style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                    <option value="3">3</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+</div>
+<div class="modal-footer">
+
+  <button (click)="reference.close(hasChanges)"><span>Volver</span></button>
+  <button class="full-color" (click)="getContractorLocation(null,false)"><span>Agregar Sede</span></button>
+</div>

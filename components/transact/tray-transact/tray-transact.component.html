@@ -1,0 +1,368 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item" *ngIf="typeSearch == 1">
+                        <span class="title">Consulta de Trámites</span>
+                    </div>
+                    <div class="header-item" *ngIf="typeSearch == 2">
+                        <span class="title">Bandeja de Trámites</span>
+                    </div>
+                </div>
+                <p class="eps-title">{{lblProducto}}<span>{{lblFecha}}</span></p>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="mainFormGroup">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>RAMO</span>
+                                <select formControlName="branch" class="minimal" (change)="SelectBranch()">
+                                    <option *ngIf="branchList.length > 1" value="">Seleccione</option>
+                                    <option *ngFor="let item of branchList" value="{{item.NBRANCH}}">
+                                        {{item.SDESCRIPT}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>TIPO PRODUCTO</span>
+                                <select formControlName="product" class="minimal">
+                                    <option *ngIf="productTypeList.length > 1" value="">Seleccione</option>
+                                    <option *ngFor="let item of productTypeList" value="{{item.COD_PRODUCT}}">
+                                        {{item.DES_PRODUCT}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>NRO. TRÁMITE</span>
+                                <input formControlName="transactNumber" type="text" placeholder="Número de Trámite"
+                                    (paste)="onPaste($event)" (keyup)="transactNumberChanged($event)"
+                                    (keypress)="transactNumberPressed($event)" (keyup.enter)="firstSearch()"
+                                    maxlength="10" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>NRO. COTIZACIÓN</span>
+                                <input formControlName="quotationNumber" type="text" placeholder="Número de Cotización"
+                                    (paste)="onPaste($event)" (keyup)="quotationNumberChanged($event)"
+                                    (keypress)="quotationNumberPressed($event)" (keyup.enter)="firstSearch()"
+                                    maxlength="10" />
+                            </div>
+                            <div class="col-sm-3">
+                                <span>NRO. PÓLIZA</span>
+                                <input formControlName="policyNumber" type="text" placeholder="Número de Póliza"
+                                    (paste)="onPaste($event)" (keyup)="policyNumberChanged($event)"
+                                    (keypress)="policyNumberPressed($event)" (keyup.enter)="firstSearch()"
+                                    maxlength="10" />
+                            </div>
+                            <div class="col-sm-3" *ngIf="typeSearch == 1">
+                                <span>TIPO DE CUENTA</span>
+                                <select formControlName="typeClient" class="minimal">
+                                    <option value="">AMBOS</option>
+                                    <option value="2">PRIVADO</option>
+                                    <option value="1">GOBIERNO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>DESDE</span>
+                                <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy"
+                                    #dp="bsDatepicker" (focus)="cleanValidation()" (keyup.enter)="firstSearch()"
+                                    [bsConfig]="bsConfig" bsDatepicker DateDirective [(bsValue)]="bsValueIni"
+                                    value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}" />
+                            </div>
+                            <div class="col-sm-3">
+                                <span>HASTA</span>
+                                <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                    (focus)="cleanValidation()" (keyup.enter)="firstSearch()" [bsConfig]="bsConfig"
+                                    bsDatepicker DateDirective [(bsValue)]="bsValueFin"
+                                    value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}"/>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>ESTADO</span>
+                                <select formControlName="status" class="minimal">
+                                    <option value="">Todos</option>
+                                    <option *ngFor="let item of statusList" value="{{item.NSTATUS_TRA}}">
+                                        {{item.SDESCRIPT}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-3">
+
+                                <div>
+                                    <span>&nbsp;&nbsp;BÚSQUEDA POR CONTRATANTE</span>
+                                    <select formControlName="contractorSearchMode" (change)="cleanContractorInputs()"
+                                        class="minimal">
+                                        <option value="3" disabled>Seleccionar</option>
+                                        <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                                            {{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                                <span>TIPO DOC. CONTRATANTE</span>
+                                <select formControlName="contractorDocumentType" class="minimal"
+                                    (change)="contractorDocumentTypeChanged()">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                                <span>NRO. DOC. CONTRATANTE</span>
+                                <input type="text" placeholder="Nro. Doc. Contratante"
+                                    formControlName="contractorDocumentNumber" (keyup.enter)="firstSearch()"
+                                    (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.contractorDocumentType.value)"
+                                    maxlength={{contractorDocumentMaxLength}}/>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2'" class="col-sm-3">
+                                <span>TIPO PERSONA</span>
+                                <select formControlName="contractorPersonType" (change)="cleanContractorInputs()"
+                                    class="minimal">
+                                    <option value="0" disabled>Seleccionar</option>
+                                    <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='2'"
+                                class="col-sm-3">
+                                <span>RAZÓN SOCIAL</span>
+                                <input type="text" formControlName="contractorLegalName" placeholder="Razón social"
+                                    maxlength="60" (keyup.enter)="firstSearch()" LegalNameDirective />
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>NOMBRES</span>
+                                <input type="text" formControlName="contractorFirstName" placeholder="Nombres"
+                                    maxlength="19" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO PATERNO</span>
+                                <input type="text" formControlName="contractorPaternalLastName"
+                                    placeholder="Apellido paterno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO MATERNO</span>
+                                <input type="text" formControlName="contractorMaternalLastName"
+                                    placeholder="Apellido materno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+
+                        </div>
+                        <br>
+                        <div [hidden]="isExternalUser" class="row">
+                            <div class="col-sm-3">
+
+                                <div>
+                                    <span>&nbsp;&nbsp;BÚSQUEDA POR BROKER</span>
+                                    <select formControlName="brokerSearchMode" (change)="cleanBrokerInputs()"
+                                        class="minimal">
+                                        <option value="3" disabled>Seleccionar</option>
+                                        <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                                            {{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                                <span>TIPO DOC. BROKER</span>
+                                <select formControlName="brokerDocumentType" (change)="brokerDocumentTypeChanged()"
+                                    class="minimal">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                                <span>NRO. DOC. BROKER</span>
+                                <input type="text" placeholder="Nro. Doc. Broker" formControlName="brokerDocumentNumber"
+                                    (keyup.enter)="firstSearch()"
+                                    (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.brokerDocumentType.value)"
+                                    maxlength={{brokerDocumentMaxLength}}/>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2'" class="col-sm-3">
+                                <span>TIPO PERSONA</span>
+                                <select formControlName="brokerPersonType" (change)="cleanBrokerInputs()"
+                                    class="minimal">
+                                    <option value="0" disabled>Seleccionar</option>
+                                    <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='2'"
+                                class="col-sm-3">
+                                <span>RAZÓN SOCIAL</span>
+                                <input type="text" formControlName="brokerLegalName" placeholder="Razón social"
+                                    maxlength="60" (keyup.enter)="firstSearch()" LegalNameDirective />
+                            </div>
+
+                        </div>
+                        <div [hidden]="isExternalUser" class="row">
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>NOMBRES</span>
+                                <input type="text" formControlName="brokerFirstName" placeholder="Nombres"
+                                    maxlength="19" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO PATERNO</span>
+                                <input type="text" formControlName="brokerPaternalLastName"
+                                    placeholder="Apellido paterno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO MATERNO</span>
+                                <input type="text" formControlName="brokerMaternalLastName"
+                                    placeholder="Apellido materno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+
+                        </div>
+                        <div [hidden]="!isExternalUser" class="row">
+                            <div class="col-sm-9">
+                                <span>MI RAZÓN SOCIAL: </span>
+                                <input disabled type="text" formControlName="brokerNameExternal"
+                                    value="{{brokerName}}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                              <div [hidden]="typeSearch == 2">
+                                <button class="pull-right" style="margin-top: 15px;" (click)="firstSearch(1)">
+                                  <span>Descargar Excel</span>
+                              </button>
+                              </div>
+                                <button class="full-color pull-right" style="margin-top: 15px;" (click)="firstSearch()">
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Producto</td>
+                                    <td class="grid-title-item">Trámite</td>
+                                    <td class="grid-title-item">Cotización</td>
+                                    <td class="grid-title-item">Póliza</td>
+                                    <td class="grid-title-item">Contratante</td>
+                                    <td *ngIf="typeSearch == 2" class="grid-title-item">Prima Minima</td>
+                                    <td *ngIf="typeSearch == 2" class="grid-title-item">Nro Trabajadores</td>
+                                    <td *ngIf="typeSearch == 2" class="grid-title-item">Planilla</td>
+                                    <td *ngIf="typeSearch == 1" class="grid-title-item">Tipo de Cuenta</td>
+                                    <td class="grid-title-item">Broker</td>
+                                    <td  *ngIf="perfil!=134 && codProducto==3 " class="grid-title-item ">Segmento</td>
+                                    <td  *ngIf="perfil!=134 && codProducto==3 " class="grid-title-item ">SLA</td>
+                                    <td class="grid-title-item">Transacción</td>
+                                    <td class="grid-title-item">Estado</td>
+                                    <td class="grid-title-item">Bandeja</td>
+                                    <td class="grid-title-item">Usuario Asignado</td>
+                                    <td *ngIf="typeSearch == 1" class="grid-title-item">Fecha Creación</td>
+                                    <td *ngIf="typeSearch == 2" class="grid-title-item">Fecha Aprobación</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td [attr.colspan]="typeSearch == 1 ? 15 : 17">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td>{{ item.ProductName }}</td>
+                                    <td>{{ item.TransactNumber}}</td>
+                                    <td>{{ item.QuotationNumber}}</td>
+                                    <td>{{ item.PolicyNumber }}</td>
+                                    <td>{{ item.ContractorFullName }}</td>
+                                    <td *ngIf="typeSearch == 2" >{{ item.MinimalPremium | prettyNumber:2}}</td>
+                                    <td *ngIf="typeSearch == 2" >{{ item.WorkersCount }}</td>
+                                    <td *ngIf="typeSearch == 2" >{{ item.Payroll | prettyNumber:2}}</td>
+                                    <td *ngIf="typeSearch == 1" >{{ item.typeClient }}</td>
+                                    <td>{{ item.BrokerFullName }}</td>
+                                    <td *ngIf="perfil!=134 && codProducto==3 " title="{{item.SCLIENT_SEG}}">{{ item.SDESCRIPT_SEG }}</td>
+                                    <td *ngIf="perfil!=134 && codProducto==3 ">{{item.NTIEMPO_TOTAL_SLA}}</td>
+                                    <td>
+                                        <div *ngIf="item.TypeTransac == 'Broker'; then thenBlock else elseBlock"></div>
+                                        <ng-template #thenBlock>Modificar Broker</ng-template>
+                                        <ng-template #elseBlock>{{ item.TypeTransac}}</ng-template>
+                                    </td>
+                                    <td>{{ item.Status}}</td>
+                                    <td>{{ item.Tray}}</td>
+                                    <td>{{ item.UserAssigned}}</td>
+                                    <td *ngIf="typeSearch == 1">{{ item.ApprovalDate | date:'dd/MM/yyyy, h:mm a'}}</td>
+                                    <td *ngIf="typeSearch == 2" >{{ item.CreateDate | date:'dd/MM/yyyy, h:mm a'}}</td>
+                                    <td style="display: flex;">
+                                        <a (click)="openDetails(item)"><img alt="Ver detalles"
+                                                src="assets/icons/see.svg" title="{{item.Mode}}"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                        <a (click)="openDetails(item,1)" *ngIf="typeSearch == 2 && item.Mode != 'Asignar' && item.Mode != 'Enviar' && (isProfileOpe == 1)"><img alt="Ver detalles"
+                                                src="assets/soat/img/user-ico.png" title="Reasignar"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                        <a (click)="openModal(item,item.ModeMail)" *ngIf="typeSearch == 1 && item.ModeMail == 'MAIL'"><img alt="Ver detalles"
+                                                src="assets/icons/editar.png" title="Modificar Correo"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                        <a (click)="openModal(item,item.ModeAssig)" *ngIf="typeSearch == 1 && item.ModeAssig == 'ASIG'"><img alt="Ver detalles"
+                                                src="assets/icons/vida-ley.png" title="Reasignar"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+                    </div>
+                </div>
+                <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+                    <div class="col-sm-10">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                    <div class="col-sm-2">
+                        <span style="display: inline-block;">Mostrar: </span>
+                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                            style="display: inline-block; width: 50%; position: relative; top: -10px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

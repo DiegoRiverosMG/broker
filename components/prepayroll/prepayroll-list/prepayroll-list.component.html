@@ -1,0 +1,227 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Mis Pre Planillas</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <div class="header-item  rigth-item">
+              <button class="full-color" (click)="onAddPrePlanilla()">
+                <img alt="" src="assets/icons/add.png" />
+                <span>Agregar Pre planilla</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter">
+          <div class="form-group row filter-row">
+            <div class="col-lg-2 filter-row-cell">
+              <span>DESDE:</span>
+              <input
+                type="text"
+                class="form-control"
+                #dp="bsDatepicker"
+                [bsConfig]="bsConfig"
+                bsDatepicker
+                [(bsValue)]="dpValueIni"
+                value="{{ dpValueIni | date: 'dd/MM/yyyy' }}"
+              />
+            </div>
+            <div class="col-lg-2 filter-row-cell">
+              <span>HASTA:</span>
+              <input
+                type="text"
+                class="form-control"
+                [bsConfig]="bsConfig"
+                #dp="bsDatepicker"
+                bsDatepicker
+                [(bsValue)]="dpValueFin"
+                value="{{ dpValueFin | date: 'dd/MM/yyyy' }}"
+              />
+            </div>
+            <div class="col-lg-2 filter-row-cell">
+              <span>POR ESTADO:</span>
+              <select
+                (change)="onChangeEstado($event.target.value)"
+                [(ngModel)]="filtrosBus.Estado"
+              >
+                <option value="0" selected>Todos</option>
+                <option
+                  *ngFor="let estado of listaEstadoCanal"
+                  value="{{ estado.nidstate }}"
+                  >{{ estado.sdescription }}</option
+                >
+              </select>
+            </div>
+            <div class="col-lg-2 filter-row-cell">
+              <span>NRO. PRE PLANILLA:</span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Busca con tu número de planilla"
+                [(ngModel)]="filtrosBus.Id"
+              />
+            </div>
+            <div class="col-lg-4 filter-row-cell">
+              <span>POR CANAL:</span>
+              <select (change)="onChangeCanal($event.target.value)">
+                <!--[(ngModel)]="filtrosBus.CodigoCanalConcatenado"-->
+                <option value="0">Todos</option>
+                <option
+                  *ngFor="let canal of listaCanales"
+                  value="{{ canal.nchannel }}"
+                >
+                  {{ canal.sdescript }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <div class="float-right">
+                <button (click)="onEventSearch()">
+                  <span>Buscar</span>
+                </button>
+              </div>
+              <div class="float-right">
+                <button class="min-color" (click)="EventDownload($event)">
+                  <img alt="" src="assets/icons/download2.png" />
+                  <span>Descargar Excel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid form-group row ">
+          <div class="table-responsive">
+            <table table table-bordered>
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">Nro. Pre Planilla</td>
+                  <td class="grid-title-item">Nro. Especies</td>
+                  <td class="grid-title-item">Fecha</td>
+                  <td class="grid-title-item">Medio de Pago</td>
+                  <td class="grid-title-item">Precio</td>
+                  <td class="grid-title-item">Estado</td>
+                  <td class="grid-title-item">Acciones</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="lista.length === 0 || lista === null">
+                  <td colspan="8">{{ mensajeError }}</td>
+                </tr>
+                <tr *ngFor="let item of lista">
+                  <td class="data-table-tr-td">{{ item.nropreplanilla }}</td>
+                  <td class="data-table-tr-td">{{ item.cantidad }}</td>
+                  <td class="data-table-tr-td">{{ item.fecregistro }}</td>
+                  <!-- <td class="data-table-tr-td">{{ item.fecregistro | date:'d/M/y' }}</td>-->
+                  <td class="data-table-tr-td">{{ item.tipopago }}</td>
+                  <td class="data-table-tr-td">{{ item.montototal }}</td>
+                  <td class="data-table-tr-td">{{ item.descripcionestado }}</td>
+                  <td class="data-table-tr-td">
+                    <a
+                      *ngIf="item.estado == '3' || item.estado == '1'"
+                      (click)="ActualizarPrePlanilla(item.nropreplanilla)"
+                    >
+                      <img
+                        alt=""
+                        src="assets/icons/editar.png"
+                        title="Editar"
+                        alt="Editar"
+                      />
+                    </a>
+                    <!-- <a *ngIf="item.estado !== '4'" (click)="openModalConfirmacion(item.nropreplanilla)">
+                            <img alt="" src= "assets/icons/imprimir.png" title="Imprimir" alt="Imprimir" />
+                        </a>-->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div
+          *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+        ></div>
+        <ng-template #mostrarPaginado>
+          <div></div>
+        </ng-template>
+        <ng-template #ocultarPaginado>
+          <div class="row">
+            <div class="col-xs-12 col-12 text-center">
+              <pagination
+                [totalItems]="totalItems"
+                [itemsPerPage]="itemsPerPage"
+                [(ngModel)]="npage"
+                (pageChanged)="pageChanged($event)"
+                class="pagination-sm"
+              ></pagination>
+            </div>
+          </div>
+        </ng-template>
+        <!-- <div *ngIf="lista.length > 0">
+            <pagination [totalItems]="totalItems"
+                        [itemsPerPage]="filtrosBus.RegistrosPorPagina"
+                        (pageChanged)="onChangePagina($event)"
+                        class="pagination-sm">
+            </pagination>
+          </div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmasivo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #553D81;color: white;">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje de Confirmación
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ message }}</p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="full-color"
+              (click)="confirm()"
+            >
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button style="min-width: 100%;" (click)="closeconfirm()">
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

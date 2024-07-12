@@ -1,0 +1,585 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content mb-3">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Cotizador</span>
+          </div>
+        </div>
+        <p class="eps-title">{{lblProducto}}<span>{{lblFecha}}</span></p>
+      </div>
+
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="cotizador" />
+          <label class="collapse-btn title" for="cotizador">Datos del Contratante <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-12">
+                  <label><span>BÚSQUEDA:</span></label>
+                  <label><span><input type="radio" [(ngModel)]="inputsCovid.P_TYPE_SEARCH" name="searchContractor"
+                        value="1" (ngModelChange)="onSelectTypeSearch()" class="t-search" /> POR NRO.
+                      DOCUMENTO</span></label>
+                  <label><span><input type="radio" [(ngModel)]="inputsCovid.P_TYPE_SEARCH" name="searchContractor"
+                        value="2" (ngModelChange)="onSelectTypeSearch()" class="t-search" /> POR NOMBRES</span></label>
+                </div>
+              </div>
+              <div class="row">
+                <div *ngIf="blockSearch" class="col-sm-3">
+                  <span>TIPO DOCUMENTO (*)</span>
+                  <select (change)="selTipoDocumento(inputsCovid.P_NIDDOC_TYPE)" [disabled]="stateSearch"
+                    (click)="clearValidate(0)" [ngClass]="{'error-validate': inputsValidate[0] }"
+                    [(ngModel)]="inputsCovid.P_NIDDOC_TYPE" class="minimal">
+                    <option value="-1" disabled>Seleccionar</option>
+                    <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                      {{documenttype.Name}}</option>
+                  </select>
+                </div>
+                <div *ngIf="!blockSearch" class="col-sm-3">
+                  <span>TIPO DE PERSONA (*)</span>
+                  <select (change)="onSelectTypePerson($event.target.value)" [(ngModel)]="inputsCovid.P_PERSON_TYPE"
+                    class="minimal">
+                    <option value="1" selected>Persona Natural</option>
+                    <option value="2">Persona Jurídica</option>
+                  </select>
+                </div>
+                <div *ngIf="blockSearch" class="col-sm-3">
+                  <span>NRO DE DOCUMENTO (*)</span>
+                  <input type="text" placeholder="Nro Documento" [(ngModel)]="inputsCovid.P_SIDDOC"
+                    (click)="clearValidate(1)" [ngClass]="{'error-validate': inputsValidate[1]}"
+                    (keypress)="validarNroDocumento($event, inputsCovid.P_NIDDOC_TYPE)"
+                    (ngModelChange)="cambioDocumento(inputsCovid.P_SIDDOC)" [disabled]="stateSearch"
+                    maxlength={{maxlength}} (keyup.enter)="buscarContratante()" />
+                </div>
+                <div class="col-sm-3" style="margin-top: 35px;">
+                  <button (click)="buscarContratante()" style="margin: 0">
+                    <img src="assets/icons/buscar_certificado.png" />
+                    <span>Buscar</span>
+                  </button>
+                </div>
+                <div class="col-sm-3" *ngIf="creditHistory!=null">
+                  <span>TIPO RIESGO</span>
+                  <input type="text" [(ngModel)]="creditHistory.sdescript"
+                    [ngClass]="creditHistory.nflag == 0 ? 'riesgo-alto' : 'riesgo-bajo'" disabled />
+                </div>
+              </div>
+              <div class="row">
+                <div *ngIf="blockDoc" class="col-sm-3">
+                  <span>NOMBRES (*)</span>
+                  <input type="text" placeholder="Nombres" [disabled]="!stateSearch"
+                    [(ngModel)]="inputsCovid.P_SFIRSTNAME" (keyup.enter)="buscarContratante()"
+                    (keypress)="textValidate($event, 5)" />
+                </div>
+                <div *ngIf="!blockDoc" class="col-sm-9">
+                  <span>RAZÓN SOCIAL (*)</span>
+                  <input type="text" placeholder="Razón Social" [disabled]="!stateSearch"
+                    [(ngModel)]="inputsCovid.P_SLEGALNAME" (keyup.enter)="buscarContratante()"
+                    (keypress)="textValidate($event, 4)" />
+                </div>
+                <div *ngIf="blockDoc" class="col-sm-3">
+                  <span>APELLIDO PATERNO (*)</span>
+                  <input type="text" placeholder="Apellido Paterno" [disabled]="!stateSearch"
+                    [(ngModel)]="inputsCovid.P_SLASTNAME" (keyup.enter)="buscarContratante()"
+                    (keypress)="textValidate($event, 5)" />
+                </div>
+                <div *ngIf="blockDoc" class="col-sm-3">
+                  <span>APELLIDO MATERNO</span>
+                  <input type="text" placeholder="Apellido Materno" [disabled]="!stateSearch"
+                    [(ngModel)]="inputsCovid.P_SLASTNAME2" (keyup.enter)="buscarContratante()"
+                    (keypress)="textValidate($event, 5)" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>DIRECCIÓN</span>
+                  <input type="text" placeholder="Dirección" disabled [(ngModel)]="inputsCovid.P_SDESDIREBUSQ" />
+                </div>
+                <div class="col-sm-3">
+                  <span>CORREO ELECTRÓNICO</span>
+                  <input type="text" placeholder="Correo Electrónico" [disabled]="!flagEmail"
+                    [(ngModel)]="inputsCovid.P_SE_MAIL" (click)="clearValidate(19)"
+                    [ngClass]="{'error-validate': inputsValidate[19]}" />
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_tipoCuenta">
+                  <span>TIPO DE CUENTA</span>
+                  <select [(ngModel)]="inputsCovid.P_SISCLIENT_GBD" [disabled]="true" class="minimal">
+                    <option value="">SELECCIONE</option>
+                    <option value="2">PRIVADO</option>
+                    <option value="1">GOBIERNO</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agregar Contacto -->
+      <div class="collapse-list" *ngIf="contractingdata != null && contractingdata.EListContactClient.length == 0">
+        <div>
+          <input class="collapse-open " type="checkbox" id="contactos" />
+          <label class="collapse-btn title" for="contactos">Datos de contacto del cliente <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-12 mt-15">
+                  <button *ngIf="contactList.length == 0" class="pull-right" (click)="openModal('add-contact')"
+                    style="margin: 0">
+                    <span>Agregar Contacto</span>
+                  </button>
+                  <table class="table table-borderless riesgo tblbroker" style="margin-top: 60px;">
+                    <thead>
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">N°</td>
+                        <td class="col-sm text-center">Parentesco</td>
+                        <td class="col-sm text-center">Nombres y Apellidos</td>
+                        <td class="col-sm text-center">Teléfono</td>
+                        <td class="col-sm text-center">Correo Electrónico</td>
+                        <td class="col-sm text-center">Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let contacto of contactList; let row = index">
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">{{row +  1}}</td>
+                        <td class="col-sm text-center">{{contacto.P_DESTICONTACTO}}</td>
+                        <td class="col-sm text-center">{{contacto.P_SNOMBRES}} {{contacto.P_SAPEPAT}}
+                          {{contacto.P_SAPEMAT}}
+                        </td>
+                        <td class="col-sm text-center">{{contacto.P_SPHONE}}</td>
+                        <td class="col-sm text-center">{{contacto.P_SE_MAIL}}</td>
+                        <td class="col-sm text-center">
+                          <img *ngIf="contacto.P_CLASS == ''" src="assets/icons/editar.png"
+                            (click)="editContact(contacto.P_NROW)" title="Editar" alt="Editar" /> &nbsp;
+                          <img *ngIf="contacto.P_CLASS == ''" src="assets/icons/anular.png" (click)="deleteContact(row)"
+                            title="Eliminar" alt="Eliminar" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="contactList.length == 0">
+                      <tr class="d-flex">
+                        <td class="col-sm text-center">No tiene Contactos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Fin Agregar Contacto -->
+
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="comercializador" />
+          <label class="collapse-btn title" for="comercializador">Datos Brokers <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div *ngIf="brokerList.length == 0">
+                    <button class=" pull-right" (click)="addBroker()" style="margin: 0">
+                      <span>Agregar</span>
+                    </button>
+                  </div>
+                  <table class="table table-borderless riesgo tblbroker" style="margin-top: 60px;">
+                    <thead>
+                      <tr class="d-flex">
+                        <th class="col-sm text-center"><label>Tipo Documento</label></th>
+                        <th class="col-sm text-center"><label>Nro Documento</label></th>
+                        <th class="col-sm text-center"><label>Razón Social / Nombres y
+                            Apellidos</label></th>
+                        <th class="col-sm text-center">
+                          <label>{{variable.var_desComisionPension}}</label>
+                        </th>
+                        <th class="col-sm text-center ctasa">
+                          <label><input type="checkbox" class="checkbox" [(ngModel)]="inputsCovid.proposedCommission"
+                              *ngIf="inputsCovid.checkProposed" (change)="resetearPropuesto()"><span class="schk">
+                              {{variable.var_desComisionPensionPro}}</span></label></th>
+                        <th class="" *ngIf="!variable.var_isBroker"><label>Acción</label></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="d-flex" *ngIf="brokerList.length == 0">
+                        <td class="col-sm text-center">No hay brokers</td>
+                      </tr>
+                      <tr class="d-flex" *ngFor="let broker of brokerList; let row = index">
+                        <td class="col-sm text-center">
+                          <span>{{ broker.NTIPDOC | typeDocument }}</span>
+                        </td>
+                        <td class="col-sm text-center"><span>{{ broker.NNUMDOC}}</span></td>
+                        <td class="col-sm text-center"><span>{{ broker.RAZON_SOCIAL }}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{broker.P_COM_SALUD}} %</span></td>
+                        <td class="col-sm">
+                          <input *ngIf="broker.P_COM_SALUD != 0" type="text" class="text-center input-acc"
+                            maxlength="5" [disabled]="stateBrokerTasaPension" placeholder="0"
+                            [(ngModel)]="broker.P_COM_SALUD_PRO" [ngClass]="{'error-validate': broker.valItemPen}"
+                            (ngModelChange)="comisionPropuesta(broker.P_COM_SALUD_PRO, row)" FloatDirective />
+                          <input *ngIf="broker.P_COM_SALUD == 0" type="text" class="text-center input-acc"
+                            placeholder="0" disabled />
+                          <span class="porcentaje">%</span>
+                        <td><span style="padding: 0 12px;" *ngIf="broker.BLOCK"><img src="assets/icons/anular.png"
+                              (click)="deleteBroker(row)" title="Eliminar" alt="Eliminar" /></span>
+                          <span style="padding: 0 12px;" *ngIf="!broker.BLOCK">------</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="cotizacion" />
+          <label class="collapse-btn title" for="cotizacion">{{variable.var_seccionDatos}} <i
+              class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>PRODUCTOS (*)</span>
+                  <select (change)="onSelectProducto($event.target.value)" [(ngModel)]="inputsCovid.P_NPRODUCT"
+                    (click)="clearValidate(11)" [ngClass]="{'error-validate': inputsValidate[11]}" class="minimal">
+                    <option disabled value="-1">SELECCIONE</option>
+                    <option value="0" *ngIf="productList.length > 1">Ambos productos</option>
+                    <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                      {{product.DES_PRODUCT}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_tipRenovacion">
+                  <span>TIPO RENOVACIÓN (*)</span>
+                  <select [(ngModel)]="inputsCovid.tipoRenovacion" name="tipoRenovacion"
+                    (ngModelChange)="selRenovationType()" class="minimal" (click)="clearValidate(17)"
+                    [ngClass]="{'error-validate': inputsValidate[17]}">
+                    <option disabled value="">Seleccione</option>
+                    <option *ngFor="let renovacion of tipoRenovacion" [value]="renovacion.COD_TIPO_RENOVACION">
+                      {{renovacion.DES_TIPO_RENOVACION}}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_iniVigencia">
+                  <span>INICIO VIGENCIA DE PÓLIZA (*)</span>
+                  <input type="text" #dp="bsDatepicker" (ngModelChange)="validarTipoRenovacion($event)"
+                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="inputsCovid.FDateIni"
+                    [(ngModel)]="inputsCovid.FDateIni" [(minDate)]="inputsCovid.FDateIniMin"
+                    [(maxDate)]="inputsCovid.FDateIniFin" #desde readonly>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_finVigencia">
+                  <span>FIN VIGENCIA DE PÓLIZA</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(ngModel)]="inputsCovid.FDateFin" [(bsValue)]="inputsCovid.FDateFin"
+                    [(minDate)]="inputsCovid.FDateFinMin" [disabled]="true"
+                    value="{{ inputsCovid.FDateFin | date:'dd/MM/yyyy' }}" #hasta readonly>
+                </div>
+                <div class="col-sm-3">
+                  <span>MONEDA</span>
+                  <select [(ngModel)]="inputsCovid.P_NCURRENCY" [disabled]="true" class="minimal">
+                    <option *ngFor="let currency of currencyList" value="{{currency.NCODIGINT}}">
+                      {{currency.SDESCRIPT}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_frecPago">
+                  <span>FRECUENCIA PAGO</span>
+                  <select [(ngModel)]="inputsCovid.frecuenciaPago" name="frecuenciaPago" class="minimal"
+                    (click)="clearValidate(18)" [ngClass]="{'error-validate': inputsValidate[18]}">
+                    <option value="">SELECCIONE</option>
+                    <option *ngFor="let frecuencia of frecuenciaPago" [value]="frecuencia.COD_TIPO_FRECUENCIA">
+                      {{frecuencia.DES_TIPO_FRECUENCIA}}
+                    </option>
+                  </select>
+                </div>
+                <!-- <div class="col-sm-3" *ngIf="template.ins_iniVigenciaAseg">
+                  <span>INICIO VIGENCIA DE ASEGURADOS</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(bsValue)]="inputsCovid.FDateIniAseg" [(ngModel)]="inputsCovid.FDateIniAseg"
+                    [(minDate)]="inputsCovid.FDateIniMin" [(maxDate)]="inputsCovid.FDateIniFin"
+                    [disabled]="true" #desde readonly>
+                </div>
+                <div class="col-sm-3" *ngIf="template.ins_finVigenciaAseg">
+                  <span>FIN VIGENCIA DE ASEGURADOS</span>
+                  <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                    [(ngModel)]="inputsCovid.FDateFinAseg" [(bsValue)]="inputsCovid.FDateFinAseg"
+                    [(minDate)]="bsValueFinMin" [disabled]="true"
+                    value="{{ inputsCovid.FDateFinAseg | date:'dd/MM/yyyy' }}" #hasta readonly>
+                </div> -->
+
+                <div class="col-sm-6" *ngIf="template.ins_actRealizar">
+                  <span class="mb-1">ACTIVIDAD A REALIZAR (*)</span>
+                  <ng-select [items]="technicalList" (change)="onSelectTechnicalActivity($event)" bindLabel="Name"
+                    [ngClass]="{'error-validate': inputsValidate[12]}" bindValue="Id"
+                    [(ngModel)]="inputsCovid.P_NTECHNICAL" class="border-ng" (click)="clearValidate(12)"
+                    [clearable]="true" [disabled]="!stateQuotation" placeholder="Seleccionar" dropdownPosition="bottom"
+                    notFoundText="No hay resultados" title="{{inputsCovid.activityMain}}">
+                    <ng-template ng-option-tmp let-item="item">
+                      <div title="{{item.Name}}">{{item.Name}}</div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <!-- <div class="col-sm-3" *ngIf="template.ins_mina">
+                  <span>&nbsp;</span>
+                  <label style="width: 100%;margin-bottom: 0;"><span
+                      class="spn-delimiter">{{inputsCovid.P_DELIMITER}}</span></label>
+                  <label style="width: 100%;margin-bottom: 0;"><input type="checkbox"
+                      [(ngModel)]="inputsCovid.P_MINA" class="checkbox"><span class="schk chk-mina">¿Trabajos en
+                      mina?</span></label>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="planilla" />
+          <label class="collapse-btn title" for="planilla">Datos de Trama <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-3">
+                  <label class="mb-0"><span>PLAN (*)</span></label>
+                  <select [(ngModel)]="inputsCovid.P_PLAN" (click)="clearValidate(16)" (change)="onSelectPlan()"
+                    [ngClass]="{'error-validate': inputsValidate[16]}" class="minimal">
+                    <option value="" disabled>SELECCIONE</option>
+                    <option *ngFor="let plan of plansList" value="{{plan.NIDPLAN}}">
+                      {{plan.SDESCRIPT}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <span>TRAMA (*)</span>
+                  <input type="file" class="mt-10" (change)="seleccionExcel($event.target.files[0])"
+                    [(ngModel)]="inputsCovid.excelSubir"
+                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    style="position: relative; top: 8px; margin: 5px 0px; font-size: 16px !important;"
+                    (filesChange)="getDate()">
+                </div>
+                <div class="col-sm-3">
+                  <span>&nbsp;</span>
+                  <button type="button" style="display: inline-block;"
+                    (click)="validarExcel(true)"><span>Validar</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse-list">
+        <div>
+          <input class="collapse-open " type="checkbox" id="calculadora" />
+          <label class="collapse-btn title" for="calculadora">Cotizador <i class="fa fa-angle-down pull-right"
+              style="position: relative; top: 4px;"></i></label>
+          <div class="collapse-panel">
+            <div class="collapse-inner collapse-border">
+              <div class="row">
+                <div class="col-sm-9">
+                  <table class="table table-borderless riesgo">
+                    <thead>
+                      <tr class="d-flex" style="border-bottom: 1px solid #ddd;">
+                        <th class="col-sm"><label style="font-weight: 100;">{{variable.var_tblTasasTitutoCol1}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol2}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol3Cot}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol3Cot}} PRO.</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol4}}</label>
+                        </th>
+                        <th class="col-sm text-center"><label
+                            style="font-weight: 100;">{{variable.var_tblTasasTitutoCol4}} PRO.</label>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="d-flex" *ngIf="infoPrimaList.length == 0">
+                        <td class="col-sm text-center">No hay tasas</td>
+                      </tr>
+                      <tr class="d-flex" *ngFor="let item of infoPrimaList; let row = index">
+                        <td class="col-sm">
+                          <span>{{item.DES_RIESGO}}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.NUM_TRABAJADORES}}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.TASA_CALC  | prettyNumber:2}}</span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <input style="width: 70% !important; height: 120% !important;" type="text" class="text-center"
+                            placeholder="0" FloatDirective maxlength="12" [(ngModel)]="item.TASA_PRO"
+                            (ngModelChange)="proposedRate(item.TIP_RIESGO, item.TASA_PRO)">
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.MONTO_PLANILLA | prettyNumber:2}} </span>
+                        </td>
+                        <td class="col-sm text-center">
+                          <span>{{item.MONTO_PLANILLA_PRO | prettyNumber:2}} </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row" *ngIf="infoPrimaList.length > 0">
+                <div class="col-sm-6">
+                  <div class="card mt-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm">
+                          <h5>{{variable.var_nomSubProducto}}</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <table class="table table-borderless riesgo tblTasas">
+                          <thead>
+                            <tr class="d-flex">
+                              <th class="col-sm text-center"><label>Categoría</label></th>
+                              <th class="col-sm text-center"><label>Prima {{titleRenovation}}</label></th>
+                              <th class="col-sm text-center"><label>Prima {{titleRenovation}} Propuesto</label></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngIf="infoPlanList.length == 0">
+                              <td class="text-center" colspan="3">No hay tasas asociadas
+                              </td>
+                            </tr>
+                            <tr class="d-flex" *ngFor="let item of infoPlanList; let i = index">
+                              <td class="col-sm text-center">
+                                <span>{{item.DES_RIESGO}}</span>
+                              </td>
+                              <td class="col-sm text-center">
+                                <span>{{item.PRIMA | prettyNumber:2}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{item.PRIMA_PRO | prettyNumber:2}}</span></td>
+                            </tr>
+                            <hr style="margin-bottom: 0; width: 100%;" *ngIf="infoPlanList?.length > 0">
+                            <!-- <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                              <td class="col-sm text-right">
+                                <span>{{variable.var_primaNeta}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalNeto | prettyNumber:2}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalNetoProp | prettyNumber:2}}</span></td>
+                            </tr> -->
+                            <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                              <td class="col-sm text-right">
+                                <span>{{variable.var_primaComercial}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalComercial | prettyNumber:2}}</span>
+                              </td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalComercialProp | prettyNumber:2}}</span>
+                              </td>
+                            </tr>
+                            <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                              <td class="col-sm text-right">
+                                <span>{{variable.var_igv}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.igvCalculado | prettyNumber:2}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.igvCalculadoProp | prettyNumber:2}}</span></td>
+                            </tr>
+                            <tr class="d-flex" *ngIf="infoPlanList?.length > 0">
+                              <td class="col-sm text-right">
+                                <span>{{variable.var_primaComercialTotal}}</span>
+                              </td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalBruto | prettyNumber:2}}</span></td>
+                              <td class="col-sm text-center">
+                                <span>{{inputsCovid.totalBrutoProp | prettyNumber:2}}</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <span>COMENTARIO</span>
+                  <textarea rows="4" placeholder="Comentario" [(ngModel)]="inputsCovid.P_SCOMMENT"
+                    (keypress)="textValidate($event, 4)"></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <button type="button" (click)="fileInput.click()" style="margin: 15px 0;">
+                    <span>Seleccionar Archivo</span></button>
+                  <input hidden #fileInput ngfSelect multiple type="file" [(files)]="files"
+                    accept="application/pdf,image/png,image/jpeg,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div *ngIf="files.length > 0">
+                    <div style="margin-bottom: 0px">
+                      <h6>Archivos Seleccionados ({{files.length}})</h6>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Nombre</th>
+                            <!-- <th>Tipo</th> -->
+                            <th class="text-center">Tamaño</th>
+                            <th class="text-center">Acción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of files;let i=index">
+                            <td>
+                              <strong>{{ item.name }}</strong>
+                            </td>
+                            <td class="text-center">
+                              {{ item.size/1024/1024 | number:'.2' }} MB
+                            </td>
+                            <td class="text-center"><img src="assets/icons/anular.png" (click)="files.splice(i,1)"
+                                title="Eliminar" alt="Eliminar" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion mt-2">
+        <div class="pull-right mt-2" style="width: 100%;">
+          <button class="pull-right full-color" (click)="saveQuotation()">
+            <span>Aceptar</span>
+          </button>
+          <button class="pull-right" (click)="cancelQuotation()">
+            <span>Cancelar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

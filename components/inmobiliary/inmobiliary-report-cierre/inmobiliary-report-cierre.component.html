@@ -1,0 +1,125 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">REPORTE DE CIERRE</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <span>TIPO DE SERVICIO</span>
+                <select class="form-control" [(ngModel)]="filters.P_NPRODUCT">
+                    <option value="0">
+                        TODOS
+                    </option>
+                    <option *ngFor="let item of types" value="{{ item.NPRODUCT }}">
+                        {{ item.SDESCRIPT }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm">
+                <span>FECHA INICIO</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="filters.P_STARTDATE" />
+            </div>
+            <div class="col-sm">
+                <span>FECHA FIN</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="filters.P_ENDDATE" />
+            </div>
+            <div class="col-sm">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="getReport()">
+                    <span>CONSULTAR</span>
+                </button>
+            </div>
+            <div class="col-sm">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="exportReport()">
+                    <span>DESCARGAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO DE INMUEBLE</td>
+                                    <td class="grid-title-item text-center">TIPO DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">NRO DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">RAZÓN SOCIAL / NOMBRE</td>
+
+                                    <td class="grid-title-item text-center">FECHA INICIO CONTRATO</td>
+                                    <td class="grid-title-item text-center">FECHA FIN CONTRATO</td>
+                                    <td class="grid-title-item text-center">TIPO FACTURACIÓN</td>
+                                    <td class="grid-title-item text-center">FECHA EMISIÓN COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">TIPO COMPROBANTE</td>
+
+                                    <td class="grid-title-item text-center">NRO. COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">GLOSA COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">MONEDA</td>
+                                    <td class="grid-title-item text-center">MONTO</td>
+                                    <td class="grid-title-item text-center">ESTADO COMPROBANTE</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow == null || listToShow.length == 0; then hideGrid else showGrid;"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="14">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">{{ item.SCOD_INTERNO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.SDOCUMENT_DESC }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.NRODOCUMENTO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.SCLIENAME }}</td>
+
+                                    <td class="data-table-tr-td text-center">{{ item.FCH_INI }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.FCH_FIN }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.STIP_EMISION_DESC }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.DBILLDATE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.TIPO_COMPROBANTE }}</td>
+
+                                    <td class="data-table-tr-td text-center">{{ item.NRO_COMPROBANTE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.SGLOSA_COMPROB }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.SCURRENCY_DESC }}</td>
+                                    <td class="data-table-tr-td text-right">{{ item.NPREMIUM }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.ESTADO_COMPROBANTE }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow != null && listToShow.length > 0" class="row" style="display: flex;">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%;">
+        <i style="margin: auto; font-size: 50px;" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

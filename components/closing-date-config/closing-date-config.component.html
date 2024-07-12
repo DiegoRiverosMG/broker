@@ -1,0 +1,413 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   CLOSING-DATE-CONFIG.COMPONENT.HTML                                   */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   15-08-2022                                                           */
+/*  VERSIÓN             :   1.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">CONFIGURACIÓN DE FECHAS DE CIERRE</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <span>ORIGEN DE DATOS</span>
+                <select [(ngModel)]="filtroConfig.NNUMORI" class="form-control" (change)="seleccionarOrigen($event.target.value)">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>INTERFAZ</span>
+                <select [(ngModel)]="filtroConfig.NCODGRU" class="form-control">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>RAMO</span>
+                <select [(ngModel)]="filtroConfig.NBRANCH" class="form-control" [disabled]="booleanRamo">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>ESTADO</span>
+                <select [(ngModel)]="filtroConfig.NESTADO" class="form-control">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of estados" value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>MES</span>
+                <select [(ngModel)]="filtroConfig.NMES" class="form-control">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of meses" value="{{ x.NROMES }}">{{ x.MES }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>AÑO</span>
+                <input [(ngModel)]="filtroConfig.NANIO" class="form-control" type="number" />
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="listarConfiguraciones()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="mostrarModalAgregar(contentAgregar)">
+                    <span>AGREGAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-12">
+                    <span class="titleN">Listado de Interfaces</span>
+                </div>
+
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO</td>
+                                    <td class="grid-title-item text-center">ORIGEN</td>
+                                    <td class="grid-title-item text-center">INTERFAZ</td>
+                                    <td class="grid-title-item text-center">MES</td>
+                                    <td class="grid-title-item text-center">AÑO</td>
+                                    <td class="grid-title-item text-center">FECHA INICIO</td>
+                                    <td class="grid-title-item text-center">FECHA FIN</td>
+                                    <td class="grid-title-item text-center">FECHA CIERRE</td>
+                                    <td class="grid-title-item text-center">RAMO</td>
+                                    <td class="grid-title-item text-center">ESTADO</td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid1 else showGrid1"></ng-container>
+                        </table>
+                        <ng-template #hideGrid1>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="12">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid1>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NIDCCIERRE }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_NNUMORI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_NCODGRU }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_NMES }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NANIO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DFECINI | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DFECFIN | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DFECCIERRE | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_NBRANCH }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_NESTADO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="mostrarModalModificar(contentModificar, item)" *ngIf="item.NESTADO == 1">
+                                            <i title="Editar" style="cursor: pointer;" class="fa fa-edit fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="eliminarConfiguracion(item.NIDCCIERRE)">
+                                            <i title="Eliminar" style="cursor: pointer;" class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow!=null && listToShow.length>0" class="row" style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AGREGAR CONFIGURACIÓN -->
+<ng-template #contentAgregar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            FECHA DE CIERRE DE MES
+        </h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="registerForm">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span>ORIGEN</span>
+                    <select class="form-control" formControlName="NNUMORI" [ngClass]="{ 'is-invalid': submitted && controlRegister.NNUMORI.errors }">
+                        <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlRegister.NNUMORI.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NNUMORI.errors.required">El origen es requerido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>MES</span>
+                    <select class="form-control" formControlName="NMES" [ngClass]="{ 'is-invalid': submitted && controlRegister.NMES.errors }" (change)="getMonth($event.target.value)">
+                        <option *ngFor="let x of meses" value="{{ x.NROMES }}">{{ x.MES }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlRegister.NMES.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NMES.errors.required">El mes es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlRegister.NMES.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NMES.errors.min">El mes no puede ser menor al actual.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>AÑO (*)</span>
+                    <input class="form-control" type="number" formControlName="NANIO" [ngClass]="{ 'is-invalid': submitted && controlRegister.NANIO.errors }" (change)="getYear($event.target.value)" />
+                    <div *ngIf="submitted && controlRegister.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NANIO.errors.required">El año es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlRegister.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NANIO.errors.min">El año no puede ser menor al actual.</div>
+                    </div>
+                    <div *ngIf="submitted && controlRegister.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NANIO.errors.max">El año es inválido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ (*)</span>
+                    <select class="form-control" formControlName="NCODGRU" [ngClass]="{ 'is-invalid': submitted && controlRegister.NCODGRU.errors }">
+                        <option value="" disabled>SELECCIONE INTERFAZ</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlRegister.NCODGRU.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NCODGRU.errors.required">La interfaz es requerida.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>RAMO (*)</span>
+                    <select class="form-control" formControlName="NBRANCH" [ngClass]="{ 'is-invalid': submitted && controlRegister.NBRANCH.errors }">
+                        <option value="" disabled>SELECCIONE RAMO</option>
+                        <option *ngFor="let x of allRamos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlRegister.NBRANCH.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NBRANCH.errors.required">El ramo es requerido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>FECHA DE INICIO</span>
+                    <input class="form-control" type="date" formControlName="DFECINI" min="{{valueInicioCreateRange.toString() | date:'yyyy-MM-dd'}}" max="{{valueFinCreateRange.toString() | date:'yyyy-MM-dd'}}"
+                        [ngClass]="{'error-validate': submitted && (!registerForm.controls.DFECINI.valid || registerForm.hasError('datesNotSortedCorrectly'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.DFECINI.valid || registerForm.hasError('datesNotSortedCorrectly')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('DFECINI').hasError('required')" class="mensaje-error-control">
+                            La fecha de inicio es requerida.
+                        </span>
+                        <span *ngSwitchCase="!registerForm.controls.DFECINI.valid && !registerForm.get('DFECINI').hasError('required')" class="mensaje-error-control">
+                            La fecha de inicio no es válida.
+                        </span>
+                        <span *ngSwitchCase="registerForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                            La fecha de inicio debe ser menor a la fecha de fin.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>FECHA DE FIN</span>
+                    <input class="form-control" type="date" formControlName="DFECFIN" min="{{valueInicioCreateRange.toString() | date:'yyyy-MM-dd'}}" max="{{valueFinCreateRange.toString() | date:'yyyy-MM-dd'}}"
+                        [ngClass]="{'error-validate': submitted && (!registerForm.controls.DFECFIN.valid || registerForm.hasError('datesNotSortedCorrectly'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.DFECFIN.valid || registerForm.hasError('datesNotSortedCorrectly')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('DFECFIN').hasError('required')" class="mensaje-error-control">
+                            La fecha de fin es requerida.
+                        </span>
+                        <span *ngSwitchCase="!registerForm.controls.DFECFIN.valid && !registerForm.get('DFECFIN').hasError('required')" class="mensaje-error-control">
+                            La fecha de fin no es válida.
+                        </span>
+                        <span *ngSwitchCase="registerForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                            La fecha de fin debe ser mayor a la fecha de inicio.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>ESTADO</span>
+                    <select class="form-control" formControlName="NESTADO" [ngClass]="{ 'is-invalid': submitted && controlRegister.NESTADO.errors }">
+                        <option *ngFor="let x of estados" value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlRegister.NESTADO.errors" class="invalid-feedback">
+                        <div *ngIf="controlRegister.NESTADO.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="agregarConfiguracion()">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- EDITAR CONFIGURACIÓN -->
+<ng-template #contentModificar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            FECHA DE CIERRE DE MES
+        </h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="editForm">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span>ORIGEN</span>
+                    <select class="form-control" formControlName="NNUMORI" [ngClass]="{ 'is-invalid': submitted && controlEdit.NNUMORI.errors }">
+                        <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlEdit.NNUMORI.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NNUMORI.errors.required">El origen es requerido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>MES</span>
+                    <select class="form-control" formControlName="NMES" [ngClass]="{ 'is-invalid': submitted && controlEdit.NMES.errors }" (change)="getMonthEdit($event.target.value)">
+                        <option *ngFor="let x of meses" value="{{ x.NROMES }}">{{ x.MES }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlEdit.NMES.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NMES.errors.required">El mes es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlEdit.NMES.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NMES.errors.min">El mes no puede ser menor al actual.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>AÑO (*)</span>
+                    <input class="form-control" type="number" formControlName="NANIO" [ngClass]="{ 'is-invalid': submitted && controlEdit.NANIO.errors }" (change)="getYearEdit($event.target.value)" />
+                    <div *ngIf="submitted && controlEdit.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NANIO.errors.required">El año es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlEdit.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NANIO.errors.min">El año no puede ser menor al actual.</div>
+                    </div>
+                    <div *ngIf="submitted && controlEdit.NANIO.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NANIO.errors.max">El año es inválido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ (*)</span>
+                    <select class="form-control" formControlName="NCODGRU" [ngClass]="{ 'is-invalid': submitted && controlEdit.NCODGRU.errors }">
+                        <option value="" disabled>SELECCIONE INTERFAZ</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlEdit.NCODGRU.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NCODGRU.errors.required">La interfaz es requerida.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>RAMO (*)</span>
+                    <select class="form-control" formControlName="NBRANCH" [ngClass]="{ 'is-invalid': submitted && controlEdit.NBRANCH.errors }">
+                        <option value="" disabled>SELECCIONE RAMO</option>
+                        <option *ngFor="let x of allRamos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlEdit.NBRANCH.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NBRANCH.errors.required">El ramo es requerido.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span>FECHA DE INICIO</span>
+                    <input class="form-control" type="date" formControlName="DFECINI" min="{{valueInicioEditRange.toString() | date:'yyyy-MM-dd'}}" max="{{valueFinEditRange.toString() | date:'yyyy-MM-dd'}}"
+                        [ngClass]="{'error-validate': submitted && (!editForm.controls.DFECINI.valid || editForm.hasError('datesNotSortedCorrectly'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.DFECINI.valid || editForm.hasError('datesNotSortedCorrectly')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('DFECINI').hasError('required')" class="mensaje-error-control">
+                            La fecha de inicio es requerida.
+                        </span>
+                        <span *ngSwitchCase="!editForm.controls.DFECINI.valid && !editForm.get('DFECINI').hasError('required')" class="mensaje-error-control">
+                            La fecha de inicio no es válida.
+                        </span>
+                        <span *ngSwitchCase="editForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                            La fecha de inicio está después de la fecha de fin.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>FECHA DE FIN</span>
+                    <input class="form-control" type="date" formControlName="DFECFIN" min="{{valueInicioEditRange.toString() | date:'yyyy-MM-dd'}}" max="{{valueFinEditRange.toString() | date:'yyyy-MM-dd'}}"
+                        [ngClass]="{'error-validate': submitted && (!editForm.controls.DFECFIN.valid || editForm.hasError('datesNotSortedCorrectly'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.DFECFIN.valid || editForm.hasError('datesNotSortedCorrectly')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('DFECFIN').hasError('required')" class="mensaje-error-control">
+                            La fecha de fin es requerida.
+                        </span>
+                        <span *ngSwitchCase="!editForm.controls.DFECFIN.valid && !editForm.get('DFECFIN').hasError('required')" class="mensaje-error-control">
+                            La fecha de fin no es válida.
+                        </span>
+                        <span *ngSwitchCase="editForm.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                            La fecha de fin está antes de la fecha de inicio.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>ESTADO</span>
+                    <select class="form-control" formControlName="NESTADO" [ngClass]="{ 'is-invalid': submitted && controlEdit.NESTADO.errors }">
+                        <option *ngFor="let x of estados" value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                    </select>
+                    <div *ngIf="submitted && controlEdit.NESTADO.errors" class="invalid-feedback">
+                        <div *ngIf="controlEdit.NESTADO.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="modificarConfiguracion()">
+            Guardar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="cerrarConfiguracion()">
+            Cerrar Periodo
+        </button>
+    </div>
+</ng-template>

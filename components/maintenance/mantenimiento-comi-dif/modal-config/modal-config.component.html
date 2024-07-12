@@ -1,0 +1,294 @@
+<div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+    <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">{{mtitle}}</h4>
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid" style="margin-bottom: 10px;">
+        <div class="filter">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row col-sm-12">
+                            <div class="col-sm-6">
+                                <span>RAMO</span>
+                                <select class="minimal" (change)="ChangeRamo()" [(ngModel)]="mSelectedBranchId" [attr.disabled]="disRamo? true : null">
+                                    <option *ngFor="let item of mbranchTypeList" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>PRODUCTO</span>
+                                <select class="minimal" (change)="ChangeProducto()" [(ngModel)]="mSelectedProductoId"  [attr.disabled]="disProducto? true : null">
+                                    <option *ngFor="let item of mlistProduct" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>PÓLIZA</span>
+                                <input type="text" maxlength="11"
+                                 value="{{NPOLIZA}}" [(ngModel)]="NPOLIZA" (keypress)="NPOLIZA=textValidate($event, '1',11)" (paste)="NPOLIZA=onPaste($event, '1',11)" [attr.disabled]="disPoliza? true : null" >
+                            </div>
+                            <div class="col-sm-3">
+                                <span>TIPO DE COMISIÓN</span>
+                                <select class="minimal" (change)="ChangeTipoCom()" [(ngModel)]="mSelectedTipoComId" [attr.disabled]="disTipoCom? true : null">
+                                    <option value="" disabled selected>Seleccione un Tipo</option>
+                                    <option *ngFor="let item of mlistTipoCom" [value]="item.Id">
+                                        {{item.Description}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>GRUPO</span>
+                                <select class="minimal" (change)="ChangeGrupo()" [(ngModel)]="mSelectedGrupoId" [attr.disabled]="disGrupo? true : null" >
+                                    <option value="" disabled selected>Seleccione un Grupo</option>
+                                    <option *ngFor="let item of mlistGrupo" [value]="item.Id">
+                                        {{item.Description}}
+                                    </option>
+                                </select>
+                            </div>
+                            
+                        </div>
+                        <div *ngIf="!mbhabilitar" class="row col-sm-12">
+                            <span class="separacion col-sm-12">&nbsp;</span>
+                            <span class="separacion col-sm-12">&nbsp;</span>
+                            <div class="col-sm-12">
+                                <h4>{{msubtitle}}</h4>
+                            </div>
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayModulo ? 'none':'' }">
+                                    <span>MÓDULO</span>
+                                    <input type="text" maxlength="2" (keypress)="valModulo=textValidate($event, '1',2)" (paste)="valModulo=onPaste($event, '1',2)"
+                                     value="{{valModulo}}" [(ngModel)]="valModulo"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayAnioIni ? 'none':'' }">
+                                    <span>INICIO DE CRÉDITO</span>
+                                    <input min="1950" max="3000" step="1" type="text"  (keypress)="valNIniCre=textValidate($event, '1',4)" (paste)="valNIniCre=onPaste($event, '1',4)"
+                                     value="{{valNIniCre}}" [(ngModel)]="valNIniCre"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayAnioFin ? 'none':'' }">
+                                    <span>FIN DE CRÉDITO</span>
+                                    <input min="1950" max="3000" step="1" type="text"  (keypress)="valNFinCre=textValidate($event, '1',4)" (paste)="valNFinCre=onPaste($event, '1',4)"
+                                     value="{{valNFinCre}}" [(ngModel)]="valNFinCre"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayFechaInicio ? 'none':'' }">
+                                    <span>F. INICIO DE VIGENCIA</span>
+                                    <input type="text" #dp="bsDatepicker" bsDatepicker [(bsValue)]="valFIni"
+                                    value="{{valFIni | date:'dd/MM/yyyy'}}"  [(ngModel)]="valFIni"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayFechaFin ? 'none':'' }">
+                                    <span>F. FIN DE VIGENCIA</span>
+                                    <input type="text" #dp="bsDatepicker" bsDatepicker [(bsValue)]="valFFin"
+                                    value="{{valFFin | date:'dd/MM/yyyy'}}" [(ngModel)]="valFFin"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                            <!--/div>
+                            <div *ngIf="mhayTasaCliente || mhayTasaCompania || mhayTasaComisionCanal || mhayTasaComisionBroker" class="row col-sm-12"-->
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayTasaCliente ? 'none':'' }">
+                                    <span>TASA CLIENTE</span>
+                                    <input type="text" (keypress)="valNTasaCli=textValidate($event, '8',3)" (paste)="valNTasaCli=onPaste($event, '8',3)"
+                                    [(ngModel)]="valNTasaCli" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayTasaCompania ? 'none':'' }">
+                                    <span>TASA COMPAÑIA</span>
+                                    <input type="text" (keypress)="valNTasaComp=textValidate($event, '8',3)" (paste)="valNTasaComp=onPaste($event, '8',3)"
+                                     [(ngModel)]="valNTasaComp" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayTasaComisionCanal ? 'none':'' }">
+                                    <span>% COMISIÓN DEL CANAL</span>
+                                    <input type="text" (keypress)="valNComCanal=textValidate($event, '8',3)" (paste)="valNComCanal=onPaste($event, '8',3)"
+                                     [(ngModel)]="valNComCanal" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayTasaComisionBroker ? 'none':'' }">
+                                    <span>% COMISIÓN DEL BROKER</span>
+                                    <input type="text" (keypress)="valNComBrok=textValidate($event, '8',3)" (paste)="valNComBrok=onPaste($event, '8',3)"
+                                     [(ngModel)]="valNComBrok" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                            <!--/div>
+                            <div *ngIf="mhayPrimaNetaBroker || mhayPrimaNetaCanal || mhayMontoCreditoIni || mhayMontoCreditoFin" class="row col-sm-12"-->
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayPrimaNetaBroker ? 'none':'' }">
+                                    <span>MONTO BROKER</span>
+                                    <input type="text" (keypress)="valNMontoBrok=textValidate($event, '8',12)" (paste)="valNMontoBrok=onPaste($event, '8',12)"
+                                     value="{{valNMontoBrok}}" [(ngModel)]="valNMontoBrok" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayPrimaNetaCanal ? 'none':'' }">
+                                    <span>MONTO CANAL</span>
+                                    <input type="text" (keypress)="valNMontoCanal=textValidate($event, '8',12)" (paste)="valNMontoCanal=onPaste($event, '8',12)"
+                                     value="{{valNMontoCanal}}" [(ngModel)]="valNMontoCanal" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayMontoCreditoIni ? 'none':'' }">
+                                    <span>MONTO CRÉD. INI.</span>
+                                    <input type="text" (keypress)="valNCuotaMin=textValidate($event, '8',12)" (paste)="valNCuotaMin=onPaste($event, '8',12)"
+                                     value="{{valNCuotaMin}}" [(ngModel)]="valNCuotaMin" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayMontoCreditoFin ? 'none':'' }">
+                                    <span>MONTO CRÉD. FIN.</span>
+                                    <input type="text" (keypress)="valNCuotaMax=textValidate($event, '8',12)" (paste)="valNCuotaMax=onPaste($event, '8',12)"
+                                     value="{{valNCuotaMax}}" [(ngModel)]="valNCuotaMax" [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                            <!--/div>
+                            <div *ngIf="mhaySumaAsegurada || mhayRol || mhayAnioMinimo || mhayAnioMaximo" class="row col-sm-12"-->
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhaySumaAsegurada ? 'none':'' }">
+                                    <span>TIPO CAPITAL(S.A.)</span>
+                                    <select class="minimal" [(ngModel)]="valNSA"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                        <option *ngFor="let item of mlistSA" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayRol ? 'none':'' }">
+                                    <span>ROL</span>
+                                    <select class="minimal" [(ngModel)]="valNRol"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                        <option *ngFor="let item of mlistRoles" value="{{item.Id}}">
+                                            {{item.Description}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayAnioMinimo ? 'none':'' }">
+                                    <span>EDAD MÍNIMA</span>
+                                    <input type="text" (keypress)="valNEdadMin=textValidate($event, '1',3)" (paste)="valNEdadMin=onPaste($event, '1',3)"
+                                    value="{{valNEdadMin}}" [(ngModel)]="valNEdadMin"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                                <div class="col-sm-3" [ngStyle]="{'display': !mhayAnioMaximo ? 'none':'' }">
+                                    <span>EDAD MÁXIMA</span>
+                                    <input type="text" (keypress)="valNEdadMax=textValidate($event, '1',3)" (paste)="valNEdadMax=onPaste($event, '1',3)"
+                                    value="{{valNEdadMax}}" [(ngModel)]="valNEdadMax"  [attr.disabled]="this.nTipoVentana==2? true : null">
+                                </div>
+                            </div>
+                            <div class="col-sm-2" *ngIf="nTipoVentana==0 && meditando==-1">
+                                <span class="separacion">&nbsp;</span>
+                                <button class="row col-sm-12 full-color"
+                                        (click)="AgregarConfig()"
+                                        [disabled]="">
+                                    <span>+ AGREGAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div *ngIf="nTipoVentana==0 && haymlistValores" class="grid form-group" >
+                    Pólizas agregadas ({{npolizas}})
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <!--td class="grid-title-item">TIPO</td-->
+                                    <!--td class="grid-title-item">GRUPO</td-->
+                                    <td class="grid-title-item">N°</td>
+                                    <td class="grid-title-item">Póliza</td>
+                                    <td class="grid-title-item" *ngIf="mhayNMODULO">Módulo</td>
+                                    <td class="grid-title-item" *ngIf="mhayDINIVIG">Fecha inicio de vigencia</td>
+                                    <td class="grid-title-item"*ngIf="mhayDFINVIG">Fecha fin de vigencia</td>
+                                    <td class="grid-title-item" *ngIf="mhayNANIOINI">Inicio crédito</td>
+                                    <!--td class="grid-title-item" *ngIf="mhaySESTADO">{{ item.SESTADO }}</td-->
+                                    
+                                    <!--td class="grid-title-item" *ngIf="mhayNINIVIG">Inicio de Crédito</td-->
+                                    <!--td class="grid-title-item" *ngIf="mhayNFINVIG">Fin de Crédito</td-->
+                                    <td class="grid-title-item" *ngIf="mhayNMINCREDITO">Monto min crédito</td>
+                                    <td class="grid-title-item" *ngIf="mhayNMAXCREDITO">Monto max crédito</td>
+                                    <td class="grid-title-item" *ngIf="mhayNTASACLIENTE">Tasa neta cliente</td>
+                                    <td class="grid-title-item" *ngIf="mhayNTASACOMPANIA">Tasa Compañía</td>
+                                    <td class="grid-title-item">S.A.</td>
+                                    <td class="grid-title-item" *ngIf="mhayNPORCENTAJECANAL">% Comisión Canal</td>
+                                    <td class="grid-title-item" *ngIf="mhayNPORCENTAJEBROKER">% Comisión Broker</td>
+                                    <td class="grid-title-item" *ngIf="mhayNMONTOCANAL">Monto Broker</td>
+                                    <td class="grid-title-item" *ngIf="mhayNMONTOBROKER">Monto Canal</td>
+                                    <!--td class="grid-title-item" *ngIf="mhayNAGE_MIN">Edad mínima</td-->
+                                    <!--td class="grid-title-item" *ngIf="mhayNAGE_MAX">Edad máxima</td-->
+                                    <td class="grid-title-item" *ngIf="mhayNAGE_MIN">Edad mínima</td>
+                                    <td class="grid-title-item" *ngIf="mhayNAGE_MAX">Edad máxima</td>
+                                    <td class="grid-title-item" *ngIf="mhayNROL">Rol</td>
+                                    <td class="grid-title-item">Acción</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="mlistValores==null || mlistValores.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <!--NMODULEC	DEFFECDATE	            DNULLDATE	        /*NIND_CAPITAL*/	    NYEAR_CONTR_INI	NYEAR_CONTR_FIN	NRATE_CLIENT	    NRATE_COMPANY
+                        MODULO	    fecha inicio credito	fecha fin credito	S.A	                        inicio credito	fin credito	    tasa neta cliente	tasa compañia
+                        
+                        NAMOUNT_CREDIT_INI	NAMOUNT_CREDIT_END	NRATE_GROSS_UP	    NCOMMI_RATE	        NROLE	NAGE_MIN	NAGE_MAX	NPREMIUM_GROSS_UP	NPREMIUM_COMMI_RATE
+                        monto min credito	monto max credito	%canal (con IGV)	% broker (con IGV)	role	edad minima	edad maxima	monto canal	        monto broker-->
+                        
+                        <ng-template #showGrid>
+                            <tbody>
+                                <tr *ngFor="let item of mlistValores">
+                                    <td class="centrar">{{ item.INDICE }}</td>
+                                    <td class="centrar">{{ NPOLIZA }}</td>
+                                    <td *ngIf="mhayNMODULO" class="centrar">{{ item.NMODULO }}</td>
+                                    <td *ngIf="mhayDINIVIG" class="centrar">{{ item.DINIVIG | date:'dd/MM/yyyy' }}</td>
+                                    <td *ngIf="mhayDFINVIG" class="centrar">{{ item.DFINVIG | date:'dd/MM/yyyy' }}</td>
+                                    <td *ngIf="mhayNANIOINI" class="centrar">{{ item.NINIVIG }}</td>
+                                    <!--td *ngIf="mhaySESTADO">{{ item.SESTADO }}</td-->
+                                    
+                                    <!--td *ngIf="mhayNINIVIG">{{ item.NINIVIG }}</td-->
+                                    <!--td *ngIf="mhayNFINVIG">{{ item.NFINVIG }}</td-->
+                                    <td *ngIf="mhayNMINCREDITO" class="centrar">{{ item.NMINCREDITO }}</td>
+                                    <td *ngIf="mhayNMAXCREDITO" class="centrar">{{ item.NMAXCREDITO }}</td>
+                                    <td *ngIf="mhayNTASACLIENTE" class="centrar">{{ item.NTASACLIENTE }}</td>
+                                    <td *ngIf="mhayNTASACOMPANIA" class="centrar">{{ item.NTASACOMPANIA }}</td>
+                                    <td class="centrar">{{ item.NSUMAASEG }}</td>
+                                    <td *ngIf="mhayNPORCENTAJECANAL" class="centrar">{{ item.NPORCENTAJECANAL }}</td>
+                                    <td *ngIf="mhayNPORCENTAJEBROKER" class="centrar">{{ item.NPORCENTAJEBROKER }}</td>
+                                    <td *ngIf="mhayNMONTOCANAL" class="centrar">{{ item.NMONTOCANAL }}</td>
+                                    <td *ngIf="mhayNMONTOBROKER" class="centrar">{{ item.NMONTOBROKER }}</td>
+                                    <!--td *ngIf="mhayNAGE_MIN">{{ item.NAGE_MIN }}</td-->
+                                    <!--td *ngIf="mhayNAGE_MAX">{{ item.NAGE_MAX }}</td-->
+                                    <td *ngIf="mhayNAGE_MIN" class="centrar">{{ item.NEDADMIN }}</td>
+                                    <td *ngIf="mhayNAGE_MAX" class="centrar">{{ item.NEDADMAX }}</td>
+                                    <td *ngIf="mhayNROL" class="centrar">{{ item.NROL }}</td>
+                                    <td class="text-center icons-box">
+                                        <img  src="assets/icons/see.svg" (click)="Editar(item.INDICE)" title="Editar" alt="Ver" />
+                                        <img  src="assets/icons/anular.png" (click)="Borrar(item.INDICE)" title="Borrar" alt="Borrar" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div [hidden]="!misLoading"
+                    class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px"
+                        class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12 modal-footer" >
+    <div *ngIf="nTipoVentana==0 && meditando==-1 && haymlistValores" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="Guardar()"
+                [disabled]="">
+            <span>GUARDAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana==3" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="ActualizaComision()"
+                [disabled]="">
+            <span>GUARDAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana==0 && meditando!=-1" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color"
+                (click)="Actualizar()"
+                [disabled]="">
+            <span>ACTUALIZAR</span>
+        </button>
+    </div>
+    <div *ngIf="nTipoVentana!=3" class="col-sm-2">
+        <button style="min-width: 100%;" class="row col-sm-12 full-color" (click)="reference.close()">
+            <span>CERRAR</span>
+        </button>
+    </div>
+</div>

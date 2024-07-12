@@ -1,0 +1,147 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <!-- <navmenusctr></navmenusctr> -->
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">REPORTE DE COMISIONES DE VENTAS VIGENTES -VDP+</span>
+          </div>
+        </div>
+        <button (click)="getFileReport()" class="button-default secondary">
+          <i class="fa fa-download" aria-hidden="true"></i>Descargar Excel</button>
+      </div>
+    </div>
+    <div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="asesor" disabled>ASESOR</label>
+                <input type="text" id="asesor" name="asesor" [value]="asesorVenta" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label for="polizas" disabled>CANTIDAD DE PÓLIZAS</label>
+                <input type="text" id="polizas" name="polizas" [value]="nrosPolizas" disabled>
+              </div>
+
+                <div class="col-sm-3">
+                  <label for="primaso" disabled>PRIMA REGULAR SOLES</label>
+                  <input type="text" id="primaso" name="primaso" [value]="formattedSumaPrima" disabled>
+                </div>
+
+                <div class="col-sm-3">
+                  <label class="month-year-label">MES PAGO COMISIÓN (MM/YYYY)</label>
+                  <div class="checkbox-container">
+                    <input type="checkbox" [(ngModel)]="isDisabled" (change)="onDisabledChange()">
+                    <label class="checkbox-label">Bloquear</label>
+                  </div>
+                  <input type="text" [(ngModel)]="selectedMonthYear" (blur)="validateMonthYearFormat()" [disabled]="isDisabled">
+                  <div *ngIf="invalidFormat" class="text-danger">Formato inválido. Use MM/YYYY.</div>
+                </div>
+
+                <div class="col-sm-3">
+                  <span>FRECUENCIA DE PAGO</span>
+                  <select id="combo-box" [(ngModel)]="selectedFrecuencia" (ngModelChange)="onFrecuenciaChange()">
+                    <option *ngFor="let option of optionsListFrecuencia" [value]="option.value">{{ option.label }}</option>
+                  </select>
+                </div>
+
+              <div class="col-sm-6"></div>
+              <div class="col-sm-6"></div>
+              <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3">
+                  <span>&nbsp;</span>
+                  <button  (click)="limpiar()" [disabled]="">
+                    <span>LIMPIAR</span>
+                  </button>
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3" >
+                  <span>&nbsp;</span>
+                  <button class="full-color" (click)="ProcessReportsComisionGenerate()" [disabled]="">
+                    <span>BUSCAR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="grid form-group">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">Póliza</td>
+                  <td class="grid-title-item">Dni Contratante</td>
+                  <td class="grid-title-item">Contratante</td>
+                  <td class="grid-title-item">Temporalidad</td>
+                  <td class="grid-title-item">Frecuencia de pago</td>
+                  <td class="grid-title-item">Prima regular mensual</td>
+                  <td class="grid-title-item">Nro comisiones totales</td>
+                  <td class="grid-title-item">Nro comisiones a pagar</td>
+                  <td class="grid-title-item">Mes de pago comisión</td>
+                  <td class="grid-title-item">Nro de comisión</td>
+                  <td class="grid-title-item">Monto de comisiones pagado</td>
+                  <td class="grid-title-item">Nro de comisiones pendientes</td>
+                  <td class="grid-title-item">TC del mes de pago</td>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="foundResults && foundResults.length > 0; else noRecords">
+                  <tr
+                    *ngFor="let result of foundResults | slice: ((currentPage - 1) * itemsPerPage) : (currentPage * itemsPerPage)">
+                    <td>{{ result.npolicy }}</td>
+                    <td>{{ result.dni_contratante }}</td>
+                    <td>{{ result.nom_contratante }}</td>
+                    <td>{{ result.temporalidad }}</td>
+                    <td>{{ result.frecuencia_pago }}</td>
+                    <td>{{ result.prima_regular_mensual }}</td>
+                    <td>{{ result.total_nro_comisiones }}</td>
+                    <td>{{ result.nro_comision }}</td>
+                    <td>{{ result.mes_pago_comision }}</td>
+                    <td>{{ result.nro_comision }}</td>
+                    <td>{{ result.monto_comisiones_pagado }}</td>
+                    <td>{{ result.nros_pendiente_comisiones }}</td>
+                    <td>{{ result.tc_mes_pago }}</td>
+                    
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noRecords>
+              <tbody>
+                <tr>
+                  <td colspan="9">No se encontraron registros.</td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </div>
+        </div>
+        <div [hidden]="!isLoading" class="loadingScreen">
+          <div style="display:flex;height: 100%;width:100%">
+            <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Aqui se realiza la paginación-->
+              <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showPagination"></ng-container>
+              <ng-template #showPagination>
+                <!-- Implementación de la paginación -->
+                <div class="row mt-4" *ngIf="foundResults && foundResults.length > itemsPerPage">
+                  <div class="col-sm-12">
+                    <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="foundResults.length"
+                      [maxSize]="maxSize" (pageChange)="pageChanged($event)">
+                      <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                      <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                    </ngb-pagination>
+                  </div>
+                </div>
+              </ng-template>
+  </div>

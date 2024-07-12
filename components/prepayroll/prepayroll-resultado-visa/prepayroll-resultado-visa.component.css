@@ -1,0 +1,88 @@
+.contenido {
+  width: 100%;
+  /* margin-top: 34px; */
+}
+
+.contenido .mensaje-carga {
+  padding: 5px;
+}
+
+.contenido .mensaje-carga h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.contenido .mensaje-aprobado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 34px;
+  font-weight: 900;
+  margin-left: 10px;
+}
+
+.contenido .mensaje-aprobado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: normal !important;
+  margin-left: 10px;
+}
+
+.contenido .mensaje-denegado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 34px;
+  font-weight: 500;
+  margin-left: 10px;
+  display: block;
+}
+
+.contenido .mensaje-denegado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 10px;
+  display: block;
+}
+
+.btn-white-blue {
+  text-decoration: none;
+  padding: 10px;
+  border: 1px solid #2b0d61;
+  border-radius: 2px;
+  background-color: #ffffff;
+  cursor: pointer;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.btn-compra {
+  height: 46px;
+  width: 100%;
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: 100;
+  line-height: 19px;
+  text-align: center;
+}
+
+.full-color {
+  background: rgb(83, 66, 121);
+}
+
+.full-color span {
+  color: #fff;
+}

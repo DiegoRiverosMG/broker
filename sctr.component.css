@@ -1,0 +1,414 @@
+.ng-select .ng-arrow-wrapper .ng-arrow {
+  border-color: #999 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 2.5px;
+}
+
+.ng-select .ng-arrow-wrapper {
+  width: 0;
+  padding-right: 5px;
+}
+
+.ng-select .ng-clear-wrapper {
+  width: 14px;
+}
+
+.chk-mina {
+  margin-top: 0 !important;
+  font-size: 18px !important;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  border-radius: 2px !important;
+  padding: 0px 10px 0 12px !important;
+  margin-top: 5px !important;
+  font-size: 14px !important;
+  width: 100%;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  height: 40px !important;
+  font-weight: 300 !important;
+  text-transform: uppercase;
+}
+
+select {
+  width: 100%;
+  border: none;
+  display: block;
+  line-height: 1.5em;
+  padding: 8px 5px;
+  border: 1px solid rgb(146, 138, 163);
+  border-radius: 2px;
+  margin-top: 5px;
+  color: rgb(146, 138, 163);
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  height: 40px !important;
+  padding-left: 12px;
+  font-weight: 300;
+  color: #aa9ec0;
+  border: 1px solid #aa9ec0;
+  background-color: white;
+  text-transform: uppercase;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+select.minimal:focus {
+  background-image: linear-gradient(45deg, #aa9ec0 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, #aa9ec0 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em,
+    calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+  border-color: #aa9ec0;
+  outline: 0;
+}
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+  box-shadow: none;
+}
+
+select.minimal {
+  background-image: linear-gradient(45deg, transparent 50%, #999 50%),
+    linear-gradient(135deg, #999 50%, transparent 50%),
+    linear-gradient(to right, #999, #999) !important;
+  background-position: calc(100% - 16px) calc(1em + 1px),
+    calc(100% - 10px) calc(1em + 1px), calc(100% - 2.5em) 0.5em !important;
+  background-size: 4px 4px, 6px 6px, 0 0 !important;
+  background-repeat: no-repeat !important;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #f9f9f9 !important; /*#ebebe4;*/
+  opacity: 1 !important;
+}
+
+/* input:focus, select:focus, textarea:focus {
+  outline: none;
+} */
+
+*,
+input,
+select,
+textarea,
+option,
+button {
+  outline: none !important;
+}
+
+*:focus {
+  outline: 0px transparent !important;
+}
+
+span,
+select,
+textarea,
+option,
+button,
+label,
+input {
+  text-transform: uppercase;
+  font-size: 14px !important;
+}
+
+.header-content .header-item .title {
+  font-size: 26px !important;
+}
+/* Acordion */
+.accordion .card-header {
+  padding: 0px !important;
+}
+
+.accordion .card-header h5,
+.collapse-list .title {
+  padding: 0.75rem 1.25rem;
+  background-color: #2b0d61;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.accordion .card-header h5:hover {
+  cursor: pointer;
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #ebebe4;
+  opacity: 1;
+}
+
+/*Seelect search*/
+
+.ng-select .ng-select-container .ng-value-container .ng-placeholder {
+  color: #aa9ec0;
+  font-size: 14px;
+  text-transform: uppercase;
+  position: absolute;
+  /* z-index: -999; */
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input > input {
+  color: #aa9ec0;
+  text-transform: uppercase;
+}
+
+.ng-select.ng-select-single .ng-select-container {
+  width: 100%;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 2px;
+  font-size: 14px;
+  height: 40px;
+  font-weight: 300;
+  color: #aa9ec0;
+}
+
+.border-ng {
+  border: 1px solid #aa9ec0;
+  border-radius: 2px;
+  width: 100%;
+  padding: 0px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #aa9ec0;
+  margin-top: 5px;
+  height: 40px;
+}
+
+ng-select .border-ng:disabled {
+  background: #f9f9f9;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+  top: 3px;
+  left: 0;
+  padding-left: 16px;
+  padding-right: 50px;
+  padding-top: 6px;
+}
+
+.ng-value {
+  text-transform: uppercase;
+}
+
+.ng-dropdown-panel,
+.ng-dropdown-panel .scroll-host {
+  border: 1px solid #aa9ec0;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container,
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
+  padding: 0;
+}
+
+.ng-has-value .ng-placeholder {
+  opacity: 0;
+}
+
+[dir="rtl"]
+  .ng-select.ng-select-single
+  .ng-select-container
+  .ng-value-container
+  .ng-input {
+  padding-right: 10px;
+  padding-left: 50px;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-optgroup.ng-option-selected,
+.ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-optgroup.ng-option-selected.ng-option-marked {
+  background-color: #ebf5ff;
+  font-weight: 600;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  background-color: #fff;
+  font-size: 14px;
+  color: #aa9ec0;
+  padding: 0 16px;
+  text-transform: uppercase;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  color: #ffffff !important;
+  background-color: #007bff !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
+.ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-selected.ng-option-marked {
+  color: #ffffff !important;
+  background-color: #007bff !important;
+}
+
+.ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-selected
+  .ng-option-label,
+.ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-selected.ng-option-marked
+  .ng-option-label {
+  font-weight: normal;
+}
+
+.ng-select.ng-select-disabled > .ng-select-container {
+  background-color: #ebebe4 !important;
+}
+
+/* Collapse */
+
+.collapse-list {
+  margin-bottom: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.collapse-open {
+  display: none;
+}
+
+.collapse-panel {
+  max-height: 100%;
+  visibility: visible;
+  opacity: 1;
+  /* transition: max-height .1s, visibility .3s, opacity .3s; */
+}
+
+.collapse-open:checked ~ .collapse-panel {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.collapse-border {
+  padding: 0.5rem 1.25rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+  margin-top: -1px;
+  margin-bottom: 10px;
+}
+
+.collapse-list .collapse-btn {
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.2s ease;
+}
+
+.colspan2 {
+  flex: 1 1 35%;
+}
+
+.colspan3 {
+  flex: 1 1 50%;
+}
+
+.alert-gratificacion {
+  position: relative;
+  background: yellow;
+  color: red;
+  padding: 0px 5px;
+  width: max-content;
+  top: 10px;
+  text-transform: uppercase;
+}
+
+.eps-title {
+  font-weight: bold;
+  position: relative;
+  top: 5px;
+  text-transform: uppercase;
+  font-size: 20px;
+  color: #553d81;
+  height: 28px;
+  margin: 0;
+  text-align: right;
+}
+.eps-title span {
+  position: relative;
+  top: -15px;
+  font-size: 16px !important;
+}
+
+.modal-header button {
+  width: auto;
+}
+button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  max-width: 200px;
+  width: 100%;
+  height: 40px !important;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  margin-top: 9.79688px;
+  margin-bottom: 0px;
+  min-height: 100px;
+  max-height: 100px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.soat-button {
+  background-color: #ff6e00 !important;
+  color: #fff;
+  padding: 10px 15px !important;
+  border: 0 !important;
+  margin-bottom: 10px !important;
+  outline: none;
+}
+.riesgo {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.riesgo-alto {
+  color: red !important;
+  font: bold !important;
+}
+
+.riesgo-bajo {
+  color: green !important;
+  font: bold !important;
+}
+
+.riesgo-normal {
+  color: black !important;
+  font: bold !important;
+}

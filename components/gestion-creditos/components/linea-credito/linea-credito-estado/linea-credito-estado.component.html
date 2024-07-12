@@ -1,0 +1,875 @@
+<section class="section">
+  <div class="section__subheader">
+    <div class="section__subheader--left">
+      <h2 class="subtitle">Línea de crédito Estado</h2>
+    </div>
+    <div class="section__subheader--right">
+      <button
+        class="button-default secondary"
+        (click)="downloadList()"
+        [disabled]="!this.stateSalesChannelsFiltered$.length"
+      >
+        <i class="fa fa-download" aria-hidden="true"></i>
+        Descargar excel
+      </button>
+      <button
+        class="button-default"
+        (click)="showModalCreate()"
+        [disabled]="!isAuthorized"
+      >
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Crear Línea de crédito
+      </button>
+    </div>
+  </div>
+
+  <form class="form" [formGroup]="formFilter">
+    <!-- *Criterio de búsqueda -->
+    <pro-input-field
+      class="form-search"
+      placeholder="BÚSQUEDA:"
+      inputPlaceholder="INGRESE UN CRITERIO DE BÚSQUEDA"
+      formControlName="search"
+    >
+    </pro-input-field>
+
+    <!-- *Estado -->
+    <label for="form-state" class="placeholder" aria-placeholder="ESTADO:">
+      <select id="form-state" formControlName="state">
+        <option value="0">TODOS</option>
+        <option value="1">GENERADO</option>
+        <option value="2">PENDIENTE</option>
+        <option value="3">PAGADO</option>
+        <option value="4">ANULADO</option>
+      </select>
+      <i class="fa fa-angle-down"></i>
+    </label>
+
+    <!-- *Activo -->
+    <label for="form-active" class="placeholder" aria-placeholder="ACTIVO:">
+      <select id="form-active" formControlName="active">
+        <option value="0">NO</option>
+        <option value="1">SI</option>
+        <option value="2">TODOS</option>
+      </select>
+      <i class="fa fa-angle-down"></i>
+    </label>
+
+    <!-- *Bloqueado -->
+    <label for="form-locked" class="placeholder" aria-placeholder="BLOQUEADO:">
+      <select id="form-locked" formControlName="locked">
+        <option value="0">NO</option>
+        <option value="1">SI</option>
+        <option value="2">TODOS</option>
+      </select>
+      <i class="fa fa-angle-down"></i>
+    </label>
+
+    <!-- *Fecha de Inicio -->
+    <label
+      for="form-initialDate"
+      class="placeholder"
+      aria-placeholder="FECHA INICIO:"
+    >
+      <input
+        type="text"
+        id="form-initialDate"
+        #dp="bsDatepicker"
+        bsDatepicker
+        [bsConfig]="datePickerConfig"
+        [readonly]="true"
+        formControlName="initialDate"
+        [minDate]="valueDateInit"
+      />
+      <i class="fa fa-calendar"></i>
+    </label>
+
+    <!-- *Fecha de vencimiento -->
+    <label
+      for="form-expirationDate"
+      class="placeholder"
+      aria-placeholder="FECHA FIN:"
+    >
+      <input
+        type="text"
+        id="form-expirationDate"
+        #dp="bsDatepicker"
+        bsDatepicker
+        [bsConfig]="datePickerConfig"
+        [readonly]="true"
+        [minDate]="valueDateInit"
+        formControlName="expirationDate"
+      />
+      <i class="fa fa-calendar"></i>
+    </label>
+  </form>
+
+  <div class="content-table table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Canal de venta</th>
+          <th scope="col">Contratante</th>
+          <th scope="col">TDR</th>
+          <th scope="col">Crédito</th>
+          <th scope="col">Deuda</th>
+          <th scope="col">Saldo</th>
+          <th scope="col">Fecha Inicio</th>
+          <th scope="col">Fecha Fin</th>
+          <th scope="col">Bloqueado</th>
+          <th scope="col">Activo</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="!stateSalesChannelsFiltered$.length">
+          <tr>
+            <td colspan="11">
+              No se encontró coincidencias con los criterios de búsqueda
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="stateSalesChannelsFiltered$.length">
+          <tr
+            *ngFor="
+              let item of stateSalesChannelsFiltered$
+                | paginate
+                  : {
+                      id: 'table-state-credits',
+                      itemsPerPage: 10,
+                      totalItems: stateSalesChannelsFiltered$.length,
+                      currentPage: currentPage
+                    };
+              let index = index
+            "
+            [class.locked]="item.idBloqueado == 1"
+          >
+            <td>{{ item.idLineaCredito }}</td>
+            <td>{{ item.canal }}</td>
+            <td>{{ item.cliente }}</td>
+            <td>{{ item.tdr }}</td>
+            <td>S/. {{ item.credito | number : "1.2-2" }}</td>
+            <td>S/. {{ item.deuda | number : "1.2-2" }}</td>
+            <td>S/. {{ item.saldo | number : "1.2-2" }}</td>
+            <td>{{ item.fechaInicio }}</td>
+            <td>{{ item.fechaFin }}</td>
+            <td>{{ item.bloqueado }}</td>
+            <td>
+              <button
+                class="button-toggle"
+                [ngClass]="item.idActivo == 1 ? 'active' : ''"
+                (click)="changeActive(item)"
+                [disabled]="
+                  item.idEstado == 4 || !isAuthorized || item.isLocked
+                "
+              ></button>
+            </td>
+            <td class="state">
+              <small
+                class="status"
+                [ngClass]="{
+                  color1: item.idEstado == '1',
+                  color2: item.idEstado == '2',
+                  color3: item.idEstado == '3',
+                  color4: item.idEstado == '4'
+                }"
+              >
+                {{ item.estado }}</small
+              >
+            </td>
+            <td class="dropdown">
+              <div
+                ngbDropdown
+                [placement]="index > 4 ? 'top-right' : 'bottom-right'"
+              >
+                <button class="dropdown__button" ngbDropdownToggle>
+                  <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                </button>
+                <ul class="dropdown__list" ngbDropdownMenu>
+                  <li>
+                    <button (click)="showModalSummary(item)">
+                      <i class="fa fa-eye" aria-hidden="true"></i>
+                      Ver resumen
+                    </button>
+                  </li>
+                  <li>
+                    <button (click)="showModalHistory(item)">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                      Ver historial
+                    </button>
+                  </li>
+                  <li
+                    *ngIf="
+                      item.idEstado != 4 &&
+                      item.idBloqueado != 1 &&
+                      isAuthorized
+                    "
+                  >
+                    <button (click)="showModalEdit(item)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                      Editar
+                    </button>
+                  </li>
+                  <li
+                    *ngIf="
+                      item.idEstado != 4 &&
+                      item.credito == item.saldo &&
+                      item.idBloqueado == 0 &&
+                      isAuthorized
+                    "
+                  >
+                    <button (click)="showModalConfirmCancel(item)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                      Anular
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <pagination-controls
+    id="table-state-credits"
+    [autoHide]="true"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    responsive="true"
+    (pageChange)="changeCurrentPage = $event"
+  ></pagination-controls>
+</section>
+
+<ng-template #modalEdit>
+  <div class="content-modal modal-edit">
+    <section>
+      <div class="modal-header">
+        <h6>Editar línea de crédito Estado</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-edit" [formGroup]="formEdit">
+          <!-- *Monto de crédito -->
+          <label
+            for="form-creditEdit"
+            class="placeholder"
+            aria-placeholder="CRÉDITO ASIGNADO:"
+          >
+            <input
+              type="text"
+              id="form-creditEdit"
+              [maxlength]="7"
+              formControlName="creditEdit"
+            />
+          </label>
+
+          <ng-container *ngIf="messageErrorEdit.length">
+            <small class="has-error">
+              {{ messageErrorEdit }}
+            </small>
+          </ng-container>
+
+          <!-- *Fecha Vencimiento-->
+          <label
+            for="form-expirationDateEdit"
+            class="placeholder"
+            aria-placeholder="FECHA DE VENCIMIENTO:"
+          >
+            <input
+              type="text"
+              id="form-expirationDateEdit"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              [readonly]="true"
+              [minDate]="valueDateFin"
+              formControlName="expirationDateEdit"
+            />
+            <i class="fa fa-calendar"></i>
+          </label>
+
+          <!-- *Tipo Contrato -->
+          <label
+            for="form-typeContract"
+            class="placeholder"
+            aria-placeholder="TIPO CONTRATO:"
+          >
+            <select id="form-typeContract" formControlName="typeContract">
+              <option
+                *ngFor="
+                  let data of dataParameters$.listadoTiposContratosCredito
+                "
+                value="{{ data.idTipoContrato }}"
+              >
+                {{ data.contrato }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+        </form>
+        <small class="has-error" *ngIf="messageInfo">
+          {{ messageInfo }}
+        </small>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="hideModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          role="button"
+          class="button-default"
+          (click)="showModalConfirmEdit()"
+          [disabled]="formEdit.invalid || messageErrorEdit.length"
+        >
+          Guardar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalCreate>
+  <div class="content-modal modal-create">
+    <section>
+      <div class="modal-header">
+        <h6>Crear línea de crédito del Estado</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-create" [formGroup]="formCreate">
+          <!-- *Canal de Venta -->
+          <label
+            for="form-channel"
+            class="placeholder"
+            aria-placeholder="CANAL DE VENTA:"
+          >
+            <select id="form-channel" formControlName="channelCreate">
+              <option value="" selected hidden>SELECCIONE</option>
+              <option
+                *ngFor="let item of dataListChannels$"
+                value="{{ item.id }}"
+              >
+                {{ item.description }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *Contratante -->
+          <label
+            for="form-contractor"
+            class="placeholder"
+            aria-placeholder="CONTRATANTE:"
+          >
+            <select id="form-contractor" formControlName="contractorCreate">
+              <option value="" selected hidden>SELECCIONE</option>
+              <option
+                *ngFor="let item of dataParameters$.listadoContratanteCredito"
+                value="{{ item.codigoCliente }}"
+              >
+                {{ item.cliente }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *TDR -->
+          <label for="form-tdr" class="placeholder" aria-placeholder="TDR:">
+            <input
+              type="text"
+              id="form-tdr"
+              class="mayusc"
+              placeholder="TDR"
+              [maxlength]="80"
+              formControlName="tdrCreate"
+            />
+          </label>
+
+          <!-- *TC -->
+          <label for="form-tc" class="placeholder" aria-placeholder="TC:">
+            <select id="form-tc" formControlName="tcCreate">
+              <option value="" selected hidden>SELECCIONE</option>
+              <option
+                *ngFor="
+                  let data of dataParameters$.listadoTiposContratosCredito
+                "
+                value="{{ data.idTipoContrato }}"
+              >
+                {{ data.contrato }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *Fecha Vencimiento-->
+          <label
+            for="form-expirationDateCreate"
+            class="placeholder"
+            aria-placeholder="FECHA FIN:"
+          >
+            <input
+              type="text"
+              id="form-expirationDateCreate"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              [readonly]="true"
+              [minDate]="valueDateFin"
+              formControlName="expirationDateCreate"
+            />
+            <i class="fa fa-calendar"></i>
+          </label>
+
+          <!-- *CREDITO -->
+          <label
+            for="form-credit"
+            class="placeholder"
+            aria-placeholder="CRÉDITO:"
+          >
+            <input
+              type="text"
+              id="form-credit"
+              placeholder="0"
+              [min]="1"
+              [maxlength]="7"
+              formControlName="creditCreate"
+            />
+          </label>
+        </form>
+        <small class="has-error" *ngIf="messageInfo">
+          {{ messageInfo }}
+        </small>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="hideModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          role="button"
+          class="button-default"
+          (click)="showModalConfirm()"
+          [disabled]="formCreate.invalid"
+        >
+          Crear
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalSummary>
+  <div class="content-modal modal-summary">
+    <section>
+      <div class="modal-header">
+        <h6>
+          Resumen de línea de crédito del Estado:
+          {{ dataSummaryCredit$.idLineaCredito }}
+        </h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body summary__info">
+        <div class="summary__info--section">
+          <span class="subTitle">Canal de venta:</span>
+          <span>{{ dataSummaryCredit$?.canal }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Contratante:</span>
+          <span>{{ dataSummaryCredit$?.cliente }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">TDR:</span>
+          <span>{{ dataSummaryCredit$?.tdr }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Tipo de Contrato:</span>
+          <span>{{ dataSummaryCredit$?.tipoContrato }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Crédito:</span>
+          <span>S/ {{ dataSummaryCredit$?.credito }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Deuda:</span>
+          <span>S/ {{ dataSummaryCredit$?.deuda }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Saldo:</span>
+          <span>S/ {{ dataSummaryCredit$?.saldo }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha Inicio:</span>
+          <span>{{ dataSummaryCredit$?.fechaInicio }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha Fin:</span>
+          <span>{{ dataSummaryCredit$?.fechaFin }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Bloqueado:</span>
+          <span>{{ dataSummaryCredit$?.bloqueado }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Activo:</span>
+          <span>{{ dataSummaryCredit$?.activo }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Estado:</span>
+          <span>{{ dataSummaryCredit$?.estado }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Usuario creación:</span>
+          <span>{{ dataSummaryCredit$?.usuarioCreacion }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha creación:</span>
+          <span>{{ dataSummaryCredit$?.fechaCreacion }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Usuario actualización:</span>
+          <span>{{ dataSummaryCredit$?.usuarioActualizacion || "-" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha actualización:</span>
+          <span>{{ dataSummaryCredit$?.fechaActualizacion }}</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalHistory>
+  <div class="content-modal modal-history">
+    <section>
+      <div class="modal-header">
+        <h6>
+          Historial línea de crédito del Estado:
+          {{ listCreditHistory$[0]?.idLineaCredito }}
+        </h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body summary__info">
+        <table class="table-u">
+          <thead>
+            <tr class="grid-title">
+              <th class="grid-title-item col-seq">N°</th>
+              <th class="grid-title-item col-est">Crédito</th>
+              <th class="grid-title-item col-fec">Deuda</th>
+              <th class="grid-title-item col-com">Saldo</th>
+              <th class="grid-title-item col-com">Fecha Fin</th>
+              <th class="grid-title-item col-usu">Bloqueado</th>
+              <th class="grid-title-item col-usu">Activo</th>
+              <th class="grid-title-item col-usu">Estado</th>
+              <th class="grid-title-item col-usu">Usuario</th>
+              <th class="grid-title-item col-usu">Fecha registro</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-container *ngIf="!listCreditHistory$.length">
+              <tr>
+                <td colspan="11">No se encontraron resultados</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="listCreditHistory$.length">
+              <tr
+                *ngFor="
+                  let item of listCreditHistory$
+                    | paginate
+                      : {
+                          id: 'table-history',
+                          itemsPerPage: 10,
+                          totalItems: listCreditHistory$.length,
+                          currentPage: currentPageHistory
+                        };
+                  let index = index
+                "
+              >
+                <td class="data-table-tr-td">
+                  {{ (currentPageHistory - 1) * 10 + index + 1 }}
+                </td>
+                <td class="data-table-tr-td">
+                  S/. {{ item.credito | number : "1.2-2" }}
+                </td>
+                <td class="data-table-tr-td">
+                  S/. {{ item.deuda | number : "1.2-2" }}
+                </td>
+                <td class="data-table-tr-td">
+                  S/. {{ item.saldo | number : "1.2-2" }}
+                </td>
+                <td class="data-table-tr-td">{{ item.fechaFin }}</td>
+                <td class="data-table-tr-td">{{ item.bloqueado }}</td>
+                <td class="data-table-tr-td">{{ item.activo }}</td>
+                <td class="data-table-tr-td">{{ item.estado }}</td>
+                <td class="data-table-tr-td">
+                  {{ item.usuarioActualizacion }}
+                </td>
+                <td class="data-table-tr-td">{{ item.fechaRegistro }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <pagination-controls
+        id="table-history"
+        [autoHide]="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        responsive="true"
+        (pageChange)="currentPageHistory = $event"
+      ></pagination-controls>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="hideModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmCreate>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6 class="title">Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModalConfirm()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro que desea crear la línea de crédito del estado?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="hideModalConfirm()"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="saveCreateCredit()"
+        >
+          Sí
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmEdit>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6 class="title">Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModalConfirmEdit()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro que desea editar la línea de crédito del estado?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="hideModalConfirmEdit()"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="saveEdit()"
+        >
+          Sí
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmCancel>
+  <div class="content-modal modal-confirm">
+    <section>
+      <div class="modal-header">
+        <h6 class="title">Mensaje de confirmación</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro que desea anular la línea de crédito del estado?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="hideModal()"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="cancelCredit()"
+        >
+          Sí
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmTrue>
+  <div class="content-modal">
+    <section class="modal-confirmTrue">
+      <div class="modal-header">
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <img
+            src="assets/backoffice/check-success.png"
+            alt="image succes"
+            width="150px"
+            height="150px"
+          />
+        </div>
+        <div class="col-lg-12 mt-4 text-center">
+          <h5>{{ messageConfirmTrue }}</h5>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="hideModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirmFalse>
+  <div class="content-modal">
+    <section class="modal-confirmTrue">
+      <div class="modal-header">
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="hideModalConfirm()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <img
+            src="assets/backoffice/check-error.png"
+            alt="image succes"
+            width="150px"
+            height="150px"
+          />
+        </div>
+        <div class="col-lg-12 mt-4 text-center">
+          <h5>
+            El canal, contratante y TDR seleccionados ya se encuentran
+            registrados, favor intentar con otros datos.
+          </h5>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="hideModalConfirm()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

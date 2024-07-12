@@ -1,0 +1,474 @@
+.linea {
+  border-top: 2px solid #bdafd8;
+}
+
+.contenido {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.contenido-nro {
+  height: 38px;
+  width: 38px;
+  border-radius: 28.8px;
+  background-color: #ed6e00;
+  padding: 8px 14px;
+  float: left;
+  margin-right: 8px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+.contenido-nro a {
+  height: 14px;
+  width: 9px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.label-formulario {
+  height: 14px;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+}
+
+.select-formulario {
+  height: 46px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  border-radius: 2px;
+}
+
+.input-text-formulario {
+  height: 46px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  border-radius: 2px;
+}
+
+::placeholder {
+  color: #aa9ec0;
+  opacity: 1;
+  /* Firefox */
+}
+
+.contenido {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.contenido-nro {
+  height: 38px;
+  width: 38px;
+  border-radius: 28.8px;
+  background-color: #ed6e00;
+  padding: 8px 14px;
+  float: left;
+  margin-right: 8px;
+}
+
+.contenido-nro a {
+  height: 14px;
+  width: 9px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.contenido-title {
+  padding: 6px;
+}
+
+.contenido-title a {
+  height: 21px;
+  width: 464px;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+}
+
+.creaunsoatmanual {
+  height: 31px;
+  width: 100%;
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  margin-top: 10px;
+}
+
+.textplaca {
+  line-height: 1.23;
+  font-size: 2rem;
+  width: 100%;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 48px;
+  text-align: center;
+  border: 2px solid #aa9ec0;
+  text-transform: uppercase;
+}
+
+.mensajeplaca {
+  height: 48px;
+  width: 100%;
+  color: #fd2f21;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+}
+
+.btn-validar-placa {
+  height: 46px;
+  width: 100%;
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: Lato;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+}
+
+.label-formulario-regresar {
+  height: 1.92%;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+  text-align: center;
+}
+
+.label-formulario {
+  height: 14px;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+}
+
+.select-formulario {
+  height: 46px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(assets/icons/dropdown_icon.png) no-repeat 96%;
+}
+
+::placeholder {
+  color: #aa9ec0;
+  opacity: 1;
+  /* Firefox */
+}
+
+.texto {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 24px;
+  font-weight: bold;
+  text-align: justify;
+}
+
+.texto select {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  text-align-last: center;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #2b0d61;
+  box-shadow: none;
+  background-image: none;
+  appearance: none;
+}
+
+.texto input[type="text"] {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  border-bottom: 1px solid #2b0d61;
+  outline: none;
+}
+
+.botones {
+  width: 100%;
+  margin-top: 3%;
+}
+
+.btn-siguiente {
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 296px;
+  margin-left: 30px;
+  height: 46px;
+}
+
+.contenido {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.contenido-nro {
+  height: 38px;
+  width: 38px;
+  border-radius: 28.8px;
+  background-color: #ed6e00;
+  padding: 8px 14px;
+  float: left;
+  margin-right: 8px;
+}
+
+.contenido-nro a {
+  height: 14px;
+  width: 9px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.contenido-title {
+  padding: 6px;
+}
+
+.contenido-title a {
+  height: 21px;
+  width: 464px;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+}
+
+.creaunsoatmanual {
+  height: 31px;
+  width: 100%;
+  color: #553d81;
+  font-family: "Bliss Pro";
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  margin-top: 10px;
+}
+
+.textplaca {
+  line-height: 1.23;
+  font-size: 2rem;
+  width: 100%;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 48px;
+  text-align: center;
+  border: 2px solid #aa9ec0;
+  text-transform: uppercase;
+}
+
+.mensajeplaca {
+  height: 48px;
+  width: 100%;
+  color: #fd2f21;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+}
+
+.btn-validar-placa {
+  height: 46px;
+  width: 100%;
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: Lato;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+}
+
+.label-formulario-regresar {
+  height: 1.92%;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+  text-align: center;
+}
+
+.label-formulario {
+  height: 14px;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+}
+
+.select-formulario {
+  height: 46px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+}
+
+::placeholder {
+  color: #aa9ec0;
+  opacity: 1;
+  /* Firefox */
+}
+
+.titulo {
+  width: 100%;
+  height: auto;
+}
+
+.titulo h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+}
+
+.titulo h5 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  text-align: center;
+}
+
+.input-search {
+  width: 98%;
+  height: 45px;
+  border: 1px solid #2b0d61;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px;
+  outline: none;
+}
+
+.numero-soats {
+  text-decoration: none;
+  color: #ed6e00;
+  font-family: "Bliss Pro";
+  font-size: 40px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.soats-disponibles {
+  color: #ed6e00;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+  padding-top: 10px;
+  text-align: left;
+}
+
+.lista-polizas {
+  width: 100%;
+  height: 220px;
+  overflow-y: auto;
+}
+
+.botones {
+  width: 100%;
+  text-align: left;
+  margin-left: 16px;
+}
+
+.volver {
+  padding: 12px;
+}
+
+@media (max-width: 576px) {
+  .btn-siguiente {
+    width: 100%;
+    margin-left: 0px;
+    margin-top: 10px;
+  }
+}
+
+/* .btn-siguiente[disabled] {
+  background-color: #ECEEEF;
+  color: #AA9EC0;
+} */

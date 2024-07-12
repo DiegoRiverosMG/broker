@@ -1,0 +1,482 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+        Agregar Agenciamiento
+    </h4>
+    <input  type="button"
+            class="close"
+            aria-label="Close"
+            (click)="formModalReference.dismiss('Cross click')"
+            value="&times;">
+</div>
+
+<div class="modal-body" [formGroup]="mainFormGroup">
+    <div class="filter  m-0 p-0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h5>Datos del Broker</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>TIPO DOCUMENTO</span>
+                        <select disabled
+                                [(ngModel)]="brokerDocumentType"
+                                [ngModelOptions]="{standalone: true}"
+                                class="minimal">
+                            <option value="" disabled></option>
+                            <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">{{documenttype.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>NRO DOCUMENTO</span>
+                            <input  disabled
+                                    type="text"
+                                    placeholder="Nro Documento"
+                                    value="{{brokerDocumentNumber}}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <span>NOMBRES / RAZÓN SOCIAL</span>
+                            <input  disabled
+                                    type="text"
+                                    placeholder="Nombres"
+                                    value="{{brokerFullName}}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="filter m-0 p-0">
+        <div class="card">
+            <div class="card-body"
+                [formGroup]="contractorFormGroup">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h5>Datos del Contratante</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <span>BUSCAR POR</span>
+                            <select formControlName="searchMode"
+                                    (change)="changeValidators(1)"
+                                    [ngClass]="{'error-validate': !contractorFormGroup.get('searchMode').valid && contractorFormGroup.get('searchMode').touched}"
+                                    class="minimal">
+                                <option value="0" disabled>Seleccionar</option>
+                                <option value="1">Nro. Documento</option>
+                                <option value="2">Nombres</option>
+                            </select>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='1'" class="col-sm-4">
+                        <span>TIPO DOCUMENTO</span>
+                        <select id="DocumentSelection"
+                                formControlName="documentType"
+                                (change)="changeValidators(2)"
+                                [ngClass]="{'error-validate': !contractorFormGroup.get('documentType').valid && contractorFormGroup.get('documentType').touched}"
+                                class="minimal">
+                                <option value="" disabled>Seleccionar</option>
+                                <option *ngFor="let documenttype of documentTypeList"
+                                        value="{{documenttype.Id}}"> {{documenttype.Name}}</option>
+                        </select>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='2'"
+                        class="col-sm-4">
+                        <span>TIPO PERSONA</span>
+                        <select formControlName="personType"
+                                (change)="changeValidators(3)"
+                                [disabled]="contractorFormGroup.controls.searchMode.value=='1' && contractorFormGroup.controls.documentType.value=='2'"
+                                class="minimal">
+                            <option value="0"
+                                    disabled>Seleccionar</option>
+                            <option [selected]="contractorFormGroup.controls.searchMode.value=='1' && contractorFormGroup.controls.documentType.value=='2'"
+                                    value="1">Persona Natural
+                            </option>
+                            <option value="2">Persona Jurídica</option>
+                        </select>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='1'"
+                        class="col-sm-4">
+                        <span>NÚMERO DE DOCUMENTO (*)</span>
+                        <input  type="text"
+                                placeholder="Número Documento"
+                                maxlength="{{documentNumberLength}}"
+                                (focus)="cleanValidators()"
+                                (keyup.enter)="searchContractor()"
+                                formControlName="documentNumber"
+                                (keypress)="documentNumberKeyPress($event)"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && !contractorFormGroup.controls.documentNumber.valid}">
+
+                        <span *ngIf="isValidatedInClickButton && !contractorFormGroup.controls.documentNumber.valid"
+                                class="mensaje-error-control">
+                            <ng-container *ngIf="contractorFormGroup.get('documentNumber').hasError('required'); then required_documentNumber else invalid_documentNumber">
+                            </ng-container>
+                            <ng-template #required_documentNumber>El Nro de Documento es requerido.</ng-template>
+                            <ng-template #invalid_documentNumber>El Nro de Documento no es válido.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='2' || contractorFormGroup.controls.personType.value=='1'"
+                        class="col-sm-12">
+                        <span>RAZÓN SOCIAL (*)</span>
+                        <input  type="text"
+                                placeholder="Razón Social"
+                                formControlName="legalName"
+                                (focus)="cleanValidators()"
+                                LegalNameDirective
+                                (keyup.enter)="searchContractor()"
+                                maxlength="60"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && !contractorFormGroup.controls.legalName.valid}">
+                        <span *ngIf="isValidatedInClickButton && !contractorFormGroup.controls.legalName.valid"
+                                class="mensaje-error-control">
+                            <ng-container *ngIf="contractorFormGroup.get('legalName').hasError('required'); then required_legalName else invalid_legalName">
+                            </ng-container>
+                            <ng-template #required_legalName>La razón social es requerida.</ng-template>
+                            <ng-template #invalid_legalName>La razón social no es válida.</ng-template>
+                        </span>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='2' || contractorFormGroup.controls.personType.value=='2'"
+                        class="col-sm-4">
+                        <span>NOMBRES (*)</span>
+                        <input  type="text"
+                                placeholder="Nombres"
+                                formControlName="firstName"
+                                maxlength="19"
+                                (focus)="cleanFirstNameValidator()"
+                                (keyup.enter)="searchContractor()"
+                                OnlyTextSpaceDirective
+                                [ngClass]="{'error-validate': isValidatedInClickButton && !contractorFormGroup.controls.firstName.valid}">
+                        <span *ngIf="isValidatedInClickButton && !contractorFormGroup.controls.firstName.valid"
+                                class="mensaje-error-control">
+                            <ng-container *ngIf="contractorFormGroup.get('firstName').hasError('required'); then required_firstName else invalid_firstName">
+                            </ng-container>
+                            <ng-template #required_firstName>El nombre es requerido.</ng-template>
+                            <ng-template #invalid_firstName>El nombre no es válido.</ng-template>
+                        </span>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='2' || contractorFormGroup.controls.personType.value=='2'"
+                        class="col-sm-4">
+                        <span>APELLIDO PATERNO (*)</span>
+                        <input  type="text"
+                                placeholder="Apellido Paterno"
+                                (focus)="cleanPaternalLastNameValidator()"
+                                maxlength="19"
+                                OnlyTextSpaceDirective
+                                formControlName="paternalLastName"
+                                (keyup.enter)="searchContractor()"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && !contractorFormGroup.controls.paternalLastName.valid}">
+                        <span *ngIf="isValidatedInClickButton && !contractorFormGroup.controls.paternalLastName.valid"
+                        class="mensaje-error-control">
+                            <ng-container *ngIf="contractorFormGroup.get('paternalLastName').hasError('required'); then required_paternalLastName else invalid_paternalLastName">
+                            </ng-container>
+                            <ng-template #required_paternalLastName>El apellido paterno es requerido.</ng-template>
+                            <ng-template #invalid_paternalLastName>El apellido paterno no es válido.</ng-template>
+                        </span>
+                    </div>
+                    <div [hidden]="contractorFormGroup.controls.searchMode.value!='2' || contractorFormGroup.controls.personType.value=='2'"
+                        class="col-sm-4">
+                        <span>APELLIDO MATERNO</span>
+                        <input  type="text"
+                                placeholder="Apellido Materno"
+                                (focus)="cleanMaternalLastNameValidator()"
+                                OnlyTextSpaceDirective
+                                formControlName="maternalLastName"
+                                (keyup.enter)="searchContractor()"
+                                maxlength="19"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && !contractorFormGroup.controls.maternalLastName.valid}">
+                        <span *ngIf="isValidatedInClickButton && !contractorFormGroup.controls.maternalLastName.valid"
+                        class="mensaje-error-control">
+                            <ng-container *ngIf="!contractorFormGroup.get('maternalLastName').valid; then invalid_maternalLastName">
+                            </ng-container>
+                            <!-- <ng-template #required_maternalLastName>El apellido materno es requerido.</ng-template> -->
+                            <ng-template #invalid_maternalLastName>El apellido materno no es válido.</ng-template>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button (click)="searchContractor()"
+                                class="pull-right mr-0 mt-3">
+                            <span>Buscar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span>NOMBRES / RAZÓN SOCIAL</span>
+                            <input  type="text"
+                                    placeholder="Nombres"
+                                    disabled
+                                    value="{{contractor.FullName}}" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span>DIRECCIÓN</span>
+                            <input  type="text"
+                                    placeholder="Dirección"
+                                    disabled
+                                    value="{{contractor.Address}}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <span>CORREO ELECTRÓNICO</span>
+                            <input type="text"
+                                    placeholder="Correo Electrónico"
+                                    disabled
+                                    value="{{contractor.Email}}" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 ml-3 mr-3">
+                    <h5>Brokers Agenciados</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 filter">
+                    <div class="col m-0">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a  class="nav-link"
+                                    [ngClass]="{'active': tabPension === true}"
+                                    data-toggle="tab"
+                                    (click)="showTabs('1');">PENSION</a>
+                            </li>
+                            <li class="nav-item">
+                                <a  class="nav-link"
+                                    [ngClass]="{'active': tabSalud === true}"
+                                    data-toggle="tab"
+                                    (click)="showTabs('2');">SALUD</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade"
+                                [ngClass]="{'show active': tabPension === true}"
+                                *ngIf="tabPension === true">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title">
+                                                    <td class="grid-title-item">Producto</td>
+                                                    <td class="grid-title-item">Doc. Broker</td>
+                                                    <td class="grid-title-item">Nombre Broker</td>
+                                                    <td class="grid-title-item">Ini. Agenciamiento</td>
+                                                    <td class="grid-title-item">Fin Agenciamiento</td>
+                                                </tr>
+                                            </thead>
+                                            <ng-container
+                                                          *ngIf="foundResultsPension!=null && foundResultsPension.length>0; then showContent;else hideContent">
+                                            </ng-container>
+                                            <ng-template #showContent>
+                                                <tbody *ngFor="let item of foundResultsPension">
+                                                    <tr>
+                                                        <td>{{item.ProductName}}</td>
+                                                        <td>{{item.BrokerDocumentTypeName}}:
+                                                            {{item.BrokerDocumentNumber}}
+                                                        </td>
+                                                        <td>{{item.BrokerFullName}}</td>
+                                                        <td>{{item.StartDate | date: 'dd/MM/yyyy'}}</td>
+                                                        <td>{{item.EndDate | date: 'dd/MM/yyyy'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                            <ng-template #hideContent>
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="5">No se encontraron registros</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="foundResultsPension!=null && foundResultsPension.length>0"
+                                    class="row"
+                                    style="display:flex">
+                                    <div class="col-sm-12">
+                                        <ngb-pagination [(page)]="currentPagePension"
+                                                        [pageSize]="itemsPerPage"
+                                                        [collectionSize]="totalItemsPension"
+                                                        [maxSize]="maxSize"
+                                                        (pageChange)="pageChanged(currentPagePension, pensionID.id)">
+                                            <ng-template ngbPaginationPrevious>Anterior</ng-template>
+                                            <ng-template ngbPaginationNext>Siguiente</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade"
+                                [ngClass]="{'show active': tabSalud === true}"
+                                *ngIf="tabSalud === true">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title">
+                                                <td class="grid-title-item">Producto</td>
+                                                <td class="grid-title-item">Doc. Broker</td>
+                                                <td class="grid-title-item">Nombre Broker</td>
+                                                <td class="grid-title-item">Ini. Agenciamiento</td>
+                                                <td class="grid-title-item">Fin Agenciamiento</td>
+                                                </tr>
+                                            </thead>
+                                            <ng-container
+                                                *ngIf="foundResultsSalud!=null && foundResultsSalud.length>0; then showContent;else hideContent">
+                                            </ng-container>
+                                            <ng-template #showContent>
+                                                <tbody *ngFor="let item of foundResultsSalud">
+                                                    <tr>
+                                                        <td>{{item.ProductName}}</td>
+                                                        <td>{{item.BrokerDocumentTypeName}}:
+                                                            {{item.BrokerDocumentNumber}}
+                                                        </td>
+                                                        <td>{{item.BrokerFullName}}</td>
+                                                        <td>{{item.StartDate | date: 'dd/MM/yyyy'}}</td>
+                                                        <td>{{item.EndDate | date: 'dd/MM/yyyy'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                            <ng-template #hideContent>
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="5">No se encontraron registros</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="foundResultsSalud!=null && foundResultsSalud.length>0"
+                                    class="row"
+                                    style="display:flex">
+                                    <div class="col-sm-12">
+                                        <ngb-pagination [(page)]="currentPageSalud"
+                                                        [pageSize]="itemsPerPage"
+                                                        [collectionSize]="totalItemsSalud"
+                                                        [maxSize]="maxSize"
+                                                        (pageChange)="pageChanged(currentPageSalud, saludID.id)">
+                                            <ng-template ngbPaginationPrevious>Anterior</ng-template>
+                                            <ng-template ngbPaginationNext>Siguiente</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="filter">
+                <div class="card">
+                    <div *ngIf="sctrSaludSucceed"
+                        class="productCover">
+                        <div>AGENCIADO</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label><input   type="checkbox"
+                                                class="checkbox"
+                                                [(ngModel)]="isSctrSaludSelected"
+                                                (change)="sctrSaludStateChanged()"
+                                                [ngModelOptions]="{standalone: true}"><span class="schk">SCTR SALUD</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div [hidden]="isSctrSaludSelected==false && sctrSaludSucceed==false"
+                            class="row">
+                            <div class="col-sm-12">
+                                <span>FECHA INICIO</span>
+                                    <input  type="text"
+                                            placeholder="dd/mm/yyyy"
+                                            #dp="bsDatepicker"
+                                            [bsConfig]="bsConfig"
+                                            DateDirective
+                                            [(bsValue)]="bsSalud"
+                                            bsDatepicker
+                                            formControlName="saludAgencyDate" />
+                            </div>
+                        </div>
+                        <div [hidden]="isSctrSaludSelected==false && sctrSaludSucceed==false"
+                            class="row">
+                            <div class="col-sm-12">
+                                <input  style="position: relative;top: 10px; font-size: 14px; margin-bottom: 15px;"
+                                        formControlName="sctrSaludFilePath"
+                                        (change)="sctrSaludFileChanged($event)"
+                                        type="file"
+                                        accept="application/pdf,image/png,image/jpeg,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="filter">
+                <div class="card">
+                    <div *ngIf="sctrPensionSucceed"
+                        class="productCover">
+                        <div>AGENCIADO</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label><input type="checkbox"
+                                                class="checkbox"
+                                                [(ngModel)]="isSctrPensionSelected"
+                                                (change)="sctrPensionStateChanged()"
+                                                [ngModelOptions]="{standalone: true}"><span class="schk">SCTR PENSIÓN</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div [hidden]="isSctrPensionSelected==false && sctrPensionSucceed==false"
+                            class="row">
+                            <div class="col-sm-12">
+                                <span>FECHA INICIO</span>
+                                    <input  type="text"
+                                            placeholder="dd/mm/yyyy"
+                                            #dp="bsDatepicker"
+                                            [bsConfig]="bsConfig"
+                                            DateDirective
+                                            [(bsValue)]="bsPension"
+                                            bsDatepicker
+                                            formControlName="pensionAgencyDate" />
+                            </div>
+                        </div>
+                        <div [hidden]="isSctrPensionSelected==false && sctrPensionSucceed==false"
+                            class="row">
+                            <div class="col-sm-12">
+                                <input  style="position: relative;top: 10px; font-size: 14px; margin-bottom: 15px;"
+                                        formControlName="sctrPensionFilePath"
+                                        (change)="sctrPensionFileChanged($event)"
+                                        type="file"
+                                        accept="application/pdf,image/png,image/jpeg,application/msword">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button (click)="formModalReference.close(true)">
+        <span>Volver</span>
+    </button>
+    <button (click)="manageAgency()" class="full-color">
+        <span>Guardar</span>
+    </button>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fas fa-spinner fa-spin"></i>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+.form-button {
+  text-transform: uppercase;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.form-button span {
+  margin-top: 0.7em;
+  display: block;
+}
+
+.form-button button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  max-width: 200px;
+  min-width: 200px;
+  width: 100%;
+  height: 40px;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-top: 5px;
+  margin-left: 0;
+}
+
+.form-button button span {
+  display: block;
+  margin: 0px 10px;
+  font-weight: 600;
+  font-size: 16px;
+  color: rgb(83, 66, 121);
+}
+
+.form-button button img {
+  display: table-cell;
+  margin-top: auto;
+  margin-bottom: auto;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.form-button button.btn-primary {
+  background-color: #553d81;
+}
+.form-button button.btn-primary span {
+  color: #fff;
+}
+.form-button.slim button {
+  margin: 0!important;
+  padding: 0!important;
+  height: auto!important;
+  min-width: auto!important;
+}
+
+.form-button button:disabled {
+  background-color: #d6cde6;
+}

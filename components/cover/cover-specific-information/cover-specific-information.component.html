@@ -1,0 +1,224 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">
+    Registro de cobertura por módulo
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeX()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid" style="margin-bottom: 10px;">
+    <div class="filter">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="subtitle">Información general de la cobertura</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <span>MONEDA</span>
+              <select id="cboMoneda" name="cboMoneda" class="minimal" [disabled]="controlDisabled">
+                <option value="1">Soles</option>
+                <option value="2">Dólares</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <span style="margin: 0;">&nbsp;</span>
+              <label style="width: 100%;margin-bottom: 0; text-transform: uppercase;">
+                <input type="checkbox" class="checkbox" id="chkMainCover" [(ngModel)]="isMainCover"
+                  (change)="onMainCover($event)" [disabled]="controlDisabled">
+                <span class="schk">
+                  Cobertura principal
+                </span>
+              </label>
+              <span style="margin: 0;">&nbsp;</span>
+            </div>
+            <div class="col-sm-6">
+              <span style="margin: 0;">&nbsp;</span>
+              <label style="width: 100%;margin-bottom: 0; text-transform: uppercase;">
+                <input type="checkbox" class="checkbox" id="chkControlInsured" [(ngModel)]="isControlInsured"
+                  (change)="onControlInsured($event)" [disabled]="controlDisabled">
+                <span class="schk">
+                  Control de cúmulo por asegurado
+                </span>
+              </label>
+              <span style="margin: 0;">&nbsp;</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <span>CAPITAL</span>
+              <select id="cboCapital" name="cboCapital" class="minimal"
+                [ngClass]="{'error-validate': inputsValidate[0]}" (click)="clearValidate(0)" (focus)="clearValidate(0)"
+                [disabled]="controlDisabled">
+                <option value="-1">Seleccionar</option>
+                <option value="1">Suma</option>
+                <option value="3">Mayor</option>
+                <option value="2" selected>No aplica</option>
+              </select>
+            </div>
+
+            <div class="col-sm-4">
+              <span>REASEGURO</span>
+              <select id="cboReaseguro" name="cboReaseguro" class="minimal"
+                [ngClass]="{'error-validate': inputsValidate[1]}" (click)="clearValidate(1)" (focus)="clearValidate(1)"
+                [disabled]="controlDisabled">
+                <option value="-1">Seleccionar</option>
+                <option value="1">Suma</option>
+                <option value="3">Mayor</option>
+                <option value="2" selected>No aplica</option>
+              </select>
+            </div>
+
+            <div class="col-sm-4">
+              <span>IMPUESTOS</span>
+              <select id="cboImpuestos" name="cboImpuestos" class="minimal"
+                [ngClass]="{'error-validate': inputsValidate[2]}" (click)="clearValidate(2)" (focus)="clearValidate(2)"
+                [disabled]="controlDisabled">
+                <option value="-1">Seleccionar</option>
+                <option value="1">Suma</option>
+                <option value="3">Mayor</option>
+                <option value="2" selected>No aplica</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="subtitle">Valores garantizados</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Hombres (*)</span>
+              <ng-select [items]="mortalityList" bindLabel="SMORTALCO" bindValue="SMORTALCO"
+                [(ngModel)]="inputsCover.SMORTACOM" class="border-ng" [clearable]="true" placeholder="Seleccione"
+                dropdownPosition="bottom" notFoundText="No hay resultados"
+                [ngClass]="{'error-validate': inputsValidate[3]}" (click)="clearValidate(3)" (focus)="clearValidate(3)"
+                [disabled]="controlDisabled">
+              </ng-select>
+            </div>
+
+            <div class="col-sm-6">
+              <span>Mujeres (*)</span>
+              <ng-select [items]="mortalityList" bindLabel="SMORTALCO" bindValue="SMORTALCO"
+                [(ngModel)]="inputsCover.SMORTACOF" class="border-ng" [clearable]="true" placeholder="Seleccione"
+                dropdownPosition="bottom" notFoundText="No hay resultados"
+                [ngClass]="{'error-validate': inputsValidate[4]}" (click)="clearValidate(4)" (focus)="clearValidate(4)"
+                [disabled]="controlDisabled">
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>% Interés</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NINTEREST" maxlength="5" OnlyNumberDecimals
+                (blur)="validateDecimal('1,2','1,2', 7)" [ngClass]="{'error-validate': inputsValidate[7]}"
+                [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[7]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[7]">{{ inputsValidateError[7] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Reserva matemática</span>
+              <input type="text" placeholder="Reserva matemática" [(ngModel)]="inputsCover.SROURESER"
+                OnlyTextNumberBelowDirective maxlength="12" [disabled]="controlDisabled" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="subtitle">Condiciones de capital asegurado</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span>Capital mínimo</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NCAPMINIM" maxlength="19" OnlyNumberDecimals
+                (blur)="validateDecimal('1,12','1,6', 8)" [ngClass]="{'error-validate': inputsValidate[6]}"
+                (click)="clearValidate(6)" (focus)="clearValidate(6)" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[6]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[6]">{{ inputsValidateError[6] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+            <div class="col-sm-6">
+              <span>Capital máximo</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NCAPMAXIM" maxlength="19" OnlyNumberDecimals
+                (blur)="validateDecimal('1,12','1,6', 9)" [ngClass]="{'error-validate': inputsValidate[5]}"
+                (click)="clearValidate(5)" (focus)="clearValidate(5)" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[5]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[5]">{{ inputsValidateError[5] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <span>Monto fijo de capital</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NCACALFIX" maxlength="19" OnlyNumberDecimals
+                (blur)="validateDecimal('1,12','1,6', 10)" [ngClass]="{'error-validate': inputsValidate[10]}"
+                (click)="clearValidate(10)" (focus)="clearValidate(10)" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[10]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[10]">{{ inputsValidateError[10] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+            <div class="col-sm-4">
+              <span>Múltiplo de capital</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NCACALMUL" maxlength="5" OnlyNumberDirective
+                [ngClass]="{'error-validate': inputsValidate[11]}" (click)="clearValidate(11)"
+                (focus)="clearValidate(11)" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[11]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[11]">{{ inputsValidateError[11] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+            <div class="col-sm-4">
+              <span>Porcentaje de capital</span>
+              <input type="text" placeholder="0.0" [(ngModel)]="inputsCover.NCAPBASPE" maxlength="6" OnlyNumberDecimals
+                (blur)="validateDecimal('1,3','1,2', 12)" [ngClass]="{'error-validate': inputsValidate[12]}"
+                (click)="clearValidate(12)" (focus)="clearValidate(12)" [disabled]="controlDisabled" />
+              <ng-container [ngSwitch]="inputsValidate[12]">
+                <span class="mensaje-error-control" *ngSwitchCase="inputsValidate[12]">{{ inputsValidateError[12] }}</span>
+                <span class="mensaje-error-control" *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="col-sm-12 mt-3 mb-3">
+              <span>Descripción de suma asegurada</span>
+              <textarea cols="40" [(ngModel)]="inputsCover.SDESCRIPT_CAPITAL" rows="5" style="width:100%"
+                placeholder="DESCRIPCIÓN" [disabled]="controlDisabled"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="reference.close()">
+    <span *ngIf="SMODEFORM =='Consult'">Salir</span>
+    <span *ngIf="SMODEFORM !='Consult'">Cancelar</span>
+  </button>
+  <button (click)="guardar();" *ngIf="SMODEFORM !='Consult'" class="full-color">
+    <span> Aplicar </span>
+  </button>
+</div>

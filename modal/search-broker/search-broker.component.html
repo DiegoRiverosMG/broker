@@ -1,0 +1,160 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Búsqueda de Comercializadores</h4>
+  <button type="button" class="close" aria-label="Close" (click)="formModalReference.dismiss()" value="&times;">
+    <span aria-hidden="true">&times;</span>
+  </button>
+
+</div>
+<div class="modal-body">
+  <div class="grid form-group">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <label><span>BÚSQUEDA:</span></label>
+                <label><span><input type="radio" [(ngModel)]="InputsBroker.P_TYPE_SEARCH" name="searchBroker" value="1"
+                      (change)="onSelectTypeSearch()" class="t-search" /> POR NRO. DOCUMENTO</span></label>
+                <label><span><input type="radio" [(ngModel)]="InputsBroker.P_TYPE_SEARCH" name="searchBroker" value="2"
+                      (change)="onSelectTypeSearch()" class="t-search" /> POR NOMBRES</span></label>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="blockSearch" class="col-sm-4">
+                <span>TIPO DOCUMENTO (*)</span>
+                <select (change)="onSelectTypeDocument($event.target.value)" [(ngModel)]="InputsBroker.P_NIDDOC_TYPE"
+                  class="minimal">
+                  <option value="-1" selected>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+              <div *ngIf="!blockSearch" class="col-sm-4">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="onSelectTypePerson($event.target.value)" [(ngModel)]="InputsBroker.P_PERSON_TYPE"
+                  class="minimal">
+                  <option value="1" selected>Persona Natural</option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+              <div *ngIf="blockSearch" class="col-sm-4">
+                <span>NRO. DE DOCUMENTO (*)</span>
+                <input type="text" placeholder="Nro. Documento" [(ngModel)]="InputsBroker.P_SIDDOC"
+                  (keypress)="documentNumberKeyPress($event)" maxlength={{maxlength}}
+                  (keyup.enter)="SearchContrator()" />
+              </div>
+              <div class="col-sm-4" style="margin-top: 35px;">
+                <button (click)="SearchContrator()">
+                  <img src="assets/icons/buscar_certificado.png" />
+                  <span>Buscar</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <ng-container *ngIf="blockDoc">
+                <div *ngIf="!blockSearch" class="col-sm-4">
+                  <span>NOMBRES (*)</span>
+                  <input type="text" placeholder="Nombres" [(ngModel)]="InputsBroker.P_SFIRSTNAME"
+                    (keyup.enter)="SearchContrator()" (keypress)="textValidate($event, 5)" />
+                </div>
+              </ng-container>
+              <div *ngIf="!blockDoc" class="col-sm-8">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" [(ngModel)]="InputsBroker.P_SLEGALNAME"
+                  (keyup.enter)="SearchContrator()" (keypress)="textValidate($event, 4)" />
+              </div>
+              <ng-container *ngIf="blockDoc">
+                <div *ngIf="!blockSearch" class="col-sm-4">
+                  <span>APELLIDO PATERNO (*)</span>
+                  <input type="text" placeholder="Apellido Paterno" [(ngModel)]="InputsBroker.P_SLASTNAME"
+                    (keyup.enter)="SearchContrator()" (keypress)="textValidate($event, 5)" />
+                </div>
+              </ng-container>
+              <ng-container *ngIf="blockDoc">
+                <div *ngIf="!blockSearch" class="col-sm-4">
+                  <span>APELLIDO MATERNO</span>
+                  <input type="text" placeholder="Apellido Materno" [(ngModel)]="InputsBroker.P_SLASTNAME2"
+                    (keyup.enter)="SearchContrator()" (keypress)="textValidate($event, 5)" />
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <input type="text" [(ngModel)]="searchText" placeholder="FILTRAR" style="text-transform: uppercase">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item text-center">#</td>
+                <td class="grid-title-item">TIPO DOCUMENTO</td>
+                <td class="grid-title-item">NRO. DOCUMENTO</td>
+                <td class="grid-title-item">RAZÓN SOCIAL/NOMBRES Y APELLIDOS</td>
+              </tr>
+            </thead>
+            <ng-container *ngIf="listBroker!=null && listBroker.length>0; then showGrid else hideGrid"></ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td colspan="4" class="text-center">NO SE ENCONTRARON REGISTROS</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody>
+              <tr class="selectable" (dblclick)="chooseBroker(item)"
+                *ngFor="let item of listToShow  | filter : {NNUMDOC: searchText, RAZON_SOCIAL:searchText, list: listBroker}; let row_no = index">
+                <td class="text-center"><input value={{item.NNUMDOC}} type="radio" name="brokerList"
+                    [(ngModel)]="selectedBroker"></td>
+                <td>{{ item.NTIPDOC | typeDocument }}</td>
+                <td>{{ item.NNUMDOC}}</td>
+                <td>{{ item.RAZON_SOCIAL }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+        <ng-container *ngIf="listBroker!=null && listBroker.length>0 && searchText == ''; then showPagination">
+        </ng-container>
+        <ng-template #showPagination>
+          <div class="row">
+            <div class="col-sm-9">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+            <div class="col-sm-3">
+              <span style="display: inline-block;">Mostrar: </span>
+              <select [(ngModel)]="itemsPerPage" class="minimal" (change)="mostrarMas()"
+                style="display: inline-block; width: 50%; float: right; position: relative; top: -5px;">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button (click)="validarSalida()"><span>Volver</span></button>
+  <button (click)="chooseBrokerClk(selectedBroker)" class="full-color"><span>Seleccionar</span></button>
+</div>

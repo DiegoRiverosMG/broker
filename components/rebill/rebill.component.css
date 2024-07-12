@@ -1,0 +1,921 @@
+@import '../../sctr.component.css';
+
+.row-title-principal {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.title-princial {
+    height: auto;
+    width: 100%;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 35px;
+    text-align: center;
+    padding-top: 48px;
+}
+
+.text-descripcion {
+    height: auto;
+    width: 100%;
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.text-descripcion p {
+    height: 48px;
+    width: 662px;
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-top: -7px;
+}
+
+.rectangle {
+    margin-top: 14px;
+    min-height: 510px;
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+.title-rectangle {
+    min-height: 40px;
+    width: 100%;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    padding: 2px 12px;
+}
+
+.cabera {
+    text-align: center;
+    margin-bottom: 13px;
+    margin-top: 16px;
+}
+
+.content-rectagle {
+    width: 100%;
+    min-height: 124px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.rectangle-copy-left,
+.rectangle-copy-rigth {
+    height: 124px;
+    border: 1px solid #aa9ec0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    display: inline-grid;
+    display: -ms-inline-grid;
+    width: 32% !important;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    margin-left: 0px;
+}
+
+.rectangle-footer {
+    width: 100%;
+    padding: 15px 53px;
+}
+
+.rectangle-copy-parrafo-ini {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+}
+
+.rectangle-copy-parrafo-ie {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+}
+
+.rectangle-copy-parrafo {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+    display: contents;
+}
+
+.rectangle-copy-parrafo-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+    display: contents;
+}
+
+.rectangle-copy-numero {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 55px;
+    font-weight: bold;
+    line-height: 36px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.rectangle-copy-numero-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 55px;
+    font-weight: bold;
+    line-height: 36px;
+    text-align: center;
+    margin-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.btn-compra {
+    height: 46px;
+    width: 100%;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+}
+
+.btn-historial {
+    height: 46px;
+    width: 204px;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+}
+
+.rectangle-footer-parrafo {
+    margin-top: 9px;
+    height: 16px;
+    color: #806ea0;
+    font-family: "Bliss Pro";
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+}
+
+.container-historial-venta {
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+    padding-top: 29px;
+    padding-bottom: 47px;
+}
+
+.header-historial-venta {
+    text-align: center;
+}
+
+.contenido-historial-venta {
+    min-height: 50px;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    margin-top: 14px;
+}
+
+.footer-historial-venta {
+    text-align: center;
+    padding: 2px 30%;
+}
+
+@media only screen and (max-width: 576px) {
+    .title-princial {
+        font-size: 14px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 14px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: justify;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+
+    .btn-historial {
+        height: 46px;
+        width: 100%;
+        border-radius: 6px;
+        background-color: #ed6e00;
+        color: #ffffff;
+        font-family: "Bliss Pro";
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 19px;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .title-princial {
+        font-size: 20px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 14px;
+        padding: 0px 0px;
+        text-align: justify;
+        width: 50%;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .title-princial {
+        font-size: 28px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 15px;
+        padding: 0px 0px;
+        text-align: justify;
+        display: inline;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+}
+
+.img-help {
+    margin-bottom: 3px !important;
+    margin-left: 3px !important;
+}
+
+.fila {
+    padding: 5px;
+}
+
+select {
+    width: 100%;
+    border: none;
+    display: block;
+    padding: 8px 5px;
+    border: 1px solid rgb(146, 138, 163);
+    border-radius: 2px;
+    margin-top: 5px;
+    color: rgb(146, 138, 163);
+    font-family: "Bliss Pro";
+    font-size: 14px;
+    height: 45px;
+    padding-left: 12px;
+    font-weight: 300;
+    color: #aa9ec0;
+    border: 1px solid #aa9ec0;
+    text-transform: uppercase;
+}
+
+.radio-tile-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.input-container {
+    position: relative;
+}
+
+.radio-button {
+    opacity: 0;
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.radio-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    transition: transform 300ms ease;
+}
+
+.icon img {
+    width: 100%;
+}
+
+.radio-tile-label {
+    text-align: center;
+    font-size: 14px;
+    margin: 10px 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.radio-button:checked+.radio-tile .icon img,
+.radio-button:checked+.radio-tile .radio-tile-label {
+    color: #806ea0;
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    -ms-filter: grayscale(0%);
+    -o-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+
+.icon img,
+.icon .radio-tile-label {
+    fill: white;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    color: #8a8a8a;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.borderSides {
+    border-right: 1px solid #A9A9A9;
+    border-left: 1px solid #A9A9A9;
+    border-bottom: 1px solid #A9A9A9;
+}
+
+.borderSidesHeader {
+    border-right: 1px solid #A9A9A9;
+    border-left: 1px solid #A9A9A9;
+    border-top: 1px solid #A9A9A9;
+    border-bottom: 1px solid #A9A9A9;
+}
+
+.container {
+    float: left;
+    width: 75%;
+    padding: 10px 30px;
+}
+
+.spn-delimiter {
+    margin-top: 5px;
+    font-size: 13px;
+    color: red;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+::placeholder {
+    color: rgb(146, 138, 163);
+}
+
+.ocultar {
+    display: none;
+}
+
+.input-acc {
+    max-width: 150px !important;
+    margin: 0 auto;
+    display: block;
+}
+
+.filter {
+    width: 100%;
+    margin: 10px auto;
+    border-bottom: 1px solid rgb(84, 61, 129);
+    padding: 10px 0 15px;
+}
+
+.filter-row {
+    width: 100%;
+    display: flex;
+}
+
+.filter-row .filter-row-cell {
+    padding: 8px 5px;
+}
+
+.filter-row .filter-row-cell span {
+    width: 100%;
+    color: #2b0d61;
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    height: 24px;
+    line-height: 24px;
+}
+
+.t-search {
+    margin-left: 10px;
+    position: relative;
+    top: 2px;
+}
+
+.error-validate {
+    color: #aa9ec0 !important;
+    border-radius: 2px;
+}
+
+.error-validate::placeholder {
+    color: #aa9ec0 !important;
+}
+
+.pminima {
+    width: 90% !important;
+    float: right;
+}
+
+.chk input[type="checkbox"] {
+    position: absolute;
+    top: 66%;
+}
+
+.schk {
+    display: inline-block;
+    position: relative;
+    top: -4px;
+    padding: 0 5px;
+}
+
+.checkbox {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    display: inline-block;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+}
+
+.checkbox:after {
+    content: '';
+    position: absolute;
+    display: block;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #aa9ec0;
+    border-radius: 2px;
+}
+
+.checkbox[type=checkbox]:before {
+    background: #806ea0 url(assets/icons/check.png);
+    background-size: 10px 8px;
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    position: absolute;
+    left: 2px;
+    z-index: 2;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    color: #806ea0;
+}
+
+.checkbox[type=checkbox]:checked:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    opacity: 1;
+    left: 0px;
+    border: 1px solid #806ea0;
+    border-radius: 2px;
+}
+
+.checkbox:disabled {
+    background: #e6e6e6;
+}
+
+.filter input[type="date"] {
+    border: none;
+    border-radius: 2px;
+    padding: 6px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #aa9ec0;
+    color: #aa9ec0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+}
+
+.ng-select div,
+.ng-select input,
+.ng-select span {
+    text-transform: uppercase !important;
+}
+
+/* select:disabled {
+    background-color: rgb(235, 235, 228);
+} */
+
+.ctasa span {
+    margin: 3px 0;
+}
+
+span,
+textarea {
+    margin-top: 0.7em;
+    display: block;
+}
+
+.msg-error {
+    font-size: 14px;
+    color: red;
+}
+
+.grid {
+    width: 95%;
+    margin: 20px auto;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.grid table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grid table tr td {
+    padding: 15px 15px;
+    text-align: center;
+    color: rgb(146, 138, 163);
+}
+
+.grid table .grid-title td {
+    font-family: "Bliss Pro";
+    padding: 25px 15px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(42, 18, 99, 0.78);
+}
+
+.grid table tr td button {
+    border: none;
+    display: block;
+    padding: 7px 9px;
+    border-radius: 2px;
+    background: rgb(169, 157, 192);
+    color: #fff;
+    margin: 0 2px;
+    height: 30px;
+    width: 25px;
+    font-family: "Bliss Pro";
+}
+
+.grid table tr .flex {
+    display: flex;
+    justify-content: center;
+}
+
+.header-content {
+    width: 100%;
+    margin-top: 10px;
+    border-bottom: 1px solid rgb(109, 99, 129);
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0px;
+}
+
+.header-content .containt-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-content .header-item {
+    display: block;
+    padding: 5px 0;
+}
+
+.header-content .header-item .title {
+    color: #553d81;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 31px;
+    display: block;
+    margin-top: 8px;
+    margin-right: 18px;
+}
+
+.header-content .header-item button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #fff;
+    padding: 8px 5px;
+    min-width: 170px;
+    height: 45px;
+}
+
+.header-content .header-item button:hover {
+    cursor: pointer;
+}
+
+.header-content .header-item button span {
+    display: block;
+    margin-left: 10px;
+    font-weight: 600;
+    color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple {
+    background: #553d81;
+}
+
+.header-content .header-item .purple span {
+    color: #fff;
+}
+
+.header-content .rigth-item {
+    float: right;
+}
+
+.header-content .rigth-item {
+    float: right;
+}
+
+.rigth-item button img {
+    display: table-cell;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.full-color {
+    background: #553d81 !important;
+}
+
+.full-color span {
+    margin: 0 10px;
+    color: #fff !important;
+}
+
+button span {
+    margin: 0 10px;
+}
+
+.full-color img,
+button img {
+    display: table-cell;
+    margin-top: auto;
+    margin-bottom: auto;
+    align-items: center;
+}
+
+.riesgo td,
+.riesgo th {
+    padding: .2rem .2rem .6rem !important;
+}
+
+.btnCotiza-VL {
+    float: right;
+    background: #553d81;
+    border: 0;
+    color: #fff;
+    padding: 5px 15px;
+    align-items: center;
+}
+
+.file {
+    margin: 0.7em 0;
+}
+
+.header-content .header-item .full-color button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #553d81;
+    color: #fff;
+    padding: 8px 5px;
+    min-width: 177px;
+    height: 45px;
+    outline: none;
+}
+
+.input-date {
+    height: 45px;
+    width: fit-content;
+    display: inline-block;
+    border: 1px solid #aa9ec0;
+    border-radius: 2px;
+}
+
+.div-date {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.float-right {
+    margin-top: 10px;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #fff;
+    padding: 8px 5px;
+    max-width: 200px;
+    width: 100%;
+    height: 45px;
+    outline: none;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button span {
+    display: block;
+    margin-left: 10px;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: rgb(83, 66, 121);
+}
+
+span {
+    font-size: 14px;
+}
+
+.loadingScreen {
+    opacity: 0.7;
+    transition: opacity .8s ease-in-out;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 10000000000;
+}
+
+.tblbroker label {
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.tblbroker thead {
+    border-bottom: 1px solid #ddd;
+}
+
+.tblbroker tbody tr {
+    margin-top: 10px;
+}
+
+.tblTasas label {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.tblTasas thead {
+    border-bottom: 1px solid #ddd;
+}
+
+.tblTasas tbody tr {
+    margin-top: 10px;
+}
+
+/*/*/
+
+.btn-danger:not(:disabled):not(.disabled).active,
+.btn-danger:not(:disabled):not(.disabled):active,
+.show>.btn-danger.dropdown-toggle {
+    color: #fff;
+    background-color: #bd2130;
+    border-color: #b21f2d;
+    padding: 5px;
+    min-width: 155px;
+    height: 35px;
+    outline: none;
+}
+
+input[type='text'],
+input[type='password'],
+textarea,
+label,
+.ng-placeholder,
+select,
+textarea {
+    text-transform: uppercase;
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    margin-top: 9.79688px;
+    margin-bottom: 0px;
+    min-height: 100px;
+    max-height: 100px;
+}
+
+
+.checkbox:disabled {
+    background: #e6e6e6;
+}
+
+.widthDeclareTasa {
+    width: 45%;
+}
+
+.prTasas {
+    padding-right: 20px;
+}

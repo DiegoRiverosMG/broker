@@ -1,0 +1,1285 @@
+<div class="content-all scroll">
+  <app-nav-menuprod></app-nav-menuprod>
+  <div class="content">
+    <div class="header-u">
+      <h1 class="title-u">Bandeja de Trámites</h1>
+      <div ngbDropdown placement="bottom-right">
+        <button
+          class="btn-primary-u btn-new"
+          tabindex="0"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          ngbDropdownToggle
+        >
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          Nuevo trámite
+        </button>
+        <ul
+          class="dropdown-u dropdown-new-procedure"
+          display="dynamic"
+          ngbDropdownMenu
+        >
+          <li class="dropdown-item-u" *ngFor="let data of transactTypes$">
+            <button
+              class="dropdown-item-btn-u"
+              (click)="navigateNuevoTramite(data.idTipoTramite)"
+            >
+              <i [class]="'fa ' + data.icono" aria-hidden="true"></i>
+              {{ data.tipoTramite }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <form class="filters" [formGroup]="form">
+      <label
+        for="f-channel-name"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['channelCode'].value"
+        aria-placeholder="CANAL DE VENTA:"
+      >
+        <select
+          id="f-channel-name"
+          class="input-u"
+          formControlName="channelCode"
+        >
+          <option [value]="null" disabled hidden selected>SELECCIONE</option>
+          <ng-container *ngIf="!channelSales$.length">
+            <option [value]="null" disabled>No hay resultados</option>
+          </ng-container>
+          <ng-container *ngIf="channelSales$.length">
+            <option [value]="0" *ngIf="channelSales$.length > 1">TODOS</option>
+            <option [value]="data.id" *ngFor="let data of channelSales$">
+              {{ data.description }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+      <label
+        for="f-process-id"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['transactId'].value"
+        aria-placeholder="ID TRÁMITE:"
+      >
+        <input
+          type="text"
+          id="f-process-id"
+          class="input-u"
+          formControlName="transactId"
+        />
+      </label>
+      <label
+        for="f-policy"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['policy'].value"
+        aria-placeholder="POR PÓLIZA:"
+      >
+        <input
+          type="text"
+          id="f-policy"
+          class="input-u"
+          formControlName="policy"
+          [maxlength]="10"
+        />
+      </label>
+      <label
+        for="f-placa"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['licensePlate'].value"
+        aria-placeholder="POR PLACA:"
+      >
+        <input
+          type="text"
+          id="f-placa"
+          class="input-u"
+          formControlName="licensePlate"
+          [maxlength]="7"
+        />
+      </label>
+      <label
+        for="f-startdate"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['startDate'].value"
+        aria-placeholder="FECHA INICIO:"
+      >
+        <input
+          type="text"
+          id="f-startdate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="startDate"
+        />
+      </label>
+      <label
+        for="f-enddate"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['endDate'].value"
+        aria-placeholder="FECHA FIN:"
+      >
+        <input
+          type="text"
+          id="f-enddate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="endDate"
+        />
+      </label>
+      <label
+        for="f-prodcedure-type"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['transactTypeId'].value"
+        aria-placeholder="TIPO DE TRÁMITE:"
+      >
+        <select
+          id="f-prodcedure-type"
+          class="input-u"
+          formControlName="transactTypeId"
+        >
+          <option [value]="null" disabled hidden selected>SELECCIONE</option>
+          <ng-container *ngIf="!transactTypes$.length">
+            <option [value]="null" disabled>No hay resultados</option>
+          </ng-container>
+          <ng-container *ngIf="transactTypes$.length">
+            <option [value]="0">TODOS</option>
+            <option
+              [value]="data.idTipoTramite"
+              *ngFor="let data of transactTypes$"
+            >
+              {{ data.tipoTramite }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+      <label
+        for="f-state"
+        class="placeholder-u"
+        [class.placeholder-active-u]="f['stateId'].value"
+        aria-placeholder="ESTADO:"
+      >
+        <select id="f-state" class="input-u" formControlName="stateId">
+          <option [value]="null" disabled hidden selected>SELECCIONE</option>
+          <ng-container *ngIf="!transactStates$.length">
+            <option [value]="null" disabled>No hay resultados</option>
+          </ng-container>
+          <ng-container *ngIf="transactStates$.length">
+            <option [value]="0">TODOS</option>
+            <option
+              *ngFor="let data of transactStates$"
+              [value]="data.idEstado"
+            >
+              {{ data.estado }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+    </form>
+    <div class="content-actions">
+      <button class="btn-secondary-u" (click)="resetForm()">Limpiar</button>
+      <button
+        class="btn-primary-u btn-new btn-buscar"
+        (click)="listadoTramites(true)"
+      >
+        Buscar
+      </button>
+    </div>
+    <div class="divider"></div>
+    <section class="content-table">
+      <table class="table tbl">
+        <thead class="tbl__head">
+          <tr class="tbl__head--row">
+            <th class="tbl__head--row-item">ID Trámite</th>
+            <th class="tbl__head--row-item">Canal</th>
+            <th class="tbl__head--row-item">Póliza</th>
+            <th class="tbl__head--row-item">Placa</th>
+            <ng-container *ngIf="isOperaciones">
+              <th class="tbl__head--row-item">Segmento</th>
+              <th class="tbl__head--row-item">SLA</th>
+            </ng-container>
+            <th class="tbl__head--row-item">Tipo de Trámite</th>
+            <th class="tbl__head--row-item">Fecha de Trámite</th>
+            <th class="tbl__head--row-item">Estado</th>
+            <th class="tbl__head--row-item">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="tbl__body">
+          <ng-container *ngIf="!proceduresData$.length">
+            <tr class="tbl__body--row">
+              <td class="tbl__body--row-item" colspan="9">
+                No se encontraron resultados
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="proceduresData$.length">
+            <tr
+              class="tbl__body--row"
+              *ngFor="
+                let data of proceduresData$
+                  | paginate
+                    : {
+                        itemsPerPage: 10,
+                        currentPage: p,
+                        totalItems: proceduresData$[0]?.cantidadRegistros,
+                        id: 'bdj'
+                      };
+                let index = index
+              "
+            >
+              <td class="tbl__body--row-item tbl-process-id">
+                {{ data.idTramite }}
+              </td>
+              <td class="tbl__body--row-item tbl-channel-name">
+                {{ data.canal }}
+              </td>
+              <td class="tbl__body--row-item tbl-policy">{{ data.poliza }}</td>
+              <td class="tbl__body--row-item tbl-placa">{{ data.placa }}</td>
+              <ng-container *ngIf="isOperaciones">
+                <td class="tbl__body--row-item tbl-placa">
+                  {{ data.segmento }}
+                </td>
+                <td class="tbl__body--row-item tbl-placa">{{ data.sla }}</td>
+              </ng-container>
+              <td class="tbl__body--row-item tbl-type">
+                {{ data.tipoTramite }}
+              </td>
+              <td class="tbl__body--row-item tbl-type">
+                {{ data.fechaTramite }}
+              </td>
+              <td class="tbl__body--row-item tbl-state">
+                <span class="tbl-state-desc">{{ data.estadoTramite }}</span>
+              </td>
+              <td
+                class="tbl__body--row-item"
+                ngbDropdown
+                [placement]="
+                  index > proceduresData$?.length / 2
+                    ? 'top-right'
+                    : 'bottom-right'
+                "
+              >
+                <ng-container *ngIf="!isOperaciones">
+                  <button
+                    class="btn-dropdown-u"
+                    tabindex="0"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                  <ul class="dropdown-u" display="dynamic" ngbDropdownMenu>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="openModalProcedure(data)"
+                      >
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        Ver trámite
+                      </button>
+                    </li>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="getRecord(data)"
+                      >
+                        <i class="fa fa-history" aria-hidden="true"></i>
+                        Ver historial
+                      </button>
+                    </li>
+                    <li
+                      class="dropdown-item-u"
+                      *ngIf="data.idEstadoTramite == 2"
+                    >
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="openModalConfirmCancelTransact(data)"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        Cancelar
+                      </button>
+                    </li>
+                  </ul>
+                </ng-container>
+                <ng-container *ngIf="isOperaciones">
+                  <button
+                    class="btn-dropdown-u"
+                    tabindex="0"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                  <ul class="dropdown-u" display="dynamic" ngbDropdownMenu>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="tbl-btn-action"
+                        (click)="openModalProcedure(data)"
+                        *ngIf="data.idEstadoTramite == 2"
+                      >
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        Atender
+                      </button>
+                    </li>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="openModalProcedure(data)"
+                        *ngIf="
+                          data.idEstadoTramite == 3 ||
+                          data.idEstadoTramite == 4 ||
+                          data.idEstadoTramite == 5
+                        "
+                      >
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        Ver trámite
+                      </button>
+                    </li>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="getRecord(data)"
+                      >
+                        <i class="fa fa-history" aria-hidden="true"></i>
+                        Ver historial
+                      </button>
+                    </li>
+                  </ul>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </section>
+    <div class="content-pagination">
+      <pagination-controls
+        class="my-pagination"
+        id="bdj"
+        autoHide="true"
+        responsive="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        screenReaderPaginationLabel="Paginación"
+        screenReaderPageLabel="pagina"
+        screenReaderCurrentLabel="Estás en la pagina"
+        (pageChange)="currentPage = $event"
+      >
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+<ng-template #modalProcedure>
+  <div class="content-modal-u">
+    <div class="modal-u mp">
+      <div class="modal__header">
+        <h6 class="modal__header--title">
+          Trámite N° {{ selectedProcess.idTramite }}
+        </h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <ng-container
+          *ngIf="dataTransactSelected$?.datosVigentes?.siniestroso == '1'"
+        >
+          <div class="siniestro mp-content-info">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <p>Este trámite se generó con un contratante siniestroso.</p>
+          </div>
+        </ng-container>
+        <div class="mp-content-info">
+          <!-- *DATOS DE LA POLIZA -->
+          <div class="mp-group">
+            <h6
+              class="mp-subtitle arrow-right"
+              [class.mp-subtitle-active]="mpGroupSelected == 1"
+              role="button"
+              (click)="mpGroupSelected = 1"
+            >
+              Datos de la póliza {{ selectedProcess?.poliza }}
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </h6>
+            <!-- <ng-container
+                *ngIf="
+                  mpGroupSelected == 1 && selectedProcess?.idTipoTramite != 1
+                "
+              >
+                <div class="mp-info" @fade>
+                  <div class="mp-info-group">
+                    <span class="mp-ig-span bold">Vigencia</span>
+                    <span class="mp-ig-span"
+                      >{{ dataTransactSelected$?.detalle[0].fechaInicio }} -
+                      {{ dataTransactSelected$?.detalle[0].fechaFin }}</span
+                    >
+  
+                    <span class="mp-ig-span bold">Prima</span>
+                    <span class="mp-ig-span"
+                      >S/.
+                      {{
+                        dataTransactSelected$?.detalle[0].prima | number : "1.2-2"
+                      }}</span
+                    >
+  
+                    <span class="mp-ig-span bold">Canal de venta</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].canal
+                    }}</span>
+                  </div>
+                </div>
+              </ng-container> -->
+            <ng-container
+              *ngIf="
+                mpGroupSelected == 1 && selectedProcess?.idTipoTramite == 1
+              "
+            >
+              <div class="comparission" @fade>
+                <table class="mp-info-group">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Versión vigente</th>
+                      <th>Versión solicitada</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Inicio de Vigencia</td>
+                      <td>
+                        {{
+                          dataTransactSelected$?.datosVigentes
+                            ?.fechaInicioVigencia
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.fechaInicioVigencia || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Fin de Vigencia</td>
+                      <td>
+                        {{
+                          dataTransactSelected$?.datosVigentes?.fechaFinVigencia
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.fechaFinVigencia || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Prima</td>
+                      <td>
+                        {{
+                          "S/." +
+                            (dataTransactSelected$?.datosVigentes?.prima || 0
+                              | number : "1.2-2")
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$?.datosSolicitados?.prima
+                            ? "S/." +
+                              (dataTransactSelected$?.datosSolicitados?.prima ||
+                                0 | number : "1.2-2")
+                            : "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Canal</td>
+                      <td>
+                        {{ dataTransactSelected$?.datosVigentes?.canal }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.canal || "-"
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+          </div>
+          <!-- *DATOS DEL VEHICULO -->
+          <div class="mp-group">
+            <h6
+              class="mp-subtitle arrow-right"
+              [class.mp-subtitle-active]="mpGroupSelected == 2"
+              role="button"
+              (click)="mpGroupSelected = 2"
+            >
+              Datos del vehículo
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </h6>
+            <!-- <ng-container
+                *ngIf="
+                  mpGroupSelected == 2 && selectedProcess?.idTipoTramite != 1
+                "
+              >
+                <div class="mp-info" @fade>
+                  <div class="mp-info-group">
+                    <span class="mp-ig-span bold">Placa</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].placa
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Marca</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].marca
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Uso</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].uso
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Modelo</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].modelo
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Clase</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].clase
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Nro serie</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].serie
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Año</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].anio
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Asientos</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].asientos
+                    }}</span>
+                  </div>
+                </div>
+              </ng-container> -->
+            <ng-container
+              *ngIf="
+                mpGroupSelected == 2 && selectedProcess?.idTipoTramite == 1
+              "
+            >
+              <div class="comparission" @fade>
+                <table class="mp-info-group">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Versión vigente</th>
+                      <th>Versión solicitada</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Placa</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.placa }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.placa || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Uso</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.uso }}
+                      </td>
+                      <td>
+                        {{ dataTransactSelected$.datosSolicitados?.uso || "-" }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Clase</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.clase }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.clase || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Año</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.anio }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.anio || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Marca</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.marca }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.marca || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Modelo</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.version }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.version || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Serie</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.serie }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.serie || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Asientos</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.asientos }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.asientos ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+          </div>
+          <!-- *DATOS DEL CONTRATANTE -->
+          <div class="mp-group">
+            <h6
+              class="mp-subtitle arrow-right"
+              [class.mp-subtitle-active]="mpGroupSelected == 3"
+              role="button"
+              (click)="mpGroupSelected = 3"
+            >
+              Datos del contratante
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </h6>
+            <!-- <ng-container
+                *ngIf="
+                  mpGroupSelected == 3 && selectedProcess?.idTipoTramite != 1
+                "
+              >
+                <div class="mp-info" @fade>
+                  <div class="mp-info-group">
+                    <span class="mp-ig-span bold">Documento</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].poliza
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Departamento</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].departamento
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Contratante</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].contratante
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Provincia</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].provincia
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Dirección</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].direccion
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Distrito</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].distrito
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Nro celular</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].telefono
+                    }}</span>
+  
+                    <span class="mp-ig-span bold">Correo electrónico</span>
+                    <span class="mp-ig-span">{{
+                      dataTransactSelected$?.detalle[0].correo
+                    }}</span>
+                  </div>
+                </div>
+              </ng-container> -->
+            <ng-container
+              *ngIf="
+                mpGroupSelected == 3 && selectedProcess?.idTipoTramite == 1
+              "
+            >
+              <div class="comparission" @fade>
+                <table class="mp-info-group">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Versión vigente</th>
+                      <th>Versión solicitada</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Tipo de Documento</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.tipoDocumento }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.tipoDocumento || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Número de Documento</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.numeroDocumento
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.numeroDocumento || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Razón Social</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.razonSocial ||
+                            "-"
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.razonSocial ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Apellido Paterno</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.apelidoPaterno ||
+                            "-"
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.apellidoPaterno || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Apellido Materno</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.apelidoMaterno ||
+                            "-"
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.apellidoMaterno || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Nombres</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.nombres || "-"
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.nombres || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Departamento</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.departamento }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados
+                            ?.departamento || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Provincia</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.provincia }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.provincia ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Distrito</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.distrito }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.distrito ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Dirección</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.direccion }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.direccion ||
+                            "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Celular</td>
+                      <td>
+                        {{ dataTransactSelected$.datosVigentes?.celular }}
+                      </td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosSolicitados?.celular || "-"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Correo electrónico</td>
+                      <td>
+                        {{
+                          dataTransactSelected$.datosVigentes?.correo
+                            | lowercase
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          (dataTransactSelected$.datosSolicitados?.correo
+                            | lowercase) || "-"
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <!-- *TIPO ANULACIÓN -->
+        <ng-container *ngIf="selectedProcess?.idTipoTramite != 1">
+          <div class="cancellation">
+            <h6 class="cancellation-title">
+              Tipo de anulación: Por error de emisión
+            </h6>
+            <textarea class="input-u cancellation-input"></textarea>
+
+            <div class="content-checkbox-u content-credit-note" *ngIf="false">
+              <input type="checkbox" id="chk-credit-note" class="checkbox-u" />
+              <label class="checkbox-label-u orange" for="chk-credit-note">
+                Generar nota de crédito
+              </label>
+            </div>
+          </div>
+        </ng-container>
+        <!-- *ANULACIÓN -->
+        <ng-container
+          *ngIf="selectedProcess?.idTipoTramite == 2 && isOperaciones"
+        >
+          <div class="mp-group">
+            <h6 class="mp-subtitle">Atención de Anulación</h6>
+            <div class="mp-info content-anulacion">
+              <div class="mp-info-group anullation-group">
+                <span class="mp-ig-span bold">Motivo</span>
+                <select class="input-u">
+                  <option value="null" selected disabled hiddden>Motivo</option>
+                </select>
+              </div>
+              <div class="mp-info-group anullation-group">
+                <span class="mp-ig-span bold">Fecha de Anulación</span>
+                <input
+                  type="text"
+                  class="input-u"
+                  id="cancellation-date"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <span class="mp-subtitle" *ngIf="selectedProcess?.idTipoTramite == 1">
+          Resumen de archivos
+        </span>
+        <div
+          class="mp-content-table"
+          *ngIf="selectedProcess?.idTipoTramite == 1"
+        >
+          <table class="mp-tbl-files">
+            <thead>
+              <tr>
+                <th>Tipo de documento</th>
+                <th>Obligatorio</th>
+                <th>Documento</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let data of dataTransactSelected$?.adjuntos;
+                  let index = index
+                "
+              >
+                <td>{{ data.tipoDocumento }}</td>
+                <td>
+                  {{ data.obligatorio }}
+                </td>
+                <td>
+                  <span class="file-name">{{ data.nombreArchivo }}</span>
+                </td>
+                <td>
+                  <button
+                    class="tbl-btn-action btn-download"
+                    (click)="downloadFileTransact(data)"
+                  >
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    Descargar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <ng-container *ngIf="isOperaciones">
+          <ng-container
+            *ngIf="
+              selectedProcess?.idTipoTramite == 1 &&
+              selectedProcess?.idEstadoTramite == 2
+            "
+          >
+            <button class="btn-secondary-u" (click)="openModalReject()">
+              <i class="fa fa-times" aria-hidden="true"></i>
+              Rechazar
+            </button>
+            <button
+              class="btn-primary-u purple"
+              (click)="openModalConfirmAceptTransact()"
+              *ngIf="dataTransactSelected$?.datosVigentes?.siniestroso == '0'"
+            >
+              <i class="fa fa-check" aria-hidden="true"></i>
+              Aprobar
+            </button>
+          </ng-container>
+          <ng-container
+            *ngIf="
+              selectedProcess?.idTipoTramite == 2 &&
+              selectedProcess?.idEstadoTramite != 2
+            "
+          >
+            <button class="btn-primary-u fit-content purple">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              Enviar a mi correo
+            </button>
+            <button class="btn-secondary-u fit-content">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              Enviar al correo del canal de venta
+            </button>
+            <button class="btn-secondary-u fit-content">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              Enviar al correo del cliente
+            </button>
+          </ng-container>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            !isOperaciones ||
+            (selectedProcess?.idEstadoTramite != 2 && isOperaciones)
+          "
+        >
+          <button
+            class="btn-primary-u fit-content purple"
+            (click)="closeModal()"
+          >
+            Cerrar
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalSendOperations>
+  <div class="content-modal-u">
+    <div class="modal-u mso">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Enviar a operaciones</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="modal___body--desc">
+          ¿Estás seguro(a) de enviar este trámite al área de Operaciones?
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-secondary-u purple" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="btn-primary-u purple" (click)="sendToOperations()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalHistory>
+  <div class="content-modal-u">
+    <div class="modal-u mh">
+      <div class="modal__header">
+        <h6 class="modal__header--title">
+          Historial de Trámite: {{ selectedProcess.idTramite }}
+        </h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="mh-content-table">
+          <table class="mh-table">
+            <thead>
+              <tr>
+                <th>Secuencia</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Comentario</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of transactRecord$; let index = index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ data.estado }}</td>
+                <td>{{ data.fecha }}</td>
+                <td>{{ data.usuario }}</td>
+                <td>{{ data.comentario || "-" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u purple btn-history" (click)="closeModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalConfirmAceptTransact>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje de confirmación</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">¿Está seguro que desea aprobar este trámite?</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u mr-3" (click)="aceptTransact()">
+          Aceptar
+        </button>
+        <button class="btn-secondary-u" (click)="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalConfirmRejectTransact>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje de confirmación</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">¿Está seguro que desea rechazar este trámite?</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u mr-3" (click)="rejectTransact()">
+          Aceptar
+        </button>
+        <button class="btn-secondary-u" (click)="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalConfirmCancelTransact>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje de confirmación</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="paragraph">¿Está seguro que desea cancelar el trámite?</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u mr-3" (click)="cancelTransact()">
+          Aceptar
+        </button>
+        <button class="btn-secondary-u" (click)="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalMessage>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="moda__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="d-flex justify-content-center mb-2">
+          <ng-container *ngIf="isMessageValid">
+            <img
+              src="assets/backoffice/check-success.png"
+              alt="image succes"
+              width="120px"
+              height="120px"
+            />
+          </ng-container>
+          <ng-container *ngIf="!isMessageValid">
+            <img
+              src="assets/backoffice/check-error.png"
+              alt="image succes"
+              width="120px"
+              height="120px"
+            />
+          </ng-container>
+        </div>
+        <p class="paragraph">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u" (click)="closeModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalMotiveReject>
+  <div class="content-modal-u">
+    <div class="modal-u mr">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Rechazar solicitud</h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <form class="modal__body" [formGroup]="formMotiveReject">
+        <label class="placeholder-u mb-3" aria-placeholder="Motivo rechazo">
+          <select class="input-u" formControlName="motive">
+            <ng-container *ngIf="!rejectTypes$.length">
+              <option [value]="null">No se encontraron resultados</option>
+            </ng-container>
+            <ng-container *ngIf="rejectTypes$.length">
+              <option [value]="null">Seleccione</option>
+              <option *ngFor="let data of rejectTypes$" [value]="data.idMotivo">
+                {{ data.motivo }}
+              </option>
+            </ng-container>
+          </select>
+        </label>
+        <label
+          for="motive-text"
+          class="placeholder-u"
+          aria-placeholder="Observación"
+        >
+          <textarea
+            class="input-u"
+            id="motive-text"
+            formControlName="observation"
+          ></textarea>
+        </label>
+      </form>
+      <div class="modal__footer">
+        <button
+          class="btn-primary-u mr-3"
+          (click)="rejectTransact()"
+          [disabled]="formMotiveReject.invalid"
+        >
+          Aceptar
+        </button>
+        <button class="btn-secondary-u" (click)="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

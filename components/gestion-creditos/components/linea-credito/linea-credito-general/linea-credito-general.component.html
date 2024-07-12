@@ -1,0 +1,340 @@
+<section>
+  <div class="content__actions">
+    <div class="content__actions--left">
+      <h2 class="subtitle">Línea de crédito general</h2>
+    </div>
+    <div class="content__actions--right">
+      <button
+        class="button-default secondary"
+        [disabled]="!this.salesChannelsFiltered$.length"
+        (click)="downloadExcel()"
+      >
+        <i class="fa fa-download" aria-hidden="true"></i>
+        Descargar excel
+      </button>
+    </div>
+  </div>
+  <form class="content__search" [formGroup]="formFilter">
+    <pro-input-field
+      placeholder="BÚSQUEDA:"
+      inputPlaceholder="Ingrese un criterio de búsqueda"
+      formControlName="search"
+    >
+    </pro-input-field>
+    <label class="content-check" for="form-credit">
+      <input type="checkbox" id="form-credit" formControlName="credit" />
+      <span class="chkcredito">Solo c/crédito</span>
+    </label>
+  </form>
+  <hr class="divider" />
+  <div class="content-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Código</th>
+          <th scope="col">Canal de venta</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Propuesta</th>
+          <th scope="col">Facturación nocturna</th>
+          <th scope="col">Monto crédito</th>
+          <th scope="col">Días crédito</th>
+          <th scope="col">Deuda</th>
+          <th scope="col">Días no reportados</th>
+          <th scope="col">Bloqueado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="!salesChannelsFiltered$.length">
+          <tr class="no-hover">
+            <td colspan="11">No se encontraron resultados</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="salesChannelsFiltered$.length">
+          <tr
+            *ngFor="
+              let item of salesChannelsFiltered$
+                | paginate
+                  : {
+                      id: 'table-sales-channels',
+                      itemsPerPage: 10,
+                      totalItems: salesChannelsFiltered$.length,
+                      currentPage: currentPage
+                    };
+              let index = index
+            "
+            [class.locked]="item.bloqueado == 1"
+          >
+            <td>{{ item.codigoCanal }}</td>
+            <td [attr.title]="item.cliente" [innerHTML]="item.cliente"></td>
+            <td>{{ item.tipoCanal }}</td>
+            <td>{{ item.aplicaCredito == 1 ? "CRÉDITO" : "CONTADO" }}</td>
+            <td>{{ item.generaComprobante == 1 ? "SÍ" : "NO" }}</td>
+            <td>{{ item.montoCredito | number : "1.2-2" }}</td>
+            <td>{{ item.diasCredito }}</td>
+            <td>{{ item.montoDeuda | number : "1.2-2" }}</td>
+            <td>{{ item.diasNoReportados }}</td>
+            <td>{{ item.bloqueado == 1 ? "SÍ" : "NO" }}</td>
+            <td class="dropdown">
+              <div
+                ngbDropdown
+                [placement]="index > 5 ? 'top-right' : 'bottom-right'"
+              >
+                <button
+                  class="dropdown__button"
+                  ngbDropdownToggle
+                  [disabled]="!isAuthorized"
+                >
+                  <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                </button>
+                <ul class="dropdown__list" ngbDropdownMenu>
+                  <li>
+                    <button (click)="openModalConfiguration(item)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                      Editar
+                    </button>
+                  </li>
+                  <li>
+                    <button (click)="showModalHistory(item)">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                      Ver Historial
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <pagination-controls
+    id="table-sales-channels"
+    [autoHide]="true"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    responsive="true"
+    (pageChange)="currentPage = $event"
+  ></pagination-controls>
+</section>
+
+<ng-template #modalConfiguration>
+  <div class="content-modal modal-config">
+    <section>
+      <div class="modal-header">
+        <h6>Configuración</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="Cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-configuration" [formGroup]="formConfiguration">
+          <!-- *Habilitar facturación nocturna -->
+          <label
+            for="form-enable-nightly-billing"
+            class="placeholder"
+            aria-placeholder="Habilitar facturación nocturna:"
+          >
+            <select
+              id="form-enable-nightly-billing"
+              formControlName="enableNightlyBilling"
+            >
+              <option value="0">NO</option>
+              <option value="1">SÍ</option>
+            </select>
+          </label>
+
+          <!-- *Habilitar VISA -->
+          <label
+            for="form-enable-visa"
+            class="placeholder"
+            aria-placeholder="Habilitar VISA:"
+          >
+            <select id="form-enable-visa" formControlName="enableVisa">
+              <option value="0">NO</option>
+              <option value="1">SÍ</option>
+              <option value="1">SÍ (TELEPAGO)</option>
+            </select>
+          </label>
+
+          <!-- *Habilitar PagoEfectivo -->
+          <label
+            for="form-enable-pago-efectivo"
+            class="placeholder"
+            aria-placeholder="Habilitar PagoEfectivo:"
+          >
+            <select
+              id="form-enable-pago-efectivo"
+              formControlName="enablePagoEfectivo"
+            >
+              <option value="0">NO</option>
+              <option value="1">SÍ</option>
+            </select>
+          </label>
+
+          <!-- *Propuesta -->
+          <label
+            for="form-porposal"
+            class="placeholder"
+            aria-placeholder="Propuesta:"
+          >
+            <select id="form-porposal" formControlName="proposal">
+              <option value="0">Contado</option>
+              <option value="1">Crédito</option>
+            </select>
+          </label>
+
+          <!-- *Monto de crédito -->
+          <label
+            for="form-credit-ammount"
+            class="placeholder"
+            aria-placeholder="Monto de crédito:"
+          >
+            <input
+              type="text"
+              id="form-credit-ammount"
+              [maxlength]="10"
+              formControlName="creditAmmount"
+            />
+          </label>
+
+          <!-- *Días de crédito -->
+          <label
+            for="form-credit-days"
+            class="placeholder"
+            aria-placeholder="Días de crédito:"
+          >
+            <input
+              type="text"
+              id="form-credit-days"
+              [maxlength]="5"
+              formControlName="creditDays"
+            />
+          </label>
+        </form>
+        <small class="has-error" *ngIf="messageInfo">
+          {{ messageInfo }}
+        </small>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default secondary"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          [disabled]="formConfiguration.invalid"
+          (click)="saveConfiguration()"
+        >
+          Grabar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalHistory>
+  <div class="content-modal modal-history">
+    <section>
+      <div class="modal-header">
+        <h6>
+          Historial línea de crédito general:
+          {{ creditRowSelected.codigoCanal }}
+        </h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body history__info">
+        <table class="table-u">
+          <thead>
+            <tr class="grid-title">
+              <th class="grid-title-item col-seq">N°</th>
+              <th class="grid-title-item col-est">Tipo</th>
+              <th class="grid-title-item col-fec">Canal de Venta</th>
+              <th class="grid-title-item col-com">Propuesta</th>
+              <th class="grid-title-item col-com">Facturación nocturna</th>
+              <th class="grid-title-item col-com">Monto de crédito</th>
+              <th class="grid-title-item col-com">Días crédito</th>
+              <th class="grid-title-item col-com">Pago Efectivo</th>
+              <th class="grid-title-item col-com">Visa</th>
+              <th class="grid-title-item col-usu">Fecha de registro</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-container *ngIf="!listCreditHistory$.length">
+              <tr>
+                <td colspan="11">No se encontraron resultados</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="listCreditHistory$.length">
+              <tr
+                *ngFor="
+                  let item of listCreditHistory$
+                    | paginate
+                      : {
+                          id: 'table-history',
+                          itemsPerPage: 10,
+                          totalItems: listCreditHistory$.length,
+                          currentPage: currentPageHistory
+                        };
+                  let index = index
+                "
+              >
+                <td class="data-table-tr-td">
+                  {{ (currentPageHistory - 1) * 10 + index + 1 }}
+                </td>
+                <td class="data-table-tr-td">{{ item.tipoCanal }}</td>
+                <td class="data-table-tr-td">{{ item.canal }}</td>
+                <td class="data-table-tr-td">{{ item.propuesta }}</td>
+                <td class="data-table-tr-td">{{ item.facturacionNocturna }}</td>
+                <td class="data-table-tr-td">
+                  {{ item.montoCredito | number : "1.2-2" }}
+                </td>
+                <td class="data-table-tr-td">{{ item.diasCredito }}</td>
+                <td class="data-table-tr-td">{{ item.pagoEfectivo }}</td>
+                <td class="data-table-tr-td">{{ item.visa }}</td>
+                <td class="data-table-tr-td">{{ item.fechaRegistro }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <pagination-controls
+        id="table-history"
+        [autoHide]="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        responsive="true"
+        (pageChange)="currentPageHistory = $event"
+      ></pagination-controls>
+      <div class="modal-footer">
+        <button
+          type="button"
+          role="button"
+          class="button-default"
+          (click)="closeModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

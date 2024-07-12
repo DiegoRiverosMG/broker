@@ -1,0 +1,67 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="text-transform: uppercase">{{tittle}}</h4>
+</div>
+
+<div class="modal-body p-3">
+  <div class="row">
+    <div class="col-sm-12 d-flex flex-row-reverse mr-2">
+      <div class="inline-block">
+        <div class="inline-block">
+          <button type="button" (click)="fileInput.click()">
+            <span>Seleccionar Archivo</span></button>
+
+          <input hidden #fileInput ngfSelect type="file" [(files)]="files" accept=".pdf, .jpg"
+            (filesChange)="seleccionArchivos()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr class="grid-title">
+          <th class="grid-title-item">USUARIO</th>
+          <th class="grid-title-item text-center">FECHA/HORA</th>
+          <th class="grid-title-item">Observaciones</th>
+          <th class="grid-title-item">NOMBRE DOC</th>
+          <th class="text-center">Tamaño</th>
+          <th class="text-center">Acción</th>
+          <th class="grid-title-item text-center" *ngIf="canCancelMovements || btnFacturarMovements">Acción</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td class="grid-body-item">
+            <span>{{this.data_policy[0].SUSUARIO}}</span>
+          </td>
+          <td class="grid-body-item">
+            <span class="text-center">{{dateToday}}</span>
+          </td>
+          <td class="grid-body-item">
+            <input type="text" placeholder="INGRESAR OBSERVACIÓN" [(ngModel)]="desc_observation">
+          </td>
+
+          <td *ngIf="files.length != 0">
+            <strong>{{ files[0].name }}</strong>
+          </td>
+          <td class="text-center" *ngIf="files.length != 0">
+            {{ files[0].size / 1024 / 1024 | number: ".2" }} MB
+          </td>
+          <td class="text-center" *ngIf="files.length != 0">
+            <img src="assets/icons/anular.png" (click)="files.splice(0, 1)" title="Eliminar" alt="Eliminar" />
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="d-flex flex-row">
+    <form-button label="ACEPTAR" class="pull-right" btnClass="btn-primary" (click)="sendData()"></form-button>
+    <form-button label="REGRESAR" (click)="reference.close()"></form-button>
+  </div>
+</div>

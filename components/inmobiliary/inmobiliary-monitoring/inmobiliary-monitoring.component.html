@@ -1,0 +1,132 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Monitoreo Carga Masiva Inmobiliaria</span>
+                    </div>
+                </div>
+            </div>
+          
+            <div>
+                    <div class="filter">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                       
+                                        <div  class="col-sm-3">
+                                            <span>SERVICIO</span>
+                                            <select [(ngModel)]="idRamo" name="idRamo" (change)="ChangeRamo()" class="minimal">
+                                            <option value="" selected>TODOS</option>
+                                            <option *ngFor="let item of listRamo" value="{{item.NBRANCH}}">
+                                                    {{item.SDESCRIPT}}</option>
+                                        </select>
+                                          </div>
+
+                                          <div  class="col-sm-3">
+                                            <span>TIPO DE SERVICIO</span>
+                                            <select [(ngModel)]="idProduct" name="idProduct" class="minimal">
+                                            <option value="" selected>TODOS</option>
+                                            <option *ngFor="let item of listProduct" value="{{item.NPRODUCT}}">
+                                                    {{item.SDESCRIPT}}</option>
+                                        </select>
+                                          </div>
+
+                                        <div class="col-sm-3">
+                                            <span>FECHA DE PROCESO</span>
+                                            <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker
+                                                [(bsValue)]="bsValueIni" value="{{ bsValueIni | date:'dd/MM/yyyy' }}" 
+                                                [(maxDate)]="bsValueFinMax" readonly>
+                                        </div>
+
+                                       
+                                        <div class="col-sm-3">
+                                            <span>&nbsp;</span>
+                                            <button class="full-color" (click)="GetProcessHeader()" style="margin-top: 5px;">
+                                                <span>Visualizar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            </div>
+     
+            <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                        <td class="grid-title-item ">ID</td>
+                                        <td class="grid-title-item ">SERVICIO</td>
+                                        <td class="grid-title-item">TIPO DE SERVICIO</td>
+                                        <td class="grid-title-item">PROCESO</td>
+                                    
+                                        <td class="grid-title-item text-center">INICIO</td>
+                                        <td class="grid-title-item text-center">FIN</td>
+                                        <td class="grid-title-item ">USUARIO</td>
+                                        <td class="grid-title-item">ESTADO</td>
+                                        <td class="grid-title-item">OPCIONES</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showGrid else hideGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr style="text-align: center;">
+                                    <td colspan="10">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody>
+                                <tr *ngFor="let item of listToShow; let row_no = index">
+                                    <td >{{ item.IdHeaderProcess }}</td>
+                                    <td >{{ item.DescriptionBranch }}</td>
+                                    <td >{{ item.DescriptionIdentity }}</td>
+                                    <td> {{ item.DescriptionFile }}</td>
+                                    
+                                    <td class="text-center">{{ item.DIniPorcess }}</td>
+                                    <td class="text-center">{{ item.DFinProcess }}</td>
+                                    <td >{{ item.UserCode }}</td>
+                                    <td >{{ item.DescriptionStatus }}</td>
+                                    <td>
+                                            <a (click)='OpenMovimiento(item)'><img alt="Editar" src="assets/icons/preview_soat_box.png"
+                                                title="Editar" style="cursor: pointer;height: 24px"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showPagination"></ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+
+
+                <div [hidden]="!isLoading" class="loadingScreen">
+                        <div style="display:flex;height: 100%;width:100%">
+                          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                        </div>
+                      </div>
+           
+
+        </div>
+    </div>
+</div>

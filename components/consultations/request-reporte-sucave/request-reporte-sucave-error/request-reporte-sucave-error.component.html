@@ -1,0 +1,68 @@
+<div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{opcDetalle}} Detalle  - {{ sProcess }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="reference.close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    
+            <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                        <td class="grid-title-item">ID</td>
+                                        <td class="grid-title-item">FILA</td>
+                                        <td class="grid-title-item">COLUMNA</td>
+                                        <td class="grid-title-item ">DESCRIPCION</td>
+                                        <td class="grid-title-item text-center">FECHA</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="processlogList!=null && processlogList.length>0; then showGrid else hideGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody>
+                                 <tr *ngFor="let item of listToShow; let row_no = index">
+                                    <td >{{ item.IdLogProcess }}</td>
+                                    <td >{{ item.RecordFile }}</td>
+                                    <td>{{ item.NameColumn }}</td>
+                                    <td>{{ item.DescriptionError }}</td>
+                                    <td class="text-center">{{ item.DateRegister }}</td>
+                                   
+                                 </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <ng-container *ngIf="processlogList!=null && processlogList.length>0; then showPagination"></ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+
+         
+          <div class="modal-footer">
+
+                <button (click)="reference.close()"><span>Volver</span></button>
+              </div>
+
+
+              <div [hidden]="!isLoading" class="loadingScreen">
+                    <div style="display:flex;height: 100%;width:100%">
+                      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                    </div>
+                  </div>

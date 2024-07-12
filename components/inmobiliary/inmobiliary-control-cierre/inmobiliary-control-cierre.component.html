@@ -1,0 +1,159 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">SEGUIMIENTO Y CONTROL</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2">
+                <span>TIPO DOCUMENTO</span>
+                <select class="form-control" [(ngModel)]="filters.P_NTYPCLIENTDOC">
+                    <option value="0">
+                        TODOS
+                    </option>
+                    <option *ngFor="let item of docs" value="{{ item.NTIPDOC }}">
+                        {{ item.STIPDOC_DES }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <span>NRO DOCUMENTO</span>
+                <input type="text" class="form-control" [(ngModel)]="filters.P_SCLINUMDOCU" />
+            </div>
+            <div class="col-sm-2">
+                <span>COD INMUEBLE</span>
+                <input type="text" class="form-control" [(ngModel)]="filters.P_SCOD_INTERNO" />
+            </div>
+            <div class="col-sm-2">
+                <span>ESTADO COMPROBANTE</span>
+                <select class="form-control" [(ngModel)]="filters.P_NBILLSTAT">
+                    <option value="0">
+                        TODOS
+                    </option>
+                    <option *ngFor="let item of estadosBills" value="{{ item.NBILLSTAT }}">
+                        {{ item.SDESCRIPT }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="getReport()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+            <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="exportReport()">
+                    <span>DESCARGAR</span>
+                </button>
+            </div>
+            <div class="col-sm-2">
+                <span>FECHA INICIO</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="filters.P_STARTDATE" (focus)="selDate()" />
+            </div>
+            <div class="col-sm-2">
+                <span>FECHA FIN</span>
+                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="filters.P_ENDDATE" (focus)="selDate()" />
+            </div>
+            <div class="col-sm-2">
+                <span>POR VENCER</span>
+                <select class="form-control" [(ngModel)]="filters.P_NPOR_VENCER" (focus)="selMonth()">
+                    <option value="0">
+                        TODOS
+                    </option>
+                    <option *ngFor="let item of porVencer" value="{{ item.NOPCION }}">
+                        {{ item.SOPCION_DES }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO INMUEBLE</td>
+                                    <td class="grid-title-item text-center">TIPO SERVICIO</td>
+                                    <td class="grid-title-item text-center">TIPO DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">NRO DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">RAZÓN SOCIAL / NOMBRE</td>
+                                    <td class="grid-title-item text-center">F. INICIO CONTRATO</td>
+                                    <td class="grid-title-item text-center">F. FIN CONTRATO</td>
+                                    <td class="grid-title-item text-center">NRO. COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">F. EMISIÓN COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">MONTO</td>
+                                    <td class="grid-title-item text-center">POR VENCER</td>
+                                    <td class="grid-title-item text-center">ESTADO COMPROBANTE</td>
+                                    <td class="grid-title-item text-center">ESTADO CONTRATO</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow == null || listToShow.length == 0; then hideGrid else showGrid;"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="13">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">{{ item.CODIGO_INMUEBLE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.TIPO_SERVICIO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.TIPO_DOCUMENTO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.NRO_DOCUMENTO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.RAZONSOCIAL_NOMBRE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.FCH_INI }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.FCH_FIN }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.NRO_COMPROBANTE }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.FCH_COMPROBANTE }}</td>
+                                    <td class="data-table-tr-td text-right">{{ item.MONTO }}</td>
+                                    <td class="data-table-tr-td text-center">{{ item.SPOR_VENCER }}</td>
+                                    <td class="data-table-tr-td text-left" style="width: 12%;">
+                                        <img *ngIf="item.ESTADO_COMPROBANTE_COLOR == 'G'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.ESTADO_COMPROBANTE_COLOR == 'R'" src="./assets/icons/process-error.png" />
+                                        &nbsp;{{ item.ESTADO_COMPROBANTE }}
+                                    </td>
+                                    <td class="data-table-tr-td text-left" style="width: 8%;">
+                                        <img *ngIf="item.ESTADO_CONTRATO_COLOR == 'Y'" src="./assets/icons/inProcess.png" />
+                                        <img *ngIf="item.ESTADO_CONTRATO_COLOR == 'G'" src="./assets/icons/process.png" />
+                                        <img *ngIf="item.ESTADO_CONTRATO_COLOR == 'R'" src="./assets/icons/process-error.png" />
+                                        &nbsp;{{ item.ESTADO_CONTRATO }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow != null && listToShow.length > 0" class="row" style="display: flex;">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%;">
+        <i style="margin: auto; font-size: 50px;" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

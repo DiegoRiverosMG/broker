@@ -1,0 +1,11 @@
+.panel-card {
+  
+}
+
+.panel-card .card {
+  margin-bottom: 1.5em;
+}
+
+.panel-card .card .card-body {
+  padding: 0.25rem 1.25rem 0.75rem;
+}

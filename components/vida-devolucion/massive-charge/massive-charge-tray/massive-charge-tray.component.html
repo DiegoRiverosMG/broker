@@ -1,0 +1,293 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 content">
+      <section class="header-u">
+        <div class="header__left">
+          <h1 class="title-u">Carga masiva de prospectos</h1>
+        </div>
+        <div class="header__right">
+          <button class="button-default" (click)="newMassiveCharge()">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Agregar carga masiva
+          </button>
+        </div>
+      </section>
+      <section class="section">
+        <form class="form" [formGroup]="formFilters">
+          <!-- *FILTRO CANAL DE VENTA -->
+          <label
+            for="f-sales-channel"
+            class="placeholder-u upper"
+            aria-placeholder="Canal de venta:"
+          >
+            <select formControlName="salesChannel" class="input-u">
+              <ng-container *ngIf="salesChannels$.length > 1">
+                <option [value]="0">TODOS</option>
+              </ng-container>
+              <option
+                *ngFor="let item of salesChannels$"
+                [value]="item.id"
+                [innerHTML]="item.description"
+              ></option>
+            </select>
+          </label>
+
+          <!-- *FILTRO PUNTO DE VENTA -->
+          <!-- <label
+            for="f-point-sale"
+            class="placeholder-u upper"
+            aria-placeholder="Punto de venta:"
+          >
+            <select formControlName="pointSale" class="input-u">
+              <ng-container *ngIf="pointsSale$.length > 1">
+                <option [value]="0">TODOS</option>
+              </ng-container>
+              <option
+                *ngFor="let item of pointsSale$"
+                [value]="item.id"
+                [innerHTML]="item.description"
+              ></option>
+            </select>
+          </label> -->
+
+          <!-- *FILTRO FECHA INICIO -->
+          <label
+            for="f-start-date"
+            class="placeholder-u upper"
+            aria-placeholder="Fecha inicio:"
+          >
+            <input
+              type="text"
+              id="f-start-date"
+              class="input-u"
+              readonly
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="startDateConfig"
+              formControlName="startDate"
+            />
+          </label>
+
+          <!-- *FILTRO FECHA FIN -->
+          <label
+            for="f-end-date"
+            class="placeholder-u upper"
+            aria-placeholder="Fecha fin:"
+          >
+            <input
+              type="text"
+              id="f-end-date"
+              class="input-u"
+              readonly
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="endDateConfig"
+              formControlName="endDate"
+            />
+          </label>
+
+          <!-- *FILTRO ID -->
+          <label
+            for="f-identifier"
+            class="placeholder-u upper"
+            aria-placeholder="ID Proceso:"
+          >
+            <input
+              type="text"
+              id="f-identifier"
+              class="input-u"
+              autocomplete="nope"
+              maxlength="10"
+              formControlName="processId"
+            />
+          </label>
+        </form>
+      </section>
+      <section class="section content-actions">
+        <button class="download-format" (click)="downloadRasterFormat()">
+          <i class="fa fa-download" aria-hidden="true"></i>
+          <span> Descargar formato </span>
+        </button>
+        <!-- *ACCIONES FORMULARIO -->
+        <div class="form__actions">
+          <button class="button secondary fit" (click)="resetFormFilters()">
+            Limpiar
+          </button>
+          <button class="button primary fit" (click)="onSearch(true)">
+            Buscar
+          </button>
+        </div>
+      </section>
+      <div class="divider"></div>
+      <section class="content-table">
+        <table class="table-u">
+          <thead>
+            <tr>
+              <th>ID Proceso</th>
+              <th>Canal de venta</th>
+              <th>Cantidad</th>
+              <th>Nombre de archivo</th>
+              <th>Fecha de registro</th>
+              <th>Usuario</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="!gridDataList$.length">
+              <tr>
+                <td colspan="7">No hay resultados para mostrar</td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="gridDataList$.length">
+              <tr
+                *ngFor="
+                  let item of gridDataList$
+                    | paginate
+                      : {
+                          id: 'grid-data-list',
+                          itemsPerPage: itemsPerPage,
+                          currentPage: currentPage,
+                          totalItems: gridDataList$.totalItems || 0
+                        };
+                  let index = index
+                "
+              >
+                <td>{{ item.idProceso }}</td>
+                <td [innerHTML]="item.canal"></td>
+                <td>{{ item.cantidad }}</td>
+                <td>
+                  {{ item.nombreArchivo }}
+                </td>
+                <td>{{ item.fechaRegistro }}</td>
+                <td>{{ item.usuario }}</td>
+                <td class="dropdown">
+                  <div
+                    ngbDropdown
+                    [placement]="index > 5 ? 'top-right' : 'bottom-right'"
+                  >
+                    <button
+                      tabindex="0"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      ngbDropdownToggle
+                    >
+                      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    </button>
+                    <ul display="dynamic" ngbDropdownMenu>
+                      <li>
+                        <button (click)="detail(item.idProceso)">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                          Detalle
+                        </button>
+                      </li>
+                      <li>
+                        <button (click)="history(item.idProceso)">
+                          <i class="fa fa-search" aria-hidden="true"></i>
+                          Historial
+                        </button>
+                      </li>
+                      <li>
+                        <button (click)="downloadExcel(item.idProceso)">
+                          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                          Descargar Excel
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <pagination-controls
+          id="grid-data-list"
+          [autoHide]="true"
+          nextLabel="Siguiente"
+          previousLabel="Anterior"
+        ></pagination-controls>
+      </section>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalNewMassiveCharge>
+  <div class="content-modal">
+    <section class="modal-massive-charge">
+      <div class="modal-header">
+        <h6>Nueva carga masiva</h6>
+        <button (click)="closeModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="form" [formGroup]="formMassiveCharge">
+          <div class="upload-file">
+            <input
+              type="file"
+              id="form-upload-file"
+              formControlName="file"
+              (change)="uploadFileMassiveCharge($event.target.files)"
+            />
+            <label for="form-upload-file">
+              <i class="fa fa-upload" aria-hidden="true"></i>
+              Adjuntar archivo
+            </label>
+            <span @fade>
+              {{ uploadedFileInfo?.fileName || "Seleccione un archivo" }}
+            </span>
+          </div>
+          <small class="has-error" *ngIf="messageError">{{
+            messageError
+          }}</small>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button-default"
+          [disabled]="formMassiveCharge.invalid"
+          (click)="validateFileMassiveCharge()"
+        >
+          Validar archivo
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalHistory>
+  <div class="content-modal">
+    <section class="modal-history">
+      <div class="modal-header">
+        <h6>Historial de carga masiva: {{ itemSelected }}</h6>
+        <button (click)="closeModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="content-table">
+          <table class="table-u">
+            <thead>
+              <tr>
+                <th>Índice</th>
+                <th>Estado</th>
+                <th>Usuario</th>
+                <th>Fecha de registro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of history$; let index = index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ item.estado }}</td>
+                <td>{{ item.usuario }}</td>
+                <td>{{ item.fechaRegistro }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default" (click)="closeModals()">Cerrar</button>
+      </div>
+    </section>
+  </div>
+</ng-template>

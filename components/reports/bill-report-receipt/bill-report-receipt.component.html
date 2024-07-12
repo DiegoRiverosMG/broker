@@ -1,0 +1,385 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">REPORTES DE FACTURAS Y RECIBOS</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item rigth-item">
+              <button (click)="openModal()">                    
+                  <span>FILTRO DE COLUMNAS</span>
+              </button>          
+          </div>
+          <div class="header-item rigth-item">
+              <button (click)="buscarPoliza()">
+                  <img alt="" src="assets/icons/buscar_certificado.png"
+                      style="position: relative; top: 4px;" />
+                  <span>Buscar</span>
+              </button>          
+          </div>
+          <div class="header-item rigth-item">
+              <button (click)="obtenerReporteExcel()">
+                  <img alt="" src="assets/icons/descargar.png" style="position: relative; top: 6px;" />
+                  <span>Descargar Excel</span>
+              </button>
+          </div>
+           <div class="header-item rigth-item">
+              <button (click)="resetForm()">
+                  <span>Limpiar</span>
+              </button>
+          </div>
+      </div>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+
+              <div class="col-sm-3">
+                  <span>RAMO</span>
+                  <select [disabled]="stateSearchPolicy" [(ngModel)]="InputsSearch.NBRANCH" class="minimal"
+                    (change)="SelectBranch()">
+                    <option *ngFor="let branch of branchList" value="{{branch.NBRANCH}}">
+                      {{branch.SDESCRIPT}}</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-3">
+                  <span>TIPO PRODUCTO</span>
+                  <select [disabled]="stateSearchPolicy" [(ngModel)]="InputsSearch.NPRODUCT" class="minimal">
+                    <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                      {{product.DES_PRODUCT}}</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-3">
+                  <span>NRO. PÓLIZA</span>
+                  <input type="text" placeholder="Nro. Póliza" [(ngModel)]="InputsSearch.NPOLICY"
+                    [disabled]="stateSearchNroPolicy" (ngModelChange)="changePolicy($event)"
+                    (keyup.enter)="buscarPoliza()" OnlyNumberDirective (keypress)="onKeyPress($event)" maxlength="10">
+                </div> 
+
+                <div class="col-sm-3">
+                  <span>TIPO DE PAGO</span>
+                  <select [(ngModel)]="InputsSearch.COD_FORMA_PAGO"
+                    [disabled]="stateSearchPolicy" class="minimal">
+                    <option value="0" selected>TODOS</option>
+                    <option *ngFor="let payState of payStateList" value="{{payState.COD_FORMA}}">
+                      {{payState.DES_FORMA}}</option>
+                  </select>
+
+                </div>
+              </div>
+
+            
+                        
+            <div class="row">
+
+              <div class="col-sm-3">
+                  <span>DESDE </span>
+                  <input type="text" #dp="bsDatepicker" (ngModelChange)="valInicio($event)" [bsConfig]="bsConfig"
+                    bsDatepicker [(bsValue)]="bsValueIni" [(ngModel)]="bsValueIni"
+                    value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [disabled]="stateSearchPolicy" #desde>
+                </div>
+
+                <div class="col-sm-3">
+                  <span>HASTA</span>
+                  <input type="text" [(ngModel)]="bsValueFin" [bsConfig]="bsConfig" #dp="bsDatepicker"
+                    (ngModelChange)="valFin($event)" bsDatepicker [(bsValue)]="bsValueFin"
+                    value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(minDate)]="bsValueFinMin"
+                    [disabled]="stateSearchPolicy" #hasta>
+                </div> 
+
+                <div class="col-sm-3">
+                  <span>ESTADO</span>
+                  <select [(ngModel)]="InputsSearch.COD_ESTADO_FACTURA"
+                    [disabled]="stateSearchPolicy" class="minimal">
+                    <option value="0" selected>TODAS</option>
+                    <option *ngFor="let state of billStateList" value="{{state.COD_ESTADO}}">
+                      {{state.DES_ESTADO}}</option>
+                  </select>
+
+                </div>
+              </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BÚSQUEDA POR CONTRATANTE</span>
+                <select [disabled]="stateSearch" (change)="onSelectTypeSearch()"
+                  [(ngModel)]="InputsSearch.P_TYPE_SEARCH">
+                  <option value="1" selected>Por Nro. de Documento</option>
+                  <option value="2">Por Nombres</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch" class="col-sm-3">
+                <span>TIPO DOCUMENTO</span>
+                <select [disabled]="stateSearch" [(ngModel)]="InputsSearch.NIDDOC_TYPE"
+                  (ngModelChange)="onSelectTypeDocument()" class="minimal">
+                  <option value="0" selected>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="!blockSearch" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="onSelectTypePerson()" [(ngModel)]="InputsSearch.P_PERSON_TYPE"
+                  [disabled]="stateSearch" class="minimal">
+                  <option value="1" selected>Persona Natural</option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch" class="col-sm-3">
+                <span>NRO. DOCUMENTO (*)</span>
+                <input type="text" placeholder="Nro Documento" [(ngModel)]="InputsSearch.SIDDOC"
+                  (keypress)="documentNumberKeyPress($event)" (keyup.enter)="buscarPoliza()" maxlength="11"
+                  [disabled]="stateSearch" (ngModelChange)="changeDoc($event)" />
+              </div>
+
+            </div>
+
+            <div class="row" *ngIf="!blockSearch">
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>NOMBRES</span>
+                <input type="text" placeholder="Nombres" [disabled]="stateSearch"
+                  (ngModelChange)="changeFirstName($event)" [(ngModel)]="InputsSearch.SFIRSTNAME"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="!blockDoc" class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" [disabled]="stateSearch"
+                  (ngModelChange)="changeContractor($event)" [(ngModel)]="InputsSearch.SLEGALNAME"
+                  (keyup.enter)="buscarPoliza()" LegalNameDirective />
+              </div>
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>APELLIDO PATERNO</span>
+                <input type="text" placeholder="Apellido Paterno" [disabled]="stateSearch"
+                  (ngModelChange)="changeLastName($event)" [(ngModel)]="InputsSearch.SLASTNAME"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="blockDoc" class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" [disabled]="stateSearch"
+                  (ngModelChange)="changeLastName2($event)" [(ngModel)]="InputsSearch.SLASTNAME2"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+            </div>
+            <hr>
+            <!--Buscar Broker-->
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BÚSQUEDA POR BROKER</span>
+                <select [disabled]="stateSearch" (change)="onSelectTypeSearch_BR()"
+                  [(ngModel)]="InputsSearch.P_TYPE_SEARCH_BR">
+                  <option value="1" selected>Por Nro. de Documento</option>
+                  <option value="2">Por Nombres</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch_BR" class="col-sm-3">
+                <span>TIPO DOCUMENTO </span>
+                <select [disabled]="stateSearch" [(ngModel)]="InputsSearch.NIDDOC_TYPE_BR"
+                  (ngModelChange)="onSelectTypeDocument_BR()" class="minimal">
+                  <option value="0" selected>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList_BR" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="!blockSearch_BR" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="onSelectTypePerson_BR()" [(ngModel)]="InputsSearch.P_PERSON_TYPE_BR"
+                  [disabled]="stateSearch" class="minimal">
+                  <option value="1" selected>Persona Natural</option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+
+              <div *ngIf="blockSearch_BR" class="col-sm-3">
+                <span>NRO. DOCUMENTO (*)</span>
+                <input type="text" placeholder="Nro Documento" [(ngModel)]="InputsSearch.SIDDOC_BR"
+                  (keypress)="documentNumberKeyPress($event)" (keyup.enter)="buscarPoliza()" maxlength="11"
+                  [disabled]="stateSearch" (ngModelChange)="changeDoc($event)" />
+              </div>
+
+            </div>
+
+            <div class="row" *ngIf="!blockSearch_BR">
+              <div *ngIf="blockDoc_BR" class="col-sm-3">
+                <span>NOMBRES</span>
+                <input type="text" placeholder="Nombres" [disabled]="stateSearch"
+                  (ngModelChange)="changeFirstName_BR($event)" [(ngModel)]="InputsSearch.SFIRSTNAME_BR"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="!blockDoc_BR" class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" [disabled]="stateSearch"
+                  (ngModelChange)="changeContractor_BR($event)" [(ngModel)]="InputsSearch.SLEGALNAME_BR"
+                  (keyup.enter)="buscarPoliza()" LegalNameDirective />
+              </div>
+              <div *ngIf="blockDoc_BR" class="col-sm-3">
+                <span>APELLIDO PATERNO</span>
+                <input type="text" placeholder="Apellido Paterno" [disabled]="stateSearch"
+                  (ngModelChange)="changeLastName_BR($event)" [(ngModel)]="InputsSearch.SLASTNAME_BR"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="blockDoc_BR" class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" [disabled]="stateSearch"
+                  (ngModelChange)="changeLastName2_BR($event)" [(ngModel)]="InputsSearch.SLASTNAME2_BR"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- <div class="grid form-group">
+          <div *ngIf="userType!=137" class="row">
+            <div class="col-sm-12" *ngIf="policyList.length > 0">
+              <div class="btn-group btn-group-toggle" style="float:right" data-toggle="buttons">
+                <label *ngIf="canRenovate" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 4)">
+                  <input type="radio" name="options"> Renovar
+                </label>
+                <label *ngIf="canEndorse && epsItem.STYPE == 1" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 6)">
+                  <input type="radio" name="options"> Endoso
+                </label>
+                <label *ngIf="canInclude" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 2)">
+                  <input type="radio" name="options"> Incluir
+                </label>
+                <label *ngIf="canExclude && epsItem.STYPE == 1" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 3)">
+                  <input type="radio" name="options"> Excluir
+                </label>
+                <label *ngIf="canNetear && epsItem.STYPE == 1" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 5)">
+                  <input type="radio" name="options"> Neteo
+                </label>
+                <label *ngIf="canNullify" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 1)">
+                  <input type="radio" name="options"> Anular
+                </label>
+                
+              </div>
+            </div>
+          </div> -->
+
+          <div class="grid form-group">
+            <div class="table-responsive">
+              <table class="table">
+                <thead > 
+                    <!-- *ngIf="this.codProducto == 3" -->
+                 
+                  <tr class="grid-title">                  
+                    <td [hidden]="!tableColumns[0].value" class="grid-title-item">Ramo</td>
+                    <td [hidden]="!tableColumns[1].value" class="grid-title-item" class="text-left">Producto</td>
+                    <td [hidden]="!tableColumns[2].value" class="grid-title-item">Tipo de documento</td>
+                    <td [hidden]="!tableColumns[3].value" class="grid-title-item">Doc. Contratante</td>
+                    <td [hidden]="!tableColumns[4].value" class="grid-title-item">Contratante</td>
+                    <td [hidden]="!tableColumns[5].value" class="grid-title-item">Nro Póliza</td>
+                    <td [hidden]="!tableColumns[6].value" class="grid-title-item">Tipo de Movimiento</td>
+                    <td [hidden]="!tableColumns[7].value" class="grid-title-item">Recibo</td>
+                    <td [hidden]="!tableColumns[8].value" class="text-center"class="grid-title-item text-center">Inicio de Vigencia</td>
+                    <td [hidden]="!tableColumns[9].value" class="grid-title-item text-center">Fin de Vigencia</td>
+                    <td [hidden]="!tableColumns[10].value" class="grid-title-item text-center">Broker</td>    
+                    <td [hidden]="!tableColumns[11].value" class="grid-title-item text-center">Tipo de Documento</td>
+                    <td [hidden]="!tableColumns[12].value" class="grid-title-item text-center">Serie Doc.</td>
+                    <td [hidden]="!tableColumns[13].value" class="grid-title-item text-center">Factura</td>
+                    <td [hidden]="!tableColumns[14].value" class="grid-title-item text-center">Fecha de emisión de Factura</td>
+                    <td [hidden]="!tableColumns[15].value" class="grid-title-item text-center">Fecha de Pago</td>
+                    <td [hidden]="!tableColumns[16].value" class="grid-title-item text-center" >Estado</td>
+                    <td [hidden]="!tableColumns[17].value" class="grid-title-item text-center">Prima Total</td>
+                    <td [hidden]="!tableColumns[18].value" class="grid-title-item text-center">Moneda</td>
+                    <td [hidden]="!tableColumns[19].value" class="grid-title-item text-center">Tipo de Pago</td>
+                    <td [hidden]="!tableColumns[20].value" class="grid-title-item text-center">Días de Crédito</td>
+                    <td [hidden]="!tableColumns[21].value" class="grid-title-item text-center">Creador de la venta</td>
+                  </tr>
+                </thead>
+                <ng-container *ngIf="policyList!=null && policyList.length>0; then showGrid else hideGrid">
+                </ng-container>
+              </table>
+            </div>
+            <ng-template #hideGrid>
+              <tbody>
+                <tr>
+                  <td colspan="15" class="text-center">
+                    No se encontraron registros
+                  </td>
+
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #showGrid>
+              <tbody>
+                <tr *ngFor="let item of listToShow; let row_no = index;">
+                  <td [hidden]="!tableColumns[0].value">{{ item.RAMO }}</td>
+                  <td [hidden]="!tableColumns[1].value">{{ item.PRODUCTO }}</td>
+                  <td [hidden]="!tableColumns[2].value">{{ item.TIPO_DOC }}</td>
+                  <td [hidden]="!tableColumns[3].value">{{ item.NRO_DOC_CONTR }}</td>
+                  <td [hidden]="!tableColumns[4].value">{{ item.RAZON_SOCIAL }}</td>
+                  <td [hidden]="!tableColumns[5].value">{{ item.NRO_POLIZA }}</td>
+                  <td [hidden]="!tableColumns[6].value">{{ item.TIPO_MOV }}</td>
+                  <td [hidden]="!tableColumns[7].value">{{ item.NRO_RECIBO }}</td>
+                  <td [hidden]="!tableColumns[8].value">{{ item.INICIO_DE_VIGENCIA }}</td>
+                  <td [hidden]="!tableColumns[9].value" class="text-center">{{ item.FIN_DE_VIGENCIA }}</td>
+                  <td [hidden]="!tableColumns[10].value">{{ item.INTERMEDIARIO }}</td>
+                  <td [hidden]="!tableColumns[11].value">{{ item.TIPO_COMPROBANTE }}</td>
+                  <td [hidden]="!tableColumns[12].value">{{ item.SERIE_DOC }}</td>
+                  <td [hidden]="!tableColumns[13].value">{{ item.NRO_DOC_FACTURA }}</td>
+                  <td [hidden]="!tableColumns[14].value">{{ item.FECHA_EMISION }}</td>
+                  <td [hidden]="!tableColumns[15].value">{{ item.FECHA_DE_PAGO }}</td>
+                  <td [hidden]="!tableColumns[16].value">{{ item.ESTADO }}</td>
+                  <td [hidden]="!tableColumns[17].value" class="text-center">{{item.PRIMA_TOTAL}}</td>
+                  <td [hidden]="!tableColumns[18].value">{{ item.MONEDA }}</td>
+                  <td [hidden]="!tableColumns[19].value" >{{ item.TIPO_DE_PAGO }}</td>
+                  <td [hidden]="!tableColumns[20].value" >{{ item.DIAS_DE_CREDITO }}</td>
+                  <td [hidden]="!tableColumns[21].value" >{{ item.NOMUSER }}</td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-container *ngIf="policyList!=null && policyList.length>0; then showPagination"></ng-container>
+            <ng-template #showPagination>
+              <div class="row mt-4">
+                <div class="col-sm-10">
+                  <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                  </ngb-pagination>
+                </div>
+                     <div class="col-sm-2">
+                        <span style="display: inline-block;">Mostrar: </span>
+                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                            style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+              </div>
+            </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla de carga -->
+    <div [hidden]="isLoading==false" class="loadingScreen">
+      <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>

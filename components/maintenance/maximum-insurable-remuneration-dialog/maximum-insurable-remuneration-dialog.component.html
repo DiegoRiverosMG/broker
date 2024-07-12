@@ -1,0 +1,133 @@
+<div class="modal-header">
+    <h4 class="modal-title">Remuneración Máxima Asegurable</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button> 
+</div>
+<div class="modal-body">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="rma"/>
+                    <label class="collapse-btn title" for="rma">REMUNERACIÓN MÁXIMA ASEGURABLE <i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                             <div class="row">
+                                <div class="col-sm-3">
+                                    <span>RMA</span>
+                                    <input type="text" maxlength="10" placeholder="RMA" (blur)="resetRMA()"                                    
+                                    FloatSixDirective
+                                    [disabled]="disable(this.disableFlags.RMA)" [(ngModel)]= "data.RMA">
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>INICIO VIGENCIA</span>
+                                    <input type="text" id="iniVig" [disabled]="foundResults!=null && foundResults.length>0" 
+                                    [(ngModel)]="data.INICIO_VIGENCIA" (ngModelChange)="calcularFin($event)"  
+                                        #dp="bsDatepicker" [(minDate)]="minDate" [bsConfig]="bsConfig" bsDatepicker>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>FIN VIGENCIA</span>
+                                    <input type="text" id="finVig" [disabled]="disable(this.disableFlags.FIN_VIGENCIA)" [(ngModel)]="data.FIN_VIGENCIA"
+                                        #dp="bsDatepicker" [bsConfig]="bsConfig" [(minDate)]="data.INICIO_VIGENCIA"  bsDatepicker>
+                                </div>
+                                <div class="col-md-3">
+                                    <p class="text-right">
+                                        <span style="text-transform: uppercase">Transacción: {{this.data.SDESCRIPT_TRANSAC}}</span>
+                                        <span style="text-transform: uppercase">Perfil: {{this.data.SDESCRIPT_PERFIL}}</span>
+                                    </p>
+                                </div>
+                            </div>
+                           <div class="row">
+                               <div class="col-sm-12">
+                                   <span>COMENTARIO</span>
+                                   <textarea placeholder="COMENTARIO" cols="30" rows="10" maxlength="1000" [disabled]="disable(this.disableFlags.COMENTARIO)" [(ngModel)]="data.COMENTARIO" maxlength="1000">
+                                   </textarea>
+                               </div>
+                           </div>
+                           <div class="row mt-2">
+                               <div class="col-sm-12">
+                                   <button class="pull-right full-color" *ngIf="this.data.USER_ACCESS == 1" (click)="enableAll()" [hidden]="this.disableFlag == 0">
+                                       <span>Nueva</span>
+                                   </button>
+                                    <button class="pull-right full-color" (click)="save()" [hidden]="this.disableFlag != 0">
+                                       <span>Agregar</span>
+                                   </button>
+                                   <button class="pull-right" (click)="reference.dismiss('Cross click')">
+                                       <span>Regresar</span>
+                                   </button>
+                               </div>
+                           </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <input class="collapse-open" type="checkbox" id="historial"/>
+                    <label class="collapse-btn title" for="historial">HISTORIAL <i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="col-md-12">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                               <tr class="grid-title">
+                                                   <td class="grid-title-item text-center">Número</td>
+                                                   <td class="grid-title-item text-center">Estado</td>
+                                                   <td class="grid-title-item text-center">Fecha Modif.</td>
+                                                   <td class="grid-title-item text-center">RMA</td>
+                                                   <td class="grid-title-item text-center">Inicio de Vigencia</td>
+                                                   <td class="grid-title-item text-center">Fin de Vigencia</td>
+                                                   <td class="grid-title-item text-center">Comentarios</td>
+                                                   <td class="grid-title-item text-center">Usuario</td>
+                                                   <td class="grid-title-item text-center">Perfil</td>
+                                               </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of rmaList" [className]="item.ESTADO == 'ACTIVO' ? 'table-success' : ''">
+                                                    <td class="text-center">{{item.NUMERO}}</td>
+                                                    <td class="text-center">{{item.ESTADO}}</td>
+                                                    <td class="text-center">{{item.FECHA_MODIF}}</td>
+                                                    <td class="text-center">S/&nbsp;{{item.RMA | number:'1.2-2'}}</td>
+                                                    <td class="text-center">{{item.INICIO_VIG}}</td>
+                                                    <td class="text-center">{{item.FIN_VIG}}</td>
+                                                    <td class="justify-comments text-center">{{item.COMENTARIOS}}</td>
+                                                    <td class="text-center">{{item.USUARIO}}</td>
+                                                    <td class="text-center">{{item.PERFIL}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+                                            <div class="col-sm-10">
+                                                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                                </ngb-pagination>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <span style="display: inline-block;">Mostrar: </span>
+                                                <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                                                    style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+</div>

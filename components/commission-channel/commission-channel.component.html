@@ -1,0 +1,326 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr">
+      <div class="row group1">
+        <h1 class="title">Comisiones por canal</h1>
+        <button
+          class="full-color btn-export-excel mx-0 maxbutton2"
+          [disabled]="!dataCommision?.comisiones?.length"
+          (click)="descargarDatos()"
+        >
+          <img
+            alt=""
+            src="assets/icons/download2.png"
+            class="img-excel"
+            style="margin-right: 5px"
+          />
+          <span class="span-excel">Descargar Excel</span>
+        </button>
+      </div>
+      <form class="row group2" [formGroup]="formFiltros">
+        <div class="inputs">
+          <div class="conten-input input-1">
+            <label for="canal" class="filter-text">CANAL:</label>
+            <select
+              class="filter"
+              formControlName="canal"
+              (change)="changeValueCanal($event.target.value)"
+            >
+              <option *ngFor="let data of canales" [value]="data.nchannel">
+                {{ data.sdescript }}
+              </option>
+            </select>
+          </div>
+          <!--  <div class="conten-input input-2">
+            <label for="punto-venta" class="filter-text">PUNTO DE VENTA:</label>
+            <select class="filter" formControlName="puntoVenta">
+              <ng-container *ngIf="!ListChannelPoint?.length">
+                <option value="null">NO HAY RESULTADOS</option>
+              </ng-container>
+              <ng-container *ngIf="!!ListChannelPoint?.length">
+                <option value="null" selected hidden>SELECCIONE</option>
+                <option
+                  *ngFor="let data of ListChannelPoint"
+                  [value]="data.nnumpoint"
+                >
+                  {{ data.sdescript }}
+                </option>
+              </ng-container>
+            </select>
+          </div> -->
+          <div class="conten-input input-3">
+            <label for="ramo" class="filter-text">POR RAMO:</label>
+            <select
+              class="filter"
+              formControlName="ramo"
+              (change)="onSelectBranch($event.target.value)"
+            >
+              <option value="0" selected>TODOS</option>
+              <option *ngFor="let data of ramo" [value]="data.nid">
+                {{ data.sdescript.toUpperCase() }}
+              </option>
+            </select>
+          </div>
+          <div class="conten-input input-4">
+            <label for="producto" class="filter-text">POR PRODUCTO:</label>
+            <select
+              class="filter"
+              formControlName="producto"
+              (change)="onSelectProduct($event.target.value)"
+            >
+              <!-- <ng-container *ngIf="!productos?.length">
+                <option value="0">NO HAY RESULTADOS</option>
+              </ng-container>
+              <ng-container *ngIf="!!productos?.length"> -->
+              <option value="0" selected>TODOS</option>
+              <option *ngFor="let data of productos" [value]="data.nid">
+                {{ data.sdescript.toUpperCase() }}
+              </option>
+              <!--   </ng-container> -->
+            </select>
+          </div>
+          <div class="conten-input input-5">
+            <label for="poliza" class="filter-text">POR PÓLIZA:</label>
+            <input
+              type="text"
+              class="filter"
+              id="poliza"
+              formControlName="poliza"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <!--  <div class="inputs" style="width: 85%; margin-top: 5px"> BUSCAR AL COSTADO-->
+        <div class="inputs">
+          <div class="conten-input input-5">
+            <label for="fechaD" class="filter-text" style="white-space: nowrap"
+              >DESDE:</label
+            >
+            <input
+              type="text"
+              class="filter"
+              id="fechaD"
+              #dp="bsDatepicker"
+              [bsConfig]="bsConfig"
+              bsDatepicker
+              formControlName="fechaD"
+              readonly
+              style="background-color: white"
+              [maxDate]="bsValueFin"
+            />
+          </div>
+          <div class="conten-input input-5">
+            <label for="fechaH" class="filter-text" style="white-space: nowrap"
+              >HASTA:</label
+            >
+            <input
+              type="text"
+              class="filter"
+              id="fechaH"
+              #dp="bsDatepicker"
+              [bsConfig]="bsConfig"
+              bsDatepicker
+              formControlName="fechaH"
+              readonly
+              style="background-color: white"
+              [maxDate]="bsValueFin"
+            />
+          </div>
+          <div class="conten-input input-5">
+            <label for="lote" class="filter-text" style="white-space: nowrap"
+              >POR LOTE:</label
+            >
+            <input
+              type="text"
+              class="filter"
+              id="lote"
+              formControlName="lote"
+              autocomplete="off"
+            />
+          </div>
+          <div class="conten-input input-4">
+            <label for="estadoL" class="filter-text" style="white-space: nowrap"
+              >POR ESTADO DE LOTE:</label
+            >
+            <select class="filter" formControlName="estadoL">
+              <option value="0" selected>TODOS</option>
+              <option *ngFor="let data of estadosL" [value]="data.nidstate">
+                {{ data.sdescription }}
+              </option>
+            </select>
+          </div>
+
+          <div class="conten-input input-4">
+            <label for="estadoC" class="filter-text" style="white-space: nowrap"
+              >POR ESTADO DE COMISIÓN:</label
+            >
+            <select
+              class="filter"
+              formControlName="estadoC"
+              (change)="changeValueEstado($event.target.value)"
+            >
+              <option value="0" selected>TODOS</option>
+              <option *ngFor="let data of estados" [value]="data.nidstate">
+                {{ data.sdescription }}
+              </option>
+            </select>
+          </div>
+          <div class="conten-input input-4" *ngIf="f['estadoC'].value == 3">
+            <label
+              for="disponibilidad"
+              class="filter-text"
+              style="white-space: nowrap"
+              >DISPONIBILIDAD:</label
+            >
+            <select class="filter" formControlName="disponibilidad">
+              <option value="-1" selected>TODOS</option>
+              <option value="0">POR DISPONIBILIZAR</option>
+              <option value="1">DISPONIBILIZADOS</option>
+            </select>
+          </div>
+          <div class="conten-input input-6">
+            <label
+              for="planilla"
+              class="filter-text"
+              style="white-space: nowrap"
+              >POR N° PLANILLA:</label
+            >
+            <input
+              type="text"
+              class="filter"
+              id="planilla"
+              formControlName="planilla"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="inputs" style="justify-content: end">
+          <button
+            class="btn_buscar btn_uno"
+            (click)="buscar(true)"
+            [disabled]="formFiltros.invalid"
+          >
+            Buscar
+          </button>
+          <!-- <button class="btn_buscar btn_uno" (click)="limpiar()">
+            Limpiar
+          </button> **-->
+        </div>
+        <!-- <div class="conten-input" style="margin-top: 15px; color: transparent">
+          <label style="color: transparent !important">Buscar</label>
+          <button class="btn_buscar btn_uno">Buscar</button>
+        </div> BUSCAR AL COSTADO-->
+      </form>
+      <!-- TABLA -->
+      <div
+        class="grid form-group row content-table"
+        style="
+          border-top: 1px solid rgb(84, 61, 129);
+          margin-top: 40px;
+          margin-right: 15px;
+        "
+      >
+        <div class="table-responsive" style="margin-top: 20px">
+          <table class="table" style="margin-bottom: 0rem">
+            <thead>
+              <tr class="grid-title table-head">
+                <td class="grid-title-item">Canal</td>
+                <td class="grid-title-item">Ramo</td>
+                <td class="grid-title-item">Producto</td>
+                <td class="grid-title-item">Nro. de Planilla</td>
+                <td class="grid-title-item">Póliza</td>
+                <td class="grid-title-item">Comprobante</td>
+                <td class="grid-title-item">Lote</td>
+                <td class="grid-title-item">Comis. neta variable</td>
+                <td class="grid-title-item">Moneda</td>
+                <td class="grid-title-item">Estado de Comisión</td>
+                <td class="grid-title-item">Estado de Lote</td>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!dataCommision?.comisiones?.length">
+                <tr class="grid-body">
+                  <td
+                    class="grid-body-item"
+                    colspan="10"
+                    style="text-align: center"
+                  >
+                    No hay información para mostrar
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="!!dataCommision?.comisiones?.length">
+                <tr
+                  class="table-body"
+                  *ngFor="
+                    let data of dataCommision?.comisiones
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: p,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td class="table-body-item">{{ data.canal }}</td>
+                  <td class="table-body-item">{{ data.ramo }}</td>
+                  <td class="table-body-item">{{ data.producto }}</td>
+                  <td class="table-body-item">{{ data.idJob || "-" }}</td>
+                  <td class="table-body-item">{{ data.numeroPoliza }}</td>
+                  <td class="table-body-item">{{ data.comprobante }}</td>
+                  <td class="table-body-item">{{ data.idLote || "-" }}</td>
+                  <td class="table-body-item">{{ data.montoComision }}</td>
+                  <td class="table-body-item">{{ data.moneda }}</td>
+                  <td class="table-body-item">{{ data.estadoComision }}</td>
+                  <td class="table-body-item">{{ data.estadoLote || "-" }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <pagination-controls
+          style="margin-left: -40px; margin-top: 10px"
+          *ngIf="!!dataCommision?.comisiones?.length"
+          class="my-pagination"
+          (pageChange)="pageChange($event)"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+        >
+        </pagination-controls>
+      </div>
+
+      <!-- GRÁFICO ESTADÍSTICO -->
+      <!-- <div
+        style="
+          display: flex;
+          margin-top: 60px;
+          margin-bottom: 35px;
+          text-align: center;
+        "
+      >
+        <div class="col-md-6">
+          <span>Cantidad de comisiones por estado de comisión</span>
+          <canvas #myChart width="400" height="200"></canvas>
+        </div>
+        <div class="col-md-6">
+          <span>Monto de comisiones por estado de comisión</span>
+          <canvas #myChart2 width="400" height="200"></canvas>
+        </div>
+      </div>
+      <div style="margin-top: 60px; margin-bottom: 35px; text-align: center">
+        <div class="col-md-6" style="margin-left: 26%">
+          <span>Comisiones por cobrar</span>
+          <canvas #myChart3 width="400" height="200"></canvas>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

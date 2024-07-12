@@ -1,0 +1,139 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <!-- <navmenusctr></navmenusctr> -->
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">CONSULTA DE COMISIONES PARA EVALUCIÓN DE VIDA DEVOLUCIÓN PROTECTA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="ramo" disabled>RAMO</label>
+                <input type="text" id="ramo" name="ramo" value="VIDA INDIVIDUAL DE LARGO PLAZO" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label for="producto" disabled>PRODUCTO</label>
+                <input type="text" id="producto" name="producto" value="VIDA DEVOLUCIÓN PROTECTA +" disabled>
+              </div>
+              <div class="col-sm-3">
+                <span>FECHA DE INICIO </span>
+                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                  [value]="bsValueIni | date:'dd/MM/yyyy'">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-8">
+              </div>
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="ProcessConsultaVDP(1)" [disabled]="">
+                  <span>BUSCAR</span>
+                </button>
+              </div>
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="guardaCambios()" [disabled]="">
+                  <span>GUARDAR</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid form-group">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">PÓLIZA</td>
+                  <td class="grid-title-item">EMISIÓN DE PÓLIZA</td>
+                  <td class="grid-title-item">TIPO DOC.</td>
+                  <td class="grid-title-item">NRO DOC.</td>
+                  <td class="grid-title-item">CONTRATANTE</td>
+                  <td class="grid-title-item">MONEDA</td>
+                  <td class="grid-title-item">FRECUENCIA DE PAGO</td>
+                  <td class="grid-title-item">PROVISIÓN COMISIÓN</td>
+                  <td class="grid-title-item">N° CUOTA</td>
+                  <td class="grid-title-item">DOC. ASESOR VENTA</td>
+                  <td class="grid-title-item">ASESOR VENTA</td>
+                  <td class="grid-title-item">AUTORIDAD Y CONTROL</td>
+                  <td class="grid-title-item">V.B.JEFE        </td>
+                  <td class="grid-title-item">V.B.SUPERVISOR    </td>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="foundResults && foundResults.length > 0; else noRecords">
+                  <tr
+                    *ngFor="let result of foundResults | slice: ((currentPage - 1) * itemsPerPage) : (currentPage * itemsPerPage)">
+                    <td>{{ result.poliza }}</td>
+                    <td>{{ result.fecha_emision }}</td>
+                    <td>{{ result.tipo_documento }}</td>
+                    <td>{{ result.nro_documento }}</td>
+                    <td>{{ result.contratante }}</td>
+                    <td>{{ result.moneda }}</td>
+                    <td>{{ result.frecuencia_pago }}</td>
+                    <td>{{ result.provision_comision }}</td>
+                    <td>{{ result.num_cuota }}</td>
+                    <td>{{ result.doc_asesor_venta }}</td>
+                    <td>{{ result.asesor_venta }}</td>
+                    <td>
+                      <select [(ngModel)]="result.auditoria_control" (ngModelChange)="cambioFila(result)">
+                        <option *ngFor="let audi of opcionesAuditoria" [value]="audi.valor">{{ audi.descript}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="result.v_b_jefe" (ngModelChange)="cambioFila(result)">
+                        <option *ngFor="let jefe of opcionesJefe" [value]="jefe.valor">{{ jefe.descript}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="result.v_b_surpervisor" (ngModelChange)="cambioFila(result)">
+                        <option *ngFor="let superv of opcionesSupervisor" [value]="superv.valor">{{ superv.descript}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noRecords>
+              <tbody>
+                <tr>
+                  <td colspan="9">No se encontraron registros.</td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </div>
+        </div>
+        <!--Aqui se realiza la paginación-->
+        <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showPagination"></ng-container>
+        <ng-template #showPagination>
+          <!-- Implementación de la paginación -->
+          <div class="row mt-4" *ngIf="foundResults && foundResults.length > itemsPerPage">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="foundResults.length"
+                [maxSize]="maxSize" (pageChange)="pageChanged($event)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

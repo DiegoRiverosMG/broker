@@ -1,0 +1,126 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Reportes Preliminares Operaciones</span>
+                    </div>
+                </div>
+                <div class="containt-item">
+                    <button class="pull-right" (click)="generatePreliminary()">
+                        <span>Generar</span>
+                    </button>                   
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="filterForm">
+                        <div class="row">
+                            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-4'">
+                                <span>RAMO</span>
+                                <select formControlName="branch" class="minimal" (change)="onSelectedBranch($event.target.value)">
+                                    <option *ngFor="let item of branchTypeList" value="{{ item.Id }}">
+                                        {{ item.Description }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3" *ngIf="productBool">
+                                <span>PRODUCTO</span>
+                                <select formControlName="productN" class="minimal"
+                                    [ngClass]="{'error-validate': submitted && (!filterForm.controls.productN.valid || filterForm.hasError('required')) && !filterForm.controls.productN.disabled}">
+                                    <option value="" disabled selected>SELECCIONE PRODUCTO</option>
+                                    <option *ngFor="let x of products" value="{{ x.NVALOR }}">{{ x.SDESCRIPT }}</option>
+                                </select>
+                                <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterForm.controls.productN.valid || filterForm.hasError('required')) && !filterForm.valid">
+                                    <span *ngSwitchCase="filterForm.get('productN').hasError('required')" class="mensaje-error-control">
+                                        El producto es requerido.
+                                    </span>
+                                </ng-container>
+                            </div>
+                            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-4'">
+                                <span>FECHA DESDE</span>
+                                <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker" 
+                                    [bsConfig]="bsConfig" bsDatepicker DateDirective (focus)="cleanValidation()" [(bsValue)]="bsValueIni"
+                                    value="{{ bsValueIni.toString() | date:'dd/MM/yyyy' }}" />
+                            </div>
+                            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-4'">
+                                <span>FECHA HASTA</span>
+                                <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                    [bsConfig]="bsConfig" bsDatepicker DateDirective (focus)="cleanValidation()" [(bsValue)]="bsValueFin"
+                                    value="{{ bsValueFin.toString() | date:'dd/MM/yyyy' }}" />
+                            </div>                           
+                        </div>
+                        <div class="row">
+                            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-4'">               
+                                <span>TIPO DE PRELIMINAR</span><br>                                     
+                                <input formControlName="chkPrima" type="checkbox" name="Header" [(ngModel)]="isPrima" disabled> PRIMAS Y COMISIONES &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            </div>
+                            <div [ngClass]="productBool ? 'col-sm-3' : 'col-sm-4'">
+                                <span>PROCESO</span>
+                                <select formControlName="TypeProcess" class="minimal">
+                                    <option *ngFor="let item of typeProcessTypeList" value="{{ item.Id }}" >
+                                        {{ item.Description }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div [ngClass]="productBool ? 'col-sm-6' : 'col-sm-4'"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">ID</td>
+                                    <td class="grid-title-item">RAMO</td>
+                                    <!-- <td class="grid-title-item" *ngIf="productBool">PRODUCTO</td> -->
+                                    <td class="grid-title-item">PRELIMINAR</td>
+                                    <td class="grid-title-item">INICIO</td>
+                                    <td class="grid-title-item">FIN</td>
+                                    <td class="grid-title-item">USUARIO</td>
+                                    <td class="grid-title-item">ESTADO</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="preliminaryResults == null || preliminaryResults.length == 0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">No ha generado ninguna validación.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of preliminaryResults">
+                                <tr>
+                                    <td>{{ item.PreliminaryId }}</td>
+                                    <td>{{ item.BranchName }}</td>
+                                    <!-- <td *ngIf="productBool">PRODUCTO</td> -->
+                                    <td>{{ item.ReportTypeName }}</td>
+                                    <td>{{ item.StartDate | date: 'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.EndDate | date: 'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.UserName }}</td>
+                                    <td>{{ item.StateName }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading == false" class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%">
+        <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

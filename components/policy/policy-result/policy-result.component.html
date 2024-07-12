@@ -1,0 +1,441 @@
+<div class="form-group row">
+  <div class="col-lg-3"
+       *ngIf="policyData.flagTramite != 1">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-2"
+       *ngIf="policyData.flagTramite == 1"></div>
+  <div [ngClass]="policyData.flagTramite == 1 ? 'col-lg-8' : 'col-lg-9'">
+    <div class="container-fluid"
+         style="margin: 40px 0;">
+      <div class="container soat-container">
+        <!-- Espera de transaccion -->
+        <div *ngIf="loading">
+          <div class="soat-header">
+            <h2 class="title">
+              Por favor espere unos segundos mientras procesamos su pago {{ desTransaction }}
+              , esto puede tomar unos minutos...
+            </h2>
+          </div>
+        </div>
+
+        <!-- Pago no realizado -->
+        <div *ngIf="!loading && !successfullPayment && !valid && approve">
+          <div class="soat-header">
+            <h2 class="title">
+              Lamentablemente tu pago no se realizó satisfactoriamente
+            </h2>
+          </div>
+          <p>
+            Estimado cliente, ha ocurrido un error al intentar comunicarnos con la
+            entidad financiera que seleccionaste, vuelve a intentar nuevamente por
+            favor
+          </p>
+          <div class="row justify-content-center mt-3">
+            <div class="col soat-text-align-center space">
+              <button class="full-color stretch"
+                      (click)="goToMain(false, policyData.transaccion)">
+                Volver a Intentar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pago rechazado -->
+        <div *ngIf="!loading  && !successfullPayment && valid && !approve">
+          <div class="soat-header">
+            <h2 class="title">
+              Pedido Recibido
+            </h2>
+          </div>
+          <p>
+            Lamentablemente, tu pedido no puede procesarse; el banco/comercio ha
+            rechazado tu transacción. Por favor, intenta realizar la compra de nuevo.
+          </p>
+
+          <div class="box-pay-info row">
+            <div class="col-sm-3">
+              <b>N&Uacute;MERO DE PEDIDO:</b>
+              <br />
+              <span>{{ auth.orderNumber }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>FECHA:</b>
+              <br />
+              <span>{{ auth.transactionDateTime }}</span>
+            </div>
+            <div class="col-sm-6">
+              <b>MOTIVO RECHAZO:</b>
+              <br />
+              <span>{{ auth.errorMessage }}</span>
+            </div>
+          </div>
+          <!-- <div class="link-container">
+                       <a class="link-terminos" (click)="showTermsAndConditions()">
+                           Nuestros t&eacute;rminos y condiciones
+                       </a>
+                   </div> -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-6 soat-text-align-center">
+              <button type="button"
+                      class="btn-print m-0"
+                      (click)="downloadPdf()">
+                <span>Imprimir Reporte</span>
+              </button>
+            </div>
+            <div class="col-6 soat-text-align-center">
+              <button class="full-color pull-right"
+                      (click)="goToMain(false, policyData.transaccion)">
+                Volver a Intentar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pago realizado -->
+        <div *ngIf="!loading && successfullPayment && valid && approve">
+          <div class="soat-header">
+            <h2 class="title">
+              Completaste el pago {{auth.desTransaction}}
+            </h2>
+          </div>
+          <p *ngIf="codProducto != 4" >
+            Gracias por confiar en Protecta Security. Hemos enviado
+            tu póliza a la siguiente dirección:
+            <b>{{ policyData.visaData.email }}</b>
+          </p>
+          <p *ngIf="codProducto == 4" >
+            NIUBIZ-Gracias por confiar en Protecta Security. Hemos enviado
+            tu póliza a la siguiente dirección:
+            <b>{{ policyData.contractingdata.EListEmailClient[0].P_SE_MAIL }}</b>
+          </p>
+
+          <div class="box-pay-info row">
+            <div class="col-sm-3">
+              <b>N&Uacute;MERO DE PEDIDO:</b>
+              <br />
+              <span>{{ auth.orderNumber }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>FECHA:</b>
+              <br />
+              <span>{{ auth.transactionDateTime }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>TOTAL:</b>
+              <br />
+              <span>{{ auth.authorizedAmount }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>M&Eacute;TODO DE PAGO:</b>
+              <br />
+              <span>Visa</span>
+            </div>
+          </div>
+
+          <div class="box-detail">
+            <div>
+              <b>Cliente:</b>
+              <span>{{ auth.customerName }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Fecha:</b>
+              <span>{{ auth.fullDate }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Nro. de tarjeta:</b>
+              <span>{{ auth.cardNumber }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Moneda:</b>
+              <span>{{ monedaItem.desMoneda }}</span>
+              <br />
+            </div>
+            <div class="h-divider"></div>
+            <h5>Detalles del pedido</h5>
+            <div class="div-result">
+              <table class="tb-result">
+                <tr>
+                  <td class="tl">Producto</td>
+                  <td class="tr">Total</td>
+                </tr>
+                <tr>
+                  <td>Póliza - {{ auth.transac }}</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+                <tr>
+                  <td>Subtotal:</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+                <tr>
+                  <td>M&eacute;todo de pago:</td>
+                  <td>Visa</td>
+                </tr>
+                <tr>
+                  <td>Total:</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="h-divider"></div>
+            <h5>Detalle de {{ auth.transac }}</h5>
+            <div class="div-result">
+              <table class="tb-result">
+                <tr>
+                  <td class="tl">Producto</td>
+                  <td class="tr">Nro de Póliza</td>
+                </tr>
+                <tr *ngIf="codProducto == 2 && !!pensionNumber && pensionNumber!= 0">
+                  <td>SCTR Pensión</td>
+                  <td>{{ pensionNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 2 && !!saludNumber && saludNumber!= 0">
+                  <td>SCTR Salud</td>
+                  <td>{{ saludNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 2 && (!!pensionNumber && pensionNumber!= 0) &&
+                (!!saludNumber && saludNumber!= 0)">
+                  <td>SCTR</td>
+                  <td>{{ sctrNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 3">
+                  <td>Vida Ley</td>
+                  <td>{{ vleyNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 6">
+                  <td>Accidentes Personales</td>
+                  <td>{{ policyNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 8">
+                  <td>Vida Grupo</td>
+                  <td>{{ policyNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 2">
+                  <td>Constancia</td>
+                  <td>{{ constanciaNumber }}</td>
+                </tr>
+                <tr *ngIf="codProducto == 4">
+                  <td>Vida Crédito</td>
+                  <td>{{ policyNumber }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- <div class="link-container">
+                           <a class="link-terminos" (click)="showTermsAndConditions()">
+                               Nuestros t&eacute;rminos y condiciones
+                           </a>
+                       </div> -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-6 soat-text-align-center">
+              <button type="button"
+                      class="btn-print m-0"
+                      (click)="downloadPdf()">
+                <span>Imprimir Reporte</span>
+              </button>
+            </div>
+            <div class="col-6 soat-text-align-center">
+              <button class="full-color pull-right"
+                      (click)="goToMain(true, policyData.transaccion)">
+                Continuar
+              </button>
+            </div>
+          </div>
+          <div class="h-divider"></div>
+        </div>
+
+        <!-- Pago realizado no aprobado -->
+        <div *ngIf="!loading  && successfullPayment && valid && !approve">
+          <div class="soat-header">
+            <h2 class="title">
+              Transacción Pendiente
+            </h2>
+          </div>
+          <p>
+            El pago se ha realizado de forma correcta, su {{auth.transac}} no puede
+            procesarse de forma automática, debido a reglas de negocio.
+          </p>
+
+          <div class="box-pay-info row">
+            <div class="col-sm-3">
+              <b>N&Uacute;MERO DE PEDIDO:</b>
+              <br />
+              <span>{{ auth.orderNumber }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>FECHA:</b>
+              <br />
+              <span>{{ auth.transactionDateTime }}</span>
+            </div>
+            <div class="col-sm-6">
+              <b>REGLA DE NEGOCIO</b>
+              <br />
+              <span>{{ validationMessage }}</span>
+            </div>
+          </div>
+
+          <div class="box-detail">
+            <div>
+              <b>Cliente:</b>
+              <span>{{ auth.customerName }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Fecha:</b>
+              <span>{{ auth.fullDate }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Nro. de tarjeta:</b>
+              <span>{{ auth.cardNumber }}</span>
+              <br />
+            </div>
+            <div>
+              <b>Moneda:</b>
+              <span>{{ monedaItem.desMoneda }}</span>
+              <br />
+            </div>
+            <div class="h-divider"></div>
+            <h5>Detalles del pedido</h5>
+            <div class="div-result">
+              <table class="tb-result">
+                <tr>
+                  <td class="tl">Producto</td>
+                  <td class="tr">Total</td>
+                </tr>
+                <tr>
+                  <td>Póliza - {{ auth.transac }}</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+                <tr>
+                  <td>Subtotal:</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+                <tr>
+                  <td>M&eacute;todo de pago:</td>
+                  <td>Visa</td>
+                </tr>
+                <tr>
+                  <td>Total:</td>
+                  <td>{{ monedaItem.simbolo }} {{ auth.authorizedAmount }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- <div class="link-container">
+                       <a class="link-terminos" (click)="showTermsAndConditions()">
+                           Nuestros t&eacute;rminos y condiciones
+                       </a>
+                   </div> -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-6 soat-text-align-center">
+              <button type="button"
+                      class="btn-print m-0"
+                      (click)="downloadPdf()">
+                <span>Imprimir Reporte</span>
+              </button>
+            </div>
+            <div class="col-6 soat-text-align-center">
+              <button class="full-color pull-right"
+                      (click)="goToMain(true, policyData.transaccion)">
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pago rechazado -->
+        <div *ngIf="!loading  && successfullPayment && !valid && !approve">
+          <div class="soat-header">
+            <h2 class="title">
+              Emisión Pendiente
+            </h2>
+          </div>
+          <p>
+            Desgraciadamente, no hemos podido procesar de forma correcta tu solicitud de {{ auth.transac }};
+            deberás comunicarte con el área de soporte técnico.
+          </p>
+
+          <div class="box-pay-info row">
+            <div class="col-sm-3">
+              <b>N&Uacute;MERO DE PEDIDO:</b>
+              <br />
+              <span>{{ auth.orderNumber }}</span>
+            </div>
+            <div class="col-sm-3">
+              <b>FECHA:</b>
+              <br />
+              <span>{{ auth.transactionDateTime }}</span>
+            </div>
+            <div class="col-sm-6">
+              <b>MOTIVO:</b>
+              <br />
+              <span>{{ validationMessage }}</span>
+            </div>
+          </div>
+          <!-- <div class="link-container">
+                       <a class="link-terminos" (click)="showTermsAndConditions()">
+                           Nuestros t&eacute;rminos y condiciones
+                       </a>
+                   </div> -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-6 soat-text-align-center">
+              <!-- <button type="button" class="btn-print m-0" (click)="downloadPdf()">
+                                <i class="fa fa-print print-color"></i>
+                                <span>Imprimir Reporte</span>
+                            </button> -->
+            </div>
+            <div class="col-6 soat-text-align-center">
+              <button class="full-color pull-right"
+                      (click)="goToMain(true, policyData.transaccion)">
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error de datos validados -->
+        <!-- <div *ngIf="messages">
+                    <div *ngIf="!loading && !successfullPayment && !valid && messages.length >0 ">
+                        <div class="soat-header">
+                            <h2 class="title">
+                                No se realizó ningún cargo a la Tarjeta de Crédito. Lamentablemente, los
+                                valores ingresados para la emisión no cumplen con las validaciones
+                                necesarias:
+                            </h2>
+                        </div>
+                        <p *ngFor="let message of messages">- {{ message }}</p>
+                        <div class="row justify-content-center">
+                            <div class="col soat-text-align-center">
+                                <button class="full-color stretch" (click)="goToMain(false, policyData.transaccion)">
+                                    <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+                                    Volver a Intentar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+        <iframe [src]="pdf"
+                frameborder="0"
+                style="display: none;"></iframe>
+      </div>
+
+
+      <!-- <ng-template #payment>
+                <app-privacysoat (closeaction)="closePrivacyModal()"></app-privacysoat>
+            </ng-template> -->
+
+    </div>
+    <iframe id="ifrmPdf"></iframe>
+  </div>
+</div>
+<!-- Pantalla de carga -->
+<!-- <div [hidden]="!loading" class="loadingScreen">
+	<div style="display:flex;height: 100%;width:100%">
+		<i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+	</div>
+</div> -->

@@ -1,0 +1,52 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <!-- <navmenusctr></navmenusctr> -->
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Reporte de Poliza Detalle Vida Devolución Protecta+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">  
+             <div class="row">
+              <div class="col-sm-6">
+                <span>NÚMERO DE PÓLIZA</span>
+                <input type="text" placeholder="Nro. Póliza" [(ngModel)]="nPolicy" OnlyNumberDirective maxlength="10">
+              </div>
+            </div>          
+             <div class="row">        
+              <div class="col-sm-9">                  
+              </div>                            
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="ReportRegistryPoliciesDetail()" [disabled]="">
+                  <span>PROCESAR</span>
+                </button>
+              </div>                
+            </div> 
+          </div>            
+        </div>   
+      </div>
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+  </div>
+</div>

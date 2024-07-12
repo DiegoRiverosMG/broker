@@ -1,0 +1,73 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">REPORTE DE CUENTAS POR COBRAR</span>
+                    </div>
+                </div>
+                <div class="containt-item">
+                    <button class="pull-right" (click)="generateCtasXcobrar()">
+                        <span>Generar</span>
+                    </button>                   
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="filterForm">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>RAMO</span>
+                                <select formControlName="branch" class="minimal" (change)="getBranch($event.target.value)">
+                                    <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>                          
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Id. Reporte</td>
+                                    <td class="grid-title-item">Id. Ramo</td>
+                                    <td class="grid-title-item">Ramo</td>
+                                    <td class="grid-title-item">Usuario</td>
+                                    <td class="grid-title-item">Fecha Inicio Producción</td>
+                                    <td class="grid-title-item">Fecha Fin Producción</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="reporteCtasXcobrarResults==null || reporteCtasXcobrarResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="12">No ha generado ningún reporte.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of reporteCtasXcobrarResults">
+                                <tr>
+                                    <td>{{ item.NIDREPORT }}</td>                                   
+                                    <td>{{ item.NBRANCH }}</td>
+                                    <td>{{ item.SBRANCH_NAME }}</td>
+                                    <td>{{ item.SUSERNAME }}</td>
+                                    <td>{{ item.DINIREP | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.DFINREP | date:'dd/MM/yyyy' }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

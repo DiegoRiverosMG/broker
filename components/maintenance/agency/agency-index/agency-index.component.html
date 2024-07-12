@@ -1,0 +1,266 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Agenciamiento de Contratantes</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <button (click)="openAgencyModal()" class="full-color pull-right">
+            <img src="assets/icons/add.png" />
+            <span>Agregar Agenciamiento</span>
+          </button>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body" [formGroup]="mainFormGroup">
+            <div class="row">
+              <div class="col-sm-12">
+                <h5>Datos del Broker</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BUSCAR POR</span>
+                <select formControlName="searchMode" (change)="changeValidators()"
+                  [ngClass]="{'error-validate': !mainFormGroup.get('searchMode').valid && mainFormGroup.get('searchMode').touched}"
+                  class="minimal">
+                  <option value="0" disabled>Seleccionar</option>
+                  <option value="1">Nro. Documento</option>
+                  <option value="2">Nombres</option>
+                </select>
+              </div>
+              <div [hidden]="mainFormGroup.controls.searchMode.value!='1'" class="col-sm-3">
+                <span>TIPO DOCUMENTO</span>
+                <select id="DocumentSelection" formControlName="documentType" (change)="changeValidators()"
+                  [ngClass]="{'error-validate': !mainFormGroup.get('documentType').valid && mainFormGroup.get('documentType').touched}"
+                  class="minimal">
+                  <option value="" disabled>Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+              <div [hidden]="mainFormGroup.controls.searchMode.value!='2'" class="col-sm-3">
+                <span>TIPO PERSONA</span>
+                <select formControlName="personType" (change)="changeValidators()" class="minimal">
+                  <option value="0" disabled>Seleccionar</option>
+                  <option value="1">Persona Natural
+                  </option>
+                  <option value="2">Persona Jurídica</option>
+                </select>
+              </div>
+              <div [hidden]="mainFormGroup.controls.searchMode.value!='1'" class="col-sm-3">
+                <span>NÚMERO DE DOCUMENTO (*)</span>
+                <input type="text" placeholder="Número Documento" maxlength="{{documentNumberLength}}"
+                  (focus)="cleanValidation()" (keyup.enter)="firstSearch()" formControlName="documentNumber"
+                  (keypress)="documentNumberKeyPress($event)"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.documentNumber.valid}"
+                  maxlength="{{documentNumberLength}}">
+
+                <span *ngIf="isValidatedInClickButton && !mainFormGroup.controls.documentNumber.valid"
+                  class="mensaje-error-control">
+                  <ng-container
+                    *ngIf="mainFormGroup.get('documentNumber').hasError('required'); then required_documentNumber else invalid_documentNumber">
+                  </ng-container>
+                  <ng-template #required_documentNumber>El Nro de Documento es requerido.</ng-template>
+                  <ng-template #invalid_documentNumber>El Nro de Documento no es válido.</ng-template>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div [hidden]="mainFormGroup.get('searchMode').value!=1" class="col-sm-3">
+                <span>DESDE</span>
+                <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                  (keyup.enter)="firstSearch()" [bsConfig]="bsConfig" bsDatepicker DateDirective
+                  (focus)="cleanValidation()" [(bsValue)]="bsValueIni"
+                  value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))}" />
+                <ng-container [ngSwitch]="true"
+                  *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))">
+                  <span *ngSwitchCase="mainFormGroup.get('startDate').hasError('required')"
+                    class="mensaje-error-control">La fecha de inicio es requerida.</span>
+                  <span
+                    *ngSwitchCase="!mainFormGroup.controls.startDate.valid && !mainFormGroup.get('startDate').hasError('required')"
+                    class="mensaje-error-control">{{invalidStartDateMessage}}</span>
+                  <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                    class="mensaje-error-control">{{invalidStartDateOrderMessage}}</span>
+                </ng-container>
+
+              </div>
+              <div [hidden]="mainFormGroup.get('searchMode').value!=1" class="col-sm-3">
+                <span>HASTA</span>
+                <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                  (keyup.enter)="firstSearch()" [bsConfig]="bsConfig" bsDatepicker DateDirective
+                  (focus)="cleanValidation()" [(bsValue)]="bsValueFin"
+                  value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))}" />
+
+                <ng-container [ngSwitch]="true"
+                  *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))">
+                  <span *ngSwitchCase="mainFormGroup.get('endDate').hasError('required')"
+                    class="mensaje-error-control">La fecha de fin es requerida.</span>
+                  <span
+                    *ngSwitchCase="!mainFormGroup.controls.endDate.valid && !mainFormGroup.get('endDate').hasError('required')"
+                    class="mensaje-error-control">{{invalidEndDateMessage}}</span>
+                  <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                    class="mensaje-error-control">{{invalidEndDateOrderMessage}}</span>
+                </ng-container>
+              </div>
+              <div [hidden]="mainFormGroup.get('searchMode').value!=2 || mainFormGroup.get('personType').value!='2'"
+                class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" formControlName="legalName" maxlength="60"
+                  (keyup.enter)="firstSearch()" (focus)="cleanValidation()" LegalNameDirective
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.legalName.valid}">
+                <span *ngIf="isValidatedInClickButton && !mainFormGroup.controls.legalName.valid"
+                  class="mensaje-error-control">
+                  <ng-container
+                    *ngIf="mainFormGroup.get('legalName').hasError('required'); then required_legalName else invalid_legalName">
+                  </ng-container>
+                  <ng-template #required_legalName>La razón social es requerida.</ng-template>
+                  <ng-template #invalid_legalName>La razón social no es válida.</ng-template>
+                </span>
+              </div>
+              <div
+                [hidden]="mainFormGroup.controls.searchMode.value!='2' || mainFormGroup.controls.personType.value=='2'"
+                class="col-sm-3">
+                <span>NOMBRES (*)</span>
+                <input type="text" placeholder="Nombres" formControlName="firstName" (focus)="cleanValidation()"
+                  maxlength="19" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.firstName.valid}">
+                <span *ngIf="isValidatedInClickButton && !mainFormGroup.controls.firstName.valid"
+                  class="mensaje-error-control">
+                  <ng-container
+                    *ngIf="mainFormGroup.get('firstName').hasError('required'); then required_firstName else invalid_firstName">
+                  </ng-container>
+                  <ng-template #required_firstName>El nombre es requerido.</ng-template>
+                  <ng-template #invalid_firstName>El nombre no es válido.</ng-template>
+                </span>
+              </div>
+              <div
+                [hidden]="mainFormGroup.controls.searchMode.value!='2' || mainFormGroup.controls.personType.value=='2'"
+                class="col-sm-3">
+                <span>APELLIDO PATERNO (*)</span>
+                <input type="text" placeholder="Apellido Paterno" (focus)="cleanValidation()" OnlyTextSpaceDirective
+                  formControlName="paternalLastName" (keyup.enter)="firstSearch()" maxlength="19"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.paternalLastName.valid}">
+                <span *ngIf="isValidatedInClickButton && !mainFormGroup.controls.paternalLastName.valid"
+                  class="mensaje-error-control">
+                  <ng-container
+                    *ngIf="mainFormGroup.get('paternalLastName').hasError('required'); then required_paternalLastName else invalid_paternalLastName">
+                  </ng-container>
+                  <ng-template #required_paternalLastName>El apellido paterno es requerido.</ng-template>
+                  <ng-template #invalid_paternalLastName>El apellido paterno no es válido.</ng-template>
+                </span>
+              </div>
+              <div
+                [hidden]="mainFormGroup.controls.searchMode.value!='2' || mainFormGroup.controls.personType.value=='2'"
+                class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective
+                  formControlName="maternalLastName" maxlength="19"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.maternalLastName.valid}">
+                <span *ngIf="isValidatedInClickButton && !mainFormGroup.controls.maternalLastName.valid"
+                  class="mensaje-error-control">
+                  <ng-container *ngIf="!mainFormGroup.get('maternalLastName').valid; then invalid_maternalLastName">
+                  </ng-container>
+                  <ng-template #invalid_maternalLastName>El apellido materno no es válido.</ng-template>
+                </span>
+              </div>
+
+
+            </div>
+            <br>
+            <div *ngIf="filter.FullName!=null && filter.FullName!=''" class="row">
+              <div class="col-sm-12">
+                <input type="text" value="{{filter.FullName}}" disabled>
+              </div>
+            </div>
+            <br>
+            <div class="row pull-right">
+              <div class="col-sm-3">
+                <button (click)="firstSearch()">
+                  <span>Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Doc. Broker</td>
+                <td class="grid-title-item">Broker</td>
+                <td class="grid-title-item">Doc. Contratante</td>
+                <td class="grid-title-item">Contratante</td>
+                <td class="grid-title-item">Producto</td>
+                <td class="grid-title-item">Ini. Agenciamiento</td>
+                <td class="grid-title-item">Fin Agenciamiento</td>
+                <td class="grid-title-item">Carta Agenciamiento</td>
+              </tr>
+            </thead>
+            <ng-container *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+            </ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td colspan="10">No se encontraron registros.</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody *ngFor="let item of foundResults">
+              <tr>
+                <td>{{ item.BrokerDocumentTypeName}}: {{item.BrokerDocumentNumber }} </td>
+                <td>{{ item.BrokerFullName }}</td>
+                <td>{{ item.ContractorDocumentTypeName}}: {{item.ContractorDocumentNumber }}</td>
+                <td>{{ item.ContractorFullName }}</td>
+                <td>{{ item.ProductName }}</td>
+                <td>{{ item.AgencyStartDate | date: 'dd/MM/yyyy'}}</td>
+                <td>{{ item.AgencyEndDate | date: 'dd/MM/yyyy' }}</td>
+                <ng-container *ngIf="item.FilePath!='', then ExistentFile else NotExistentFile"></ng-container>
+                <ng-template #ExistentFile>
+                  <td>
+
+                    <a (click)="downloadFile(item.FilePath,'agency')"><img alt="Descargar"
+                        src="assets/icons/imprimir.png" title="Descargar" style="cursor: pointer;height: 24px"></a>
+                  </td>
+                </ng-template>
+                <ng-template #NotExistentFile>
+                  <td>
+                    Sin archivo
+                  </td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+      <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+        <div class="col-sm-12">
+          <ngb-pagination [(page)]="filter.PageNumber" [pageSize]="filter.LimitPerpage" [collectionSize]="totalItems"
+            [maxSize]="maxSize" (pageChange)="pageChanged(filter.PageNumber)">
+            <ng-template ngbPaginationPrevious>Anterior</ng-template>
+            <ng-template ngbPaginationNext>Siguiente</ng-template>
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pantalla de carga -->
+  <div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>

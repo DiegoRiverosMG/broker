@@ -1,0 +1,244 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <section class="section">
+      <div class="section__subheader">
+        <h2 class="title">Reporte de Lote de comisiones</h2>
+      </div>
+      <div class="form-report">
+        <h4 class="subtitle">Generar Reporte</h4>
+        <div>
+          <form class="form" [formGroup]="formReport">
+            <div class="content-form mb-4">
+              <!-- *Fecha de Inicio -->
+              <label
+                for="form-startDate"
+                class="placeholder"
+                aria-placeholder="FECHA INICIO:"
+              >
+                <input
+                  type="text"
+                  id="form-startDate"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [bsConfig]="datePickerConfig"
+                  [readonly]="true"
+                  formControlName="startDate"
+                  [minDate]="valueDateInit"
+                  [maxDate]="valueDateFin"
+                />
+                <i class="fa fa-calendar"></i>
+              </label>
+
+              <!-- *Fecha de vencimiento -->
+              <label
+                for="form-endDate"
+                class="placeholder"
+                aria-placeholder="FECHA FIN:"
+              >
+                <div></div>
+                <input
+                  type="text"
+                  id="form-endDate"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [bsConfig]="datePickerConfig"
+                  [readonly]="true"
+                  [minDate]="valueDateInit"
+                  [maxDate]="valueDateFin"
+                  formControlName="endDate"
+                />
+                <i class="fa fa-calendar"></i>
+              </label>
+
+              <!-- *Ramo -->
+              <pro-select
+                [clearable]="false"
+                placeholder="SELECCIONA LOS RAMOS:"
+                value="id"
+                label="label"
+                [multi]="true"
+                [items]="dataListBranchs"
+                [config]="proSelectComponentConfig"
+                formControlName="branch"
+              ></pro-select>
+
+              <div></div>
+              <div class="btn-actions">
+                <button
+                  type="submit"
+                  role="button"
+                  class="button-default button-search"
+                  (click)="showModalMessage()"
+                  [disabled]="formReport.invalid"
+                >
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                  Generar Reporte
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div>
+        <h4 class="subtitle">Filtrar</h4>
+        <div>
+          <form class="form" [formGroup]="formFilter">
+            <div class="content-form mb-4">
+              <!-- *Fecha de Inicio -->
+              <label
+                for="form-startOfDate"
+                class="placeholder"
+                aria-placeholder="FECHA INICIO:"
+              >
+                <input
+                  type="text"
+                  id="form-startOfDate"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [bsConfig]="datePickerConfig"
+                  [readonly]="true"
+                  formControlName="startDate"
+                  [minDate]="valueDateInit"
+                  [maxDate]="valueDateFin"
+                />
+                <i class="fa fa-calendar"></i>
+              </label>
+
+              <label
+                for="form-endOfDate"
+                class="placeholder"
+                aria-placeholder="FECHA FIN:"
+              >
+                <input
+                  type="text"
+                  id="form-endOfDate"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  [bsConfig]="datePickerConfig"
+                  [readonly]="true"
+                  [minDate]="valueDateInit"
+                  [maxDate]="valueDateFin"
+                  formControlName="endDate"
+                />
+                <i class="fa fa-calendar"></i>
+              </label>
+              <div></div>
+              <div></div>
+              <div class="btn-actions">
+                <button
+                  class="button-default secondary"
+                  type="submit"
+                  role="button"
+                  (click)="listFilterReport()"
+                  [disabled]="formFilter.invalid"
+                >
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="content-table table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="table-id">Id Reporte</th>
+              <th scope="col">Fecha de solicitud</th>
+              <th scope="col">Cantidad de registros</th>
+              <th scope="col" class="table-estado">Usuario</th>
+              <th scope="col" class="table-estado">Estado</th>
+              <th scope="col" class="table-acciones">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="!dataListLotsFiltered.length">
+              <tr>
+                <td colspan="5">
+                  No se encontró coincidencias con los criterios de búsqueda
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="dataListLotsFiltered.length">
+              <tr
+                *ngFor="
+                  let item of dataListLotsFiltered
+                    | paginate
+                      : {
+                          id: 'table-lot-report',
+                          itemsPerPage: 10,
+                          totalItems: dataListLotsFiltered.length,
+                          currentPage: currentPage
+                        };
+                  let index = index
+                "
+              >
+                <td>{{ item.idReporte }}</td>
+                <td>{{ item.fechaReporte }}</td>
+                <td>{{ item.cantidadRegistros }}</td>
+                <td>{{ item.usuario }}</td>
+                <td>{{ item.estado }}</td>
+                <td>
+                  <ng-container
+                    *ngIf="
+                      item.reporteListo == 0 && item.estado == 'EN PROGRESO'
+                    "
+                  >
+                    SE NOTIFICARÁ POR CORREO CUANDO ESTÉ LISTO
+                  </ng-container>
+                  <ng-container *ngIf="item.estado == 'CON ERRORES'">
+                    ES NECESARIO VOLVER A GENERAR
+                  </ng-container>
+                  <ng-container
+                    *ngIf="item.reporteListo == 1 && item.estado == 'GENERADO'"
+                  >
+                    <button
+                      class="button-donwload"
+                      (click)="downloadReport(+item.idReporte)"
+                    >
+                      <i class="fa fa-download" aria-hidden="true"></i>
+                      Descargar
+                    </button>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <pagination-controls
+        id="table-lot-report"
+        [autoHide]="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        responsive="true"
+        (pageChange)="changeCurrentPage = $event"
+      ></pagination-controls>
+    </section>
+  </div>
+</div>
+
+<ng-template #modalMessage>
+  <div class="content-modal modal-message">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button (click)="hideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="paragrapgh">
+          {{ messageInfo }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="hideModal()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

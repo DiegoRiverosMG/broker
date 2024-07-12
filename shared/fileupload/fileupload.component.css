@@ -1,0 +1,53 @@
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+
+.full-color  {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+ /* margin: 0 5px;*/
+  background: #553D81;
+  color: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+/*165*/
+}
+
+.header-content .header-item .full-color span {
+  color: #fff;
+}
+
+
+button:hover {
+  cursor: pointer;
+}
+
+.btnUpload{
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {  
+.upload-btn-wrapper {
+  display: block;
+}
+.full-color  {
+width: 100%;
+}
+}

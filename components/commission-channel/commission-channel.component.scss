@@ -1,0 +1,312 @@
+@import "modal";
+
+.title {
+  color: #553d81;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.group1 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.body-qr {
+  padding-left: 40px !important;
+}
+
+.btn-close-modal,
+.full-color {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #553d81;
+  color: #fff;
+  padding: 8px 5px;
+  max-width: 210px;
+  height: 45px;
+  outline: none;
+  min-width: 175px;
+}
+
+.full-color span {
+  color: #fff;
+}
+
+.btn-add-factura,
+.btn-add-planilla {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-add-planilla span {
+  margin-left: 0.5rem;
+}
+
+.btn-add-planilla {
+  margin-left: 66% !important;
+}
+
+.container-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  display: grid; /*crear div con class de contenedor para fijar*/
+  grid-template-columns: 5fr 3fr 0fr;
+  grid-gap: 5px;
+}
+
+.group2 {
+  border-top: 1px solid rgb(84, 61, 129);
+  width: 100%;
+  margin-top: 10px;
+  display: flex; /* ESTO PARA ABAJO ES PARA QUE PERMANEZCAN LOS BUTTON EN SU SITIO*/
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.inputs {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+
+  display: flex;
+
+  justify-content: space-between;
+}
+
+.filter-text {
+  color: #2b0d61;
+  font-size: 14px;
+  margin: 0;
+  margin-left: 0px !important;
+}
+
+.filter {
+  padding-bottom: 0;
+  width: 100%;
+  padding-left: 5px;
+  display: block;
+  font-size: 14px;
+  height: 40px;
+  border: 1px solid #aa9ec0;
+  text-align: left;
+  color: #aa9ec0;
+  border-radius: 2px;
+  font-family: "Bliss Pro";
+  outline: none;
+}
+
+.conten-input {
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.input-1 {
+  width: 300%;
+}
+
+.input-2 {
+  width: 300%;
+}
+
+.input-3 {
+  width: 150%;
+}
+
+.input-4 {
+  width: 162%;
+}
+
+.input-5 {
+  width: 100%;
+}
+
+/* .btn_buscar {
+  border: none;
+  border-radius: 3px;
+  min-width: 170px;
+  max-width: 170px;
+  background-color: #553d81;
+  color: white;
+  max-height: 40px;
+  height: 40px;
+  margin-bottom: 0px;
+  margin-top: 25px;
+  margin-left: -40px;
+} BUSCAR AL COSTADO */
+
+.btn_buscar {
+  border: none;
+  border-radius: 3px;
+  min-width: 170px;
+  max-width: 170px;
+  background-color: #553d81;
+  color: white;
+  max-height: 40px;
+  height: 40px;
+  margin-bottom: -10px;
+  margin-top: 25px;
+}
+
+.table-head {
+  background-color: #553d81;
+}
+.table-head .grid-title-item {
+  color: #fff;
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
+}
+.table-body-item {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
+}
+.table-body-item-actions a {
+  display: inline-block;
+}
+.table-body-item-actions a i {
+  color: #2b0d61;
+}
+
+.btn-export-excel {
+  border: 1px solid #553d81;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 2px;
+  background: #fff;
+  color: #553d81;
+  outline: none;
+  width: 190px;
+  max-width: 190px;
+  margin-left: 2.5% !important;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.span-excel {
+  color: #553d81 !important;
+}
+
+.body-grafico {
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.rectangle-copy-parrafo-ini select,
+.body-grafico,
+.rectangle {
+  min-height: auto;
+  background-color: rgba(0, 0, 0, 0.025);
+  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header-historial-venta {
+  text-align: center;
+}
+
+.div-grafica {
+  max-width: 850px !important;
+}
+
+.full-color[disabled] {
+  opacity: 0.5 !important;
+}
+
+.btn_buscar[disabled] {
+  background-color: rgb(129, 118, 157);
+}
+
+.table td {
+  padding: 0.55rem !important;
+  white-space: nowrap !important;
+}
+
+.select-formulario {
+  height: 46px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(assets/icons/dropdown_icon.png) no-repeat 97%;
+}
+
+.input-6 {
+  width: 100%;
+}
+
+@media (max-width: 1409px) {
+  .input-6 {
+    width: 110%;
+  }
+}
+
+@media (max-width: 1400px) {
+  .input-5 {
+    width: 70%;
+  }
+}
+
+@media (max-width: 1194px) {
+  .input-5 {
+    width: 120%;
+  }
+}
+
+@media (max-width: 1121px) {
+  .input-4 {
+    width: 160%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .inputs {
+    display: block;
+  }
+  .input-1 {
+    width: 100%;
+  }
+  .input-2 {
+    width: 100%;
+  }
+  .input-3 {
+    width: 100%;
+  }
+  .input-4 {
+    width: 100%;
+  }
+  .input-5 {
+    width: 100%;
+  }
+  .input-6 {
+    width: 100%;
+  }
+}

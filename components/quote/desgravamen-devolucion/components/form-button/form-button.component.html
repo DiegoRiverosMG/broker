@@ -1,0 +1,8 @@
+<div class="form-button" [class.slim]="slim">
+  <span *ngIf="inlineInput">&nbsp;</span>
+  <button (click)="onClick.emit()" class="{{btnClass}}" [disabled]="disabled">
+    <img *ngIf="icon == 'search'" src="assets/icons/buscar_certificado.png" />
+    <i *ngIf="(icon || '').includes('fa-')" class="fa {{icon}}"></i>
+    <span>{{label}}</span>
+  </button>
+</div>

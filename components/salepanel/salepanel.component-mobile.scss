@@ -1,0 +1,159 @@
+@media screen and (max-width: 662px) {
+  .text-descripcion p {
+    width: 100%;
+    font-size: 15px;
+  }
+  .title-princial {
+    font-size: 18px;
+    display: none;
+  }
+  .rectangle {
+    min-height: auto;
+  }
+
+  .div-grafica {
+    max-width: 93% !important;
+  }
+
+  .title-salepoint {
+    text-align: center;
+  }
+  .center-anio {
+    width: 172px;
+  }
+
+  .rectangle-light-box-parrafo {
+    font-size: 14px;
+  }
+  .bloqueomovil {
+    padding-top: 0px !important;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .rectangle-copy-numero {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 46px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  .rectangle-copy-parrafo {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+  }
+  .rectangle-copy-numero-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 46px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  .rectangle-copy-parrafo-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+  }
+  .btn-compra {
+    height: 46px;
+    width: 100%;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+  }
+}
+/* @media screen and (max-width: 1619px) {
+  .saldos {
+    display: none;
+  }
+} */
+@media screen and (max-width: 1200px) {
+  .rectangle-light-box {
+    padding-top: 15px;
+  }
+
+  .rectangle-copy-numero {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 46px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  .rectangle-copy-parrafo {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+  }
+  .rectangle-copy-numero-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 45px;
+    font-weight: bold;
+    line-height: 46px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  .rectangle-copy-parrafo-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+  }
+  /* .rectangle-copy-left {
+    height: 124px;
+    width: 28%;
+    border: 1px solid #AA9EC0;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    float: left;
+    margin-left: 15%;
+    padding: 22px 0px;
+    text-align: center;
+  }
+  .rectangle-copy-rigth {
+    height: 124px;
+    width: 28%;
+    border: 1px solid #AA9EC0;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    float: right;
+    margin-right: 55px;
+    padding: 22px 0px;
+    text-align: center;
+  } */
+  .btn-compra {
+    height: 46px;
+    width: 100%;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+  }
+}

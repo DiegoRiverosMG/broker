@@ -1,0 +1,57 @@
+.panel-widget {
+  
+}
+
+.panel-widget .collapse-list {
+  margin-bottom: 25px;
+  padding-left: 0;
+  list-style: none;
+  box-shadow: 0 0 13px 7px rgba(62,44,90,.08);
+}
+
+.panel-widget .collapse-list .title {
+  padding: 0.75rem 1.25rem;
+  background-color: #806ea0;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.panel-widget .collapse-list .title i {
+  position: relative; 
+  top: 4px;
+}
+
+.panel-widget .collapse-list .collapse-btn {
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.2s ease;
+}
+
+.panel-widget .collapse-open {
+  display: none;
+}
+
+.panel-widget .collapse-panel {
+  max-height: 100%;
+  visibility: visible;
+  opacity: 1;
+}
+
+.panel-widget .collapse-open:checked ~ .collapse-panel {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.panel-widget .collapse-border {
+  padding: 0.5rem 1.25rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+  margin-top: -1px;
+  margin-bottom: 10px;
+}
+
+.filter {
+  margin: 20px auto;
+}

@@ -1,0 +1,217 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Consulta de Proformas por Póliza</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="filter">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <!--Textbox de Póliza-->
+                                <div class="col-sm-2">
+                                    <span>BÚSQUEDA POR PÓLIZA(*)</span>
+                                    <input [disabled]="IdPolicyOff" [(ngModel)]="IdPolicy" type="text"
+                                        placeholder="Número de póliza" minlength="4">
+                                </div>
+                                <!--Activar Tipo de Búqueda por Factura-->
+                                <div>
+                                    <br>
+                                    <br>
+                                    &nbsp; <input type="checkbox" class="checkbox" (change)="setControlsForBill($event)"
+                                        [(ngModel)]="SearchByBillActivated" name="SearchByBill">
+                                </div>
+                                <!--Combobox de Tipo de Comprobante -->
+                                <div class="col-sm-2">
+                                    <span>TIPO DE COMPROBANTE(*)</span>
+                                    <select [disabled]="BillTypeOff" [(ngModel)]="IdBillType" name="IdTipoComprobante"
+                                        class="minimal">
+                                        <option value="0" selected>SELECCIONE</option>
+                                        <option *ngFor="let item of ListBillType" value="{{item.SBILLTYPE}}">
+                                            {{item.SDESCRIPT}}</option>
+                                    </select>
+                                </div>
+                                <!--Combobox de Serie -->
+                                <div class="col-sm-2">
+                                    <span>NRO. SERIE(*)</span>
+                                    <select [disabled]="SerieNumberOff" [(ngModel)]="IdSerieNumber" name="IdNumeroSerie"
+                                        class="minimal">
+                                        <option value="0" selected>SELECCIONE</option>
+                                        <option *ngFor="let item of ListSerieNumber" value="{{item.SERIE_COMPROBANTE}}">
+                                            {{item.SERIE_COMPROBANTE}}</option>
+                                    </select>
+                                </div>
+                                <!--Textbox de Factura-->
+                                <div class="col-sm-2">
+                                    <span>NRO. COMPROBANTE(*)</span>
+                                    <input [disabled]="IdBillOff" [(ngModel)]="IdBill" type="text"
+                                        placeholder="Número de comprobante" minlength="4">
+                                </div>
+                            </div>
+                            <!--Activar Tipo de Búqueda por filtros-->
+                            <div class="row">
+                                <div>
+                                    <br>
+                                    <br>
+                                    &nbsp; <input type="checkbox" class="checkbox"
+                                        (change)="setControlsForFilters($event)" [(ngModel)]="SearchByFiltersActivated"
+                                        name="SearchByFilters">
+                                </div>
+                                <!--Filtro de Tipo de Documentoo -->
+                                <div class="col-sm-2">
+                                    <span>TIPO DOC. CONTRATANTE(*)</span>
+                                    <select [disabled]="DocTypeOff" [(ngModel)]="IdDocType" name="IdTipoDocumento"
+                                        class="minimal">
+                                        <option value="0" selected>SELECCIONE</option>
+                                        <option *ngFor="let item of ListDocumentType" value="{{item.NIDDOC_TYPE}}">
+                                            {{item.SDESCRIPT}}</option>
+                                    </select>
+                                </div>
+                                <!--Filtro Número de Documento-->
+                                <div class="col-sm-2">
+                                    <span>NRO. DOC. CONTRATANTE(*)</span>
+                                    <input [disabled]="IdDocumentOff" [(ngModel)]="IdDocument" type="text"
+                                        placeholder="Número de documento">
+                                </div>
+                                <!--Filtro de fechas-->
+                                <div class="col-sm-2">
+                                    <span>FECHA DE INICIO(*)</span>
+                                    <input [disabled]="StartDateOff" type="text" #dp="bsDatepicker"
+                                        [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                        value="{{ bsValueIni | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                        readonly>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>FECHA DE FIN(*)</span>
+                                    <input [disabled]="EndDateOff" type="text" #dp="bsDatepicker" [bsConfig]="bsConfig"
+                                        bsDatepicker [(bsValue)]="bsValueFin"
+                                        value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                        readonly>
+                                </div>
+                                <div class="col-sm-1">
+                                </div>
+                                <!--Boton que Lista el Reporte en acuerdo a las fechas ingresadas-->
+                                <div class="col-sm-2">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="GetProcess()" style="margin-top: 5px;">
+                                        <span>BUSCAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Grilla del reporte-->
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item text-center">Póliza</td>
+                                <td class="grid-title-item text-center">Tip.Doc.</td>
+                                <td class="grid-title-item text-center">Nro.Doc.</td>
+                                <td class="grid-title-item text-center">Nom.Contratante</td>
+                                <td class="grid-title-item text-center">Tip.Comprobante</td>
+                                <td class="grid-title-item text-center">Serie Comprobante</td>
+                                <td class="grid-title-item text-center">Nro.Comprobante</td>
+                                <td class="grid-title-item text-center">Proforma</td>
+                                <td class="grid-title-item text-center">Tip.Solicitud</td>
+                                <td class="grid-title-item text-center">Prima N.</td>
+                                <td class="grid-title-item text-center">I.G.V.</td>
+                                <td class="grid-title-item text-center">D.E.</td>   
+                                <td class="grid-title-item text-center">Prima B.</td>                                                        
+                                <td class="grid-title-item text-center">Fec.Factura</td>
+                                <td class="grid-title-item text-center">Fec.Ini.Recibo</td>
+                                <td class="grid-title-item text-center">Fec.Fin Recibo</td>
+                                <td class="grid-title-item text-center">CIU</td>
+                                <td class="grid-title-item text-center">Actividad</td>
+                                <td class="grid-title-item text-center">Opciones</td>
+                            </tr>
+                        </thead>
+                        <ng-container
+                            *ngIf="processHeaderList!=null && processHeaderList.length>0; then showGrid else hideGrid">
+                        </ng-container>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr style="text-align: center;">
+                                <td colspan="10"></td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <!--Acá se invoca la función que llena la grilla-->
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td class="text-center">{{ item.policy }}</td>
+                                <td class="text-center">{{ item.docType }}</td>
+                                <td class="text-center">{{ item.docNumber }}</td>
+                                <td class="text-center">{{ item.clientName }}</td>
+                                <td class="text-center">{{ item.billType }}</td>
+                                <td class="text-center">{{ item.serieNumber }}</td>
+                                <td class="text-center">{{ item.billNumber }}</td>
+                                <td class="text-center">{{ item.proforma }}</td>
+                                <td class="text-center">{{ item.requestType }}</td>
+                                <td class="text-center">{{ item.purePremium }}</td>
+                                <td class="text-center">{{ item.igv }}</td>
+                                <td class="text-center">{{ item.rightIssue }}</td>      
+                                <td class="text-center">{{ item.grossPremium }}</td>                                                         
+                                <td class="text-center">{{ item.billDate }}</td>
+                                <td class="text-center">{{ item.startReceipt }}</td>
+                                <td class="text-center">{{ item.endReceipt }}</td>                                
+                                <td class="text-center">{{ item.ciu }}</td>
+                                <td class="text-center">{{ item.activity }}</td>
+                                <td class="text-center">
+                                    <a (click)='ViewInsureds(item)'><img alt="Mostrar Asegurados"
+                                            src="assets/icons/preview_soat_box.png" title="Mostrar Asegurados"
+                                            style="cursor: pointer;height: 24px"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+            </div>
+            <!--Aqui se realiza la paginación-->
+            <ng-container *ngIf="processHeaderList!=null && processHeaderList.length>0; then showPagination">
+            </ng-container>
+            <ng-template #showPagination>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="row">
+                <div class="col-sm-10">
+                </div>
+                <div class="col-sm-2">
+                    <span>DESCARGA DE REGISTROS</span>
+                    <img src="assets/icons/exceltc.png" height="40" width="40" title="Descargar Excel"
+                        alt="Descargar Excel" style="cursor: pointer;" (click)="convertListToExcel()"/>
+                    &nbsp;
+                    &nbsp;
+                    <!-- <img src="assets/icons/printertc.png" height="40" width="40" title="Descargar PDF"
+                        alt="Descargar PDF" style="cursor: pointer;" (click)="convertListToPrintPDF()" /> -->
+                </div>
+            </div>
+            <div [hidden]="!isLoading" class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

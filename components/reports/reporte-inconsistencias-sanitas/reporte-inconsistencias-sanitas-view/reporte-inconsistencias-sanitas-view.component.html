@@ -1,0 +1,110 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{contractor.TIPO_INCONSISTENCIA}} </h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.close(interval)">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="grid form-group">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr class="grid-title" *ngIf = "this.tipoId == 1">
+                    <td class="grid-title-item">POLIZA</td>
+                    <td class="grid-title-item">RECIBO</td>
+                    <td class="grid-title-item">CERTIFICADO</td>
+                    <td class="grid-title-item ">TIPO DOCUMENTO</td>
+                    <td class="grid-title-item ">NRO. DOCUMENTO</td>
+                    <td class="grid-title-item ">PROFORMA DEF.</td>
+                    <td class="grid-title-item ">PROFORMA REG.</td>
+                    <td class="grid-title-item ">TIPO MOVIMIENTO</td>
+                    <td class="grid-title-item text-center">INICIO VIGENCIA</td>
+                    <td class="grid-title-item text-center">FIN VIGENCIA</td>
+                </tr>
+                <tr class="grid-title" *ngIf = "this.tipoId == 2">
+                    <td class="grid-title-item">POLIZA</td>
+                    <td class="grid-title-item">RECIBO</td>
+                    <td class="grid-title-item">PROFORMA DEF.</td>
+                    <td class="grid-title-item">TIPO MOVIMIENTO</td>
+                    <td class="grid-title-item">MONTO CABECERA</td>
+                    <td class="grid-title-item">MONTO DETALLE</td>
+                    <td class="grid-title-item">MONTO TRAMA</td>
+                    <td class="grid-title-item text-center">INICIO VIGENCIA</td>
+                    <td class="grid-title-item text-center">FIN VIGENCIA</td>
+                </tr>
+                <tr class="grid-title" *ngIf = "this.tipoId == 3">
+                    <td class="grid-title-item">POLIZA</td>
+                    <td class="grid-title-item">RECIBO</td>
+                    <td class="grid-title-item">CERTIFICADO</td>
+                    <td class="grid-title-item ">TIPO DOCUMENTO</td>
+                    <td class="grid-title-item ">NRO. DOCUMENTO</td>
+                    <td class="grid-title-item ">PROFORMA</td>
+                    <td class="grid-title-item ">PROFORMA DUP.</td>
+                    <td class="grid-title-item ">TIPO MOVIMIENTO</td>
+                    <td class="grid-title-item text-center">INICIO VIGENCIA</td>
+                    <td class="grid-title-item text-center">FIN VIGENCIA</td>
+                </tr>
+            </thead>
+            <ng-container *ngIf="processDetailList!=null && processDetailList.length>0; then showGrid else hideGrid"></ng-container>
+        </table>
+        <ng-template #hideGrid>
+            <tbody>
+                <tr>
+                    <td colspan="10">No se encontraron registros.</td>
+                </tr>
+            </tbody>
+        </ng-template>
+        <ng-template #showGrid>
+            <tbody *ngIf = "this.tipoId == 1 || this.tipoId == 3">
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                    <td >{{ item.POLIZA }}</td>
+                    <td >{{ item.RECIBO }}</td>
+                    <td >{{ item.CERTIFICADO }}</td>
+                    <td >{{ item.TIPO_DOC }}</td>
+                    <td >{{ item.NUM_DOC }}</td>
+                    <td >{{ item.PROFORMA_DEF }}</td>
+                    <td >{{ item.PROFORMA_REG }}</td>
+                    <td >{{ item.TIPO_MOV }}</td>
+                    <td >{{ item.VIGENCIA_INI }}</td>
+                    <td >{{ item.VIGENCIA_FIN }}</td>
+                </tr>
+            </tbody>
+            <tbody *ngIf = "this.tipoId == 2">
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                    <td >{{ item.POLIZA }}</td>
+                    <td >{{ item.RECIBO }}</td>
+                    <td >{{ item.PROFORMA_DEF }}</td>
+                    <td >{{ item.TIPO_MOV }}</td>
+                    <td >{{ item.PRIMA_CAB }}</td>
+                    <td >{{ item.PRIMA_DET }}</td>
+                    <td >{{ item.PRIMA_TRA }}</td>
+                    <td >{{ item.VIGENCIA_INI }}</td>
+                    <td >{{ item.VIGENCIA_FIN }}</td>
+                </tr>
+            </tbody>    
+        </ng-template>
+    </div>
+</div>
+<ng-container *ngIf="processDetailList!=null && processDetailList.length>0; then showPagination"></ng-container>
+<ng-template #showPagination>
+    <div class="row mt-4">
+        <div class="col-sm-12">
+            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</ng-template>
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="exportData()"><span>Exportar</span></button>
+    <button (click)="reference.close(interval)"><span>Volver</span></button>
+</div>
+
+

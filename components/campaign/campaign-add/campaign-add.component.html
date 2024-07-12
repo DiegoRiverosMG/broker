@@ -1,0 +1,396 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Registrar campañas</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <div class="header-item right-item">
+              <a class="regresar" (click)="openModalConfirRegresar()">
+                <img
+                  alt=""
+                  class="ico-regresar"
+                  src="assets/icons/arrow-left.png"
+                />
+                <span>Regresar a Campañas</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <fieldset class="fieldset-bills">
+          <legend class="legend-factura">Datos Generales:</legend>
+          <div class="form-group row ">
+            <div class="col-lg-2">
+              <label for="" class="label-datos-liquidacion"
+                >Inicio vigencia</label
+              >
+              <input
+                type="text"
+                class="form-control date-seach"
+                [bsConfig]="bsConfig"
+                required
+                maxlength="10"
+                #dp="bsDatepicker"
+                bsDatepicker
+                [(bsValue)]="campaign.dstartdate"
+                value="{{ campaign.dstartdate | date: 'dd/MM/yyyy' }}"
+              />
+            </div>
+            <div class="col-lg-2">
+              <label for="" class="label-datos-liquidacion">Fin vigencia</label>
+              <input
+                type="text"
+                class="form-control date-seach"
+                [bsConfig]="bsConfig"
+                required
+                maxlength="10"
+                #dp="bsDatepicker"
+                bsDatepicker
+                [(bsValue)]="campaign.dexpirdate"
+                value="{{ campaign.dexpirdate | date: 'dd/MM/yyyy' }}"
+              />
+            </div>
+            <div class="col-lg-6">
+              <label for="" class="label-datos-liquidacion">CANAL</label>
+              <select
+                id="ChannelSalesSelect"
+                [(ngModel)]="campaign.scodchannel"
+              >
+                <option value="0" selected>Seleccionar</option>
+                <option
+                  *ngFor="let channelsales of ListChannelSales"
+                  value="{{ channelsales.nchannel }}"
+                >
+                  {{ channelsales.sdescript }}</option
+                >
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row ">
+            <div class="col-lg-10 filter-row-cell">
+              <label for="" class="label-datos-liquidacion">Descripción:</label>
+              <input
+                type="text"
+                placeholder="Descripción de campaña"
+                class="form-control"
+                maxlength="500"
+                [(ngModel)]="campaign.sdescript"
+                required
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset-bills">
+          <legend class="legend-factura">Datos del Plan:</legend>
+
+          <div class="form-group row ">
+            <div class="col-lg-5 filter-row-cell">
+              <label for="" class="label-datos-liquidacion">Código:</label>
+              <input
+                type="text"
+                placeholder="Código de Plan"
+                (keypress)="this.utilityService._keyPressNumber($event)"
+                maxlength="5"
+                class="form-control"
+                [(ngModel)]="campaignPlan.nplan"
+              />
+            </div>
+
+            <div class="col-lg-5 filter-row-cell">
+              <label for="" class="label-datos-liquidacion">Descripción:</label>
+              <input
+                type="text"
+                placeholder="Descripción del plan"
+                class="form-control"
+                maxlength="200"
+                [(ngModel)]="campaignPlan.sdescriptplan"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset-bills">
+          <legend class="legend-factura">Datos Renovación:</legend>
+          <ngb-alert
+            *ngIf="warningMessageRenov"
+            type="warning"
+            (close)="warningMessageRenov = null"
+          >
+            {{ warningMessageRenov }}</ngb-alert
+          >
+
+          <ngb-alert
+            *ngIf="successMessageRenov"
+            type="success"
+            (close)="successMessageRenov = null"
+          >
+            {{ successMessageRenov }}</ngb-alert
+          >
+          <div class="form-group row ">
+            <div class="col-lg-2">
+              <label for="" class="label-datos-liquidacion"
+                >Tip. Documento</label
+              >
+              <select
+                (change)="onChange($event)"
+                class="form-control select-formulario"
+                [(ngModel)]="campaignRenov.niddoc_type"
+              >
+                <option value="undefined" disabled selected
+                  >Seleccione el tipo de documento</option
+                >
+                <option
+                  *ngFor="let tipoDocumento of ListaTipoDocumento"
+                  value="{{ tipoDocumento.niddoC_TYPE }}"
+                >
+                  {{ tipoDocumento.sdescript }}</option
+                >
+              </select>
+            </div>
+
+            <div class="col-lg-2 filter-row-cell">
+              <label for="" class="label-datos-liquidacion"
+                >N° Documento:</label
+              >
+              <input
+                type="text"
+                placeholder="N° de Documento"
+                class="form-control"
+                maxlength="{{ lengthDocument }}"
+                (keypress)="this.utilityService._keyPressNumber($event)"
+                [(ngModel)]="campaignRenov.siddoc"
+              />
+            </div>
+
+            <div class="col-lg-2 filter-row-cell">
+              <label for="" class="label-datos-liquidacion">Placa:</label>
+              <input
+                type="text"
+                placeholder="N° de Placa"
+                class="form-control"
+                [(ngModel)]="campaignRenov.sregist"
+                maxlength="6"
+              />
+            </div>
+
+            <div class="col-lg-2 filter-row-cell">
+              <label for="" class="label-datos-liquidacion">Origen:</label>
+              <select
+                class="form-control select-formulario"
+                [(ngModel)]="campaignRenov.sorigin"
+              >
+                <option value="1" selected>SYSWEP</option>
+                <option value="2">VTIME</option>
+              </select>
+            </div>
+
+            <div class="header-item  rigth-item">
+              <label for="" class="label-datos-liquidacion">.</label>
+              <button
+                class="full-color"
+                (click)="
+                  addCampaignRenov(
+                    campaignRenov.niddoc_type,
+                    campaignRenov.siddoc,
+                    campaignRenov.sregist,
+                    campaignRenov.sorigin
+                  )
+                "
+              >
+                <img alt="" src="assets/icons/add.png" />
+                <span>Agregar</span>
+              </button>
+            </div>
+          </div>
+          <div class="grid form-group row ">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr class="grid-title">
+                    <td class="grid-title-item">Tip. Documento</td>
+                    <td class="grid-title-item">Nº Documento</td>
+                    <td class="grid-title-item">Placa</td>
+                    <td class="grid-title-item">Origen</td>
+                    <td class="grid-title-item">Acciones</td>
+                  </tr>
+                </thead>
+                <div
+                  *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+                ></div>
+              </table>
+              <ng-template #mostrarGrilla>
+                <tbody>
+                  <tr>
+                    <td colspan="8"></td>
+                  </tr>
+                </tbody>
+              </ng-template>
+              <ng-template #ocultarGrilla>
+                <tbody *ngFor="let result of ListaRenovacion">
+                  <tr>
+                    <td class="data-table-tr-td">
+                      {{ result.stipodocumento }}
+                    </td>
+                    <td class="data-table-tr-td">{{ result.siddoc }}</td>
+                    <td class="data-table-tr-td">{{ result.sregist }}</td>
+                    <td class="data-table-tr-td">{{ result.sorigin }}</td>
+                    <td class="data-table-tr-td">
+                      <a (click)="openModalConfirDelRenov(result.sregist)">
+                        <img
+                          alt=""
+                          src="assets/icons/anular.png"
+                          title="Anular"
+                          alt="Anular"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-template>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="float-right" class="btn-grupo">
+        <button class="btn-planilla" (click)="openModalConfirRegresar()">
+          <span>Cancelar</span>
+        </button>
+        <button
+          class="full-color"
+          class="full-color btn-planilla"
+          (click)="openModalGrabarTodo()"
+        >
+          <img
+            alt=""
+            src="assets/icons/grabar_todo.png"
+            style="display: inline;"
+          />
+          <span style="display: inline;">Grabar todo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmasivo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje de Confirmación
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ message }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="full-color-modal"
+              (click)="confirm()"
+            >
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="button-close"
+              (click)="closeconfirm()"
+            >
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="aceptarmsginfo()"
+        >
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-12">
+            <button
+              style="min-width: 100%;"
+              class="full-color-modal"
+              (click)="aceptarmsginfo()"
+            >
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

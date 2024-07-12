@@ -1,0 +1,122 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <!-- <navmenusctr></navmenusctr> -->
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">MONITOREO DEL REPORTE DE PROVISIÓN DE COMISIONES</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="ramo" disabled>RAMO</label>
+                <input type="text" id="ramo" name="ramo" value="VIDA INDIVIDUAL DE LARGO PLAZO" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label for="producto" disabled>PRODUCTO</label>
+                <input type="text" id="producto" name="producto" value="VIDA DEVOLUCIÓN PROTECTA +" disabled>
+              </div>
+              <div class="col-sm-3">
+                <span>FECHA DE INICIO </span>
+                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                  [value]="bsValueIni | date:'dd/MM/yyyy'">
+              </div>
+              <div class="col-sm-3">
+                <span>FECHA DE FIN </span>
+                <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueFin"
+                  [value]="bsValueFin | date:'dd/MM/yyyy'">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-9">
+              </div>
+              <div class="col-sm-2">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="ProcessMonitoreoProviVDP()" [disabled]="">
+                  <span>BUSCAR</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid form-group">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">ESTADO</td>
+                  <td class="grid-title-item">ID</td>
+                  <td class="grid-title-item">PRODUCTO</td>
+                  <td class="grid-title-item">PRIMA TOTAL</td>
+                  <td class="grid-title-item">COMSIÓN PROVISIÓN</td>
+                  <td class="grid-title-item">T.C. CONTABLE</td>
+                  <td class="grid-title-item">REPORTE</td>
+                  <td class="grid-title-item">FECHA PROCESO</td>
+                  <td class="grid-title-item">DESCARGA</td>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="foundResults && foundResults.length > 0; else noRecords">
+                  <tr
+                    *ngFor="let result of foundResults | slice: ((currentPage - 1) * itemsPerPage) : (currentPage * itemsPerPage)">
+                    <td class="text-center">
+                      <img src="assets/icons/verifyct.png" title="Finalizado" alt="Finalizado" />
+                    </td>
+                    <td>{{ result.c_id }}</td>
+                    <td>{{ result.c_producto }}</td>
+                    <td>{{ result.c_prima_total }}</td>
+                    <td>{{ result.c_comision_provision }}</td>
+                    <td>{{ result.c_tc_contable }}</td>
+                    <td>{{ result.c_reporte }}</td>
+                    <td>{{ result.c_fecha_proceso }}</td>
+                    <td class="text-center">
+                      <img src="assets/icons/download2.png" title="Descargar" alt="Descargar"
+                        style="cursor: pointer; padding: 0px 18px 0px 18px;"
+                        (click)="getFileReportProvision(result.c_id,bsValueIni,bsValueFin)" />
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noRecords>
+              <tbody>
+                <tr>
+                  <td colspan="9">No se encontraron registros.</td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </div>
+        </div>
+        <!--Aqui se realiza la paginación-->
+        <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showPagination"></ng-container>
+        <ng-template #showPagination>
+          <!-- Implementación de la paginación -->
+          <div class="row mt-4" *ngIf="foundResults && foundResults.length > itemsPerPage">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="foundResults.length"
+                [maxSize]="maxSize" (pageChange)="pageChanged($event)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

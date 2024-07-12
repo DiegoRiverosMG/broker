@@ -1,0 +1,225 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row hidden-xs-down">
+        <div class="col-lg-12 ">
+          <div class="creaunsoatmanual">
+            <a>{{mainTitle}}</a>
+          </div>
+        </div>
+      </div>
+      <hr class="linea">
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <div class="contenido">
+            <div class="contenido-nro">
+              <a>2</a>
+            </div>
+            <div class="contenido-title">
+              <a>Datos del Veh&iacute;culo.</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <img alt=""
+               src="assets/icons/carnet_vehicular.png"
+               style="width:304; height:236;"
+               class="img-fluid"
+               alt="">
+        </div>
+      </div>
+      <form [formGroup]="vehiculoForm"
+            (ngSubmit)="onSave()">
+        <div class="form-group row">
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">CLASE DE VEHICULO*</label>
+            <select formControlName="clasecodigo"
+                    class="form-control select-formulario"
+                    [(ngModel)]="auto.p_NIDCLASE"
+                    (change)="setClase($event.target.value)"
+                    [ngClass]="{'error-validate': !vehiculoForm.get('clasecodigo').valid  && vehiculoForm.get('clasecodigo').touched}">
+              <option value="undefined"
+                      disabled
+                      selected>Seleccione la Clase</option>
+              <option *ngFor="let clase of clases"
+                      value="{{clase.nidclase}}">{{clase.sdescript}}</option>
+            </select>
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">USO*</label>
+            <select formControlName="uso"
+                    class="form-control select-formulario"
+                    [(ngModel)]="auto.p_NIDUSO"
+                    (change)="setUso($event.target.value)"
+                    [ngClass]="{'error-validate': !vehiculoForm.get('uso').valid  && vehiculoForm.get('uso').touched}">
+              <option value="undefined"
+                      disabled
+                      selected>Seleccione el tipo de uso</option>
+              <option *ngFor="let uso of usos"
+                      value="{{uso.niduso}}">{{uso.sdescript}}</option>
+            </select>
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">MARCA DE VEHICULO*</label>
+            <select formControlName="marcacodigo"
+                    class="form-control select-formulario"
+                    [(ngModel)]="auto.p_NVEHBRAND"
+                    (change)="setMarca($event.target.value)"
+                    [ngClass]="{'error-validate': !vehiculoForm.get('marcacodigo').valid  && vehiculoForm.get('marcacodigo').touched}">
+              <option value="undefined"
+                      disabled
+                      selected>Seleccione la marca</option>
+              <option *ngFor="let marca of marcas"
+                      value="{{marca.nvehbrand}}">{{marca.sdescript}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">MODELO DEL VEHICULO*</label>
+            <select formControlName="modelo"
+                    class="form-control select-formulario"
+                    [(ngModel)]="auto.p_NVEHMODEL"
+                    (change)="setModelo($event.target.value)"
+                    [ngClass]="{'error-validate': !vehiculoForm.get('modelo').valid  && vehiculoForm.get('modelo').touched}">
+              <option value="undefined"
+                      disabled
+                      selected>Seleccione el modelo</option>
+              <option *ngFor="let modelo of modelos"
+                      value="{{modelo.nvehmodel}}">{{modelo.sdescript}}</option>
+            </select>
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">NRO. DE SERIE*</label>
+            <input [(ngModel)]="auto.p_SNUMSERIE"
+                   type="text"
+                   formControlName="serie"
+                   maxlength="17"
+                   (blur)="onBlurSerie()"
+                   class="form-control input-text-formulario input-text-help"
+                   placeholder="Ingresar el nro. de serie"
+                   [ngClass]="{'error-validate': !vehiculoForm.get('serie').valid  && vehiculoForm.get('serie').touched}"
+                   value="">
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">NRO. DE ASIENTOS*</label>
+            <input [(ngModel)]="auto.p_SEATNUMBER"
+                   type="text"
+                   (keypress)="soloNumeros($event)"
+                   maxlength="2"
+                   (blur)="onBlurAsiento()"
+                   formControlName="asientos"
+                   class="form-control input-text-formulario input-text-help"
+                   [ngClass]="{'error-validate': !vehiculoForm.get('asientos').valid  && vehiculoForm.get('asientos').touched}"
+                   placeholder="Ingrese el nro. de asientos"
+                   value="">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">AÑO DEL VEHICULO*</label>
+            <input [(ngModel)]="auto.p_NYEAR"
+                   type="text"
+                   formControlName="anho"
+                   (keypress)="soloNumeros($event)"
+                   (blur)="onBlurAnho()"
+                   maxlength="4"
+                   class="form-control input-text-formulario"
+                   [ngClass]="{'error-validate': !vehiculoForm.get('anho').valid  && vehiculoForm.get('anho').touched}"
+                   placeholder="Ingrese el año del vehiculo"
+                   value="">
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput"
+                   class="label-formulario">ZONA DE CIRCULACION*</label>
+            <select class="form-control select-formulario"
+                    [(ngModel)]="auto.p_NAUTOZONE"
+                    formControlName="zona"
+                    (change)="setZona($event.target.value)"
+                    [ngClass]="{'error-validate': !vehiculoForm.get('zona').valid  && vehiculoForm.get('zona').touched}">
+              <option value="undefined"
+                      disabled
+                      selected>Seleccione zona de circulaci&oacute;n</option>
+              <option *ngFor="let zona of zonas"
+                      value="{{zona.nprovince}}">{{zona.sdescript}}</option>
+            </select>
+          </div>
+          <div class="col-lg-4">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="volver">
+            <a routerLink="../step01">
+              <img alt=""
+                   src="assets/icons/arrow-left.png" />
+              <span>Regresar al paso 1</span>
+            </a>
+            <button [disabled]="!vehiculoForm.valid || byear || bserie"
+                    type="submit"
+                    class="btn btn-siguiente"
+                    (click)="onSave()">Siguiente</button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="botones">
+            <div class="mensajes-validacion">
+              <span *ngIf="!vehiculoForm.get('clasecodigo').valid && vehiculoForm.get('clasecodigo').touched"
+                    class="mensaje-error-control">Necesitamos conocer la clase de tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('marcacodigo').valid && vehiculoForm.get('marcacodigo').touched"
+                    class="mensaje-error-control">Necesitamos conocer la marca de tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('uso').valid && vehiculoForm.get('uso').touched"
+                    class="mensaje-error-control">Necesitamos conocer el uso que le das a tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('modelo').valid && vehiculoForm.get('modelo').touched"
+                    class="mensaje-error-control">Necesitamos conocer el modelo de tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('serie').valid && vehiculoForm.get('serie').touched"
+                    class="mensaje-error-control">Necesitamos conocer la serie de tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('asientos').valid && vehiculoForm.get('asientos').touched"
+                    class="mensaje-error-control">Necesitamos conocer la cantidad de asientos que tiene tu
+                veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('anho').valid && vehiculoForm.get('anho').touched"
+                    class="mensaje-error-control">Necesitamos conocer el año de tu veh&iacute;culo
+                <br>
+              </span>
+              <span *ngIf="byear"
+                    class="mensaje-error-control">El año de tu veh&iacute;culo no puede ser mayor al actual.
+                <br>
+              </span>
+              <span *ngIf="bserie"
+                    class="mensaje-error-control">El chasis o serie de tu veh&iacute;culo, debe tener 17 d&iacute;gitos.
+                <br>
+              </span>
+              <span *ngIf="!vehiculoForm.get('zona').valid && vehiculoForm.get('zona').touched"
+                    class="mensaje-error-control">Necesitamos conocer tu zona de circulaci&oacute;n
+                <br>
+              </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,271 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+      </div>
+      <div class="col-md-9 content">
+        <div class="row content-header">
+          <h1 class="title">Reporte de comisiones</h1>
+          <button
+            class="button-default secondary"
+            [disabled]="!dataCommision?.comisiones?.length"
+            (click)="downloadExcel()"
+          >
+            <img
+              alt=""
+              src="assets/icons/download2.png"
+              class="img-excel"
+            />
+            Descargar Excel
+          </button>
+        </div>
+        <form class="row form-filter" [formGroup]="formFilters">
+          <div class="inputs">
+            <div class="conten-input input-1">
+              <label for="channel" class="filter-text">CANAL:</label>
+              <select
+                class="filter"
+                formControlName="channel"
+              >
+                <option *ngFor="let data of totalChannels" [value]="data.nchannel">
+                  {{ data.sdescript }}
+                </option>
+              </select>
+            </div>
+            <div class="conten-input input-3">
+              <label for="branch" class="filter-text">POR RAMO:</label>
+              <select
+                class="filter"
+                formControlName="branch"
+                (change)="onSelectBranch($event.target.value)"
+              >
+                <option value="0" selected>TODOS</option>
+                <option *ngFor="let data of listBranch" [value]="data.nid">
+                  {{ data.sdescript.toUpperCase() }}
+                </option>
+              </select>
+            </div>
+            <div class="conten-input input-4">
+              <label for="product" class="filter-text">POR PRODUCTO:</label>
+              <select
+                class="filter"
+                formControlName="product"
+              >
+                <option value="0" selected>TODOS</option>
+                <option *ngFor="let data of products" [value]="data.nid">
+                  {{ data.sdescript.toUpperCase() }}
+                </option>
+              </select>
+            </div>
+            <div class="conten-input input-5">
+              <label for="policy" class="filter-text">POR PÓLIZA:</label>
+              <input
+                type="text"
+                class="filter"
+                id="policy"
+                formControlName="policy"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+          <div class="inputs">
+            <div class="conten-input input-5">
+              <label for="startDate" class="filter-text" 
+                >DESDE:</label
+              >
+              <input
+                type="text"
+                class="filter"
+                id="startDate"
+                #dp="bsDatepicker"
+                [bsConfig]="bsConfig"
+                bsDatepicker
+                formControlName="startDate"
+                readonly
+                style="background-color: white"
+                [maxDate]="bsEndValue"
+              />
+            </div>
+            <div class="conten-input input-5">
+              <label for="endDate" class="filter-text"
+                >HASTA:</label
+              >
+              <input
+                type="text"
+                class="filter"
+                id="endDate"
+                #dp="bsDatepicker"
+                [bsConfig]="bsConfig"
+                bsDatepicker
+                formControlName="endDate"
+                readonly
+                style="background-color: white"
+                [maxDate]="bsEndValue"
+              />
+            </div>
+            <div class="conten-input input-5">
+              <label for="lot" class="filter-text"
+                >POR LOTE:</label
+              >
+              <input
+                type="text"
+                class="filter"
+                id="lot"
+                formControlName="lot"
+                autocomplete="off"
+              />
+            </div>
+            <div class="conten-input input-4">
+              <label for="lotStatus" class="filter-text"
+                >POR ESTADO DE LOTE:</label
+              >
+              <select class="filter" formControlName="lotStatus">
+                <option value="0" selected>TODOS</option>
+                <option *ngFor="let data of listStatusLot" [value]="data.nidstate">
+                  {{ data.sdescription }}
+                </option>
+              </select>
+            </div>
+  
+            <div class="conten-input input-4">
+              <label for="commissionStatus" class="filter-text"
+                >POR ESTADO DE COMISIÓN:</label
+              >
+              <select
+                class="filter"
+                formControlName="commissionStatus"
+                (change)="changeValueEstado($event.target.value)"
+              >
+                <option value="0" selected>TODOS</option>
+                <option *ngFor="let data of listCommissionStatus" [value]="data.nidstate">
+                  {{ data.sdescription }}
+                </option>
+              </select>
+            </div>
+            <div class="conten-input input-4" *ngIf="f['commissionStatus'].value == 3">
+              <label
+                for="availability"
+                class="filter-text"
+                >DISPONIBILIDAD:</label
+              >
+              <select class="filter" formControlName="availability">
+                <option value="-1" selected>TODOS</option>
+                <option value="0">POR DISPONIBILIZAR</option>
+                <option value="1">DISPONIBILIZADOS</option>
+              </select>
+            </div>
+            <div class="conten-input input-6">
+              <label
+                for="spreadsheet"
+                class="filter-text"
+                >POR N° PLANILLA:</label
+              >
+              <input
+                type="text"
+                class="filter"
+                id="spreadsheet"
+                formControlName="spreadsheet"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+          <div class="inputs search-button">
+            <button
+              class="button-default primary"
+              (click)="search(true)"
+              [disabled]="formFilters.invalid"
+            >
+              Buscar
+            </button>
+          </div>
+        </form>
+        <!-- TABLA -->
+          <div class="content-table table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Canal</th>
+                  <th>Ramo</th>
+                  <th>Producto</th>
+                  <th>Nro. de Planilla</th>
+                  <th>Póliza</th>
+                  <th>Comprobante</th>
+                  <th>Lote</th>
+                  <th>Comis. neta variable</th>
+                  <th>Moneda</th>
+                  <th>Estado de Comisión</th>
+                  <th>Estado de Lote</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="!dataCommision?.comisiones?.length">
+                  <tr class="grid-body">
+                    <td colspan="11">
+                      No hay información para mostrar
+                    </td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="!!dataCommision?.comisiones?.length">
+                  <tr
+                    class="table-body"
+                    *ngFor="
+                      let data of dataCommision?.comisiones
+                        | paginate
+                          : {
+                              itemsPerPage: 10,
+                              currentPage: currentPage,
+                              totalItems: totalItems
+                            }
+                    "
+                  >
+                    <td>{{ data.canal }}</td>
+                    <td>{{ data.ramo }}</td>
+                    <td>{{ data.producto }}</td>
+                    <td>{{ data.idJob || "-" }}</td>
+                    <td>{{ data.numeroPoliza }}</td>
+                    <td>{{ data.comprobante }}</td>
+                    <td>{{ data.idLote || "-" }}</td>
+                    <td>{{ data.montoComision }}</td>
+                    <td>{{ data.moneda }}</td>
+                    <td>{{ data.estadoComision }}</td>
+                    <td>{{ data.estadoLote || "-" }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <pagination-controls
+            style="margin-left: -40px; margin-top: 10px"
+            *ngIf="!!dataCommision?.comisiones?.length"
+            class="my-pagination"
+            (pageChange)="pageChange($event)"
+            autoHide="true"
+            responsive="true"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+          >
+          </pagination-controls>
+        </div>
+      </div>
+  </div>
+  
+  <ng-template #modalMessageInfo>
+    <div class="content-modal modal-message">
+      <section>
+        <div class="modal-header">
+          <h6>Mensaje</h6>
+          <button aria-label="cerrar" (click)="hideModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="paragraph">
+            El rango de la fecha de inicio y fecha fin no debe ser mayor a 3 meses, modifique y vuelva a intentarlo.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="button-default primary" (click)="hideModal()">
+            Cerrar
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>

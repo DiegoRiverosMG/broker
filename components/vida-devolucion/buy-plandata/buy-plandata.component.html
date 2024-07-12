@@ -1,0 +1,701 @@
+<div class="content">
+    <div class="insurance">
+        <form *ngIf="Validar"
+              class="form form-plandata"
+              [formGroup]="form">
+            <div *ngIf="!validarindicadores"
+                 class="insurance__item">
+                <div class="content-inputs">
+                    <!-- *TIEMPO DE AHORRO -->
+                    <label for="f-years"
+                           class="placeholder-u"
+                           aria-placeholder="Tiempo de Ahorro (Años):">
+                        <select id="f-years"
+                                class="input-u"
+                                formControlName="years">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <option *ngFor="let year of plans$"
+                                    [value]="year.edad">
+                                {{ year.edad }} AÑOS
+                            </option>
+                        </select>
+                    </label>
+
+                    <!-- *MONEDA -->
+                    <label for="f-currency"
+                           class="placeholder-u"
+                           aria-placeholder="Moneda:">
+                        <select id="f-currency"
+                                class="input-u"
+                                formControlName="currency">
+                            <option [value]="null"
+                                    selected
+                                    disabled
+                                    hidden>
+                                SELECCIONE
+                            </option>
+                            <ng-container *ngIf="!currencies$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!currencies$?.length">
+                                <option *ngFor="let money of currencies$"
+                                        [value]="money.idMoneda">
+                                    {{ this.getMonedaDesc(money.idMoneda) }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+                    <!-- *SUMA ASEGURADA -->
+                    <label (click)="SelectSumaAsegurada()"
+                           for="f-sumAssured"
+                           class="placeholder-u"
+                           aria-placeholder="Suma Asegurada:">
+                        <select id="f-sumAssured"
+                                class="input-u"
+                                formControlName="sumAssured">
+                            <option [value]="null"
+                                    selected
+                                    disabled
+                                    hidden>
+                                SELECCIONE
+                            </option>
+                            <ng-container *ngIf="!sumInsured$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!sumInsured$?.length">
+                                <option *ngFor="let capital of sumInsured$"
+                                        [value]="capital.montoSumaAsegurada">
+                                    {{ capital.montoSumaAsegurada | number: "1.0-0" }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+                    <!-- *FRECUENCIA DE PAGO -->
+                    <label for="f-return-percentage"
+                           class="placeholder-u"
+                           aria-placeholder="Frecuencia:">
+                        <select id="f-return-percentage"
+                                class="input-u"
+                                formControlName="idFrecuencia">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <ng-container *ngIf="!frecuency$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!frecuency$?.length">
+                                <option *ngFor="let frecuency of frecuency$"
+                                        [value]="frecuency.idFrecuencia">
+                                    {{ frecuency.frecuencia }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+                    <!-- *PORCENTAJE DE DEVOLUCION -->
+                    <label for="f-return-percentage"
+                           class="placeholder-u"
+                           aria-placeholder="Porcentaje de Devolución:">
+                        <select id="f-return-percentage"
+                                class="input-u"
+                                formControlName="returnPercentage">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <ng-container *ngIf="!percentages$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!percentages$?.length">
+                                <option *ngFor="let percent of percentages$"
+                                        [value]="percent.montoPorcentaje">
+                                    {{ percent.montoPorcentaje }}%
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+
+                    <div class="content-ammount"
+                         *ngIf="form.valid">
+                        <div class="monthly-ammount flex-column row">
+                            <span>Monto regular:</span>
+                            <b class="mt-2"> <del>{{ simboloMoneda
+                                    }}{{ f["primaTotal"].value | number: "1.2-2" }}</del></b>
+                        </div>
+
+                    </div>
+                    <div class="content-ammount"
+                         *ngIf="form.valid">
+                        <div class="monthly-ammount flex-column row">
+                            <span>Monto con descuento:</span>
+                            <b class="mt-2">{{ simboloMoneda
+                                }}{{ f["primaMensual"].value | number: "1.2-2" }}</b>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="validarindicadores"
+                 disabled
+                 class="insurance__item">
+                <div class="content-inputs">
+                    <!-- *TIEMPO DE AHORRO -->
+                    <label for="f-years"
+                           class="placeholder-u"
+                           aria-placeholder="Tiempo de Ahorro (Años):">
+                        <select id="f-years"
+                                class="input-u"
+                                formControlName="years">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <option *ngFor="let year of []"
+                                    [value]="year.edad">
+                                {{ year.edad }} AÑOS
+                            </option>
+                        </select>
+                    </label>
+
+                    <!-- *MONEDA -->
+                    <label for="f-currency"
+                           class="placeholder-u"
+                           aria-placeholder="Moneda:">
+                        <select id="f-currency"
+                                class="input-u"
+                                formControlName="currency">
+                            <option [value]="null"
+                                    selected
+                                    disabled
+                                    hidden>
+                                SELECCIONE
+                            </option>
+                            <ng-container *ngIf="!currencies$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!currencies$?.length">
+                                <option *ngFor="let money of currencies$"
+                                        [value]="money.idMoneda">
+                                    {{ this.getMonedaDesc(money.idMoneda) }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+                    <!-- *SUMA ASEGURADA -->
+                    <label (click)="SelectSumaAsegurada()"
+                           for="f-sumAssured"
+                           class="placeholder-u"
+                           aria-placeholder="Suma Asegurada:">
+                        <select id="f-sumAssured"
+                                class="input-u"
+                                formControlName="sumAssured">
+                            <option [value]="null"
+                                    selected
+                                    disabled
+                                    hidden>
+                                SELECCIONE
+                            </option>
+                            <ng-container *ngIf="!sumInsured$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!sumInsured$?.length">
+                                <option *ngFor="let capital of sumInsured$"
+                                        [value]="capital.montoSumaAsegurada">
+                                    {{ capital.montoSumaAsegurada | number: "1.0-0" }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+                    <!-- *FRECUENCIA DE PAGO -->
+                    <label for="f-return-percentage"
+                           class="placeholder-u"
+                           aria-placeholder="Frecuencia:">
+                        <select id="f-return-percentage"
+                                class="input-u"
+                                formControlName="idFrecuencia">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <ng-container *ngIf="!frecuency$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!frecuency$?.length">
+                                <option *ngFor="let frecuency of frecuency$"
+                                        [value]="frecuency.idFrecuencia">
+                                    {{ frecuency.frecuencia }}
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+                    <!-- *PORCENTAJE DE DEVOLUCION -->
+                    <label for="f-return-percentage"
+                           class="placeholder-u"
+                           aria-placeholder="Porcentaje de Devolución:">
+                        <select id="f-return-percentage"
+                                class="input-u"
+                                formControlName="returnPercentage">
+                            <option value="null"
+                                    selected
+                                    disabled
+                                    hidden>SELECCIONE</option>
+                            <ng-container *ngIf="!percentages$?.length">
+                                <option value="0"
+                                        disabled>NO HAY RESULTADOS</option>
+                            </ng-container>
+                            <ng-container *ngIf="!!percentages$?.length">
+                                <option *ngFor="let percent of percentages$"
+                                        [value]="percent.montoPorcentaje">
+                                    {{ percent.montoPorcentaje }}%
+                                </option>
+                            </ng-container>
+                        </select>
+                    </label>
+
+
+                    <div class="content-ammount"
+                         *ngIf="form.valid">
+                        <div class="monthly-ammount flex-column row">
+                            <span>Monto regular:</span>
+                            <b class="mt-2"> <del>{{ simboloMoneda
+                                    }}{{ f["primaTotal"].value | number: "1.2-2" }}</del></b>
+                        </div>
+
+                    </div>
+                    <div class="content-ammount"
+                         *ngIf="form.valid">
+                        <div class="monthly-ammount flex-column row">
+                            <span>Monto con descuento:</span>
+                            <b class="mt-2">{{ simboloMoneda
+                                }}{{ f["primaMensual"].value | number: "1.2-2" }}</b>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!validarindicadores"
+                 class="beneficiaries">
+                <div class="content-radio-beneficiaries df aic">
+                    <span class="mr-3">
+                        Mis beneficiarios serán mis herederos legales
+                    </span>
+                    <div class="content-radio-u mr-3">
+                        <input type="radio"
+                               id="f-benef-legal"
+                               class="mark-u orange"
+                               value="1"
+                               formControlName="typeBeneficiaries" />
+                        <label for="f-benef-legal"
+                               class="radio-label-u orange mark-u">
+                            Sí
+                        </label>
+                    </div>
+                    <div class="content-radio-u">
+                        <input type="radio"
+                               id="f-benef-other"
+                               class="mark-u orange"
+                               value="2"
+                               formControlName="typeBeneficiaries" />
+                        <label for="f-benef-other"
+                               class="radio-label-u orange mark-u">
+                            No
+                        </label>
+                    </div>
+                </div>
+                <div class="beneficiary-type">
+                    <div class="toggle-container"
+                         *ngIf="false">
+                        <span>Quiero elegir otros beneficiarios</span>
+                        <button class="button-toggle"
+                                [class.active]="f['typeBeneficiaries'].value == 2"
+                                (click)="changeBeneficiaryType()">
+                            <span>Si</span>
+                            <span>No</span>
+                        </button>
+                    </div>
+                    <div class="content-button"
+                         *ngIf="f['typeBeneficiaries'].value == 2"
+                         @fade>
+                        <button class="btn-primary-u purple ml-auto btn-add"
+                                (click)="openModalBeneficiary()"
+                                [disabled]="sumPercentagesBeneficiaries >= 100">
+                            <i class="fa fa-plus"
+                               aria-hidden="true"></i>
+                            Agregar beneficiario
+                        </button>
+                        <small class="small-info"
+                               *ngIf="sumPercentagesBeneficiaries < 100">
+                            Porcentaje de participación por asignar:
+                            {{ 100 - sumPercentagesBeneficiaries }}%
+                        </small>
+                    </div>
+                </div>
+                <ng-container *ngIf="f['typeBeneficiaries'].value == 2">
+                    <ng-container *ngIf="!!fb.controls.length">
+                        <div class="content-beneficiaries">
+                            <table class="tbl-beneficiaries">
+                                <thead>
+                                    <tr>
+                                        <th>DNI</th>
+                                        <th>Nombres</th>
+                                        <th>Parentesco</th>
+                                        <th>Asignación (%)</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody formArrayName="beneficiaries">
+                                    <tr *ngFor="let data of fb.controls; let index = index">
+                                        <td>{{ data.get("documentNumber").value }}</td>
+                                        <td>
+                                            {{ data.get("names").value }}
+                                            {{ data.get("lastName").value }}
+                                            {{ data.get("lastName2").value }}
+                                        </td>
+                                        <td>
+                                            {{ this.textoParentesco(data.get("relationship").value) }}
+                                        </td>
+                                        <td>{{ data.get("assignment").value }}</td>
+                                        <td class="tbl-content-actions">
+                                            <button class="tbl-action"
+                                                    (click)="editBeneficiary(data.value)">
+                                                <i class="fa fa-edit"
+                                                   aria-hidden></i>
+                                                Editar
+                                            </button>
+                                            <button class="tbl-action"
+                                                    (click)="removeBeneficiary(index)">
+                                                <i class="fa fa-trash"
+                                                   aria-hidden></i>
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ng-container *ngIf="sumPercentagesBeneficiaries > 100">
+                                <small class="has-error">
+                                    La suma de los porcentajes de asignación de los beneficiarios
+                                    debe ser igual a 100%
+                                </small>
+                            </ng-container>
+                            <ng-container *ngIf="beneficiariesLength > 4">
+                                <small class="has-error">Solo puede haber 4 beneficiarios como máximo</small>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </form>
+        <div style="color:red; display:flex;"
+             *ngIf="ValidarError && !validarindicadores">
+            <button class="icon-info"
+                    style="background: none; transform: translateY(-13px); margin-right: 8px;color:red;">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="18"
+                     height="18"
+                     viewBox="0 0 24 24">
+                    <path fill="red"
+                          d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z" />
+                </svg>
+            </button>
+            <p style="color:red;">
+                El cliente cuenta con {{numpolizascontratadas}} pólizas contratadas por una suma asegurada de S/
+                {{currencyformat(totalsumapolizas)}} . Puede comprar una cobertura máxima de S/
+                {{currencyformat(sumasuperada)}}
+                adicionales .
+            </p>
+        </div>
+        <button *ngIf="Validar"
+                class="btn-submit btn-primary-u orange btn-add-quote"
+                [disabled]="!isValidForm"
+                (click)="generarCotizacion()">
+            Agregar cotización
+        </button>
+    </div>
+</div>
+
+<!-- CAPTCHA -->
+<div class="captcha">
+    <re-captcha #recaptchaRef="reCaptcha"
+                (resolved)="resolved($event)"
+                siteKey="{{ siteKey }}"
+                badge="bottomleft"
+                size="invisible">
+    </re-captcha>
+</div>
+
+<!-- MODAL BENEFICIARIOS -->
+<ng-template #modalBeneficiary>
+    <div class="content-modal-u">
+        <div class="modal-u mfb">
+            <div class="modal__header">
+                <h6 class="modal__header--title">Datos del beneficiario</h6>
+                <button class="modal__header--close"
+                        (click)="closeModals()">
+                    &times;
+                </button>
+            </div>
+            <form class="modal__body form-beneficiary"
+                  [formGroup]="formBeneficiary">
+                <!-- DOCUMENTO -->
+                <div class="fb-group fb-document">
+                    <label for="fb-document-type"
+                           class="placeholder-u inside">
+                        <select id="fb-document-type"
+                                class="input-u"
+                                formControlName="documentType">
+                            <option value="2">DNI</option>
+                            <option value="4">CE</option>
+                        </select>
+                    </label>
+                    <label for="fb-document-number"
+                           class="placeholder-u inside"
+                           [class.placeholder-active-u]="fbe['documentNumber'].value"
+                           aria-placeholder="Número de Documento">
+                        <input type="text"
+                               id="fb-document-number"
+                               class="input-u"
+                               [maxlength]="documentNumberCharacterLimit.max"
+                               formControlName="documentNumber"
+                               (blur)="requestClientInfo()" />
+                    </label>
+                </div>
+
+                <!-- NACIONALIDAD -->
+                <label class="placeholder-u inside select"
+                       [class.placeholder-active-u]="fbe['nationality'].value"
+                       aria-placeholder="Nacionalidad">
+                    <select class="input-u"
+                            formControlName="nationality">
+                        <option [value]="null"
+                                disabled
+                                selected
+                                hidden>
+                            NACIONALIDAD
+                        </option>
+                        <option *ngFor="let item of parameters$?.nacionalidades"
+                                [value]="item.id">
+                            {{ item.descripcion }}
+                        </option>
+                    </select>
+                </label>
+
+                <!-- NOMBRES -->
+                <label for="fb-names"
+                       class="placeholder-u inside"
+                       [class.placeholder-active-u]="fbe['names'].value"
+                       aria-placeholder="Nombre">
+                    <input type="text"
+                           id="fb-names"
+                           class="input-u"
+                           formControlName="names" />
+                </label>
+
+                <!-- DEPARTAMENTO -->
+                <!-- <label class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['department'].value"
+               aria-placeholder="Departamento">
+          <select class="input-u"
+                  formControlName="department">
+            <option [value]="null"
+                    disabled
+                    selected
+                    hidden>
+              Departamento
+            </option>
+            <option *ngFor="let item of departments$"
+                    [value]="item.id">
+              {{ item.descripcion }}
+            </option>
+          </select>
+        </label> -->
+
+                <!-- APELLIDO PATERNO -->
+                <label for="fb-lastname"
+                       class="placeholder-u inside"
+                       [class.placeholder-active-u]="fbe['lastName'].value"
+                       aria-placeholder="Apellido Paterno">
+                    <input type="text"
+                           id="fb-lastname"
+                           class="input-u"
+                           formControlName="lastName" />
+                </label>
+
+                <!-- PROVINCIA -->
+                <!-- <label class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['province'].value"
+               aria-placeholder="Provincia">
+          <select class="input-u"
+                  formControlName="province">
+            <option [value]="null"
+                    disabled
+                    selected
+                    hidden>Provincia</option>
+            <option *ngFor="let item of provinces$"
+                    [value]="item.idProvincia">
+              {{ item.provincia }}
+            </option>
+          </select>
+        </label> -->
+
+                <!-- APELLIDO MATERNO -->
+                <label for="fb-lastname2"
+                       class="placeholder-u inside"
+                       [class.placeholder-active-u]="fbe['lastName2'].value"
+                       aria-placeholder="Apellido Materno">
+                    <input type="text"
+                           id="fb-lastname2"
+                           class="input-u"
+                           formControlName="lastName2" />
+                </label>
+
+                <!-- DISTRITO -->
+                <!-- <label class="placeholder-u inside select"
+               [class.placeholder-active-u]="fbe['district'].value"
+               aria-placeholder="Distrito">
+          <select class="input-u"
+                  formControlName="district">
+            <option [value]="null"
+                    disabled
+                    selected
+                    hidden>Distrito</option>
+            <option *ngFor="let item of districts$"
+                    [value]="item.idDistrito">
+              {{ item.distrito }}
+            </option>
+          </select>
+        </label> -->
+
+                <!-- FECHA DE NACIMIENTO -->
+                <label for="fb-birthdate"
+                       class="placeholder-u inside"
+                       [class.placeholder-active-u]="fbe['birthdate'].value"
+                       aria-placeholder="Fecha de Nacimiento">
+                    <input type="text"
+                           id="fb-birthdate"
+                           class="input-u"
+                           #dp="bsDatepicker"
+                           bsDatepicker
+                           [bsConfig]="bsConfigBirthdate"
+                           [readonly]="true"
+                           formControlName="birthdate" />
+                </label>
+
+                <!-- DIRECCIÓN -->
+                <!-- <label for="fb-address"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['address'].value"
+               aria-placeholder="Dirección">
+          <input type="text"
+                 id="fb-address"
+                 class="input-u"
+                 formControlName="address" />
+        </label> -->
+
+                <!-- CORREO -->
+                <!-- <label for="fb-email"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['email'].value"
+               aria-placeholder="Correo electrónico">
+          <input type="text"
+                 id="fb-email"
+                 class="input-u"
+                 formControlName="email" />
+        </label> -->
+
+                <!-- TELEFONO -->
+                <!-- <label for="fb-phone"
+               class="placeholder-u inside"
+               [class.placeholder-active-u]="fbe['phone'].value"
+               aria-placeholder="Número de celular">
+          <input type="text"
+                 id="fb-phone"
+                 class="input-u"
+                 formControlName="phone" />
+        </label> -->
+
+                <!-- SEXO -->
+                <label class="placeholder-u inside select"
+                       [class.placeholder-active-u]="fbe['sex'].value"
+                       aria-placeholder="Género">
+                    <select class="input-u"
+                            formControlName="sex">
+                        <option [value]="null"
+                                disabled
+                                selected
+                                hidden>SEXO</option>
+                        <option value="1">Femenino</option>
+                        <option value="2">Masculino</option>
+                        <option value="3">No informado</option>
+                    </select>
+                </label>
+
+                <!-- PARENTESCO -->
+                <label for="fb-relationship"
+                       class="placeholder-u inside select"
+                       [class.placeholder-active-u]="fbe['relationship'].value"
+                       aria-placeholder="Parentesco">
+                    <select id="fb-relationship"
+                            class="input-u"
+                            formControlName="relationship">
+                        <option value="null"
+                                selected
+                                disabled
+                                hidden>PARENTESCO</option>
+                        <option *ngFor="let data of parameters$?.parentescos"
+                                [value]="data.id">
+                            {{ data.descripcion }}
+                        </option>
+                    </select>
+                </label>
+
+                <!-- ASIGNACION -->
+                <label for="fb-assignment"
+                       class="placeholder-u inside select"
+                       [class.placeholder-active-u]="fbe['assignment'].value"
+                       aria-placeholder="Asignación (%)">
+                    <select id="fb-assignment"
+                            class="input-u"
+                            formControlName="assignment">
+                        <option value="null"
+                                selected
+                                disabled
+                                hidden>ASIGNACIÓN</option>
+                        <option *ngFor="let n of percents"
+                                [value]="n">{{ n }}%</option>
+                    </select>
+                </label>
+            </form>
+            <div class="modal__footer">
+                <button class="btn-primary-u purple mfb-btn"
+                        [disabled]="formBeneficiary.invalid || beneficiaryExist"
+                        (click)="submitBeneficiary()">
+                    {{ editMode ? "Actualizar" : "Agregar" }}
+                </button>
+            </div>
+            <ng-container *ngIf="beneficiaryExist">
+                <small class="has-error">
+                    El beneficiario ya existe, ingrese otro beneficiario
+                </small>
+            </ng-container>
+            <ng-container *ngIf="clientIsBeneficiary">
+                <small class="has-error"> El cliente no puede ser beneficiario </small>
+            </ng-container>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,43 @@
+.panel-table {
+  
+}
+
+.panel-table table {
+  font-size: 14px;
+}
+
+.panel-table table:not(.panel-slim) {
+  text-transform: uppercase;
+}
+
+.panel-table table thead {
+  border-bottom: 1px solid #ddd;
+}
+
+.panel-table table tbody tr {
+  margin-top: 10px;
+}
+
+.panel-table table td, 
+.panel-table table th {
+  padding: .2rem .2rem .6rem;
+}
+.panel-table table td{
+  padding-top: 10px;
+}
+
+.panel-table table .grid-title th {
+  font-family: "Bliss Pro";
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(42, 18, 99, 0.78);
+}
+.panel-table table .grid-title td {
+  padding: 15px 15px;
+  color: rgb(146, 138, 163);
+}
+.panel-table .panel-table-acciones img:not(:first-child) {
+  margin-left: 5px;
+}

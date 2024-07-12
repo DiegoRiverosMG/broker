@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <form [formGroup]="Login">
+                <h3>Contraseña obligatoria </h3>
+                <input type="hidden" id="token" formControlName="token" value="token">
+                <label for="exampleInputEmail1">Este link está protegido, para acceder debes ingresar el número de
+                    documento.</label>
+                <input type="password" class="form-control" OnlyNumberDirective aria-describedby="emailHelp" placeholder="Ingresar documento"
+                    formControlName="documento">
+                <br>
+                <button type="submit" class="btn btn-primary" (click)="ValidateAccess()">Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%; width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="padding-modal">
+    <div class="modal-body content-modal">
+      <img class="img-help" src="assets/rentas/help.svg" />
+      <h4 class="modal-title title-re" id="modal-basic-title">
+        {{ mensaje ? mensaje[2] : 'Cargando...' }}
+      </h4>
+    </div>
+  
+    <div class="modal-footer border-none">
+      <button class="button-cancelar" (click)="formModalReference.dismiss()">
+        <span>No</span>
+      </button>
+      <button class="button-Guardar" (click)="select()"><span>Si</span></button>
+    </div>
+  </div>
+  

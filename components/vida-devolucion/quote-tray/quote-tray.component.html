@@ -1,0 +1,767 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 no-left">
+        <app-nav-menuprod></app-nav-menuprod>
+      </div>
+      <div class="col-md-9 body-qr">
+        <div class="row group1">
+          <h1 class="title">{{ title }}</h1>
+          <button class="btn-primary-u ps-button-max-width"
+            (click)="setNewCotizacion()"
+                  *ngIf="createProspcet">
+            <i class="fa fa-plus"
+               aria-hidden="true"></i>
+            Nuevo cliente
+          </button>
+        </div>
+        <div class="divider"></div>
+        <!-- FILTROS -->
+  
+        <form class="form-filters" [formGroup]="FormFilter">
+          <label class="placeholder-u" aria-placeholder="CANAL:">
+            <select class="input-u" formControlName="channelSale">
+              <option [value]="null" selected disabled hidden>SELECCIONE</option>
+              <option value="0">TODOS</option>
+              <option *ngFor="let data of channelSales$" [value]="data.id">
+                {{ data.description }}
+              </option>
+            </select>
+          </label>
+          <label class="placeholder-u" aria-placeholder="RAMO:">
+            <select class="input-u" formControlName="branch">
+              <option [value]="null" selected disabled hidden>SELECCIONE</option>
+              <option value="0">TODOS</option>
+              <option *ngFor="let data of branches$" [value]="data.id">
+                {{ data.description }}
+              </option>
+            </select>
+          </label>
+          <label class="placeholder-u" aria-placeholder="PRODUCTO:">
+            <select class="input-u" formControlName="product">
+              <option [value]="null" selected disabled hidden>SELECCIONE</option>
+              <option value="0">TODOS</option>
+              <option *ngFor="let data of products$" [value]="data.id">
+                {{ data.description }}
+              </option>
+            </select>
+          </label>
+          <label for="type-document"
+            class="placeholder-u"
+                 aria-placeholder="TIPO DE DOCUMENTO:">
+            <select id="type-document"
+              class="input-u"
+                    formControlName="documentType">
+              <option [value]="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE</option>
+              <option value="0">TODOS</option>
+              <option value="2">DNI</option>
+              <option value="4">C.E.</option>
+            </select>
+          </label>
+          <label for="document-number"
+            class="placeholder-u"
+                 aria-placeholder="NÚMERO DE DOCUMENTO:">
+            <input type="text"
+              id="document-number"
+              class="input-u"
+              autocomplete="off"
+              [minlength]="LimitdocumentNumber.min"
+              [maxlength]="LimitdocumentNumber.max"
+                   formControlName="documentNumber" />
+          </label>
+          <label for="client-name"
+            class="placeholder-u"
+                 aria-placeholder="CÓDIGO DEL CLIENTE:">
+            <input type="text"
+              id="client-name"
+              class="input-u"
+              autocomplete="off"
+                   formControlName="clientId" />
+          </label>
+          <label for="quotation-number"
+            class="placeholder-u"
+            aria-placeholder="COTIZACIÓN DEFINITIVA:"
+                 *ngIf="typeSearch != 1">
+            <input type="text"
+              id="quotation-number"
+              class="input-u"
+              autocomplete="off"
+                   formControlName="quotationNumber" />
+          </label>
+  
+          <label for="validity"
+            class="placeholder-u"
+                 aria-placeholder="FECHA DE ACT. INICIO:">
+            <input type="text"
+              id="validity"
+              class="input-u"
+              autocomplete="off"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="bsConfigValidity"
+              [readonly]="true"
+                   formControlName="validity" />
+          </label>
+          <label for="validity-end"
+            class="placeholder-u"
+                 aria-placeholder="FECHA DE ACT. FIN:">
+            <input type="text"
+              id="validity-end"
+              class="input-u"
+              autocomplete="off"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="bsConfigValidityEnd"
+              [readonly]="true"
+                   formControlName="validityEnd" />
+          </label>
+          <label for="reason" class="placeholder-u" aria-placeholder="ESTADO:">
+            <select id="reason" class="input-u" formControlName="state">
+              <option [value]="null" selected disabled hidden>SELECCIONE</option>
+              <option value="0">TODOS</option>
+              <option *ngFor="let data of estados" [value]="data.id">
+                {{ data.descripcion }}
+              </option>
+            </select>
+          </label>
+          <label *ngIf="typeSearch == 1" id="Label2" for="document-number"
+              class="placeholder-u"
+             aria-placeholder="">
+  
+          </label>
+          <label style="width: 100%;" class="placeholder-u"
+              aria-placeholder="TIPO DE CLIENTE">
+          <select class="input-u"
+                 formControlName="typeClient">
+           <option *ngFor="let data of listTypeClient$"
+               [value]="data.idClient">
+                 {{ data.cliente }}
+             </option>
+          </select>
+          </label>
+          <label for="document-number"
+               class="placeholder-u"
+                 aria-placeholder="NOMBRES">
+                 <input type="text"
+                id="nombres"
+                 class="input-u"
+                 autocomplete="off"
+  
+          formControlName="nombres" />
+           </label>
+          <label for="document-number"
+                class="placeholder-u"
+                aria-placeholder="APELLIDO 1">
+               <input type="text"
+                id="PrimerApellido"
+                class="input-u"
+                autocomplete="off"
+  
+               formControlName="PrimerApellido" />
+          </label>
+          <label for="document-number"
+                class="placeholder-u"
+                aria-placeholder="APELLIDO 2">
+            <input type="text"
+                   id="SegundoApellido"
+               class="input-u"
+               autocomplete="off"
+  
+               formControlName="SegundoApellido" />
+          </label>
+          <label id="Label2" for="document-number"
+              class="placeholder-u"
+             aria-placeholder="">
+  
+          </label>
+  
+          <label id="ejecutivolabel" style="width: 225%;" for="ejecutivo"
+            class=" placeholder-u"
+          aria-placeholder="EJECUTIVO COMERCIAL:">
+            <select id="ejecutivo"
+                    class="input-u"
+                    formControlName="ejecutivo">
+  
+              <!-- <option [value]="null"
+                      selected
+                      disabled
+                      hidden>SELECCIONE</option>
+              <!-- <option *ngFor="let data of ejecutivos"
+                      [value]="data.id">
+                {{ data.nombre }}
+              </option> -->
+              <option *ngFor="let data of listComercialEjecutives$"
+                      [value]="data.idEjecutivo">
+                {{ data.ejecutivo }}
+              </option>
+            </select>
+          </label>
+          <!--    <label
+          for="client-name"
+          class="placeholder-u"
+          aria-placeholder="NOMBRE Y APELLIDO DEL CLIENTE:"
+        >
+          <input
+            type="text"
+            id="client-name"
+            class="input-u"
+            autocomplete="off"
+            formControlName="clientName"
+          />
+        </label> -->
+          <div class="form-actions">
+            <button class="button secondary fit" (click)="resetFormFilters()">
+              Limpiar
+            </button>
+            <button class="button primary fit" (click)="buscar(true)">
+              Buscar
+            </button>
+          </div>
+        </form>
+  
+        <!-- TABLA -->
+  
+        <div class="grid form-group row"
+          style="
+            border-top: 1px solid rgb(84, 61, 129);
+            margin-top: 25px;
+            margin-right: 0px;
+          ">
+          <div class="table-responsive div-tableban"
+               id="table-scroll">
+            <table class="table-u">
+              <thead>
+                <tr class="grid-title">
+                  <th class="grid-title-item">Cód. de cliente</th>
+                  <th class="grid-title-item">Cotización definitiva</th>
+                  <th class="grid-title-item">Nombre del contratante</th>
+                  <th class="grid-title-item">DNI contr.</th>
+                  <th class="grid-title-item">Fecha de actualización</th>
+                  <th class="grid-title-item">Asesor Comercial</th>
+                  <!-- <th class="grid-title-item" *ngIf="typeSearch != 1">
+                    Cotización definitiva
+                  </th> -->
+                  <!-- <th class="grid-title-item"
+                      *ngIf="typeSearch == 1">Canal</th> -->
+                  <th class="grid-title-item">Nombre del Asegurado</th>
+                  <th class="grid-title-item">DNI aseg.</th>
+                  <!--                 <th class="grid-title-item">Origen</th> -->
+                  <!-- <th class="grid-title-item">Motivos de rechazo</th> -->
+                  <th class="grid-title-item">Origen</th>
+                  <th class="grid-title-item">Estado</th>
+                  <th class="grid-title-item">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="!data?.length">
+                  <tr class="grid-body">
+                    <td class="grid-body-item"
+                      colspan="10"
+                        style="text-align: center">
+                      No hay informacion para mostrar
+                    </td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="!!data?.length">
+                  <tr class="grid-body"
+                    *ngFor="
+                      let item of data
+                        | paginate
+                          : {
+                              itemsPerPage: 10,
+                              currentPage: p,
+                              totalItems: data[0]?.cantidadRegistros,
+                              id: 'bdj'
+                            };
+                      let index = index
+                    "
+                      [id]="'row' + index">
+                    <td class="grid-title-item">{{ item.idCliente }}</td>
+                    <td class="grid-title-item">
+                      {{ item.idCotizacion || "-" }}
+                    </td>
+                    <!-- <td class="grid-title-item" *ngIf="typeSearch == 1">
+                      {{ item.canal || "-" }}
+                    </td> -->
+                    <td class="grid-title-item">{{ item.contratante }}</td>
+                    <td class="grid-title-item">
+                      {{ item.contratanteDocumento }}
+                    </td>
+                    <td class="grid-title-item">{{ item.fechaActualizacion }}</td>
+                    <td class="grid-title-item">{{ item.usuario }}</td>
+                    <td class="grid-title-item">{{ item.cliente }}</td>
+                    <td class="grid-title-item">
+                      {{ item.numeroDocumento }}
+                    </td>
+                    <!--                   <td>---</td> -->
+                    <td class="grid-title-item">{{ item.origen }}</td>
+                    <!-- <td class="grid-title-item">
+                      {{ item.motivoRechazo || "-" }}
+                    </td> -->
+                    <td class="grid-title-item">
+                      {{ item.estado }}
+                    </td>
+                    <ng-container *ngIf="
+                        typeSearch != 1 &&
+                        typeSearch != 3 &&
+                        typeSearch != 6 &&
+                        typeSearch != 9 &&
+                        typeSearch != 8
+                      ">
+                      <td class="tbl__body--row-item tbl-actions actions"
+                        ngbDropdown
+                          [placement]="index > 3 ? 'top-right' : 'bottom-right'">
+                        <button class="btn-dropdown-u"
+                          tabindex="0"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                                ngbDropdownToggle>
+                          <i class="fa fa-ellipsis-v"
+                             aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-u"
+                            display="dynamic"
+                            ngbDropdownMenu>
+                          <li *ngIf="
+                          item.estado !== 'ANULADO'" class="dropdown-item-u">
+                            <button class="dropdown-item-btn-u"
+                              title="Ver resumen"
+                                    (click)="setViewCotizacion(item)">
+                              <i class="fa fa-eye fa-lg"></i>Ver resumen
+                            </button>
+                          </li>
+                          <li *ngIf="
+                          item.estado !== 'ANULADO'" class="dropdown-item-u">
+                            <button class="dropdown-item-btn-u"
+                              title="Historial"
+                                    (click)="historial(item)">
+                              <i class="fa fa-search fa-lg"></i>Historial
+                            </button>
+                          </li>
+                          <li *ngIf="
+                              item.estado !== 'ANULADO' && currentUser.soporte
+                            "
+                              class="dropdown-item-u">
+                            <button class="dropdown-item-btn-u"
+                              title="Trazabilidad"
+                                    (click)="trazabilidad(item)">
+                              <i class="fa fa-table fa-lg"></i>Trazabilidad
+                            </button>
+                          </li>
+                          <li class="dropdown-item-u"
+                            *ngIf="
+                              item.estado !== 'ANULADO' && currentUser.soporte
+                            ">
+                            <button class="dropdown-item-btn-u"
+                              title="Reasignar"
+                                    (click)="alertReasign(item)">
+                              <i class="fa fa-paint-brush"></i>Reasignar
+                            </button>
+                          </li>
+                          <li class="dropdown-item-u"
+                              *ngIf="item.estado !== 'ANULADO' && !currentUser.comercial">
+                            <button class="dropdown-item-btn-u"
+                              title="Descartar"
+                                    (click)="descartar(item)">
+                              <i class="fa fa-times fa-lg"></i>Descartar
+                            </button>
+                          </li>
+                          <li *ngIf="
+                          item.estado == 'ANULADO' && currentUser.soporte
+                        "
+                              class="dropdown-item-u">
+                            <button class="dropdown-item-btn-u"
+                                    title="Reactivar"
+                                    (click)="alertReactivar(item)">
+                              <i class="fa fa-rotate-left fa-lg"></i>Reactivar
+                            </button>
+                          </li>
+                        </ul>
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="
+                        typeSearch == 1 ||
+                        typeSearch == 3 ||
+                        typeSearch == 6 ||
+                        typeSearch == 9 ||
+                        typeSearch == 8
+                      ">
+                      <td>
+                        <button class="btn-atender" (click)="attend(item)">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                          Atender
+                        </button>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="content-pagination pag-ban">
+          <pagination-controls class="my-pagination"
+            id="bdj"
+            autoHide="true"
+            responsive="true"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+            screenReaderPaginationLabel="Paginación"
+            screenReaderPageLabel="pagina"
+            screenReaderCurrentLabel="Estás en la pagina"
+            (pageChange)="currentPage = $event"
+                               *ngIf="!!data?.length">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- HISTORIAL -->
+  <ng-template #modalHistory>
+    <div class="content-modal-u">
+      <div class="modal-u mh">
+        <div class="modal__header">
+          <h6 class="modal__header--title">
+            Historial del prospecto: <b>{{ prospectSelected.cliente }}</b>
+          </h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body mbcr">
+          <div class="grid form-group row content-table"
+               style="margin-right: 0px">
+            <div class="table-responsive table-history">
+              <table class="table-u">
+                <thead>
+                  <tr class="grid-title table-head">
+                    <th class="grid-title-item">Secuencia</th>
+                    <th class="grid-title-item">Estado</th>
+                    <th class="grid-title-item">Origen</th>
+                    <th class="grid-title-item">Fecha</th>
+                    <th class="grid-title-item">Usuario</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-body"
+                      *ngFor="let datah of datah; let secuencia = index">
+                    <td class="table-body-item">{{ secuencia + 1 }}</td>
+                    <td class="table-body-item">{{ datah.estado }}</td>
+                    <td class="table-body-item">{{ datah.origen }}</td>
+                    <td class="table-body-item">{{ datah.fechaRegistro }}</td>
+                    <td class="table-body-item">{{ datah.usuario }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal__footer">
+          <button class="button primary fit" (click)="closeModals()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  <!-- Trazabilidad -->
+  <ng-template #modalTrazabilidad>
+    <div class="content-modal-u">
+      <div class="modal-u mh">
+        <div class="modal__header">
+          <h6 class="modal__header--title">
+            TABLA DE TRAZABILIDAD: <b>{{ prospectSelected.cliente }}</b>
+          </h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body mbcr">
+          <div class="grid form-group row content-table"
+               style="margin-right: 0px">
+            <div class="table-responsive table-history">
+              <table class="table-u">
+                <thead>
+                  <tr class="grid-title table-head">
+                    <th class="grid-title-item">Orden</th>
+                    <th class="grid-title-item">Usuario Ejecutor</th>
+                    <th class="grid-title-item">Usuario Asignado Actual</th>
+                    <th class="grid-title-item">Fecha</th>
+                    <th class="grid-title-item">Evento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-body"
+                      *ngFor="let datahh of datahh; let secuencia = index">
+                    <td class="table-body-item">{{ secuencia + 1 }}</td>
+                    <td class="table-body-item">{{ datahh.ejecutorEvento }}</td>
+                    <td class="table-body-item">{{ datahh.propietarioProspecto }}</td>
+                    <td class="table-body-item">{{ datahh.fechaEvento }}</td>
+                    <td class="izquierdatrazabilidad table-body-item">{{datahh.description}}</td>
+  
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal__footer">
+          <button class="button primary fit" (click)="closeModals()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- MODAL RECHAZAR SOLICITUD -->
+  <ng-template #modalRechazar>
+    <div class="content-modal-u">
+      <div class="modal-u mfb">
+        <div class="modal__header">
+          <h6 class="modal__header--title">
+            Anular prospecto: <b>{{ prospectSelected.cliente }}</b>
+          </h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="paragraph">¿Estás seguro(a) que desea anular al prospecto?</p>
+        </div>
+        <div class="modal__footer">
+          <button class="button secondary fit" (click)="closeModals()">
+            Cancelar
+          </button>
+          <button class="button primary fit" (click)="aceptarDescartar()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  <ng-template #modalMessage>
+    <div class="content-modal-u">
+      <section class="modal-u">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Mensaje</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="paragraph">{{ message }}</p>
+        </div>
+        <div class="modal__footer">
+          <button class="button btn-primary-u ps-button-max-width"
+                  (click)="closeModals()">
+            Aceptar
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  
+  <!-- MODAL REASIGNAR -->
+  <ng-template #modalReasign>
+    <div class="content-modal-u">
+      <section class="modal-u" style="max-width: fit-content">
+        <div>
+          <div class="modal__header">
+            <h6 class="modal_header_sub ml-0">Reasignar</h6>
+            <button class="modal__header--close" (click)="closeModals()">
+              &times;
+            </button>
+          </div>
+          <div class="modal__body">
+            <div style="width: 340px">
+              <form [formGroup]="formAsignar">
+                <p class="sub-title-a">NOMBRE DEL NUEVO ASIGNADO:</p>
+                <ng-select class="select-a"
+                  [items]="listAssesors"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  notFoundText="No se encontraron resultados"
+                  formControlName="asignar_asesor"
+                           style="position: absolute; width: 85%">
+                </ng-select>
+              </form>
+            </div>
+          </div>
+          <div class="modal__footer">
+            <button class="button primary fit orange"
+              (click)="assignAssesor()"
+              style="margin-top: 35px"
+              [disabled]="formAsignar.invalid">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  
+  <!-- MODAL Asignar en Reactivar -->
+  <ng-template #modalAsignarReactivar>
+    <div class="content-modal-u">
+      <section class="modal-u"
+               style="max-width: fit-content">
+        <div>
+          <div class="modal__header">
+            <h6 class="modal_header_sub ml-0">Asignar</h6>
+            <button class="modal__header--close"
+                    (click)="closeModals()">
+              &times;
+            </button>
+          </div>
+          <div class="modal__body">
+            <div style="width: 340px">
+  
+              <form [formGroup]="formAsignarAsesorReactivar">
+                <p class="sub-title-a">NOMBRE DEL ASIGNADO:</p>
+                <ng-select class="select-a"
+                           [items]="listAssesors"
+                           placeholder="SELECCIONE ASIGNADO"
+                           bindLabel="nombre"
+                           bindValue="id"
+                           notFoundText="No se encontraron resultados"
+                           formControlName="asignar_asesor_reactivar"
+                           style="position: absolute; width: 85%">
+                </ng-select>
+              </form>
+            </div>
+          </div>
+          <div class="modal__footer">
+            <button class="button primary fit orange"
+                    (click)="assignAssesorReactivar()"
+                    style="margin-top: 35px"
+                    [disabled]="formAsignarAsesorReactivar.invalid">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  
+  
+  <ng-template #modalDatasign>
+    <div class="content-modal-u">
+      <section class="modal-u" style="max-width: fit-content">
+        <div class="stylebody">
+          <div class="modal__header">
+            <h6 class="modal_header_sub">
+              <i class="fa fa-circle" aria-hidden="true"></i> Datos Básicos
+            </h6>
+            <button class="modal__header--close" (click)="closeModals()">
+              &times;
+            </button>
+          </div>
+          <div class="modal__body" style="height: 170px">
+            <div class="col-lg-12">
+              <div class="row" style="margin-right: 0px">
+                <div class="row">
+                  <div class="proslabel">Tipo</div>
+                  <div class="">
+                    <select class="input-p" style="width: 80px">
+                      <option [value]="null" selected disabled hidden>
+                        SELECCIONE
+                      </option>
+                      <option value="0">R.U.C.</option>
+                      <option value="1">C.E.</option>
+                      <option value="2">DNI</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row" style="margin-right: 15px">
+                  <div class="proslabel" style="color: gray">
+                    Número de documento
+                  </div>
+                  <div class="">
+                    <input type="text" class="input-p" />
+                  </div>
+                </div>
+                <div class="row" style="margin-right: 15px">
+                  <div class="proslabel" style="color: gray">Correo</div>
+                  <div class="">
+                    <input type="text" class="input-p" />
+                  </div>
+                </div>
+                <div class="row" style="margin-right: 15px">
+                  <div class="proslabel" style="color: gray">Celular</div>
+                  <div class="">
+                    <input type="text" class="input-p" />
+                  </div>
+                </div>
+                <div class="row" style="margin-right: 15px">
+                  <div class="proslabel" style="color: gray">
+                    Fecha de Nacimiento
+                  </div>
+                  <div class="">
+                    <input type="text" class="input-p" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal__footer">
+            <button class="button btn-primary-u ps-button-max-width"
+                    style="margin-left: auto">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <ng-template #modalReasignAlert>
+    <div class="content-modal-u">
+      <section class="modal-u">
+        <div class="">
+          <div class="modal__body"
+               style="height: fit-content; text-align: center">
+            <span class="msg-alert">Este prospecto ya esta asignado.</span>
+            <span class="msg-alert">¿Estás seguro que desea realizar una reasignación?</span>
+          </div>
+          <div class="modal__footer">
+            <button class="button secondary fit orange mr-3"
+               (click)="closeModal()">
+              Cancelar
+            </button>
+            <button class="button primary fit orange" (click)="openReasgin()">
+              Continuar de todos modos
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <ng-template #modalReactivarAlert>
+    <div class="content-modal-u">
+      <section class="modal-u">
+        <div class="">
+          <div class="modal__body"
+               style="height: fit-content; text-align: center">
+            <span class="msg-alert">Este prospecto ya esta anulado.</span>
+            <span class="msg-alert">¿Esta seguro que desea reactivar el prospecto?</span>
+          </div>
+          <div class="modal__footer">
+            <button class="button secondary fit orange mr-3"
+                    (click)="closeModal()">
+              Cancelar
+            </button>
+            <button class="button primary fit orange"
+                    (click)="openReactivar()">
+              Continuar de todos modos
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  

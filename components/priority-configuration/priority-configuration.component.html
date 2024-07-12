@@ -1,0 +1,110 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   PRIORITY-CONFIGURATION.COMPONENT.HTML                                */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   20-09-2022                                                           */
+/*  VERSIÓN             :   2.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">PRIORIDAD POR RAMO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN</span>
+                <select class="form-control" (change)="seleccionarOrigen($event.target.value)" formControlName="NNUMORI">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>RAMO</span>
+                <select class="form-control" formControlName="NBRANCH">
+                    <!-- <option value="0" disabled selected>TODOS</option> -->
+                    <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="listar()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="" id="basicAgentsGroupView" aria-labelledby="headingBasicAgentsGroupView" data-parent="#basicTabAccordion">
+                <div class="card-body" id="agents-group-view">
+                    <div class="row">
+                        <div class="col">
+                            <div>
+                                <span class="titleN">Listado de Interfaces</span>
+                            </div>
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col">
+                            <div>
+                                <span class="titleN">Listado de Prioridades</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card shadow-sm border-0 swap-list list-left">
+                                <div class="card-body overflow-auto py-0">
+                                    <ul class="list-group list-group-flush" *ngFor="let item of dependencias" name="agentInGroup">
+                                        <li class="list-group-item {{isInActiveItems(item) ? 'active' : ''}}" (click)="toggleActiveItem(item)">
+                                            {{ item.MVT_CDESCRI_1 }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 d-flex flex-column justify-content-center list-arrows">
+                            <button type="button" class="full-colorN my-3" (click)="moveToTheRight()">
+                                <img class="icon-btn" src="./assets/icons/arrow-right.png" />
+                            </button>
+                            <button type="button" class="full-colorN my-3" (click)="moveToTheLeft()">
+                                <img class="icon-btn" src="./assets/icons/arrow-left.png" />
+                            </button>
+                            <button type="button" class="full-color my-3" (click)="eliminarAgregarPrioridadesInterfaces()">
+                                <span>Guardar</span>
+                            </button>
+                        </div>
+                        <div class="col">
+                            <div class="card shadow-sm border-0 swap-list list-right">
+                                <div class="card-body overflow-auto py-0">
+                                    <ul class="list-group list-group-flush" *ngFor="let item of prioridades; let i = index;" name="agentNotInGroup">
+                                        <div class="row">
+                                            <li class="col-md-9 list-group-item {{isInActiveItems(item) ? 'active' : ''}}" (click)="toggleActiveItem(item)">
+                                                {{ i + 1 }}. {{ item.MVT_CDESCRI_1 }}
+                                            </li>
+                                            <div class="col-md-3">
+                                                <a (click)="moveUp(i)" class="btn btn-icon">
+                                                    <img class="icon-btn" src="./assets/icons/chevron-up.png" title="Subir" />
+                                                </a>
+                                                <a (click)="moveDown(i)" class="btn btn-icon">
+                                                    <img class="icon-btn" src="./assets/icons/chevron-down.png" title="Bajar" />
+                                                </a>
+                                            </div>
+                                        </div>    
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

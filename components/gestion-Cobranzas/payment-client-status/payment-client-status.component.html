@@ -1,0 +1,153 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid p-0">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Estado Cobro CLientes</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="filter">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <span>RAMO</span>
+                  <select [(ngModel)]="codBranchSelected" name="codBranchSelected" (change)="onSelectBranch()" class="minimal">
+                    <option value="0" selected>TODOS</option>
+                    <option *ngFor="let item of branchList" value="{{item.NBRANCH}}">
+                      {{item.SDESCRIPT}}</option>
+                  </select>
+                </div>
+                <!-- JDD ACC PERSONALES-->
+                <!-- <div  class="col-sm-3">
+                                            <span>PRODUCTO</span>
+                                            <select [(ngModel)]="codProductSelected" name="codProductSelected" class="minimal">
+                                            <option value="0" selected>TODOS</option>
+                                            <option *ngFor="let item of productList" value="{{item.COD_PRODUCT}}">
+                                                    {{item.DES_PRODUCT}}</option>
+                                        </select>
+                                          </div> -->
+              </div>
+
+              <div class="row">
+                <div class="col-sm-3">
+                  <span>TIPO DE DOCUMENTO</span>
+                  <select [(ngModel)]="codTipoDocumentSelected" name="codTipoDocumentSelected"
+                    (change)="seltipoDocumento()" class="minimal">
+                    <option value="0" selected>Seleccione</option>
+                    <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-3">
+                  <span>NRO. DOC.</span>
+                  <input type="text" placeholder="Nro. Doc. Contratante" maxlength={{maxlength}}
+                    (keyup.enter)="ListClientRestric()"
+                    (keypress)="validarNroDocumento($event, this.codTipoDocumentSelected)" [(ngModel)]="nroDocumento" />
+
+                </div>
+                <div class="col-sm-2">
+                  <span>&nbsp;</span>
+                  <button class="full-color" (click)="ListClientRestric()" style="margin-top: 5px;">
+                    <span>Buscar</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item ">RAMO</td>
+                <!-- <td class="grid-title-item">PRODUCTO</td> -->
+                <td class="grid-title-item">TIPO DOCUMENTO</td>
+                <td class="grid-title-item">NÚMERO DOCUMENTO</td>
+                <td class="grid-title-itemr">DESCRIPCIÓN</td>
+                <td class="grid-title-item ">TIPO DE RESTRICCIÓN</td>
+                <td class="grid-title-item ">INICIO DE PAGO</td>
+                <td class="grid-title-item ">VIGENCIA DE PAGO</td>
+                <td class="grid-title-item">ACCIÓN</td>
+              </tr>
+            </thead>
+            <ng-container *ngIf="listClientRestric!=null && listClientRestric.length>0; then showGrid else hideGrid">
+            </ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr style="text-align: center;">
+                <td colspan="12">No se encontraron registros.</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody>
+              <tr *ngFor="let item of listToShow; let row_no = index">
+                <td class="uppercase">{{ item.desRamo }}</td>
+                <!-- <td >{{ item.desProducto }}</td> -->
+                <td class="uppercase">{{ item.desTipoDocumento }}</td>
+                <td class="uppercase"> {{ item.documento }}</td>
+                <td class="uppercase">{{ item.descripcion }}</td>
+                <td class="uppercase">{{ item.desRestriccion }}</td>
+
+                <td class="uppercase">{{ item.FInitPago }}</td>
+                <td class="uppercase">{{ item.FVigenPago }}</td>
+                <td>
+                  <a (click)='openModalCreditView(item,2)'><img alt="Detalle" src="assets/icons/search-icon.png"
+                      class="BotonStyle" title="Detalle" style="cursor: pointer;height: 24px"></a>
+                  <a (click)='openModalCreditView(item,1)'><img alt="Editar" src="assets/icons/editar.png"
+                      class="BotonStyle" title="Editar" style="cursor: pointer;height: 24px"></a>
+                  <a (click)='onDeleteRestricClient(item)'><img alt="Eliminar" src="assets/icons/anular.png"
+                      class="BotonStyle" title="Eliminar" style="cursor: pointer;height: 24px"></a>
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+
+      <ng-container *ngIf="listClientRestric!=null && listClientRestric.length>0; then showPagination"></ng-container>
+      <ng-template #showPagination>
+        <div class="row mt-4">
+          <div class="col-sm-12">
+            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+              [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+              <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+              <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+            </ngb-pagination>
+          </div>
+        </div>
+      </ng-template>
+
+
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+
+
+      <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+          <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

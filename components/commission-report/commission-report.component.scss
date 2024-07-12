@@ -1,0 +1,162 @@
+@import "modal";
+@import "standard";
+
+.title {
+  color: #553d81;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.content {
+  padding-left: 40px !important;
+}
+
+.content-header {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.form-filter {
+  border-top: 1px solid rgb(84, 61, 129);
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.inputs {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-text {
+  color: #2b0d61;
+  font-size: 14px;
+  margin: 0;
+  margin-left: 0px !important;
+}
+
+.filter {
+  padding-bottom: 0;
+  width: 100%;
+  padding-left: 5px;
+  display: block;
+  font-size: 14px;
+  height: 40px;
+  border: 1px solid #aa9ec0;
+  text-align: left;
+  color: #aa9ec0;
+  border-radius: 2px;
+  font-family: "Bliss Pro";
+  outline: none;
+}
+
+.conten-input {
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.input-1 {
+  width: 310%;
+}
+
+.input-3 {
+  width: 150%;
+}
+
+.input-4 {
+  width: 150%;
+}
+
+.input-5 {
+  width: 100%;
+}
+
+.input-6 {
+  width: 100%;
+}
+
+.search-button {
+  justify-content: end;
+}
+
+.button-default {
+  margin-top: 0.5rem;
+}
+
+.content-table {
+  margin-top: 1rem;
+}
+
+.modal-message {
+  section
+    .modal-header {
+      h6 {
+        text-align: center;
+      }
+    }
+    .modal-body {
+      text-align: center;
+    }
+}
+
+@media (max-width: 1409px) {
+  .input-6 {
+    width: 110%;
+  }
+}
+
+@media (max-width: 1400px) {
+  .input-5 {
+    width: 70%;
+  }
+}
+
+@media (max-width: 1194px) {
+  .input-5 {
+    width: 120%;
+  }
+}
+
+@media (max-width: 1121px) {
+  .input-4 {
+    width: 160%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .inputs {
+    display: block;
+  }
+  .input-1 {
+    width: 100%;
+  }
+
+  .input-3 {
+    width: 100%;
+  }
+  .input-4 {
+    width: 100%;
+  }
+  .input-5 {
+    width: 100%;
+  }
+  .input-6 {
+    width: 100%;
+  }
+}

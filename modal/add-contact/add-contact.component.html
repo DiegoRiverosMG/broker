@@ -1,0 +1,114 @@
+<div class="modal-header">
+    <h4 class="modal-title"
+        id="modal-basic-title">{{txtAccion}}</h4>
+    <input type="button"
+           class="close"
+           aria-label="Close"
+           (click)="closeContacto()"
+           value="&times;" />
+
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <span>PARENTESCO</span>
+                <select (change)="onSelectContactType($event)"
+                        [(ngModel)]="inputsContact.P_NTIPCONT"
+                        [ngClass]="{'error-validate': inputsValidate[0]}"
+                        (click)="clearValidate(0)"
+                        class="minimal">
+                    <option value="0"
+                            disabled>Seleccionar</option>
+                    <option *ngFor="let contactType of contactTypeList"
+                            value="{{contactType.NCODIGO}}">{{contactType.SDESCRIPT}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span>NOMBRES (*)</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SNOMBRES"
+                       maxlength="59"
+                       [ngClass]="{'error-validate': inputsValidate[1]}"
+                       (click)="clearValidate(1)"
+                       (keypress)="textValidate($event, 5)" />
+            </div>
+            <div class="col-sm-6">
+                <span>APELLIDO PATERNO (*)</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SAPEPAT"
+                       [ngClass]="{'error-validate': inputsValidate[2]}"
+                       (click)="clearValidate(2)"
+                       (keypress)="textValidate($event, 5)" />
+            </div>
+            <div class="col-sm-6">
+                <span>APELLIDO MATERNO</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SAPEMAT"
+                       (keypress)="textValidate($event, 5)" />
+            </div>
+            <div class="col-sm-6">
+                <span>TIPO DOCUMENTO <span *ngIf="codProducto == 6 || codProducto == 8"
+                          style="display: inline-block;">(*)</span></span>
+                <select (change)="onSelectDocumentType($event)"
+                        [(ngModel)]="inputsContact.P_NIDDOC_TYPE"
+                        [ngClass]="{'error-validate': inputsValidate[3]}"
+                        (click)="clearValidate(3)"
+                        class="minimal">
+                    <option value="0">Seleccionar</option>
+                    <option *ngFor="let documenttype of documentTypeList"
+                            value="{{documenttype.Id}}">
+                        {{documenttype.Name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span>DOCUMENTO <span *ngIf="codProducto == 6 || codProducto == 8"
+                          style="display: inline-block;">(*)</span></span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SIDDOC"
+                       maxlength="{{maxlength}}"
+                       (keypress)="documentNumberKeyPress($event)"
+                       [ngClass]="{'error-validate': inputsValidate[4]}"
+                       (click)="clearValidate(4)" />
+            </div>
+            <div class="col-sm-6">
+                <span>ÁREA</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SNAMEAREA"
+                       [ngClass]="{'error-validate': inputsValidate[7]}"
+                       (click)="clearValidate(7)"
+                       (keypress)="textValidate($event, 5)" />
+            </div>
+            <div class="col-sm-6">
+                <span>CARGO</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SNAMEPOSITION"
+                       [ngClass]="{'error-validate': inputsValidate[8]}"
+                       (click)="clearValidate(8)"
+                       (keypress)="textValidate($event, 5)" />
+            </div>
+            <div class="col-sm-6">
+                <span>TELÉFONO (*)</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SPHONE"
+                       maxlength="12"
+                       [ngClass]="{'error-validate': inputsValidate[5]}"
+                       (click)="clearValidate(5)"
+                       (keypress)="textValidate($event, 1)" />
+            </div>
+            <div class="col-sm-6">
+                <span>CORREO ELECTRÓNICO (*)</span>
+                <input type="text"
+                       [(ngModel)]="inputsContact.P_SE_MAIL"
+                       [ngClass]="{'error-validate': inputsValidate[6]}"
+                       (click)="clearValidate(6)"
+                       (keypress)="textValidate($event, 6)" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="full-color"
+            (click)="EventSave()"><span>{{txtAccion}}</span></button>
+</div>

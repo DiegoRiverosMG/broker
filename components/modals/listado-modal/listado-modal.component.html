@@ -1,0 +1,363 @@
+<div class="padding-modal">
+  <div class="modal-header border-none">
+    <h4 class="modal-title title-re" id="modal-basic-title">Editar listado</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="formModalReference.dismiss()"
+      value="&times;"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h5 class="subtitle-re">Columnas</h5>
+    <p>
+      Haz clic sobre la etiqueta para habilitar o deshabilitar las columnas. Si
+      deseas cambiar el orden de las columnas, arrastra la etiqueta hacia el
+      lugar donde prefieras que aparezca la columna en el listado.
+    </p>
+    <div class="listado">
+      <ng-container *ngFor="let columnName of orderInitial">
+        <ng-container class="sin-estilos" [ngSwitch]="columnName">
+          <button
+            *ngSwitchCase="'Ticket'"
+            id="0"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SCODE')"
+            [style.background]="columnVisibility.SCODE ? '#8385B4' : '#C1C2D9'"
+            class="column-button"
+          >
+            Ticket<img
+              [src]="
+                columnVisibility.SCODE
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Ticket Jira'"
+            id="1"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SCODE_JIRA')"
+            [style.background]="
+              columnVisibility.SCODE_JIRA ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Ticket Jira<img
+              [src]="
+                columnVisibility.SCODE_JIRA
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Ramo'"
+            id="2"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SRAMO')"
+            [style.background]="columnVisibility.SRAMO ? '#8385B4' : '#C1C2D9'"
+            class="column-button"
+          >
+            Ramo<img
+              [src]="
+                columnVisibility.SRAMO
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Producto'"
+            id="2"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SPRODUCT')"
+            [style.background]="
+              columnVisibility.SPRODUCT ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Producto<img
+              [src]="
+                columnVisibility.SPRODUCT
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Póliza'"
+            id="3"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('POLIZA')"
+            [style.background]="columnVisibility.POLIZA ? '#8385B4' : '#C1C2D9'"
+            class="column-button"
+          >
+            Póliza<img
+              [src]="
+                columnVisibility.POLIZA
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Motivo'"
+            id="4"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('MOTIVO_DES')"
+            [style.background]="
+              columnVisibility.MOTIVO_DES ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Motivo<img
+              [src]="
+                columnVisibility.MOTIVO_DES
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Submotivo'"
+            id="5"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SUBMOTIVO_DES')"
+            [style.background]="
+              columnVisibility.SUBMOTIVO_DES ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Submotivo<img
+              [src]="
+                columnVisibility.SUBMOTIVO_DES
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Contratante'"
+            id="6"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('CONTRATANTE')"
+            [style.background]="
+              columnVisibility.CONTRATANTE ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Contratante<img
+              [src]="
+                columnVisibility.CONTRATANTE
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Asegurado'"
+            id="7"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('ASEGURADO')"
+            [style.background]="
+              columnVisibility.ASEGURADO ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Asegurado<img
+              [src]="
+                columnVisibility.ASEGURADO
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'F. de recepción'"
+            id="8"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('FECHA_RECEPCION')"
+            [style.background]="
+              columnVisibility.FECHA_RECEPCION ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            F. de recepción<img
+              [src]="
+                columnVisibility.FECHA_RECEPCION
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'F. de registro'"
+            id="9"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('FECHA_REGISTRO')"
+            [style.background]="
+              columnVisibility.FECHA_REGISTRO ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            F. de registro<img
+              [src]="
+                columnVisibility.FECHA_REGISTRO
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Usuario R.'"
+            id="10"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('USUARIO_REGISTRO')"
+            [style.background]="
+              columnVisibility.USUARIO_REGISTRO ? '#8385B4' : '#C1C2D9'
+            "
+            class="column-button"
+          >
+            Usuario R.<img
+              [src]="
+                columnVisibility.USUARIO_REGISTRO
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'SLA'"
+            id="11"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('SLA_B')"
+            [style.background]="columnVisibility.SLA_B ? '#8385B4' : '#C1C2D9'"
+            class="column-button"
+          >
+            SLA<img
+              [src]="
+                columnVisibility.SLA_B
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Estado'"
+            id="12"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('ESTADO')"
+            [style.background]="columnVisibility.ESTADO ? '#8385B4' : '#C1C2D9'"
+            class="column-button"
+          >
+            Estado<img
+              [src]="
+                columnVisibility.ESTADO
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+          <button
+            *ngSwitchCase="'Imp. Devolución'"
+            id="13"
+            draggable="true"
+            (dragstart)="drag($event)"
+            (drop)="drop($event)"
+            [style.background]="
+              columnVisibility.IMP_DEVOLUCION ? '#8385B4' : '#C1C2D9'
+            "
+            (dragover)="allowDrop($event)"
+            (click)="toggleColumn('IMP_DEVOLUCION')"
+            class="column-button"
+          >
+            Imp. Devolución<img
+              [src]="
+                columnVisibility.IMP_DEVOLUCION
+                  ? 'assets/rentas/visibility_white.svg'
+                  : 'assets/rentas/visibility_off_white.svg'
+              "
+              alt="more_vert"
+            />
+          </button>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div class="container-visble">
+      <div class="invisible-re"></div>
+      <span>Invisible</span>
+      <div class="visible"></div>
+      <span>Visible</span>
+    </div>
+  </div>
+
+  <div class="modal-footer border-none">
+    <button class="button-cancelar" (click)="formModalReference.dismiss()">
+      <span>Cancelar</span>
+    </button>
+    <button class="button-Guardar" (click)="select()">
+      <span>Guardar</span>
+    </button>
+  </div>
+</div>

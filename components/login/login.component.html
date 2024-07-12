@@ -1,0 +1,171 @@
+<!-- <div class="container">
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="title-principal">
+        <a>Bienvenido, Inicia sesión</a>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="text-descripcion">
+        <p>LOS CLIENTES DE NUESTROS SOCIOS DE NEGOCIO</p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-12">
+      <div class="title-principal-client">
+        <p>SON NUESTROS CLIENTES.</p>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="loginForm">
+    <div class="form-group row">
+      <div class="col-sm-0 col-lg-4">
+        <input type="text"
+               class="form-control"
+               placeholder="Ingresa tu usuario"
+               formControlName="usuario" />
+        <span *ngIf="
+            !loginForm.get('usuario').valid && loginForm.get('usuario').touched
+          "
+              class="mensaje-error-control">El nombre de usuario es requerido</span>
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+
+      <div class="col-sm-0 col-lg-4">
+        <input type="password"
+               class="form-control"
+               placeholder="Ingresa tu contrase&ntilde;a"
+               formControlName="clave" />
+        <span *ngIf="
+            !loginForm.get('clave').valid && loginForm.get('clave').touched
+          "
+              class="mensaje-error-control">La contrase&ntilde;a es requerida</span>
+      </div>
+
+    </div>
+    <div class="form-group row">
+
+      <div class="col-sm-0 col-lg-4 text-forget-align">
+        <a routerLink="../retrieve"
+           class="text-forget">
+          <span>Olvid&eacute; mi Contrase&ntilde;a</span>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+
+      <div class="col-sm-12 col-lg-4">
+        <button type="button"
+                [disabled]="loading || loginForm.invalid"
+                class="btn btn-block btn-warning"
+                (click)="RequestSignUp($event)">
+          Entrar
+        </button>
+        <img alt=""
+             *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        <div *ngIf="error"
+             class="alert alert-danger">{{ error }}</div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12 col-lg-4">
+        <div class="captcha">
+          <re-captcha #captchaRef="reCaptcha"
+                      (resolved)="resolved($event)"
+                      siteKey="{{ siteKey }}"
+                      badge="bottomleft"
+                      size="invisible"></re-captcha>
+        </div>
+      </div>
+    </div>
+  </form>
+</div> -->
+<div class="login">
+  <div class="login__container">
+    <div class="login__item welcome_login">
+      <h4 class="login__item--subtitle">
+        LOS CLIENTES DE NUESTROS SOCIOS DE NEGOCIO SON NUESTROS CLIENTES
+      </h4>
+      <h2 class="login__item--desc">Bienvenido, inicia sesión</h2>
+    </div>
+    <div class="login__item">
+      <form
+        class="frmlogin"
+        [formGroup]="loginForm"
+        (ngSubmit)="RequestSignUp($event)"
+      >
+        <label
+          class="frmlogin__inputs placeholder placeholder-active"
+          for="username"
+          aria-placeholder="Usuario"
+        >
+          <i class="fa fa-user icon-right" aria-hidden="true"></i>
+          <input
+            type="text"
+            class="frmlogin__inputs--in placeholder-active"
+            id="username"
+            formControlName="usuario"
+            autocomplete="new-usuario"
+            spellcheck="false"
+            #username
+          />
+          <small
+            *ngIf="hasErrorInput('usuario')"
+            class="hasError mensaje-error-control"
+            >El nombre de usuario es obligatorio</small
+          >
+        </label>
+        <label
+          class="frmlogin__inputs placeholder placeholder-active"
+          for="password"
+          aria-placeholder="Contraseña"
+        >
+          <i class="fa fa-lock icon-right" aria-hidden="true"></i>
+          <input
+            type="password"
+            class="frmlogin__inputs--in placeholder-active"
+            id="password"
+            formControlName="clave"
+          />
+          <small
+            *ngIf="hasErrorInput('clave')"
+            class="hasError mensaje-error-control"
+            >La contrase&ntilde;a es obligatoria</small
+          >
+        </label>
+        <a routerLink="../retrieve" class="login__item--forget">
+          <span>Olvid&eacute; mi Contrase&ntilde;a</span>
+        </a>
+        <div class="frmlogin__inputs">
+          <button
+            type="submit"
+            class="frmlogin__inputs--in frmlogin__inputs--submit"
+            [disabled]="loading || loginForm.invalid"
+          >
+            Ingresar
+          </button>
+          <small *ngIf="error" class="hasError alert alert-danger">{{
+            error
+          }}</small>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="captcha">
+  <re-captcha
+    #captchaRef="reCaptcha"
+    (resolved)="resolved($event)"
+    siteKey="{{ siteKey }}"
+    badge="bottomrigth"
+    size="invisible"
+  ></re-captcha>
+</div>

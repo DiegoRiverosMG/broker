@@ -1,0 +1,58 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Detalle de Coberturas</h4>
+  <button type="button" class="close" aria-label="Close" (click)="formModalReference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="grid form-group">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Cotización N° {{quotationNumber}}</h5>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Código</td>
+                <td class="grid-title-item">Cobertura</td>
+                <td class="grid-title-item">REMUNERACIONES (*)</td>
+                <td class="grid-title-item">MÁXIMO S.A. (*)</td>                
+              </tr>
+            </thead>
+            <ng-container *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+            </ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td colspan="4">No se encontraron registros.</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody *ngFor="let item of listToShow;let rownum=index">
+              <tr>
+                <td>{{item.COD_COVER}}</td>
+                <td>{{item.DES_COVER}}</td>
+                <td>{{item.CAPITAL_MAX}}</td>
+                <td>{{item.RMA}}</td>                
+              </tr>
+            </tbody>
+          </ng-template>
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button class="full-color" (click)="formModalReference.close()"><span>VOLVER</span></button>
+</div>

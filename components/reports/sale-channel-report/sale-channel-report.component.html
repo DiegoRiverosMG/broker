@@ -1,0 +1,172 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Reporte de Ventas - Canal de Venta</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item rigth-item">
+            <button (click)="EventSearch($event)">
+              <img alt="" src="assets/icons/buscar_certificado.png" style="position: relative; top: 4px;" />
+              <span>Buscar</span>
+            </button>
+          </div>
+          <div class="header-item rigth-item">
+            <button (click)="EventDownload($event)">
+              <img alt="" src="assets/icons/descargar.png" style="position: relative; top: 6px;" />
+              <span>Descargar Excel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group row filter-row">
+              <div class="col-sm-3 filter-row-cell">
+                <span>TIPO PRODUCTO</span>
+                <select [(ngModel)]="filter.product" class="minimal" style="margin-top: 2px;">
+                  <option value="" selected>AMBOS</option>
+                  <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                    {{product.DES_PRODUCT}}</option>
+                </select>
+              </div>
+              <div class="col-md-3 filter-row-cell">
+                <span>TIPO DE TRANSACCIÓN</span>
+                <select [(ngModel)]="filter.transaccion" class="minimal" style="margin-top: 2px;">
+                  <option value="" selected>SELECCIONAR</option>
+                  <option *ngFor="let transaccion of transaccionList" value="{{transaccion.COD_TIPO_TRANSACCION}}">
+                    {{transaccion.DES_TIPO_TRANSACCION}}</option>
+                </select>
+              </div>
+              <div class="col-md-3 filter-row-cell">
+                <span>POR ESTADO:</span>
+                <app-statesales (evResultStateSales)="onVotedParentStateSales($event)"
+                  style="position: relative; top: -4px;"></app-statesales>
+              </div>
+              <div class="col-md-3 filter-row-cell">
+                <span>POR P&Oacute;LIZA:</span>
+                <input type="text" [(ngModel)]="filter.FPoliza" placeholder="N° Póliza"
+                  (keypress)="this.utilityService._kpPolicy($event, filter.FPoliza)" />
+              </div>
+
+            </div>
+            <div class="form-group row filter-row">
+              <div class="col-md-3 filter-row-cell">
+                <span>POR PRIMA:</span>
+                <div class="filter-row-cell-flex">
+                  <input type="text" class="radius-right" placeholder="S/ Desde" [(ngModel)]="filter.FPrimaIni"
+                    (keypress)="this.utilityService._kpPrimaSoat($event, filter.FPrimaIni)" />
+                  <input type="text" class="radius-left" placeholder="S/ Hasta" [(ngModel)]="filter.FPrimaFin"
+                    (keypress)="this.utilityService._kpPrimaSoat($event, filter.FPrimaFin)" style="border-left: 0;" />
+                </div>
+              </div>
+              <div class="col-md-3 filter-row-cell">
+                <div class="filter-row-cell-flex">
+                  <span>DESDE:</span>
+                  <span>HASTA:</span>
+                </div>
+                <div class="filter-row-cell-flex">
+                  <input type="text" #dp="bsDatepicker" (ngModelChange)="valInicio($event)" [bsConfig]="bsConfig"
+                    bsDatepicker [(bsValue)]="this.filter.FDateIni" [(ngModel)]="this.filter.FDateIni"
+                    [(maxDate)]="bsValueIniMax" value="{{ this.filter.FDateIni | date:'dd/MM/yyyy' }}" #desde readonly>
+                  <input type="text" #dp="bsDatepicker" (ngModelChange)="valFin($event)" [bsConfig]="bsConfig"
+                    bsDatepicker [(bsValue)]="this.filter.FDateFin" [(ngModel)]="this.filter.FDateFin"
+                    [(maxDate)]="bsValueFinMax" value="{{ this.filter.FDateFin | date:'dd/MM/yyyy' }}" #hasta
+                    [(minDate)]="bsValueFinMin" readonly style="border-left: 0;">
+                </div>
+              </div>
+              <div class="col-md-6 filter-row-cell">
+                <app-channelpoint (evResultChannelSales)="onVotedParentChannelSales($event)"
+                  (evResultChannelPoint)="onVotedParentChannelPoint($event)"></app-channelpoint>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Cotización</td>
+                <td class="grid-title-item">Producto</td>
+                <td class="grid-title-item">Cliente</td>
+                <td class="grid-title-item">Póliza</td>
+                <td class="grid-title-item">Asegurados</td>
+                <td class="grid-title-item">Movimiento</td>
+                <td class="grid-title-item">Constancia</td>
+                <td class="grid-title-item">Inicio</td>
+                <td class="grid-title-item">Fin</td>
+                <td class="grid-title-item">IGV</td>
+                <td class="grid-title-item">Prima Neta</td>
+                <td class="grid-title-item">Prima total</td>
+                <td class="grid-title-item">Proforma</td>
+              </tr>
+            </thead>
+            <div *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="13">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let result of listToShow">
+              <tr>
+                <td>{{ result.NUM_COTIZACION }}</td>
+                <td>{{ result.DES_PRODUCTO }}</td>
+                <td>{{ result.SCLIENT }}</td>
+                <td>{{ result.POLIZA }}</td>
+                <td>{{ result.CANT_ASEGURADOS }}</td>
+                <td>{{ result.TIPO_MOVIMIENTO }}</td>
+                <td>{{ result.CONSTANCIA }}</td>
+                <td>{{ result.FECHA_EFECTO }}</td>
+                <td>{{ result.FECHA_EXPIRACION }}</td>
+                <td>{{ result.IGV }}</td>
+                <td>{{ result.PRIMA_NETA }}</td>
+                <td>{{ result.PRIMA_TOTAL }}</td>
+                <td>{{ result.PROFORMA }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+
+      <div *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-sm-9">
+            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+              [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+              <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+              <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+            </ngb-pagination>
+          </div>
+          <div class="col-sm-3">
+            <span style="display: inline-block;">Mostrar: </span>
+            <select [(ngModel)]="itemsPerPage" class="minimal" (change)="mostrarMas()"
+              style="display: inline-block; width: 50%; float: right; position: relative; top: -15px;">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

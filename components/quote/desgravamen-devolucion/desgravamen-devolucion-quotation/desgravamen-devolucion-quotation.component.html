@@ -1,0 +1,191 @@
+<div class="desgravamen-devolucion-quotation">
+  <div class="form-group row">
+    <div class="col-lg-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9" *ngIf="!esEvaluacion || cotizacion.numeroCotizacion">
+      <div class="container-fluid p-0">
+        <panel-header-producto [title]="obtenerTitulo()"></panel-header-producto>
+
+        <panel-widget *ngIf="
+            CONSTANTS.MODO_VISTA.POLIZARENOVAR === modoVista ||
+            CONSTANTS.MODO_VISTA.POLIZAINCLUIR === modoVista ||
+            CONSTANTS.MODO_VISTA.EXCLUIR === modoVista ||
+            CONSTANTS.MODO_VISTA.ENDOSO === modoVista ||
+            CONSTANTS.MODO_VISTA.ANULACION === modoVista
+          " title="Datos generales de la póliza">
+          <div class="row">
+            <div class="col-md-4">
+              <form-input-text label="Nro. póliza Acc. Personales" [value]="cotizacion.poliza.nroPoliza"
+                [disabled]="true"></form-input-text>
+            </div>
+          </div>
+        </panel-widget>
+
+        <panel-info-contratante [(contratante)]="cotizacion.contratante" [cotizacion]="cotizacion"
+          [(isLoading)]="isLoading" [detail]="esEvaluacion" (modifyDatos)="ModalModificarDatos($event)">
+        </panel-info-contratante>
+
+        <panel-info-contactos [contactos]="cotizacion.contratante.EListContactClient"
+          [contratante]="cotizacion.contratante" [detail]="esEvaluacion"></panel-info-contactos>
+
+        <panel-info-brokers [(brokers)]="cotizacion.brokers" [(brokersEndoso)]="cotizacion.brokersEndoso"
+          [(brokersOriginales)]="cotizacion.brokersOriginales" [vista]="cotizacion"
+          [initialize]="!esEvaluacion" [detail]="esEvaluacion"></panel-info-brokers>
+
+        <panel-info-poliza [(poliza)]="cotizacion.poliza" (cambiaDatosPoliza)="recargar.trama = true"
+          [cotizacion]="cotizacion" [detail]="esEvaluacion" [zeroBroker]="cotizacion.brokers.length == 0 ? true : false"
+          [renovEdit]="cotizacion.modoRenovacionEditar"></panel-info-poliza>
+
+        <panel-info-trama *ngIf="
+            (!cotizacion.poliza.checkbox1?.POL_MAT && !esEvaluacion) ||
+            cotizacion.modoTrama ||
+            CONSTANTS.MODO_VISTA.POLIZARENOVAR === modoVista ||
+            CONSTANTS.MODO_VISTA.POLIZAINCLUIR === modoVista ||
+            CONSTANTS.MODO_VISTA.EXCLUIR === modoVista ||
+            (CONSTANTS.MODO_VISTA.ENDOSO === modoVista && cotizacion.PolizaEditAsegurados == 1)
+          " [detail]="esEvaluacion" [(trama)]="cotizacion.trama" [(recargar)]="recargar.trama"
+          [esMina]="cotizacion.poliza?.checkbox2?.TRA_MIN" [zeroBroker]="cotizacion.brokers.length == 0 ? true : false"
+          [poliza]="cotizacion.poliza" [cotizacion]="cotizacion" [(isLoading)]="isLoading"></panel-info-trama>
+
+        <panel-info-exclusion *ngIf="CONSTANTS.MODO_VISTA.EXCLUIR == modoVista" [cotizacion]="cotizacion"
+          [(isLoading)]="isLoading" [(recargar)]="recargar.trama"></panel-info-exclusion>
+
+        <panel-info-cotizador *ngIf="
+            CONSTANTS.MODO_VISTA.ENDOSO !== modoVista &&
+              CONSTANTS.MODO_VISTA.ANULACION !== modoVista && (cotizacion?.trama?.validado || modoVista == '' || modoTrama)" [(cotizador)]="cotizacion.cotizador"
+          [trama]="cotizacion.trama" [cotizacion]="cotizacion" [poliza]="cotizacion.poliza"
+          [contratante]="cotizacion.contratante" [esPolizaMatriz]="cotizacion.poliza?.checkbox1?.POL_MAT"
+          [esMina]="cotizacion.poliza?.checkbox2?.TRA_MIN"
+          [(recargar)]="recargar.trama" [(isLoading)]="isLoading" [detail]="esEvaluacion"></panel-info-cotizador>
+
+        <panel-info-evaluacion *ngIf="esEvaluacion && cotizacion.modoTrama == false" [cotizacion]="cotizacion"
+          [(isLoading)]="isLoading"></panel-info-evaluacion>
+
+        <panel-info-pago [(abrir)]="modal.pagos" [cotizacion]="cotizacion" (confirmar)="formaPagoElegido()"
+          [(isLoading)]="isLoading"></panel-info-pago>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="pull-right">
+              <div *ngIf="esEvaluacion">
+                <form-button label="Cancelar" (click)="clickCancelar()"></form-button>
+
+                <ng-template [ngIf]="CONSTANTS.MODO_VISTA.POLIZARENOVAR !== modoVista">
+                  
+                  <form-button *ngIf="cotizacion.modoTrama &&
+                    cotizacion.contratante.lockMark !== 1" label="Procesar" (click)="clickProcesarTrama()"
+                    btnClass="btn-primary"></form-button>
+
+                  <ng-template [ngIf]="
+                      CONSTANTS.ESTADO.NO_PROCEDE ==
+                        cotizacion.estado?.codigo &&
+                      modoVista != CONSTANTS.MODO_VISTA.VISUALIZAR &&
+                      CONSTANTS.PERFIL.EXTERNO !=
+                      storageService.user?.profileId && CONSTANTS.PERFIL.COMERCIAl !=
+                      storageService.user?.profileId &&
+                      cotizacion.contratante.lockMark !== 1">
+                    <form-button label="Rechazar" (click)="clickEnviarNoProcede()" btnClass="btn-primary"></form-button>
+                  </ng-template>
+                  <ng-template [ngIf]="
+                      (!cotizacion.estado?.codigo ||
+                        CONSTANTS.ESTADO.APROBADO ==
+                          cotizacion.estado?.codigo ||
+                        CONSTANTS.ESTADO.APROBADO_TECNICA ==
+                          cotizacion.estado?.codigo) &&
+                      modoVista != CONSTANTS.MODO_VISTA.VISUALIZAR &&
+                      cotizacion.contratante.lockMark !== 1">
+                  <!--   <ng-template [ngIf]="
+                        CONSTANTS.PERFIL.TECNICA ==
+                        storageService.user?.profileId">
+                      <form-button label="Autorizar" (click)="clickEnviarEvaluacion()" btnClass="btn-primary">
+                      </form-button>
+                    </ng-template> -->
+                    <ng-template [ngIf]="
+                        (CONSTANTS.PERFIL.COMERCIAl ==
+                          storageService.user?.profileId ||
+                         CONSTANTS.PERFIL.EXTERNO ==
+                          storageService.user?.profileId ||
+                          CONSTANTS.PERFIL.OPERACIONES ==
+                          storageService.user?.profileId) &&
+                        modoVista == CONSTANTS.MODO_VISTA.EVALUAR && (!cotizacion.poliza.checkbox1?.POL_MAT) ">
+                      <form-button label="Continuar" (click)="clickEnviarEvaluacion()" btnClass="btn-primary">
+                      </form-button>
+                    </ng-template>
+                    <ng-template [ngIf]="
+                    (CONSTANTS.PERFIL.COMERCIAl ==
+                      storageService.user?.profileId ||
+                     CONSTANTS.PERFIL.EXTERNO ==
+                      storageService.user?.profileId||
+                      CONSTANTS.PERFIL.OPERACIONES ==
+                      storageService.user?.profileId) &&
+                    modoVista == CONSTANTS.MODO_VISTA.EVALUAR && (cotizacion.poliza.checkbox1?.POL_MAT && cotizacion.contratante.debtMark != 1) ">
+                  <form-button label="Continuar" (click)="clickEnviarEvaluacion()" btnClass="btn-primary">
+                  </form-button>
+                </ng-template>
+                    <ng-template [ngIf]="
+                        (CONSTANTS.PERFIL.OPERACIONES ==
+                          storageService.user?.profileId ||
+                        CONSTANTS.PERFIL.ADMIN ==
+                          storageService.user?.profileId ||
+                        CONSTANTS.PERFIL.COMERCIAl ==
+                          storageService.user?.profileId ||
+                        CONSTANTS.PERFIL.EXTERNO ==
+                          storageService.user?.profileId) &&
+                          cotizacion.contratante.lockMark !== 1">
+                      <form-button *ngIf="
+                        cotizacion.contratante.debtMark !== 1 &&
+                          (modoVista == CONSTANTS.MODO_VISTA.EMITIR ||
+                          modoVista == CONSTANTS.MODO_VISTA.EMITIRR)" label="Emitir" (click)="clickEmitirEvaluacion()"
+                        btnClass="btn-primary"></form-button>
+                    </ng-template>
+                  </ng-template>
+                </ng-template>
+                <form-button *ngIf="
+                    CONSTANTS.MODO_VISTA.POLIZARENOVAR === modoVista &&
+                    cotizacion.contratante.lockMark !== 1 &&
+                    cotizacion.contratante.debtMark !== 1" label="Procesar" (click)="clickRenovarPoliza()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="
+                    CONSTANTS.MODO_VISTA.POLIZAINCLUIR === modoVista &&
+                    cotizacion.contratante.lockMark !== 1 &&
+                    cotizacion.contratante.debtMark !== 1" label="Procesar" (click)="clickIncluirPoliza()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="
+                    CONSTANTS.MODO_VISTA.ENDOSO === modoVista &&
+                    cotizacion.contratante.lockMark !== 1 &&
+                    cotizacion.contratante.debtMark !== 1" label="Procesar" (click)="clickEndosarPoliza()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="
+                    CONSTANTS.MODO_VISTA.INCLUIR === modoVista &&
+                    CONSTANTS.ESTADO.NO_PROCEDE !== cotizacion.estado?.codigo &&
+                    cotizacion.contratante.lockMark !== 1 &&
+                    cotizacion.contratante.debtMark !== 1" label="Incluir" (click)="clickIncluir()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="CONSTANTS.MODO_VISTA.ANULACION === modoVista &&
+                cotizacion.contratante.lockMark !== 1 &&
+                cotizacion.contratante.debtMark !== 1" label="Anular" (click)="clickAnularPoliza()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="CONSTANTS.MODO_VISTA.EXCLUIR === modoVista &&
+                  cotizacion.contratante.lockMark !== 1 &&
+                  cotizacion.contratante.debtMark !== 1" label="EXCLUIR" (click)="clickExcluirAsegurados()"
+                  btnClass="btn-primary"></form-button>
+                <form-button *ngIf="
+                    CONSTANTS.MODO_VISTA.RENOVAR === modoVista &&
+                    CONSTANTS.ESTADO.NO_PROCEDE !== cotizacion.estado?.codigo &&
+                    cotizacion.contratante.lockMark !== 1 &&
+                    cotizacion.contratante.debtMark !== 1" label="Renovar" (click)="clickRenovar()"
+                  btnClass="btn-primary"></form-button>
+              </div>
+              <div *ngIf="!esEvaluacion">
+                <form-button label="Cancelar" (click)="clickCancelar()"></form-button>
+                <form-button label="Aceptar" (click)="clickAceptar()" btnClass="btn-primary"></form-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <loading-screen [hidden]="!isLoading"></loading-screen>
+  </div>
+</div>

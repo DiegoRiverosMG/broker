@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Detalle de Movimientos</h4>
+  <button type="button" class="close" aria-label="Close" (click)="formModalReference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="grid form-group">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Cotización N° {{quotationNumber}}</h5>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Índice</td>
+                <td class="grid-title-item">Fecha</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Usuario</td>
+              </tr>
+            </thead>
+            <ng-container *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+            </ng-container>
+          </table>
+          <ng-template #hideGrid>
+            <tbody>
+              <tr>
+                <td colspan="4">No se encontraron registros.</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #showGrid>
+            <tbody *ngFor="let item of listToShow;let rownum=index">
+              <tr>
+                <td>{{item.rowNum}}</td>
+                <td>{{item.EventDate | date: 'dd/MM/yyyy, h:mm a' }}</td>
+                <td>{{item.Status}}</td>
+                <td>{{item.User}}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+
+        </div>
+        <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showPagination"></ng-container>
+        <ng-template #showPagination>
+          <div class="row">
+            <div class="col-sm-12">
+              <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+              </ngb-pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button class="full-color" (click)="formModalReference.close()"><span>VOLVER</span></button>
+</div>

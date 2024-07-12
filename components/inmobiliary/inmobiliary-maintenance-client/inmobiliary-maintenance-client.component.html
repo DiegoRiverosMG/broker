@@ -1,0 +1,865 @@
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">MANTENIMIENTO INMOBILIARIA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <span>DATOS DE BÚSQUEDA</span>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <span>TIPO DOCUMENTO</span>
+                                        <select [(ngModel)]="idTypeDoc" class="form-control">
+                                            <option value="0">
+                                                TODOS
+                                            </option>
+                                            <option *ngFor="let item of typeDocuments" value="{{ item.NTIPDOC }}">
+                                                {{ item.STIPDOC_DES }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>NÚMERO DE DOCUMENTO</span>
+                                        <input class="form-control" [(ngModel)]="sTipoDocumento" type="text" (keypress)="textValidate($event,2)" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <span>CÓDIGO INTERNO</span>
+                                        <input class="form-control" [(ngModel)]="sCodigoInterno" type="text" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <span>&nbsp;</span>
+                                        <button class="full-color" (click)="buscarContratantes()">
+                                            <span>CONSULTAR</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-2" style="margin-left: 10px !important;">
+                                        <span>&nbsp;</span>
+                                        <button class="full-color" (click)="CleanCtrls()" style="margin-left: 10px !important;">
+                                            <span>LIMPIAR</span>
+                                        </button>
+                                    </div>
+                                    <!-- <div class="col-sm-2">
+                                        <span>&nbsp;</span>
+                                        <button class="full-color" (click)="CleanCtrls()">
+                                            <span>LIMPIAR</span>
+                                        </button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mt-2">
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <span>OPCIONES</span>
+                                        <select class="form-control" [(ngModel)]="idOption">
+                                            <option value="0"
+                                                    disabled>SELECCIONAR</option>
+                                            <option *ngFor="let item of options"
+                                                    value="{{ item.NOPCION }}">{{ item.SOPCION_DES }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <span>&nbsp;</span>
+                                        <button class="full-color" (click)="SelectUpdate(itemSeleccionado, contentRazonSocial, contentDireccion, contentFechaEmision, contentGlosa, contentMonto, contentTipoFacturacion)">
+                                            <span>MODIFICAR</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="row m-2">
+                    <span>CONTRATOS INMUEBLES</span>
+                    <div class="grid form-group">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="grid-title">
+                                        <td class="grid-title-item text-center">SEL.</td>
+                                        <td class="grid-title-item text-center">CÓDIGO INMUEBLE</td>
+                                        <td class="grid-title-item text-center">TIPO DE DOCUMENTO</td>
+                                        <td class="grid-title-item text-center">NRO. DOCUMENTO</td>
+                                        <td class="grid-title-item text-center">RAZÓN SOCIAL</td>
+                                        <td class="grid-title-item text-center">DIRECCIÓN</td>
+                                        <td class="grid-title-item text-center">FECHA INICIO CONTRATO</td>
+                                        <td class="grid-title-item text-center">FECHA FIN CONTRATO</td>
+                                        <td class="grid-title-item text-center">MONEDA</td>
+                                        <td class="grid-title-item text-center">MONTO DEL CONTRATO</td>
+                                        <td class="grid-title-item text-center">TIPO FACTURACIÓN</td>
+                                    </tr>
+                                </thead>
+                                <ng-container
+                                              *ngIf="listToShow == null || listToShow.length == 0; then hideGrid else showGrid"></ng-container>
+
+                            </table>
+                            <ng-template #hideGrid>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"
+                                            colspan="10">NO SE ENCONTRARON REGISTROS.</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                            <ng-template #showGrid>
+                                <tbody *ngFor="let item of listToShow">
+                                    <tr>
+                                        <!-- {{ item.SCOD_INTERNO }} -->
+                                        <td class="data-table-tr-td text-center">
+                                            <input type="radio"
+                                                   name="option"
+                                                   [value]="item"
+                                                   (click)="seleccionarItem(item)"
+                                                   [checked]="item === itemSeleccionado"/>
+                                        </td>
+
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SCOD_INTERNO }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SDOCUMENT_DESC }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SCLINUMDOCU }}
+                                        </td>
+                                        <td class="data-table-tr-td text-left">
+                                            {{ item.SCLIENAME }}
+                                        </td>
+                                        <td class="data-table-tr-td text-left">
+                                            {{ item.SNOM_DIRECCION }}
+                                        </td>  
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.DEFFECDATE }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.DEXPIRDAT }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SCURRENCY_DESC }}
+                                        </td>
+                                        <td class="data-table-tr-td text-right">
+                                            {{ item.NPREMIUM }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.STIP_EMISION_DESC }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div *ngIf="listToShow != null && listToShow.length > 0"
+                         class="row"
+                         style="display: flex;">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RAZÓN SOCIAL - NOMBRES -->
+<ng-template #contentRazonSocial
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR RAZÓN SOCIAL/NOMBRES
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+
+                <div class="col-sm-3">
+                    <span>BUSCAR POR</span>
+                    <select [(ngModel)]="idBuscaPor" class="form-control" [disabled]="disabledSearch == true">
+                        <option value="0"
+                                disabled>SELECCIONAR</option>
+                        <option *ngFor="let item of searchBy"
+                                value="{{ item.NOPCION }}">
+                            {{ item.SOPCION_DES }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <span>&nbsp;</span>
+                    <input class="form-control"
+                           type="text"
+                           maxlength="100"
+                           [(ngModel)]="idValor" 
+                           [disabled]="disabledSearch == true"/>
+                </div>
+                <div class="col-sm-3">
+                    <span>&nbsp;</span>
+                    <button class="mt-2"
+                            (click)="generaBusqueda()"
+                            [disabled]="saveObsBool || disabledSearch == true "
+                            [ngClass]="full-color">
+                        <span>CONSULTAR</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive" style="display: contents !important;">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">SEL.</td>
+                                    <td class="grid-title-item text-center">TIPO DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">NRO. DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">RAZÓN SOCIAL</td>
+                                    <td class="grid-title-item text-center">OPCIONES</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                          *ngIf="listConsulta == null || listConsulta.length == 0; then hideGrid else showGrid"></ng-container>
+
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"
+                                        colspan="5">NO SE ENCONTRARON REGISTROS.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowC">
+                                <!-- <td class="data-table-tr-td text-center">
+                                            <input type="radio"
+                                                   name="option"
+                                                   [value]="item"
+                                                   (click)="seleccionarItem(item)"
+                                                   [checked]="item === itemSeleccionado"/>
+                                        </td> -->
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        <input type="radio"
+                                               name="option"
+                                               [value]="item"
+                                               (click)="seleccionarCliente(item)"
+                                               [checked]="item === clienteSeleccionado">
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SDESCRIPT }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCLINUMDOCU }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SCLIENAME }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a *ngIf="item.NTYPCLIENTDOC == '1'"
+                                           (click)="seleccionarDet(contentDatosJuridico, item.SCLIENT, 1, 1)">
+                                           <img src="../../../../../../assets/icons/editar.png" style="cursor: pointer;" title="Editar" />
+                                        </a>
+
+                                        <a *ngIf="item.NTYPCLIENTDOC > '1'"
+                                           (click)="seleccionarDet(contentDatosNatural, item.SCLIENT, 2, 1)">
+                                           <img src="../../../../../../assets/icons/editar.png" style="cursor: pointer;" title="Editar" />
+                                        </a>
+
+                                        <a class="ml-2" (click)="eliminarContrat(item)" *ngIf="disabledSearch == true">
+                                            <img src="../../../../../../assets/icons/anular.png" style="cursor: pointer;" title="Eliminar" />
+                                         </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+                        <div *ngIf="listConsulta != null && listConsulta.length > 0"
+                            class="row"
+                            style="display: flex;">
+                           <div class="col-sm-12">
+                               <ngb-pagination [(page)]="currentPageC"
+                                               [pageSize]="itemsPerPageC"
+                                               [collectionSize]="totalItemsC"
+                                               [maxSize]="maxSizeC"
+                                               (pageChange)="pageChangedC(currentPageC)">
+                                   <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                   <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                               </ngb-pagination>
+                           </div>
+                       </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateCliente()">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #contentDatosJuridico
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            DATOS CONTRATANTE
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card" [formGroup]="personaJuridicaForm">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>TIPO DOCUMENTO (*)</span>
+                    <select class="form-control" formControlName="P_NTYPCLIENTDOC" [(ngModel)]="documentChange" (change)="changeDocumento()">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of typeDocs" value="{{ item.NTIPDOC }}">
+                            {{ item.STIPDOC_DES }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span>NRO. DOCUMENTO (*)</span>
+                    <input class="form-control" type="text" maxlength="14" formControlName="P_SCLINUMDOCU" (keypress)="textValidate($event,1)"  (change)="changeContratante()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>RAZÓN SOCIAL (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SCLIENAME"  (change)="changeContratante()"/>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>TELÉFONO</span>
+                    <input class="form-control" type="text" maxlength="9" formControlName="P_SPHONE"  (keypress)="textValidate($event, 1)"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>DIRECCIÓN</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SNOM_DIRECCION" />
+                </div>
+                <div class="col-sm-4">
+                    <span *ngIf="mantenimientoCliente == 1">CORREO ELECTRÓNICO</span>
+                    <span *ngIf="mantenimientoCliente == 2">CORREO ELECTRÓNICO (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SE_MAIL" [(ngModel)]="email"/>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>NOMBRE DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SNAME_CONTACT" (change)="changeContacto()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>NÚMERO DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SPHONE_CONTACT" (keypress)="textValidate($event, 1)" (change)="changeContacto()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>CORREO DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SMAIL_CONTACT"  [(ngModel)]="email_contact" (change)="changeContacto()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="closeModalForm()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="editarCliente(1)">
+            GUARDAR
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #contentDatosNatural
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            DATOS CONTRATANTE
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card" [formGroup]="personaNaturalForm">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>TIPO DOCUMENTO (*)</span>
+                    <select class="form-control" formControlName="P_NTYPCLIENTDOC" [(ngModel)]="documentChange" (change)="changeDocumento()">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of typeDocs" value="{{ item.NTIPDOC }}">
+                            {{ item.STIPDOC_DES }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span>NRO. DOCUMENTO (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SCLINUMDOCU" (keypress)="textValidate($event,1 )"  (change)="changeContratante()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>NOMBRES (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SFIRSTNAME"  (change)="changeContratante()"/>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>APELLIDO PATERNO (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SLASTNAME"  (change)="changeContratante()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>APELLIDO MATERNO (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SLASTNAME2" (change)="changeContratante()" />
+                </div>
+                <div class="col-sm-4">
+                    <span>FECHA DE NACIMIENTO (*)</span>
+                    <input class="form-control" type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsFechaNac" formControlName="P_DBIRTHDAT"  value="{{ bsFechaNac  | date:'dd/MM/yyyy'}}" #fNac>
+                    <!-- <input class="form-control" type="text" maxlength="200" formControlName="P_DBIRTHDAT" /> -->
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>GÉNERO (*)</span>
+                    <select class="form-control" formControlName="P_SSEXCLIEN">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of genders" value="{{ item.SSEXCLIEN }}">
+                            {{ item.SDESCRIPT }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span>NACIONALIDAD (*)</span>
+                    <select class="form-control" formControlName="P_NNATIONALITY">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of nationalities" value="{{ item.NNATIONALITY }}">
+                            {{ item.SDESCRIPT }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span>DIRECCIÓN</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SNOM_DIRECCION" />
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span *ngIf="mantenimientoCliente == 1">CORREO ELECTRÓNICO</span>
+                    <span *ngIf="mantenimientoCliente == 2">CORREO ELECTRÓNICO (*)</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SE_MAIL" [(ngModel)]="email" />
+                </div>
+                <div class="col-sm-4">
+                    <span>ESTADO CIVIL (*)</span>
+                    <select class="form-control" formControlName="P_NCIVILSTA">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of civilStates" value="{{ item.NCIVILSTA }}">
+                            {{ item.SDESCRIPT }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <span>TELÉFONO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SPHONE" />
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>NOMBRE DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SNAME_CONTACT"  (change)="changeContacto()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>NÚMERO DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SPHONE_CONTACT" (keypress)="textValidate($event,1)"  (change)="changeContacto()"/>
+                </div>
+                <div class="col-sm-4">
+                    <span>CORREO DEL CONTACTO</span>
+                    <input class="form-control" type="text" maxlength="200" formControlName="P_SMAIL_CONTACT" [(ngModel)]="email_contact" (change)="changeContacto()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="closeModalForm()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="editarCliente(2)">
+            GUARDAR
+        </button>
+    </div>
+</ng-template>
+
+<!-- DIRECCIÓN -->
+<ng-template #contentDireccion
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR DIRECCIÓN
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>TIPO DE VIA (*)</span>
+                    <select class="form-control" [formControl]="tipoViaControl">
+                        <option value=""
+                                disabled>SELECCIONAR</option>
+                        <option *ngFor="let item of typeVias"
+                                value="{{ item.STI_DIRE }}">{{ item.SDESCRIPT }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <span>DIRECCIÓN (*)</span>
+                    <input class="form-control" type="text" [formControl]="direccionControl"/>
+                </div>
+                <div class="col-sm-3">
+                    <span>NÚMERO (*)</span>
+                    <input class="form-control" type="text" [formControl]="numeroControl" maxlength="4"/>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>INTERIOR (*)</span>
+                    <input class="form-control" type="text" [formControl]="interiorControl" maxlength="4"/>
+                </div>
+                <div class="col-sm-3">
+                    <span>MANZANA</span>
+                    <input class="form-control" type="text" [(ngModel)]="direccionModel.SMANZANA"/>
+                </div>
+                <div class="col-sm-3">
+                    <span>LOTE</span>
+                    <input class="form-control" type="text" [(ngModel)]="direccionModel.SLOTE"/>
+                </div>
+                <div class="col-sm-3">
+                    <span>DEPARTAMENTO(*)</span>
+                    <select class="form-control" [formControl]="departamentoControl" (change)="changeDepartamento()">
+                        <option value="0"
+                                disabled>SELECCIONAR</option>
+                        <option *ngFor="let item of departamentos"
+                                value="{{ item.NPROVINCE }}">{{ item.SDESCRIPT }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-3">
+                    <span>PROVINCIA (*)</span>
+                    <select class="form-control" [formControl]="provinciaControl" (change)="changeProvincia()">
+                        <option value="0"
+                                disabled>SELECCIONAR</option>
+                        <option *ngFor="let item of provincias"
+                                value="{{ item.NLOCAL }}">{{ item.SDESCRIPT }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <span>DISTRITO (*)</span>
+                    <select class="form-control" [formControl]="distritoControl">
+                        <option value="0"
+                                disabled>SELECCIONAR</option>
+                        <option *ngFor="let item of distritos"
+                                value="{{ item.NMUNICIPALITY }}">{{ item.SDESCRIPT }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <span>REFERENCIA</span>
+                    <input class="form-control" type="text"  [(ngModel)]="direccionModel.SREFERENCIA"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateDireccion()">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+<!-- FECHA EMISIÓN -->
+<ng-template #contentFechaEmision
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR FECHA
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>CAMBIAR:</span>
+                </div>
+                <!-- name="option{{ item.SCLIENT }}" -->
+                <div class="col-sm-3 mt-2">
+                    <label><input type="radio" name="options" value="1" [(ngModel)]="typeOpt"> FECHA DE CONTRATO</label>
+                </div>
+                <div class="col-sm-3 mt-2">
+                    <label><input type="radio" name="options" value="2" [(ngModel)]="typeOpt" [disabled]="fechaModel.NVALOR != 1"> FECHA DE FACTURACIÓN</label>
+                </div>
+            </div>
+            <div class="row m-2" *ngIf="typeOpt == 1">
+                <div class="col-sm-4">
+                    <span>FECHA INICIO:</span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsFecInicio" [formControl]="fInicioControl" [(minDate)]="validateFInicio"  value="{{ bsFecInicio  | date:'dd/MM/yyyy'}}" #fInicio>
+                </div>
+            </div>
+            <div class="row m-2" *ngIf="typeOpt == 1">
+                <div class="col-sm-4">
+                    <span>FECHA FIN:</span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsFecFin" [formControl]="fFinControl" value="{{ bsFecFin  | date:'dd/MM/yyyy'}}" #fFin>
+                </div>
+            </div>
+
+            <div class="row m-2" *ngIf="typeOpt == 2">
+                <div class="col-sm-4">
+                    <span>FECHA DE FACTURACIÓN:</span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsFecFact" [formControl]="fFactControl" [(minDate)]="validateFFact"  value="{{ bsFecFact  | date:'dd/MM/yyyy'}}" #fFactu>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateFeFact()">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+<!-- GLOSA -->
+<ng-template #contentGlosa
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR GLOSA
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>GLOSA ACTUAL:</span>
+                </div>
+                <div class="col-sm-6">
+                    <span>{{glosaContrato}}</span>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4" *ngIf="tManual == true">
+                    <span>INGRESAR NUEVA GLOSA:</span>
+                </div>
+                <div class="col-sm-6" *ngIf="tManual == true">
+                    <input class="form-control" type="text" [formControl]="glosaControl"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateGlosa()" *ngIf="tManual == true">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+<!-- MONTO -->
+<ng-template #contentMonto
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR MONTO
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>MONTO ACTUAL:</span>
+                </div>
+                <div class="col-sm-6">
+                    <span>{{montoContrato | number}}</span>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>MONEDA:</span>
+                </div>
+                <div class="col-sm-6">
+                    <span>{{montoModel.SCURRENCY_DESC}}</span>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>NUEVO MONTO:</span>
+                </div>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" [formControl]="montoControl"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateMonto(contentMonto)">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+<!-- TIPO FACTURACIÓN -->
+<ng-template #contentTipoFacturacion
+             let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">
+            ACTUALIZAR TIPO FACTURACIÓN
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>FACTURACION ACTUAL:</span>
+                </div>
+                <div class="col-sm-6">
+                    <span>{{factModel.STIP_EMISION_DESC}}</span>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-sm-4">
+                    <span>TIPO FACTURACIÓN:</span>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" [formControl]="factControl">
+                        <option value="" disabled>
+                            SELECCIONAR
+                        </option>
+                        <option *ngFor="let item of listFact" value="{{ item.STIP_EMISION }}">
+                            {{ item.SOPCION_DES}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary buttonN"
+                (click)="this.closeModal()">
+            VOLVER
+        </button>
+        <button type="button"
+                class="btn btn-secondary ml-2 buttonN"
+                (click)="updateTipFact()">
+            ACTUALIZAR
+        </button>
+    </div>
+</ng-template>
+
+
+<div [hidden]="!loading" class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%">
+      <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>
+  

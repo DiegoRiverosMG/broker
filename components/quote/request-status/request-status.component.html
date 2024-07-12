@@ -1,0 +1,404 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Consulta Solicitudes de Cotización</span>
+                    </div>
+                </div>
+                <p class="eps-title">{{lblProducto}}<span>{{lblFecha}}</span></p>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="mainFormGroup">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>TIPO PRODUCTO</span>
+                                <select formControlName="product" class="minimal">
+                                    <option *ngIf="productTypeList.length > 1" value="">AMBOS</option>
+                                    <option *ngFor="let item of productTypeList" value="{{item.COD_PRODUCT}}">
+                                        {{item.DES_PRODUCT}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>ESTADO</span>
+                                <select formControlName="status" class="minimal">
+                                    <option value="">Todos</option>
+                                    <option *ngFor="let item of statusList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>NRO. COTIZACIÓN</span>
+                                <input formControlName="quotationNumber" type="text" placeholder="Número de Cotización"
+                                    (paste)="onPaste($event)" (keyup)="quotationNumberChanged($event)"
+                                    (keypress)="quotationNumberPressed($event)" (keyup.enter)="firstSearch()"
+                                    maxlength="10" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>DESDE</span>
+                                <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy"
+                                    #dp="bsDatepicker" (focus)="cleanValidation()" (keyup.enter)="firstSearch()"
+                                    [bsConfig]="bsConfig" bsDatepicker DateDirective [(bsValue)]="bsValueIni"
+                                    value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}"
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid}" />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid">
+                                    <span *ngSwitchCase="mainFormGroup.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha inicial es requerida.</span>
+                                    <span
+                                        *ngSwitchCase="!mainFormGroup.controls.startDate.valid && !mainFormGroup.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">{{invalidStartDateMessage}}</span>
+                                    <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">{{invalidStartDateOrderMessage}}</span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>HASTA</span>
+                                <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                    (focus)="cleanValidation()" (keyup.enter)="firstSearch()" [bsConfig]="bsConfig"
+                                    bsDatepicker DateDirective [(bsValue)]="bsValueFin"
+                                    value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}"
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid}" />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid">
+                                    <span *ngSwitchCase="mainFormGroup.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha final es requerida.</span>
+                                    <span
+                                        *ngSwitchCase="!mainFormGroup.controls.endDate.valid && !mainFormGroup.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">{{invalidEndDateMessage}}</span>
+                                    <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">{{invalidEndDateOrderMessage}}</span>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-3">
+
+                                <div>
+                                    <span>&nbsp;&nbsp;BÚSQUEDA POR CONTRATANTE</span>
+                                    <select formControlName="contractorSearchMode" (change)="cleanContractorInputs()"
+                                        class="minimal">
+                                        <option value="3" disabled>Seleccionar</option>
+                                        <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                                            {{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                                <span>TIPO DOC. CONTRATANTE</span>
+                                <select formControlName="contractorDocumentType" class="minimal"
+                                    (change)="contractorDocumentTypeChanged()">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                                <span>NRO. DOC. CONTRATANTE</span>
+                                <input type="text" placeholder="Nro. Doc. Contratante"
+                                    formControlName="contractorDocumentNumber" (keyup.enter)="firstSearch()"
+                                    (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.contractorDocumentType.value)"
+                                    maxlength={{contractorDocumentMaxLength}}
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.contractorDocumentNumber.valid && !mainFormGroup.valid}" />
+                                <span
+                                    *ngIf="isValidatedInClickButton && !mainFormGroup.controls.contractorDocumentNumber.valid && !mainFormGroup.valid"
+                                    class="mensaje-error-control">
+                                    <ng-container
+                                        *ngIf="mainFormGroup.get('contractorDocumentNumber').hasError('required'); then required_contractorDocumentNumber else invalid_contractorDocumentNumber">
+                                    </ng-container>
+                                    <ng-template #required_contractorDocumentNumber>El Nro de Documento es requerido.
+                                    </ng-template>
+                                    <ng-template #invalid_contractorDocumentNumber>El Nro de Documento no es válido.
+                                    </ng-template>
+                                </span>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2'" class="col-sm-3">
+                                <span>TIPO PERSONA</span>
+                                <select formControlName="contractorPersonType" (change)="cleanContractorInputs()"
+                                    class="minimal">
+                                    <option value="0" disabled>Seleccionar</option>
+                                    <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='2'"
+                                class="col-sm-3">
+                                <span>RAZÓN SOCIAL</span>
+                                <input type="text" formControlName="contractorLegalName" placeholder="Razón social"
+                                    maxlength="60" (keyup.enter)="firstSearch()" LegalNameDirective />
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>NOMBRES</span>
+                                <input type="text" formControlName="contractorFirstName" placeholder="Nombres"
+                                    maxlength="19" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO PATERNO</span>
+                                <input type="text" formControlName="contractorPaternalLastName"
+                                    placeholder="Apellido paterno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO MATERNO</span>
+                                <input type="text" formControlName="contractorMaternalLastName"
+                                    placeholder="Apellido materno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+
+                        </div>
+                        <br>
+                        <div [hidden]="isExternalUser" class="row">
+                            <div class="col-sm-3">
+
+                                <div>
+                                    <span>&nbsp;&nbsp;BÚSQUEDA POR BROKER</span>
+                                    <select formControlName="brokerSearchMode" (change)="cleanBrokerInputs()"
+                                        class="minimal">
+                                        <option value="3" disabled>Seleccionar</option>
+                                        <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                                            {{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                                <span>TIPO DOC. BROKER</span>
+                                <select formControlName="brokerDocumentType" (change)="brokerDocumentTypeChanged()"
+                                    class="minimal">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                                <span>NRO. DOC. BROKER</span>
+                                <input type="text" placeholder="Nro. Doc. Broker" formControlName="brokerDocumentNumber"
+                                    (keyup.enter)="firstSearch()"
+                                    (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.brokerDocumentType.value)"
+                                    maxlength={{brokerDocumentMaxLength}}
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.brokerDocumentNumber.valid && !mainFormGroup.valid}" />
+                                <span
+                                    *ngIf="isValidatedInClickButton && !mainFormGroup.controls.brokerDocumentNumber.valid && !mainFormGroup.valid"
+                                    class="mensaje-error-control">
+                                    <ng-container
+                                        *ngIf="mainFormGroup.get('brokerDocumentNumber').hasError('required'); then required_brokerDocumentNumber else invalid_brokerDocumentNumber">
+                                    </ng-container>
+                                    <ng-template #required_brokerDocumentNumber>El Nro de Documento es requerido.
+                                    </ng-template>
+                                    <ng-template #invalid_brokerDocumentNumber>El Nro de Documento no es válido.
+                                    </ng-template>
+                                </span>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2'" class="col-sm-3">
+                                <span>TIPO PERSONA</span>
+                                <select formControlName="brokerPersonType" (change)="cleanBrokerInputs()"
+                                    class="minimal">
+                                    <option value="0" disabled>Seleccionar</option>
+                                    <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                                        {{item.Name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='2'"
+                                class="col-sm-3">
+                                <span>RAZÓN SOCIAL</span>
+                                <input type="text" formControlName="brokerLegalName" placeholder="Razón social"
+                                    maxlength="60" (keyup.enter)="firstSearch()" LegalNameDirective />
+                            </div>
+
+                        </div>
+                        <div [hidden]="isExternalUser" class="row">
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>NOMBRES</span>
+                                <input type="text" formControlName="brokerFirstName" placeholder="Nombres"
+                                    maxlength="19" (keyup.enter)="firstSearch()" OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO PATERNO</span>
+                                <input type="text" formControlName="brokerPaternalLastName"
+                                    placeholder="Apellido paterno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+                            <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'"
+                                class="col-sm-3">
+                                <span>APELLIDO MATERNO</span>
+                                <input type="text" formControlName="brokerMaternalLastName"
+                                    placeholder="Apellido materno" (keyup.enter)="firstSearch()" maxlength="19"
+                                    OnlyTextSpaceDirective />
+                            </div>
+
+                        </div>
+                        <div [hidden]="!isExternalUser" class="row">
+                            <div class="col-sm-9">
+                                <span>MI RAZÓN SOCIAL: </span>
+                                <input disabled type="text" formControlName="brokerNameExternal"
+                                    value="{{brokerName}}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button class="pull-right" style="margin-top: 15px;" (click)="firstSearch(1)">
+                                    <span>Descargar Excel</span>
+                                </button>
+                                <button class="full-color pull-right" style="margin-top: 15px;" (click)="firstSearch()">
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Cotización</td>
+                                    <td *ngIf="template.ins_colPoliza" class="grid-title-item">Póliza</td>
+                                    <td class="grid-title-item">Producto</td>
+                                    <td class="grid-title-item">Contratante</td>
+                                    <td class="grid-title-item">Prima Mínima</td>
+                                    <td class="grid-title-item">Nro. Trabajadores</td>
+                                    <td class="grid-title-item">Planilla</td>
+                                    <td class="grid-title-item">Broker</td>
+                                    <td *ngIf="perfil!=134 && (codProducto==3 ||codProducto==2)" class="grid-title-item">Segmento</td>
+                                    <td *ngIf="perfil!=134 && (codProducto==3 ||codProducto==2)" class="grid-title-item">SLA</td>
+                                    <td *ngIf="template.ins_colTrx" class="grid-title-item">Trx. Pendiente.</td>
+                                    <td class="grid-title-item">Estado</td>
+                                    <td class="grid-title-item">Fecha Aprobación</td>
+                                    <td class="grid-title-item">CIP</td>
+                                    <td class="grid-title-item">Estado CIP</td>
+                                    <td class="grid-title-item">Opciones</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td [attr.colspan]="perfil == 134 || codProducto==2 ? 12 : 14">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td>{{ item.QuotationNumber}}</td>
+                                    <td *ngIf="template.ins_colPoliza">{{ item.PolicyNumber }}</td>
+                                    <td>{{ item.ProductName }}</td>
+                                    <td>{{ item.ContractorFullName }}</td>
+                                    <td>{{ item.MinimalPremium | prettyNumber:2}}</td>
+                                    <td>{{ item.WorkersCount }}</td>
+                                    <td>{{ item.Payroll | prettyNumber:2}}</td>
+                                    <td>{{ item.BrokerFullName }}</td>
+                                    <td *ngIf="perfil!=134 &&  (codProducto==3 ||codProducto==2)" title="{{item.SCLIENT_SEG}}">{{ item.SDESCRIPT_SEG }}</td>
+                                    <td *ngIf="perfil!=134 && (codProducto==3 ||codProducto==2)">{{item.NTIEMPO_TOTAL_SLA}}</td>
+                                    <td *ngIf="template.ins_colTrx">{{ item.TypeTransac}}</td>
+                                    <td>{{ item.Status}}</td>
+                                    <td>{{ item.ApprovalDate | date:'dd/MM/yyyy, h:mm a'}}</td>
+                                    <!-- DATOS DEL CIP - INI -->
+                                    <td>{{ item.SCIP_ID}}</td>
+                                    <td >
+                                        <ng-container *ngIf="item.NCIP_STATUS == 21"> 
+                                            <img alt="EXPIRADO" style="width: 35px" src="assets/icons/vencido_sabsa.png">
+                                        </ng-container>
+                                        <ng-container *ngIf="item.NCIP_STATUS == 22"> 
+                                            <img alt="PENDIENTE DE PAGO" style="width: 35px" src="assets/icons/pendiente_sabsa.png">
+                                        </ng-container>
+                                        <ng-container *ngIf="item.NCIP_STATUS == 23"> 
+                                            <img alt="PAGAGO" style="width: 35px" src="assets/icons/pagado_sabsa.png">
+                                        </ng-container>
+                                    </td>
+                                    <!-- DATOS DEL CIP - FIN -->
+                                    <td style="display: flex;">
+                                        
+                                        <a (click)="seeTracking(item.QuotationNumber)"><img alt="Ver movimientos"
+                                                src="assets/icons/preview_soat_box.png" title="Ver movimientos"
+                                                style="cursor: pointer;height: 24px"></a>
+
+                                        <a (click)="openDetails(item)"><img alt="Ver detalles"
+                                                src="assets/icons/see.svg" title="{{item.Mode}}"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+
+                                        <a *ngIf="(codProducto == 3 || codProducto == 2) && item.Rutas_archivo.length > 0"
+                                            (click)="openFilePicker(item.Rutas_archivo)"><img alt="Ver archivos"
+                                                src="assets/icons/facturar.png" title="Ver archivos"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+                                        <!-- 7(COMERCIAL), 164(COMERCIAL EXCLUSIVO), 136(ANALISTA DE OPERACIONES) -->
+
+                                        <a *ngIf="(perfil == 7 || perfil== 164 || perfil== 136) && item.NCIP_STATUS == 22" 
+                                            (click)="nullCIP(item.QuotationNumber, item.SCIP_ID)"><img alt="Anular CIP"
+                                                src="assets/icons/Pago-efectivo.png" title="Anular CIP"
+                                                style="cursor: pointer;height: 24px;margin-left: 10px"></a>
+
+                                        <ng-container *ngIf="item.Status=='APROBADO' && codProducto == 2">
+                                            <ng-container *ngIf="perfil == 136  || perfil == 5">
+                                                <a (click)="emit(item)"><img alt="Emitir" src="assets/icons/enviar.png"
+                                                        title="Emitir"
+                                                        style="cursor: pointer;height: 24px;margin-left: 15px"></a>
+                                            </ng-container>
+                                            <ng-container *ngIf="perfil == 7 || perfil == 134 || perfil == 32">
+                                                <a *ngIf="filter.User == item.Creator" (click)="emit(item)"><img
+                                                        alt="Emitir" src="assets/icons/enviar.png" title="Emitir"
+                                                        style="cursor: pointer;height: 24px;margin-left: 15px"></a>
+                                            </ng-container>
+                                        </ng-container>
+                                        <!--<ng-container *ngIf="perfil == 7 || perfil== 134 || perfil== 136"> 
+                                            <ng-container *ngIf="item.NCIP_STATUS == 22">
+                                                <a (click)="nullCIP(item.QuotationNumber, item.SCIP_ID)"></a><img style="height: 24px;margin-left: 15px" src="assets/icons/Pago-efectivo.png">
+                                            </ng-container>
+                                        </ng-container>-->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+                    </div>
+                </div>
+                <div *ngIf="foundResults!=null && foundResults.length>0" class="row" style="display:flex">
+                    <div class="col-sm-10">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                    <div class="col-sm-2">
+                        <span style="display: inline-block;">Mostrar: </span>
+                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                            style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

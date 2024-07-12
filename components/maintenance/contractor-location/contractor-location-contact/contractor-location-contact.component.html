@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="formModalReference.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="filter">
+    <div class="card">
+      <form class="card-body" [formGroup]="mainFormGroup">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Datos de Contacto</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <span>PERSONA CONTACTO (*)</span>
+            <input formControlName="fullName" [(ngModel)]="currentContact.FullName" type="text"
+              placeholder="Persona Contacto" (focus)="clearFullNameControlValidators()"
+              [ngClass]="{'error-validate': !mainFormGroup.get('fullName').valid && mainFormGroup.get('fullName').touched}"
+              OnlyTextSpaceDirective maxlength="60">
+            <span *ngIf="mainFormGroup.get('fullName').errors!=null && mainFormGroup.get('fullName').touched"
+              class="mensaje-error-control">
+              <ng-container
+                *ngIf="mainFormGroup.get('fullName').hasError('required'); then required_fullName else invalid_fullName">
+              </ng-container>
+              <ng-template #required_fullName>El nombre es requerido.</ng-template>
+              <ng-template #invalid_fullName>El nombre no es válido.</ng-template>
+            </span>
+          </div>
+
+          <div class="col-sm-6">
+            <span>TELÉFONO (*)</span>
+            <input formControlName="phoneNumber" [(ngModel)]="currentContact.PhoneNumber" type="text"
+              placeholder="Teléfono" (focus)="clearPhoneNumberControlValidators()"
+              [ngClass]="{'error-validate': !mainFormGroup.get('phoneNumber').valid && mainFormGroup.get('phoneNumber').touched}"
+              OnlyNumberDirective maxlength="11">
+            <span *ngIf="mainFormGroup.get('phoneNumber').errors!=null && mainFormGroup.get('phoneNumber').touched"
+              class="mensaje-error-control">
+              <ng-container
+                *ngIf="mainFormGroup.get('phoneNumber').hasError('required'); then required_phoneNumber else invalid_phoneNumber">
+              </ng-container>
+              <ng-template #required_phoneNumber>El teléfono es requerido.</ng-template>
+              <ng-template #invalid_phoneNumber>El teléfono no es válido.</ng-template>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <span>CORREO ELECTRÓNICO (*)</span>
+            <input formControlName="email" [(ngModel)]="currentContact.Email" type="text"
+              placeholder="Correo Electrónico" (focus)="clearEmailControlValidators()"
+              [ngClass]="{'error-validate': !mainFormGroup.get('email').valid && mainFormGroup.get('email').touched}"
+              maxlength="60" (keyup.enter)="manageContact()">
+            <span *ngIf="mainFormGroup.get('email').errors!=null && mainFormGroup.get('email').touched"
+              class="mensaje-error-control">
+              <ng-container
+                *ngIf="mainFormGroup.get('email').hasError('required'); then required_email else invalid_email">
+              </ng-container>
+              <ng-template #required_email>El correo es requerido.</ng-template>
+              <ng-template #invalid_email>El correo no es válido.</ng-template>
+            </span>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button (click)="formModalReference.dismiss()"><span>Volver</span></button>
+  <button (click)="manageContact()" class="full-color"><span>Guardar</span></button>
+</div>

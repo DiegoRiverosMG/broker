@@ -1,0 +1,1270 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   ACCOUNT-ENTRIES-CONFIG.COMPONENT.HTML                                */
+/*  DESCRIPCIÓN         :   CONFIGURACION DE ASIENTOS CONTABLES                                  */
+/*  AUTOR               :   MATERIA GRIS - MAXIMO JOSUE CORONEL FLORES                           */
+/*  FECHA               :   06-09-2022                                                           */
+/*  VERSIÓN             :   1.0 - CONFIGURACION DE ASIENTOS                                      */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">ASIENTOS CONTABLES</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row"
+             [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN DE DATOS</span>
+                <select class="form-control"
+                        (change)="seleccionarOrigen($event.target.value)"
+                        formControlName="AST_NNUMORI">
+                    <option *ngFor="let x of origen"
+                            value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>INTERFAZ</span>
+                <select class="form-control"
+                        formControlName="AST_NCODGRU">
+                    <option value="0">TODOS</option>
+                    <option *ngFor="let x of interfaces"
+                            value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color"
+                        (click)="listarConfiguracionAsientoContable()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color"
+                        (click)="mostrarModalAgregar(contentAgregar)">
+                    <span>AGREGAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">CÓDIGO</td>
+                                    <td class="grid-title-item text-center">DESCRIPCIÓN ASIENTO</td>
+                                    <td class="grid-title-item text-center">MOVIMIENTO CONTABLE</td>
+                                    <td class="grid-title-item text-center">ESTADO</td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                          *ngIf="listToShow==null || listToShow.length==0; then hideGrid1 else showGrid1"></ng-container>
+                        </table>
+                        <ng-template #hideGrid1>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"
+                                        colspan="8">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid1>
+                            <tbody *ngFor="let item of listToShow"
+                                   style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.AST_NNUMASI }} - {{ item.AST_NCODCON }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.AST_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MCT_CDESCRI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DESC_VESTADO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="modificarAsientoContable(modalConsultarAsiento, item)">
+                                            <i title="Consulta"
+                                               style="cursor: pointer"
+                                               class="fa fa-search fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="modificarAsientoContable(modalModificarAsiento, item)">
+                                            <i title="Editar"
+                                               style="cursor: pointer"
+                                               class="fa fa-edit fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="eliminarAsientoContable(item)">
+                                            <i title="Eliminar"
+                                               style="cursor: pointer"
+                                               class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="mostrarModalDetalleAsiento(contentDetalleAsiento,item)">
+                                            <i title="Detalle"
+                                               style="cursor: pointer"
+                                               class="fa fa-file-text-o fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow!=null && listToShow.length>0"
+                     class="row"
+                     style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage"
+                                        [pageSize]="itemsPerPage"
+                                        [collectionSize]="totalItems"
+                                        [maxSize]="maxSize"
+                                        (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- *******EVENTOS DE LOS BOTONES (ASIENTOS)********* -->
+
+        <!-- AGREGAR ASIENTO CONFIGURACIÓN -->
+        <ng-template #contentAgregar
+                     let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title"
+                    id="modal-basic-title">
+                    AGREGAR ASIENTOS CONTABLES
+                </h4>
+            </div>
+            <div class="modal-body pt-0">
+                <form [formGroup]="registerForm">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>ORIGEN DE DATOS</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NNUMORI"
+                                        [ngClass]="{ 'is-invalid': submitted && controlRegister.NNUMORI.errors }">
+                                    <option *ngFor="let x of origen"
+                                            value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                                <div *ngIf="submitted && controlRegister.NNUMORI.errors"
+                                     class="invalid-feedback">
+                                    <div *ngIf="controlRegister.NNUMORI.errors.required">El origen es requerido.</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>INTERFAZ</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NCODGRU"
+                                        [ngClass]="{ 'is-invalid': submitted && controlRegister.NCODGRU.errors }">
+                                    <option *ngFor="let x of interfaces"
+                                            value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                                <div *ngIf="submitted && controlRegister.NNUMORI.errors"
+                                     class="invalid-feedback">
+                                    <div *ngIf="controlRegister.NNUMORI.errors.required">El origen es requerido.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Datos del Asiento</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">MOVIMIENTO (*)</span>
+                                    <select class="form-control"
+                                            formControlName="NCODCON">
+                                        <option value="0"
+                                                class="d-none"
+                                                selected>Seleccione un Movimiento</option>
+                                        <option *ngFor="let x of movimientos"
+                                                value="{{ x.NCODCON }}">{{ x.CDESCRI }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">DESCRIPCIÓN (*)</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           formControlName="CDESCRI"
+                                           placeholder="Ingrese la Descripción">
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">ESTADO</span>
+                                    <select class="form-control"
+                                            formControlName="VESTADO"
+                                            [ngClass]="{ 'is-invalid': submitted && controlRegister.VESTADO.errors }">
+                                        <option *ngFor="let x of estados"
+                                                value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                                    </select>
+                                    <div *ngIf="submitted && controlRegister.VESTADO.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="controlRegister.VESTADO.errors.required">La interfaz es requerida.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">
+                    Cancelar
+                </button>
+                <button type="button"
+                        class="btn btn-secondary ml-2 buttonN"
+                        (click)="agregarAsientoContable()">
+                    Guardar
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- EDITAR ASIENTO CONTABLE -->
+        <ng-template #modalModificarAsiento
+                     let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title"
+                    id="modal-basic-title">
+                    {{modoVista}} ASIENTOS CONTABLES
+                </h4>
+            </div>
+            <div class="modal-body pt-0">
+                <form [formGroup]="editForm">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>ORIGEN DE DATOS</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NNUMORI"
+                                        [ngClass]="{ 'is-invalid': submitted && grillaConfig.AST_NNUMORI.errors }">
+                                    <option *ngFor="let x of origen"
+                                            value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                                <div *ngIf="submitted && grillaConfig.AST_NNUMORI.errors"
+                                     class="invalid-feedback">
+                                    <div *ngIf="grillaConfig.AST_NNUMORI.errors.required">El origen es requerido.</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>INTERFAZ</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NCODGRU"
+                                        [ngClass]="{ 'is-invalid': submitted && grillaConfig.AST_NCODGRU.errors }">
+                                    <option *ngFor="let x of interfaces"
+                                            value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                                <div *ngIf="submitted && grillaConfig.AST_NCODGRU.errors"
+                                     class="invalid-feedback">
+                                    <div *ngIf="grillaConfig.AST_NCODGRU.errors.required">El origen es requerido.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Datos del Asiento</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">MOVIMIENTO (*)</span>
+                                    <select class="form-control"
+                                            disabled="true"
+                                            formControlName="NCODCON"
+                                            [ngClass]="{ 'is-invalid': submitted && grillaConfig.AST_NCODCON.errors }">
+                                        <option *ngFor="let x of movimientos"
+                                                value="{{ x.NCODCON }}">{{ x.CDESCRI }}</option>
+                                    </select>
+                                    <div *ngIf="submitted && grillaConfig.AST_NCODCON.errors"
+                                         class="invalid-feedback d-none">
+                                        <div *ngIf="grillaConfig.AST_NCODCON.errors.required"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">DESCRIPCIÓN (*)</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           formControlName="CDESCRI"
+                                           [disabled]="alterVista"
+                                           placeholder="Ingrese la Descripción"
+                                           [ngClass]="{ 'is-invalid': submitted && grillaConfig.AST_CDESCRI.errors }">
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">ESTADO</span>
+                                    <select class="form-control"
+                                            [disabled]="alterVista"
+                                            formControlName="VESTADO"
+                                            [ngClass]="{ 'is-invalid': submitted && grillaConfig.AST_VESTADO.errors }">
+                                        <option *ngFor="let x of estados"
+                                                value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                                    </select>
+                                    <div *ngIf="submitted && grillaConfig.AST_VESTADO.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="grillaConfig.AST_VESTADO.errors.required">La interfaz es requerida.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">
+                    Cancelar
+                </button>
+                <button type="button"
+                        class="btn btn-secondary ml-2 buttonN"
+                        (click)="modificarAsiento()">
+                    Guardar
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- CONSULTAR ASIENTO CONTABLE -->
+        <ng-template #modalConsultarAsiento
+                     let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title"
+                    id="modal-basic-title">
+                    CONSULTAR ASIENTOS CONTABLES
+                </h4>
+            </div>
+            <div class="modal-body pt-0">
+                <form [formGroup]="editForm">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>ORIGEN DE DATOS</span>
+
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NNUMORI"
+                                        [(ngModel)]="grillaConfig.AST_NNUMORI">
+                                    <option *ngFor="let x of origen"
+                                            value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>INTERFAZ</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NCODGRU"
+                                        [(ngModel)]="grillaConfig.AST_NCODGRU">
+                                    <option *ngFor="let x of interfaces"
+                                            value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Datos del Asiento</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">MOVIMIENTO (*)</span>
+                                    <select class="form-control"
+                                            disabled="true"
+                                            formControlName="NCODCON"
+                                            [(ngModel)]="grillaConfig.AST_NCODCON">
+                                        <option *ngFor="let x of movimientos"
+                                                value="{{ x.NCODCON }}">{{ x.CDESCRI }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">DESCRIPCIÓN (*)</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           formControlName="CDESCRI"
+                                           disabled="true"
+                                           placeholder="Ingrese la Descripción"
+                                           [ngClass]="{ 'is-invalid': submitted && controlRegister.CDESCRI.errors }"
+                                           [(ngModel)]="grillaConfig.AST_CDESCRI">
+                                </div>
+                                <div class="col-sm-12 d-flex m-1">
+                                    <span class="w-50">ESTADO</span>
+                                    <select class="form-control"
+                                            disabled="true"
+                                            formControlName="VESTADO"
+                                            [(ngModel)]="grillaConfig.AST_VESTADO">
+                                        <option *ngFor="let x of estados"
+                                                value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">
+                    Cancelar
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- *********EVENTOS DE LOS BOTONES (DINAMICAS)********** -->
+
+        <!-- DINAMICA ASIENTO CONTABLE CONFIGURACIÓN -->
+        <ng-template #contentDetalleAsiento
+                     let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title"
+                    id="modal-basic-title">
+                    CONFIGURACION DE ASIENTOS CONTABLES
+                </h4>
+            </div>
+
+            <div class="modal-body pt-0">
+                <form [formGroup]="dinaForm">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>ORIGEN DE DATOS</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NNUMORI">
+                                    <option *ngFor="let x of origen"
+                                            value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>INTERFAZ</span>
+                                <select class="form-control"
+                                        disabled="true"
+                                        formControlName="NCODGRU">
+                                    <option *ngFor="let x of interfaces"
+                                            value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Datos del Asiento</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="col-sm-4">
+                                    <span class="">MOVIMIENTO</span>
+                                    <select class="form-control"
+                                            disabled="true"
+                                            formControlName="NCODCON">
+                                        <option *ngFor="let x of movimientos"
+                                                value="{{ x.NCODCON }}">{{ x.CDESCRI }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span class="">DESCRIPCIÓN</span>
+                                    <input class="form-control"
+                                           disabled="true"
+                                           placeholder="Ingrese la Descripción"
+                                           type="text"
+                                           formControlName="CASIDES">
+                                </div>
+                                <div class="col-sm-4">
+                                    <span class="">ESTADO</span>
+                                    <select class="form-control"
+                                            disabled="true"
+                                            formControlName="VESTADO">
+                                        <option *ngFor="let x of estados"
+                                                value="{{ x.NCODIGO }}">{{ x.SSTATE }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Dinámicas Contables</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="row m-2 w-100">
+                                    <div class="grid form-group">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr class="grid-title">
+                                                        <td class="grid-title-item text-center">CÓDIGO</td>
+                                                        <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                                        <td class="grid-title-item text-center">CUENTA</td>
+                                                        <td class="grid-title-item text-center">TIPO</td>
+                                                        <td class="grid-title-item text-center">CENTRO COSTO</td>
+                                                        <td class="grid-title-item text-center"></td>
+                                                        <td class="grid-title-item text-center"></td>
+                                                        <td class="grid-title-item text-center"></td>
+                                                    </tr>
+                                                </thead>
+                                                <ng-container
+                                                              *ngIf="listToShowDn==null || listToShowDn.length==0; then hideGrid1 else showGrid1"></ng-container>
+                                            </table>
+                                            <ng-template #hideGrid1>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center"
+                                                            colspan="8">No se encontraron registros.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                            <ng-template #showGrid1>
+                                                <tbody *ngFor="let itemDn of listToShowDn"
+                                                       style="cursor: pointer;">
+                                                    <tr>
+                                                        <td class="data-table-tr-td text-center">
+                                                            {{ itemDn.DIN_NDETASO }}
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            {{ itemDn.DIN_CDESCRI }}
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            {{ itemDn.DIN_CNUMCTA }}
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            {{ itemDn.DESC_VDEBCRE }}
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            <input class=""
+                                                                   disabled="true"
+                                                                   type="checkbox"
+                                                                   [checked]="itemDn.FLG_CCENCOS">
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            <a
+                                                               (click)="modificarDinamicaContable(contentConsultarDinamica, itemDn)">
+                                                                <i title="Consulta"
+                                                                   style="cursor: pointer"
+                                                                   class="fa fa-search fa-lg"></i>
+                                                            </a>
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            <a
+                                                               (click)="modificarDinamicaContable(contentModificarDinamica, itemDn)">
+                                                                <i title="Editar"
+                                                                   style="cursor: pointer"
+                                                                   class="fa fa-edit fa-lg"></i>
+                                                            </a>
+                                                        </td>
+                                                        <td class="data-table-tr-td text-center">
+                                                            <a
+                                                               (click)="eliminarDinamicaAsiento(contentEliminarDinamica, itemDn)">
+                                                                <i title="Eliminar"
+                                                                   style="cursor: pointer"
+                                                                   class="fa fa-trash fa-lg"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="listToShowDn!=null && listToShowDn.length>0"
+                                         class="row"
+                                         style="display:flex">
+                                        <div class="col-sm-12">
+                                            <ngb-pagination [(page)]="currentPageDn"
+                                                            [pageSize]="itemsPerPageDn"
+                                                            [collectionSize]="totalItemsDn"
+                                                            [maxSize]="maxSize"
+                                                            (pageChange)="pageChangedDn(currentPageDn)">
+                                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                            </ngb-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- <code>{{ this.registerForm.value | json}}</code> -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">Cancelar</button>
+                <button type="button"
+                        class="btn btn-secondary ml-2 buttonN"
+                        (click)="mostrarModalAgregarDinamica(contentAgregarDinamica)">Agregar</button>
+            </div>
+        </ng-template>
+
+        <!-- AGREGAR  DINAMICA CONTABLE -->
+        <ng-template #contentAgregarDinamica
+                     let-modal>
+            <div class="modal-body pt-0">
+                <div class="card">
+                    <form [formGroup]="registerDetForm">
+                        <div class="color-purple pb-0 pt-0">
+                            <h5 class="modal-title"
+                                id="modal-basic-title">Agregar Dinámica Contable</h5>
+                        </div>
+                        <div class="line-s">
+                            <div class="row p-4">
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CÓDIGO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   (keypress)='soloNumeros($event)'
+                                                   placeholder="Ingrese el Código"
+                                                   formControlName="NDETASO"
+                                                   maxlength="5">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>DESCRIPCIÓN (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control "
+                                                   type="text-m"
+                                                   placeholder="Ingrese la Descripción"
+                                                   formControlName="CDESCRI">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CUENTA (*)</span>
+                                        </div>
+                                        <div class="col-sm-7"
+                                             style="display:flex;">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   style="text-transform:uppercase;"
+                                                   formControlName="CNUMCTA"
+                                                   placeholder=""
+                                                   maxlength="10">
+                                            <button class="btn-filtro"
+                                                    (click)="filtroDetalleDinamica()">...</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>TIPO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    formControlName="VDEBCRE">
+                                                <option *ngFor="let x of tipoDinamica"
+                                                        value="{{ x.CVALDES }}">{{ x.CDESCRI }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>MONTO ASOC.</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    formControlName="NMONASO">
+                                                <option *ngFor="let x of montoAsociado"
+                                                        value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                <option value="0"
+                                                        class="d-none"
+                                                        selected>SELECCIONE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CENTRO COSTO</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="mt-3 ml-2"
+                                                   type="checkbox"
+                                                   [checked]="temp_centroCostos_is_checked"
+                                                   #chkEnableCentroCostos
+                                                   formControlName="FLGCCOS"
+                                                   ngModel
+                                                   (change)="activarCentroCostos(chkEnableCentroCostos.checked)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="">
+                        <div class="grid1 form-group m-0">
+                            <div class="table-responsive tab-c">
+                                <form [formGroup]="tablaDetForm">
+                                    <table class="table tab-p w-50 mb-0">
+                                        <thead>
+                                            <tr class="grid-title tb-titulo">
+                                                <td class="grid-title-item border-0">Variables</td>
+                                                <td class="grid-title-item border-0 w-50">Descripción</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="cursor: pointer;">
+                                            <tr class="{{ this.tablaDetForm.value.Visible0}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR0 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST0">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible1}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR1 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST1">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible2}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR2 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST2">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible3}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR3 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST3">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible4}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR4 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST4">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible5}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR5 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST5">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible6}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR6 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST6">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">Cancelar</button>
+                <button type="button"
+                        class="btn btn-secondary ml-2 buttonN"
+                        (click)="agregarDinamica()">Guardar</button>
+            </div>
+        </ng-template>
+
+        <!-- CONSULTAR  DINAMICA CONTABLE -->
+        <ng-template #contentConsultarDinamica
+                     let-modal>
+            <div class="modal-body pt-0">
+                <div class="card">
+                    <form [formGroup]="registerDetForm">
+                        <div class="color-purple pb-0 pt-0">
+                            <h5 class="modal-title"
+                                id="modal-basic-title">Consultar Dinámica Contable</h5>
+                        </div>
+                        <div class="line-s">
+                            <div class="row p-4">
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CÓDIGO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   placeholder="Ingrese el Código"
+                                                   disabled="true"
+                                                   formControlName="NDETASO"
+                                                   maxlength="5">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>DESCRIPCIÓN (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control "
+                                                   type="text-m"
+                                                   disabled="true"
+                                                   formControlName="CDESCRI">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CUENTA (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   placeholder="Ingrese la Cuenta"
+                                                   disabled="true"
+                                                   formControlName="CNUMCTA"
+                                                   maxlength="10">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>TIPO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    disabled="true"
+                                                    formControlName="VDEBCRE">
+                                                <option *ngFor="let x of tipoDinamica"
+                                                        value="{{ x.CVALDES }}">{{ x.CDESCRI }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>MONTO ASOC.</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    disabled="true"
+                                                    formControlName="NMONASO">
+                                                <option *ngFor="let x of montoAsociado"
+                                                        value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CENTRO COSTO</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="mt-3 ml-2"
+                                                   type="checkbox"
+                                                   disabled="true"
+                                                   [checked]="temp_centroCostos_is_checked"
+                                                   #chkEnableCentroCostos
+                                                   (change)="activarCentroCostos(chkEnableCentroCostos.checked)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="">
+                        <div class="grid1 form-group m-0">
+                            <div class="table-responsive tab-c">
+                                <form [formGroup]="tablaDetForm">
+                                    <table class="table tab-p w-50 mb-0">
+                                        <thead>
+                                            <tr class="grid-title tb-titulo">
+                                                <td class="grid-title-item border-0">Variables</td>
+                                                <td class="grid-title-item border-0 w-50">Descripción</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="cursor: pointer;">
+                                            <tr class="{{ this.tablaDetForm.value.Visible0}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR0 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST0"
+                                                            disabled="true">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible1}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR1 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST1"
+                                                            disabled="true">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible2}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR2 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST2"
+                                                            disabled="true">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible3}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR3 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST3"
+                                                            disabled="true">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible4}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR4 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST4"
+                                                            disabled="true">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible5}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR5 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST5">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible6}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR6 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST6">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">Cancelar</button>
+            </div>
+        </ng-template>
+
+        <!-- EDITAR  DINAMICA CONTABLE -->
+        <ng-template #contentModificarDinamica
+                     let-modal>
+            <div class="modal-body pt-0">
+                <div class="card">
+                    <form [formGroup]="registerDetForm">
+                        <div class="color-purple pb-0 pt-0">
+                            <h5 class="modal-title"
+                                id="modal-basic-title">Modificar Dinámica Contable</h5>
+                        </div>
+                        <div class="line-s">
+                            <div class="row p-4">
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CÓDIGO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   placeholder="Ingrese el Código"
+                                                   disabled="true"
+                                                   formControlName="NDETASO"
+                                                   maxlength="5">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>DESCRIPCIÓN (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="form-control "
+                                                   type="text-m"
+                                                   placeholder="Ingrese la Descripción"
+                                                   formControlName="CDESCRI">
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CUENTA (*)</span>
+                                        </div>
+                                        <div class="col-sm-7"
+                                             style="display:flex;">
+                                            <input class="form-control"
+                                                   type="text-m"
+                                                   style="text-transform:uppercase;"
+                                                   formControlName="CNUMCTA"
+                                                   placeholder=""
+                                                   maxlength="10">
+                                            <button class="btn-filtro"
+                                                    (click)="filtroDetalleDinamica()">...</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>TIPO (*)</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    formControlName="VDEBCRE">
+                                                <option *ngFor="let x of tipoDinamica"
+                                                        value="{{ x.CVALDES }}">{{ x.CDESCRI }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>MONTO ASOC.</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <select class="form-control h-35"
+                                                    formControlName="NMONASO">
+                                                <option *ngFor="let x of montoAsociado"
+                                                        value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                <option value="0"
+                                                        class="d-none"
+                                                        selected>SELECCIONE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-sm-5 pr-0">
+                                            <span>CENTRO COSTO</span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input class="mt-3 ml-2"
+                                                   type="checkbox"
+                                                   [checked]="temp_centroCostos_is_checked"
+                                                   #chkEnableCentroCostos
+                                                   formControlName="FLGCCOS"
+                                                   (change)="activarCentroCostos(chkEnableCentroCostos.checked)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="">
+                        <div class="grid1 form-group m-0">
+                            <div class="table-responsive tab-c">
+                                <form [formGroup]="tablaDetForm">
+                                    <table class="table tab-p w-50 mb-0">
+                                        <thead>
+                                            <tr class="grid-title tb-titulo">
+                                                <td class="grid-title-item border-0">Variables</td>
+                                                <td class="grid-title-item border-0 w-50">Descripción</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="cursor: pointer;">
+                                            <tr class="{{ this.tablaDetForm.value.Visible0}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR0 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST0">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible1}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR1 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST1">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible2}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR2 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST2">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible3}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR3 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST3">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible4}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR4 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST4">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible5}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR5 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST5">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr class="{{  this.tablaDetForm.value.Visible6}}">
+                                                <td class="data-table-tr-td tb-cuerpo p-4">
+                                                    {{ this.tablaDetForm.value.CVALOR6 }}
+                                                </td>
+                                                <td class="data-table-tr-td tb-cuerpo">
+                                                    <select class="form-control detTabla"
+                                                            formControlName="NCODEST6">
+                                                        <option *ngFor="let x of detalleAsociado"
+                                                                value="{{ x.AGD_NCODEST }}">{{ x.EST_CDESCRI }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary buttonN"
+                        (click)="modal.dismiss('Cross click')">Cancelar</button>
+                <button type="button"
+                        class="btn btn-secondary ml-2 buttonN"
+                        (click)="modificarDinamica()">Guardar</button>
+            </div>
+        </ng-template>
+
+    </div>
+</div>

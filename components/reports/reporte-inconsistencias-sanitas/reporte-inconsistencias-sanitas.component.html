@@ -1,0 +1,155 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   REPORTE-TRAMAS-HISTORICAS.COMPONENT.HTML                             */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - WALTER VALVERDE                                       */
+/*  FECHA               :   17-01-2023                                                           */
+/*  VERSIÓN             :   1.0 - REPORTE DE TRAMAS HISTÓRICAS                                   */
+/************************************************************************************************-->
+<!--
+<title></title>
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+<link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+<script type="text/javascript">function metchec(nom) { alert(nom); nom.checked = checked; }</script>
+-->
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">REPORTE DE INCONSISTENCIAS SANITAS</span>
+                </div>
+            </div>            
+            <div class="containt-item">
+                <button class="full-colorN buttonN pull-right" (click)="generarReporte()">
+                    <img class="icon-btn" src="./assets/icons/download2.png" />
+                    <span>GENERAR REPORTE</span>
+                </button>
+            </div>            
+        </div>
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>RAMO</span>
+                <select formControlName="branch" class="minimal">
+                    <option *ngFor="let item of ramos" value="{{item.NBRANCH}}">
+                        {{item.SDESCRIPT}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA INICIO(*)</span>
+                <input type="text" formControlName="startDate" #dp="bsDatepicker"
+                  bsDatepicker DateDirective (focus)="cleanValidation()" [bsConfig]="bsConfig"
+                  [(bsValue)]="bsValueIni" value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}" [(maxDate)]="bsValueFinMax"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                  readonly />
+                <ng-container [ngSwitch]="true"
+                    *ngIf="isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('startDate').hasError('required')"
+                        class="mensaje-error-control">La fecha inicial es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.startDate.valid && !filterForm.get('startDate').hasError('required')"
+                        class="mensaje-error-control">La fecha inicial no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                        class="mensaje-error-control">La fecha inicial está después de la fecha final.
+                    </span>
+                </ng-container>
+            </div>
+            <div class="col-sm-3">
+                <span>FECHA FIN(*)</span>
+                <input type="text" formControlName="endDate" #dp="bsDatepicker"
+                  bsDatepicker DateDirective (focus)="cleanValidation()"  [bsConfig]="bsConfig"
+                  [(bsValue)]="bsValueFin" value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}" [(maxDate)]="bsValueFinMax"
+                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid}"
+                  readonly />
+                <ng-container [ngSwitch]="true"
+                    *ngIf="isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                    <span *ngSwitchCase="filterForm.get('endDate').hasError('required')"
+                        class="mensaje-error-control">La fecha final es requerida.
+                    </span>
+                    <span *ngSwitchCase="!filterForm.controls.endDate.valid && !filterForm.get('endDate').hasError('required')"
+                        class="mensaje-error-control">La fecha
+                        final no es válida.
+                    </span>
+                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                        class="mensaje-error-control">La fecha final está antes de la fecha
+                        inicial.
+                    </span>
+                </ng-container>
+            </div> 
+        </div>
+        
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">Tipo de Inconsistencia</td>
+                                    <td class="grid-title-item text-center">Cantidad</td>
+                                    <td class="grid-title-item text-center">Fecha Inicio Producción</td>
+                                    <td class="grid-title-item text-center">Fecha Fin Producción</td>
+                                    <td class="grid-title-item text-center">Detalle</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="6">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow" style="cursor: pointer;">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.TIPO_INCONSISTENCIA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.CANTIDAD }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.FECHA_INI_PROD | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.FECHA_FIN_PROD | date: 'dd/MM/yyyy' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)='openTipoInconsistencia(item)'><img alt="Detalle" src="assets/icons/preview_soat_box.png"
+                                            title="Detalle" style="cursor: pointer;height: 24px"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <!--
+                <div *ngIf="listToShow!=null && listToShow.length>0" class="row" style="display:flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+</div>
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

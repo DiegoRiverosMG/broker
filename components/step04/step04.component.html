@@ -1,0 +1,269 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row hidden-xs-down">
+        <div class="col-lg-12 ">
+          <div class="creaunsoatmanual">
+            <a>{{ mainTitle }}</a>
+          </div>
+        </div>
+      </div>
+      <hr class="linea" />
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <div class="contenido">
+            <div class="contenido-nro">
+              <a>4</a>
+            </div>
+            <div class="contenido-title">
+              <a>{{ LittleTitle }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <img
+            alt=""
+            src="{{ imagePath }}"
+            style="width:304; height:236;"
+            class="img-fluid"
+            alt=""
+          />
+        </div>
+      </div>
+
+      <form [formGroup]="certificadoForm" (ngSubmit)="saveCertificado()">
+        <div class="form-group row">
+          <div class="col-lg-4">
+            <label for="disabledTextInput" class="label-formulario"
+              >FECHA DE INICIO DE VIGENCIA*</label
+            >
+            <!-- <input type="date" class="form-control input-text-formulario" formControlName="fechavigencia" (blur)="ValidaFecha($event.target.value)"
+              [(ngModel)]="Certificado.P_DSTARTDATE" value="2017/01/01" placeholder="Selecciona fecha" name="fecha" /> -->
+
+            <app-input-date
+              [(inputValue)]="Certificado.P_DSTARTDATE"
+              [inputHolder]="'Selecciona fecha'"
+              [iconFilter]="true"
+              [returnString]="true"
+              [returnFormat]="'yyyy-MM-dd'"
+              (inputValueChange)="onFechaVigenciaChange($event)"
+            ></app-input-date>
+
+            <!-- <app-input-date [borderBottom]="true" [iconFilter]="true" [inputHolder]="'DD/MM/YYYY*'" [inputValue]="vFecha" 
+              [inputStyle]="{'font-size':'18px', 'text-align':'center', 'padding-left':'0px', 'font-weight':'bold'}" 
+              (inputValueChange)="validarFechaVigencia($event)" 
+              [returnString]="true" [returnFormat]="'yyyy-MM-dd'" [inputError]="!bDateSelected ? false : !vehiculoForm.get('vigencia').valid" (outsideClick)="onOutsideClick()" #fv></app-input-date> -->
+          </div>
+          <div *ngIf="bMostrar" class="col-lg-4">
+            <label for="disabledTextInput" class="label-formulario"
+              >NRO. DE P&Oacute;LIZA</label
+            >
+            <div style="position:relative;">
+              <input
+                class="form-control input-text-formulario"
+                style="float: left;"
+                formControlName="poliza"
+                type="text"
+                readonly="readonly"
+                placeholder="Ingresa el nro. de la p&oacute;liza"
+                [(ngModel)]="Certificado.P_NPOLICY"
+              />
+              <a
+                (click)="modalPolizas.show()"
+                style="position: absolute;float: right;top: 7px; margin-left: -24px;"
+              >
+                <img alt="" src="assets/icons/dropdown_icon.png" />
+              </a>
+            </div>
+          </div>
+          <div *ngIf="!bMostrar" class="col-lg-4">
+            <label for="disabledTextInput" class="label-formulario"
+              >NRO. DE P&Oacute;LIZA</label
+            >
+            <input
+              class="form-control input-text-formulario"
+              formControlName="poliza"
+              type="text"
+              readonly="readonly"
+              placeholder="Ingresa el nro. de la p&oacute;liza"
+              [(ngModel)]="Certificado.P_NPOLICY"
+            />
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput" class="label-formulario"
+              >PLAN*</label
+            >
+            <select
+              class="form-control select-formulario"
+              [attr.disabled]="truefalsePlan ? '' : null"
+              formControlName="plan"
+              [(ngModel)]="Certificado.P_NPLAN"
+              (change)="setPlan($event.target.value)"
+            >
+              <option value="undefined" disabled selected
+                >Seleccione el plan</option
+              >
+              <option *ngFor="let plan of planes" value="{{ plan.nmodulec }}">{{
+                plan.sdescript
+              }}</option>
+            </select>
+          </div>
+          <div class="col-lg-4">
+            <label for="disabledTextInput" class="label-formulario"
+              >PRECIO DEL SOAT*</label
+            >
+            <input
+              type="text"
+              formControlName="precio"
+              [(ngModel)]="Certificado.P_NPREMIUM"
+              min="1"
+              [readonly]="bEditPrecio"
+              (keypress)="soloNumeros($event)"
+              maxlength="4"
+              value=""
+              class="form-control input-text-formulario"
+              placeholder="Ingresa el valor total del SOAT"
+            />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="volver">
+            <a routerLink="../step03">
+              <img alt="" src="assets/icons/arrow-left.png" />
+              <span>Regresar al paso 3</span>
+            </a>
+            <button
+              type="button"
+              [disabled]="!certificadoForm.valid"
+              class="btn btn-siguiente"
+              (click)="Siguiente()"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="botones">
+            <div class="mensajes-validacion">
+              <span
+                *ngIf="!certificadoForm.get('fechavigencia').valid"
+                class="mensaje-error-control"
+                >Ingresa una fecha valida para el inicio de vigencia de tu SOAT
+                <br />
+              </span>
+              <span
+                *ngIf="
+                  !certificadoForm.get('poliza').valid &&
+                  certificadoForm.get('poliza').touched
+                "
+                class="mensaje-error-control"
+                >Necesitamos conocer el numero de P&oacute;liza
+                <br />
+              </span>
+              <span
+                *ngIf="
+                  !certificadoForm.get('plan').valid &&
+                  certificadoForm.get('plan').touched
+                "
+                class="mensaje-error-control"
+                >Necesitamos conocer el Plan
+                <br />
+              </span>
+              <span
+                *ngIf="
+                  !certificadoForm.get('precio').valid &&
+                  certificadoForm.get('precio').hasError('min')
+                "
+                class="mensaje-error-control"
+              >
+                El precio del SOAT debe ser mayor a 0
+                <br />
+              </span>
+              <span *ngIf="mensajeVigencia" class="mensaje-error-control">{{
+                mensajeVigencia
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<app-modal #modalPolizas [close]="true">
+  <div class="m-body">
+    <div class="titulo">
+      <h4>Elige tu certificado SOAT</h4>
+      <h5>Selecciona el nro. del SOAT <br />que quieres vender</h5>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-lg-7">
+        <input
+          type="text"
+          class="input-search"
+          placeholder="Busca el numero del certificado SOAT..."
+          (input)="searchCertificado($event.target.value)"
+          (keypress)="soloNumeros($event)"
+        />
+      </div>
+      <div class="col-lg-2">
+        <h1 class="numero-soats">{{ this.totalSoats }}</h1>
+      </div>
+      <div class="col-lg-2">
+        <h4 class="soats-disponibles">SOATS <br />disponibles</h4>
+      </div>
+    </div>
+    <hr />
+    <!--Lista de Polizas -->
+    <div class="lista-polizas">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="text-center">NROS DE SOATS</th>
+            <th class="text-center">TIPO DE PAPEL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="lstPolizasFilter.length === 0">
+            <td colspan="2">No existen SOATs para listar</td>
+          </tr>
+          <tr *ngFor="let item of lstPolizasFilter">
+            <td class="text-center">
+              <label for="{{ item.npolesP_COMP }}">
+                <input
+                  id="{{ item.npolesP_COMP }}"
+                  [value]="item.npolesP_COMP"
+                  (click)="setPoliza(item)"
+                  type="radio"
+                  name="polizas"
+                />
+                {{ item.npolesP_COMP }}
+              </label>
+            </td>
+            <td class="text-center">
+              <label for="{{ item.ntippoldes }}">
+                {{ item.ntippoldes }}
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="botones" style="float:center;margin-left: 16px;">
+      <button
+        type="button"
+        class="btn btn-siguiente"
+        (click)="modalPolizas.hide()"
+      >
+        Escoger
+      </button>
+    </div>
+  </div>
+</app-modal>

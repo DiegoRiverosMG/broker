@@ -1,0 +1,795 @@
+@import "modal";
+@import "mixins";
+
+::placeholder {
+  color: rgb(146, 138, 163);
+}
+
+.filter {
+  display: grid;
+  gap: 1rem;
+  padding: 10px 0;
+  grid-template-columns: repeat(1, 1fr);
+
+  &__section {
+
+    &--placeholder {
+        font-size: 14px;
+        color: #2b0d61;
+    }
+
+    input {
+        border: none;
+        border-radius: 2px;
+        padding: 7px 5px;
+        margin-top: 5px;
+        border: 1px solid rgb(146, 138, 163);
+        color: rgb(146, 138, 163);
+        font-size: 14px;
+        width: 100%;
+        border: 1px solid #aa9ec0;
+        color: #aa9ec0;
+        height: 36px;
+        font-weight: 300;
+        padding-left: 12px;
+    }
+
+    &__button {
+        display: flex;
+        flex-direction: column;
+        justify-content: right;
+    }
+  }
+
+  @media screen and (min-width: 890px) {
+    grid-template-columns: repeat(5, 1fr);
+
+    &__section {
+        &__channel {
+        grid-area: 1 / 1 / 2 / 6;
+        }
+    }
+    .contractor-filter {
+        grid-area: 3 / 2 / 4 / 4;
+    }
+  }
+}
+
+
+:host ::ng-deep .filter select,
+:host ::ng-deep select#ChannelSalesSelect {
+  height: 36px;
+}
+.fa {
+  color: #2b0d61 !important;
+}
+.fa-trash {
+  color: #d43f3a !important;
+}
+
+.grid {
+  width: 100%;
+  margin: 20px auto;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.grid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid table tr td {
+  padding: 5px 5px;
+  text-align: center;
+  color: #2b0d61 !important;
+}
+
+.col-sm-12 {
+  padding-right: 0px;
+}
+
+.grid table tr:hover {
+  background-color: #e2e2e2;
+  cursor: pointer;
+}
+
+.grid table .grid-title td {
+  font-family: "Bliss Pro";
+  text-align: center;
+  font-size: 12px;
+  background: #553d81;
+  color: #fff !important;
+}
+
+.grid table tr td button {
+  border: none;
+  display: block;
+  padding: 7px 9px;
+  border-radius: 2px;
+  background: rgb(169, 157, 192);
+  color: #fff;
+  margin: 0 2px;
+  height: 30px;
+  width: 25px;
+  font-family: "Bliss Pro";
+}
+
+.grid table tr .flex {
+  display: flex;
+  justify-content: center;
+}
+
+.header-content {
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 1px solid rgb(109, 99, 129);
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-content .containt-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-content .header-item {
+  display: block;
+  padding: 5px 0;
+}
+
+.header-content .header-item .title {
+  color: #553d81;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 31px;
+  display: block;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.header-content .header-item button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 170px;
+  height: 45px;
+}
+
+.header-content .header-item button:hover {
+  cursor: pointer;
+}
+
+.header-content .header-item button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600;
+  color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple {
+  background: #553d81;
+}
+
+.header-content .header-item .purple span {
+  color: #fff;
+}
+
+.header-content .rigth-item {
+  float: right;
+}
+
+.header-content .rigth-item {
+  float: right;
+}
+
+.rigth-item button img {
+  display: table-cell;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.full-color {
+  background: #553d81 !important;
+}
+
+.full-color span {
+  color: #fff !important;
+}
+
+.errormail {
+  border: 1px solid #e60d2e;
+  color: #e60d2e;
+}
+
+.header-content .header-item .full-color button {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  margin: 0 5px;
+  background: #553d81;
+  color: #fff;
+  padding: 8px 5px;
+  min-width: 177px;
+  height: 45px;
+  outline: none;
+}
+
+.input-date {
+  height: 45px;
+  width: fit-content;
+  display: inline-block;
+  border: 1px solid #aa9ec0;
+  border-radius: 2px;
+}
+
+.div-date {
+  display: inline-block;
+
+  margin-top: 5px;
+}
+
+.float-right {
+  margin-top: 10px;
+}
+
+button:not(.button.fit,.search-contractor) {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(129, 118, 157);
+  border-radius: 2px;
+  background: #fff;
+  padding: 8px 5px;
+  min-width: 200px;
+  height: 45px;
+  outline: none;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+}
+
+.button-search {
+  padding: 5px 0px;
+  height: 37px;
+  min-width: 130px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button span {
+  display: block;
+  margin-left: 10px;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: rgb(83, 66, 121);
+}
+
+.close-button {
+  min-width: initial;
+  font-size: initial;
+  border-radius: 50%;
+  border: none !important;
+  margin: -0.9rem -0.9rem -0.9rem auto;
+}
+
+.titlemensajeinfo {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 24px !important;
+  color: #2b0d61 !important;
+  font-weight: bold !important;
+  line-height: 28px !important;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.close-button span {
+  margin: auto;
+}
+
+.modal-header {
+  background: white !important;
+  padding: 15px !important;
+  border-bottom: 1.5px solid #d5cfdf !important;
+}
+
+.full-color-modal {
+  border-radius: 2px;
+  background-color: #ed6e00;
+  border: 1px solid #ed6e00;
+}
+
+.full-color-modal span {
+  height: 19px;
+  width: 170px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+}
+
+.message-approb {
+  height: 250px;
+}
+.modal-hist {
+  min-height: 400px !important;
+}
+
+.modalcontent-hist {
+  min-width: 700px !important;
+}
+
+.button-modal {
+  border-top: 1.5px solid #d5cfdf !important;
+  border-radius: 0 0 6px 6px !important;
+  background-color: #ffffff !important;
+  margin-top: 5px;
+  padding-top: 15px;
+  margin-bottom: 0 !important;
+}
+
+.button-center {
+  margin: 0px auto;
+}
+
+:host ::ng-deep .paso {
+  display: none !important;
+}
+
+.button-close {
+  border: 1px solid #ed6e00 !important;
+}
+.button-close span {
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  color: #ed6e00 !important;
+}
+
+.bHideBody {
+  display: none;
+}
+
+.bHideHeader {
+  border: none !important;
+}
+
+.div-contratante {
+  max-width: 900px !important;
+}
+
+.pt-fc {
+  padding-top: 5px;
+}
+
+textarea {
+  resize: none;
+}
+
+.col-client {
+  text-align: left !important;
+}
+
+.anchordisabled {
+  opacity: 0.5;
+}
+
+.contractor-filter {
+  .field-container-input {
+    align-items: center;
+    position: relative;
+    display: flex;
+  }
+
+  .fa-search {
+    position: absolute;
+    left: 14px;
+    color: $purple;
+    font-size: 18px;
+  }
+
+  .field-container__input {
+    padding-left: 40px;
+    appearance: none;
+    cursor: pointer;
+    padding-left: 38px !important;
+    padding-right: 43px !important;
+
+    &.active {
+      padding-right: 40px;
+    }
+
+    &.cursor-default {
+      cursor: default !important;
+    }
+  }
+
+  .button.search-contractor {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    min-width: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    color: $purple;
+    border: none;
+    font-size: 20px;
+  }
+}
+
+.modal-contractor {
+  max-width: 590px !important;
+
+  .content-names {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .modal{
+    &-header {
+      padding: 0 !important;
+      border: none !important;
+    }
+
+    &-body {
+      gap: 1rem;
+    }
+
+    &-footer {
+      border: none !important;
+    }
+  }
+
+  .button {
+    padding: 7px 10px;
+    width: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    border: none;
+    outline: none;
+
+    i {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    &.fit,
+    &.default {
+      width: fit-content;
+      min-width: 160px;
+    }
+
+    &.primary {
+      background-color: $purple;
+      color: #fff;
+
+      i {
+        color: #fff;
+      }
+
+      &.orange {
+        background-color: $orange;
+      }
+    }
+
+    &.secondary {
+      border: 1px solid $purple;
+      color: $purple;
+      background-color: #fff;
+
+      i {
+        color: $purple;
+      }
+
+      &.orange {
+        border: 1px solid $orange;
+        color: $orange;
+
+        i {
+          color: $orange;
+        }
+      }
+    }
+
+    &.no-border {
+      border: none !important;
+    }
+  }
+}
+
+.selection {
+  &.ellipsis {
+    label span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+
+    span {
+      display: block;
+      width: 100%;
+      color: $purple;
+      user-select: none;
+    }
+
+    &::before {
+      content: "✓";
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      width: 22px;
+      height: 22px;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 3px;
+      color: #fff;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+  }
+
+  &.radio {
+    label {
+      &::before {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  input {
+    display: none;
+
+    &:checked + label {
+      &::before {
+        border: none;
+        background-color: $purple;
+        color: #fff;
+      }
+    }
+
+    &[disabled] + label {
+      &::before {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &.orange {
+    input {
+      &:checked + label {
+        &::before {
+          background-color: $orange;
+        }
+      }
+    }
+  }
+}
+
+.table-u {
+  width: 100%;
+
+  thead {
+    background-color: $purple;
+    position: sticky;
+    top: 0;
+    left: 0;
+
+    tr {
+      th {
+        color: #fff;
+        background-color: transparent;
+
+        &::selection {
+          background-color: #fff;
+          color: $purple;
+        }
+      }
+    }
+  }
+
+  thead,
+  tbody,
+  tfoot {
+    tr {
+      th,
+      td {
+        padding: 7px;
+        text-align: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 14px;
+        font-weight: normal;
+        max-width: 340px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  tbody:not(.no-hover) {
+    tr {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.035);
+      }
+    }
+
+    tr.no-hover:hover {
+      background-color: transparent !important;
+    }
+  }
+
+  tbody td.actions {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  td.no-padding,
+  th.no-padding {
+    padding: 0 !important;
+  }
+}
+
+.form-contractor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  *[disabled] {
+    opacity: .5 !important;
+    cursor: not-allowed;
+  }
+}
+
+.content-document {
+  display: grid;
+  grid-template-columns: .4fr 1fr;
+  gap: 1rem;
+  align-items: flex-end;
+
+  .placeholder {
+    margin: 0;
+  }
+}
+
+.placeholder {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  margin: 0 !important;
+
+  &::before {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 5px;
+    width: fit-content;
+    max-width: 100%;
+    content: attr(aria-label);
+    display: block;
+    color: $purple;
+    font-size: 16px;
+    flex-wrap: nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.2s;
+    z-index: 9;
+  }
+
+  &.inside {
+    &::before {
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+
+  &.inside.select {
+    &::before {
+      display: none;
+    }
+  }
+
+  &.upper {
+    &::before {
+      text-transform: uppercase;
+    }
+  }
+
+  &.select {
+    overflow: visible;
+  }
+
+  select,
+  textarea,
+  input {
+    &:not([type="radio"]){
+      @include input;
+    }
+  }
+
+  select {
+    position: relative;
+    appearance: none;
+  }
+
+  &.select {
+    select {
+      padding-right: 25px;
+    }
+  }
+
+  &.select::after {
+    content: "∟";
+    display: block;
+    width: 10px;
+    height: 19px;
+    position: absolute;
+    right: 12px;
+    bottom: calc((48px / 2) - 7px);
+    font-family: system-ui, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    transform: rotate(-45deg);
+  }
+
+  &.active {
+    &::before {
+      font-size: 13px;
+      top: 4px;
+    }
+
+    .input-u {
+      padding-top: 20px;
+    }
+
+    select,
+    textarea,
+    input {
+      padding-top: 20px;
+    }
+
+    &.select {
+      &::before {
+        display: block;
+      }
+    }
+  }
+}
+
+.content-search-type {
+  display: flex;
+  gap: 1rem;
+}
+
+.license-plate{
+  text-transform: uppercase;
+}

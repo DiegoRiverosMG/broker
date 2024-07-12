@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Validación de trama</h4>
+</div>
+<div class="modal-body">
+  <div class="modal-body">
+    <table class="table" *ngIf="flagErrors == 0">
+      <thead>
+        <tr>
+          <th><span>Descripción</span></th>
+          <th><span>Descargar</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span>Se han encontrado los siguientes errores</span></td>
+          <td> <button class="full-color" src="assets/icons/descargar.png" (click)="GenerarReporte()"><span>Descargar
+                Errores</span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table" *ngIf="flagErrors == 1">
+      <thead>
+        <tr>
+          <th><span>Descripción</span></th>
+          <th><span>Descargar</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span>Se valido correctamente la trama</span></td>
+          <td> <button class="full-color" src="assets/icons/descargar.png" (click)="GenerarReporte()"><span>Ver
+                Cambios</span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row" *ngIf="flagErrors == 1">
+      <div class="col-sm-12">
+        <div style="display: flex; float:right">
+          <button type="button" (click)="formModalReference.close(flagConfirm)"><span>CANCELAR</span></button>
+          <button (click)="endosarPoliza()"
+            class="full-color"><span>ACEPTAR</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

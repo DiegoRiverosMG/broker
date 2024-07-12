@@ -1,0 +1,12 @@
+<div class="form-input-checkbox">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+  <span *ngIf="inlineInput">&nbsp;</span>
+  <ng-template ngFor let-item [ngForOf]="items" let-index>
+    <div class="checkbox" *ngIf="item.show !== false">
+      <label>
+        <input name="checkbox-{{name}}-{{index}}" type="checkbox" [(ngModel)]="item.isSelected" (change)="onSelect()" [disabled]="disabled || item.disabled">
+        {{item.valor}} 
+      </label>
+    </div>
+  </ng-template>
+</div>

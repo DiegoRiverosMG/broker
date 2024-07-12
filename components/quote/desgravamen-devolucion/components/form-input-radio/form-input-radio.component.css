@@ -1,0 +1,14 @@
+.form-input-radio {
+  font-size: 14px;
+}
+
+.form-input-radio .t-radio {
+  margin-left: 10px;
+  position: relative;
+  top: 2px;
+}
+
+.form-input-radio span {
+  margin-top: 0.7em;
+  display: block;
+}

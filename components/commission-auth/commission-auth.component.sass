@@ -1,0 +1,651 @@
+@import "standard"
+@import "modal"
+@import "variables"
+
+.content
+  padding: 1.5rem
+
+.label-filtros
+  display: block
+  width: 100%
+  margin-bottom: 10px
+  font-size: 11px
+  color: rgb(153, 136, 180)
+  font-weight: 600
+
+.scrollmodal
+  overflow: auto
+  height: 360px
+
+.h-divider
+  margin-top: 5px
+  margin-bottom: 5px
+  height: 1px
+  width: 100%
+  border-top: 1px solid gray
+
+.titles
+  color: $purple
+  font-size: 24px
+  font-weight: bold
+  line-height: 31px
+  display: block
+  margin-top: 8px
+  margin-right: 18px
+  font-family: Bliss Pro
+
+.row-recibos
+  display: flex
+  align-items: flex-end
+  justify-content: space-between
+
+.col-left
+  display: flex
+  align-items: flex-end
+  justify-content: flex-start
+
+.col-agrupador
+  min-width: 220px
+
+.col-right
+  display: flex
+  justify-content: flex-end
+
+.col-agrupador
+  display: flex
+  align-items: center
+  justify-content: flex-start
+
+  & span
+    font-size: 14px !important
+    font-family: "Bliss Pro"
+    color: $purple
+    margin-right: 1rem
+    transform: translateY(5px)
+
+.grid table tr td button
+  border: none
+  display: block
+  padding: 7px 9px
+  border-radius: 3px
+  background: rgb(169, 157, 192)
+  color: #fff
+  margin: 0 2px
+  outline: none
+  height: 30px
+  width: 25px
+
+.titlemensajeinfo
+  font-size: 19px !important
+  color: $purple !important
+  font-weight: bold !important
+  line-height: 28px !important
+  padding-left: 18px
+
+.messageinfo
+  font-size: 18px
+  color: $purple
+  font-weight: 300
+  height: 21px
+  line-height: 21px
+
+  & span
+    color: $purple !important
+    font-size: 14px !important
+    font-weight: bold !important
+    line-height: 16px !important
+
+.close-button
+  min-width: initial
+  font-size: initial
+  border-radius: 50%
+  height: 25px
+  width: 25px
+  padding: 5px
+  border: none !important
+
+  & span
+    margin: auto
+
+input[type="checkbox"]
+  appearance: radio
+
+.button-modal
+  border-radius: 0 0 6px 6px !important
+  background-color: #ffffff !important
+  margin-top: 5px
+  padding-top: 15px
+  padding-left: 55px
+  margin-bottom: 0 !important
+
+.button-close
+  border: 1px solid $orange !important
+
+  & span
+    font-family: "Bliss Pro"
+    font-size: 16px
+    color: $orange !important
+
+.filter-text
+  font-size: 11px !important
+
+.fila-search
+  margin-top: -20px !important
+  margin-right: -1px
+
+.modal-hist
+  min-height: 490px !important
+
+.modalcontent-hist
+  min-width: 1022px !important
+  min-height: 606px
+  margin-left: -10%
+
+.data-hist
+  padding: 15px 15px
+  text-align: center
+  color: $purple
+
+.label-historial
+  color: hsla(257, 66%, 21%, 0.79)
+  font-weight: bold
+  font-size: 16px
+
+.div-historial
+  max-width: 700px !important
+
+.float-right-comprob
+  margin-top: 0px !important
+
+.close-modal-button
+  font-size: 27px
+  width: 30px
+  height: 30px
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 0
+  margin: 0
+
+::ng-deep pagination-controls .ngx-pagination
+  padding: 0px
+
+.button[disabled]
+  cursor: not-allowed !important
+
+.divExcelPersonal
+  padding-right: 6px !important
+
+.btn-export,
+.btn-search
+  margin-right: -6px
+  width: 100% !important
+  max-width: 166px !important
+  min-width: 166px !important
+
+.dispPersonal
+  padding-left: 0px !important
+  padding-right: 14px !important
+
+.container-modal-actions
+  display: flex
+  align-items: center
+  justify-content: center
+
+button[disabled]
+  opacity: 0.5 !important
+  cursor: not-allowed !important
+
+.persCom
+  min-width: 100px
+
+.btn-limpiar
+  padding-left: 385px !important
+
+.sepBtn
+  margin-right: 25px !important
+
+.colorModal
+  color: $purple
+  font-weight: bold !important
+  font-size: 18px
+  margin-left: 16px !important
+
+.form-control
+  outline: none
+  box-shadow: none
+
+  &[disabled]
+    background-color: #fff
+    cursor: not-allowed !important
+    opacity: 0.75 !important
+
+.paginator-modal-hist
+  display: flex
+  align-items: center
+  justify-content: center
+
+.closeAcept
+  margin-left: 6px !important
+
+.msgAcept
+  margin-left: -17px
+
+.margModal
+  margin-top: 320px
+
+.margR
+  margin-left: 15px
+
+.msjInfor
+  padding-left: 7px
+  padding-top: 14px
+
+.imgS
+  width: 100px
+  height: 100px
+  margin-left: 38px
+  margin-top: 20px
+
+.center
+  text-align: center
+
+.modalSepart
+  padding-top: 18px
+  margin-top: 74px
+
+.formModalNew
+  min-width: 230px
+  max-width: 294px
+  margin-left: 123px
+
+.pagStyles
+  margin-top: 16px
+
+.placeholder
+  input,
+  select
+    border: 1px solid $purple
+
+.form-filters
+  display: grid
+  align-items: flex-end
+  grid-template-columns: 1fr
+  gap: 1rem
+
+  @media (min-width: 480px)
+    grid-template-columns: repeat(2, 1fr)
+
+  .button-submit
+    margin-left: auto
+@import "standard"
+@import "modal"
+@import "variables"
+
+.content
+  padding: 1.5rem
+
+.label-filtros
+  display: block
+  width: 100%
+  margin-bottom: 10px
+  font-size: 11px
+  color: rgb(153, 136, 180)
+  font-weight: 600
+
+.scrollmodal
+  overflow: auto
+  height: 360px
+
+.h-divider
+  margin-top: 5px
+  margin-bottom: 5px
+  height: 1px
+  width: 100%
+  border-top: 1px solid gray
+
+.titles
+  color: $purple
+  font-size: 24px
+  font-weight: bold
+  line-height: 31px
+  display: block
+  margin-top: 8px
+  margin-right: 18px
+  font-family: Bliss Pro
+
+.row-recibos
+  display: flex
+  align-items: flex-end
+  justify-content: space-between
+
+.col-left
+  display: flex
+  align-items: flex-end
+  justify-content: flex-start
+
+.col-agrupador
+  min-width: 220px
+
+.col-right
+  display: flex
+  justify-content: flex-end
+
+.col-agrupador
+  display: flex
+  align-items: center
+  justify-content: flex-start
+
+  & span
+    font-size: 14px !important
+    font-family: "Bliss Pro"
+    color: $purple
+    margin-right: 1rem
+    transform: translateY(5px)
+
+.grid table tr td button
+  border: none
+  display: block
+  padding: 7px 9px
+  border-radius: 3px
+  background: rgb(169, 157, 192)
+  color: #fff
+  margin: 0 2px
+  outline: none
+  height: 30px
+  width: 25px
+
+.titlemensajeinfo
+  font-size: 19px !important
+  color: $purple !important
+  font-weight: bold !important
+  line-height: 28px !important
+  padding-left: 18px
+
+.messageinfo
+  font-size: 18px
+  color: $purple
+  font-weight: 300
+  height: 21px
+  line-height: 21px
+
+  & span
+    color: $purple !important
+    font-size: 14px !important
+    font-weight: bold !important
+    line-height: 16px !important
+
+.close-button
+  min-width: initial
+  font-size: initial
+  border-radius: 50%
+  height: 25px
+  width: 25px
+  padding: 5px
+  border: none !important
+
+  & span
+    margin: auto
+
+input[type="checkbox"]
+  appearance: radio
+
+.button-modal
+  border-radius: 0 0 6px 6px !important
+  background-color: #ffffff !important
+  margin-top: 5px
+  padding-top: 15px
+  padding-left: 55px
+  margin-bottom: 0 !important
+
+.button-close
+  border: 1px solid $orange !important
+
+  & span
+    font-family: "Bliss Pro"
+    font-size: 16px
+    color: $orange !important
+
+.filter-text
+  font-size: 11px !important
+
+.fila-search
+  margin-top: -20px !important
+  margin-right: -1px
+
+.modal-validate
+  text-align: center
+  section
+    width: 520px !important
+    max-width: 600px !important
+    h6
+      font-weight: bold !important
+      text-align: center !important
+
+.modal-hist
+  min-height: 490px !important
+
+.modalcontent-hist
+  min-width: 1022px !important
+  min-height: 606px
+  margin-left: -10%
+
+.data-hist
+  padding: 15px 15px
+  text-align: center
+  color: $purple
+
+.label-historial
+  color: hsla(257, 66%, 21%, 0.79)
+  font-weight: bold
+  font-size: 16px
+
+.div-historial
+  max-width: 700px !important
+
+.float-right-comprob
+  margin-top: 0px !important
+
+.close-modal-button
+  font-size: 27px
+  width: 30px
+  height: 30px
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 0
+  margin: 0
+
+::ng-deep pagination-controls .ngx-pagination
+  padding: 0px
+
+.button[disabled]
+  cursor: not-allowed !important
+
+.divExcelPersonal
+  padding-right: 6px !important
+
+.btn-export,
+.btn-search
+  margin-right: -6px
+  width: 100% !important
+  max-width: 166px !important
+  min-width: 166px !important
+
+.dispPersonal
+  padding-left: 0px !important
+  padding-right: 14px !important
+
+.container-modal-actions
+  display: flex
+  align-items: center
+  justify-content: center
+
+button[disabled]
+  opacity: 0.5 !important
+  cursor: not-allowed !important
+
+.persCom
+  min-width: 100px
+
+.btn-limpiar
+  padding-left: 385px !important
+
+.sepBtn
+  margin-right: 25px !important
+
+.colorModal
+  color: $purple
+  font-weight: bold !important
+  font-size: 18px
+  margin-left: 16px !important
+
+.form-control
+  outline: none
+  box-shadow: none
+
+  &[disabled]
+    background-color: #fff
+    cursor: not-allowed !important
+    opacity: 0.75 !important
+
+.paginator-modal-hist
+  display: flex
+  align-items: center
+  justify-content: center
+
+.closeAcept
+  margin-left: 6px !important
+
+.msgAcept
+  margin-left: -17px
+
+.margModal
+  margin-top: 320px
+
+.margR
+  margin-left: 15px
+
+.msjInfor
+  padding-left: 7px
+  padding-top: 14px
+
+.message-error
+  margin-top: 7px
+  color: #f44336
+
+.message-info
+  color: $purple
+  font-weight: 600
+
+.imgS
+  width: 100px
+  height: 100px
+  margin-left: 38px
+  margin-top: 20px
+
+.center
+  text-align: center
+
+.modalSepart
+  padding-top: 18px
+  margin-top: 74px
+
+.formModalNew
+  min-width: 230px
+  max-width: 294px
+  margin-left: 123px
+
+.pagStyles
+  margin-top: 16px
+
+.placeholder
+  input,
+  select
+    border: 1px solid $purple
+
+.content-sum
+  margin: 0
+  flex-wrap: wrap
+  gap: 1rem
+  width: fit-content
+  min-width: fit-content
+  max-width: fit-content
+
+.content-info-table
+  display: flex
+  align-items: center
+  justify-content: space-between
+  gap: 1rem
+  flex-wrap: wrap
+
+.form-filters
+  display: grid
+  align-items: flex-end
+  grid-template-columns: 1fr
+  gap: 1rem
+
+  .actions
+    display: flex
+    flex-wrap: wrap
+    flex-direction: row
+    gap: 1rem
+    align-items: flex-start
+    justify-content: flex-end
+
+  @media (min-width: 480px)
+    grid-template-columns: repeat(2, 1fr)
+
+    .actions
+      grid-column-start: 1
+      grid-column-end: 3
+
+  @media (min-width: 690px)
+    grid-template-columns: repeat(3, 1fr)
+
+    .actions
+      grid-column-start: 2
+      grid-column-end: 4
+
+  @media (min-width: 1180px)
+    grid-template-columns: repeat(4, 1fr)
+
+    .actions
+      grid-column-start: 3
+      grid-column-end: 5
+
+  @media (min-width: 1420px)
+    grid-template-columns: repeat(5, 1fr)
+
+    .actions
+      grid-column-start: 4
+      grid-column-end: 6
+
+  .actions
+    margin-left: auto
+
+.modal-history
+  section
+    max-width: 920px
+
+.modal-message
+  section
+    max-width: 520px
+
+    h6,
+    .paragraph
+      text-align: center !important
+
+    .paragraph
+      font-size: 18px !important
+
+    img
+      width: 100%
+      max-width: 170px
+      margin: auto
+      margin-bottom: 1rem
+
+::ng-deep pro-select
+  .placeholder input,
+  li button
+    text-transform: uppercase

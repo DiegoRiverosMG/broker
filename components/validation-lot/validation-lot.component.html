@@ -1,0 +1,391 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <section class="section">
+      <div class="section__subheader">
+        <div class="section__subheader--left">
+          <h2 class="subtitle">Validación de Lotes</h2>
+          <span
+            >Solo se muestran lotes de comisiones con montos mayores o iguales a
+            S/20,000 y $5,000</span
+          >
+        </div>
+        <div class="section__subheader--right">
+          <button
+            class="button-default secondary"
+            (click)="downloadList()"
+            [disabled]="!this.dataListLotsFiltered?.listadoLotes?.length"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i>
+            Descargar excel
+          </button>
+        </div>
+      </div>
+      <form class="form" [formGroup]="formFilter">
+        <div class="content-form mb-4">
+          <!-- *Canal -->
+          <label
+            for="form-channel"
+            class="placeholder"
+            aria-placeholder="POR CANAL:"
+          >
+            <select id="form-channel" formControlName="channel">
+              <option value="0">TODOS</option>
+              <option
+                *ngFor="let item of dataListChannels"
+                value="{{ item.nchannel }}"
+              >
+                {{ item.sdescript }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *Ramo -->
+          <label
+            for="form-branch"
+            class="placeholder"
+            aria-placeholder="POR RAMO:"
+          >
+            <select id="form-branch" formControlName="branch">
+              <option value="0">TODOS</option>
+              <option
+                *ngFor="let item of dataListBranchs"
+                value="{{ item.id }}"
+              >
+                {{ item.description }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *Producto -->
+          <label
+            for="form-locked"
+            class="placeholder"
+            aria-placeholder="POR PRODUCTO:"
+          >
+            <select id="form-product" formControlName="product">
+              <option value="0">TODOS</option>
+              <option
+                *ngFor="let item of dataListProducts"
+                value="{{ item.id }}"
+              >
+                {{ item.description }}
+              </option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *N° Póiza -->
+          <label
+            for="form-idPolicy"
+            class="placeholder"
+            aria-placeholder="POR N° PÓLIZA:"
+          >
+            <input
+              type="text"
+              id="form-idPolicy"
+              placeholder="INGRESE N° PÓLIZA"
+              [maxlength]="15"
+              formControlName="idPolicy"
+            />
+          </label>
+
+          <!-- *Estado -->
+          <label
+            for="form-state"
+            class="placeholder"
+            aria-placeholder="POR ESTADO:"
+          >
+            <select id="form-state" formControlName="state">
+              <option value="0">TODOS</option>
+              <option value="2">ENVIADO A APROBACION</option>
+              <option value="3">DEVUELTO</option>
+              <option value="4">APROBADO</option>
+              <option value="5">LISTO PARA PAGO</option>
+              <option value="6">LIQUIDADO</option>
+              <option value="7">ANULADO</option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *N° Lote -->
+          <label
+            for="form-idLot"
+            class="placeholder"
+            aria-placeholder="POR N° LOTE:"
+          >
+            <input
+              type="text"
+              id="form-idLot"
+              placeholder="INGRESE N° LOTE"
+              [maxlength]="15"
+              formControlName="idLot"
+            />
+          </label>
+
+          <!-- *Moneda -->
+          <label
+            for="form-currency"
+            class="placeholder"
+            aria-placeholder="POR MONEDA:"
+          >
+            <select id="form-currency" formControlName="currency">
+              <option value="0">TODOS</option>
+              <option value="1">SOLES</option>
+              <option value="2">DÓLARES</option>
+            </select>
+            <i class="fa fa-angle-down"></i>
+          </label>
+
+          <!-- *Fecha de Inicio -->
+          <label
+            for="form-initialDate"
+            class="placeholder"
+            aria-placeholder="FECHA INICIO:"
+          >
+            <input
+              type="text"
+              id="form-initialDate"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              [readonly]="true"
+              formControlName="initialDate"
+              [minDate]="valueDateInit"
+            />
+            <i class="fa fa-calendar"></i>
+          </label>
+
+          <!-- *Fecha de vencimiento -->
+          <label
+            for="form-finalDate"
+            class="placeholder"
+            aria-placeholder="FECHA FIN:"
+          >
+            <input
+              type="text"
+              id="form-finalDate"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              [readonly]="true"
+              [minDate]="valueDateInit"
+              formControlName="finalDate"
+            />
+            <i class="fa fa-calendar"></i>
+          </label>
+        </div>
+        <div class="btn-actions">
+          <button
+            class="button-default secondary button-search"
+            (click)="cleanData()"
+          >
+            Limpiar
+          </button>
+          <button
+            class="button-default button-search"
+            (click)="searchDataFiltered()"
+          >
+            Buscar
+          </button>
+        </div>
+      </form>
+
+      <div class="content-table table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Ramo</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Canal</th>
+              <th scope="col">Nro. Lote</th>
+              <th scope="col">Nro. Comisiones</th>
+              <th scope="col">Fecha Envío Lote</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Moneda</th>
+              <th scope="col">Importe Neto</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="!dataListLotsFiltered?.listadoLotes?.length">
+              <tr>
+                <td colspan="11">
+                  {{ messageResponse }}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="dataListLotsFiltered?.listadoLotes?.length">
+              <tr
+                *ngFor="
+                  let item of dataListLotsFiltered?.listadoLotes
+                    | paginate
+                      : {
+                          id: 'table-validation-lots',
+                          itemsPerPage: 10,
+                          totalItems: dataListLotsFiltered?.cantidadRegistros,
+                          currentPage: currentPage
+                        };
+                  let index = index
+                "
+              >
+                <td>{{ item.ramo }}</td>
+                <td>{{ item.producto }}</td>
+                <td>{{ item.canal }}</td>
+                <td>{{ item.numeroLote }}</td>
+                <td>{{ item.cantidadComisiones | number }}</td>
+                <td>{{ item.fechaLote }}</td>
+                <td>{{ item.estado }}</td>
+                <td>{{ item.moneda }}</td>
+                <td>{{ item.comisionNeta | number : "1.2-2" }}</td>
+                <td class="dropdown">
+                  <div
+                    ngbDropdown
+                    [placement]="index > 4 ? 'top-right' : 'bottom-right'"
+                  >
+                    <button class="dropdown__button" ngbDropdownToggle>
+                      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown__list" ngbDropdownMenu>
+                      <li>
+                        <button (click)="showModalSummary(item.numeroLote)">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                          Ver detalle
+                        </button>
+                      </li>
+                      <li>
+                        <button (click)="downloadReportLot(+item.numeroLote)">
+                          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                          Descargar Excel
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <pagination-controls
+        id="table-validation-lots"
+        autoHide="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        responsive="true"
+        (pageChange)="changeCurrentPage = $event"
+        *ngIf="dataListLotsFiltered?.listadoLotes?.length"
+      ></pagination-controls>
+    </section>
+  </div>
+</div>
+
+<ng-template #modalSummary>
+  <div class="content-modal modal-summary">
+    <section>
+      <div class="modal-header">
+        <h6>Detalle de Lote: {{ dataLotSummary.numeroLote }}</h6>
+        <button
+          type="button"
+          role="button"
+          aria-label="cerrar modal"
+          (click)="hideModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body summary__info">
+        <div class="summary__info--section">
+          <span class="subTitle">Ramo:</span>
+          <span>{{ dataLotSummary.ramo }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Producto:</span>
+          <span>{{ dataLotSummary.producto }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Canal:</span>
+          <span>{{ dataLotSummary.canal }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Lote:</span>
+          <span>{{ dataLotSummary.numeroLote }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Nro. Comisiones:</span>
+          <span>{{ dataLotSummary.cantidadComisiones | number }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Estado:</span>
+          <span>{{ dataLotSummary.estado }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Moneda:</span>
+          <span>{{ dataLotSummary.moneda }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Importe Neto:</span>
+          <span>{{ dataLotSummary.comisionNeta | number : "1.2-2" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">IGV:</span>
+          <span>{{ dataLotSummary.comisionIgv | number : "1.2-2" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Importe Total:</span>
+          <span>{{ dataLotSummary.comisionTotal | number : "1.2-2" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha Envío Lote:</span>
+          <span>{{ dataLotSummary.fechaLote }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Fecha Actualización Estado:</span>
+          <span>{{ dataLotSummary.fechaActualizacionEstado }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Serie Factura Broker:</span>
+          <span>{{ dataLotSummary.serieFacturaBroker || "-" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">Nro. Factura Broker:</span>
+          <span>{{ dataLotSummary.nroFacturaBroker || "-" }}</span>
+        </div>
+        <div class="summary__info--section">
+          <span class="subTitle">RUC Factura:</span>
+          <span>{{ dataLotSummary.rucFactura || "-" }}</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="hideModal()">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalMessage>
+  <div class="content-modal modal-message">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button (click)="hideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="paragrapgh">
+          {{ messageInfo }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="hideModal()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

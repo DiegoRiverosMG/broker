@@ -1,0 +1,199 @@
+    <div class="row">
+        <div class="col-md-3">
+            <app-nav-menuprod></app-nav-menuprod>
+        </div>
+
+        <div class="col-md-9">
+            <div class="container-fluid">
+                <div class="header-content">
+                    <div class="containt-item">
+                        <div class="header-item">
+                            <span class="title">Mantenimiento de Módulos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h5>Datos del módulo</h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <span>RAMO</span>
+                                    <ng-select [items]="branchList" (change)="onSelectBranch();" bindLabel="SDESCRIPT"
+                                        bindValue="NBRANCH" [(ngModel)]="InputsProduct.P_NBRANCH" class="border-ng"
+                                        [clearable]="true" placeholder="Todos" dropdownPosition="bottom"
+                                        notFoundText="No hay resultados">
+                                    </ng-select>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <span>PRODUCTO</span>
+                                    <ng-select [items]="productList" (change)="onSelectProduct($event)"
+                                        bindLabel="DES_PRODUCT" bindValue="COD_PRODUCT"
+                                        [(ngModel)]="InputsProduct.P_NPRODUCT" class="border-ng" [clearable]="true"
+                                        placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados">
+                                    </ng-select>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <span>FECHA EFECTO</span>
+                                    <input id="fechaEfecto" type="text" #bsDatepicker placeholder="dd/mm/yyyy"
+                                        [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                        value="{{ bsValueIni.toString() | date:'dd/MM/yyyy' }}"
+                                        [(maxDate)]="bsValueFinMax" />
+                                    <ng-container [ngSwitch]="valueErrorDate">
+                                        <span class="mensaje-error-control" *ngSwitchCase="'required'">La fecha de
+                                            efecto es requerida</span>
+                                        <span class="mensaje-error-control" *ngSwitchCase="'badFormat'">Formato de fecha
+                                            incorrecta</span>
+                                        <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                    </ng-container>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <span>ESTADO</span>
+                                    <ng-select [items]="stateList" bindLabel="SDESCRIPT" bindValue="NCODIGINT"
+                                        [(ngModel)]="InputsProduct.NCODIGINT" class="border-ng" [clearable]="true"
+                                        placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row pull-right">
+                                <div class="col-sm-6">
+                                    <button (click)="getModuleList('', null)">
+                                        <span>Buscar</span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button (click)="newCover('INS')">
+                                        <span>Nuevo</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Cod. Ramo</td>
+                                    <td class="grid-title-item" style="text-align: left;">Ramo</td>
+                                    <td class="grid-title-item">Cod. Producto</td>
+                                    <td class="grid-title-item" style="text-align: left;">Producto</td>
+                                    <td class="grid-title-item" style="text-align: left;">Fecha Efecto</td>
+                                    <td class="grid-title-item">Cod. Módulo</td>
+                                    <td class="grid-title-item" style="text-align: left;">Módulo</td>
+                                    <td class="grid-title-item">Estado</td>
+                                    <td class="grid-title-item column-icon">Consultar</td>
+                                    <td class="grid-title-item column-icon">Editar</td>
+                                    <td class="grid-title-item column-icon">Clonar</td>
+                                    <td class="grid-title-item column-icon">Acción</td>
+                                </tr>
+                            </thead>
+
+                            <div *ngIf="existResults; then showGrid else hideGrid"></div>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="7">No se encontraron registros</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody>
+                                <tr *ngFor="let item of listToShow; let row_no = index">
+                                    <td>{{ item.NBRANCH }} </td>
+                                    <td style="text-align: left;">{{ item.SBRANCH }} </td>
+                                    <td>{{ item.NPRODUCT }} </td>
+                                    <td style="text-align: left;">{{ item.SPRODUCT }} </td>
+                                    <td style="text-align: left;">{{ item.DEFFECDATE }} </td>
+                                    <td>{{ item.NMODULEC }} </td>
+                                    <td style="text-align: left;">{{ item.SDESCRIPT }} </td>
+                                    <td>{{ item.SSTATE}} </td>
+                                    <td class="column-icon">
+                                        <a
+                                            (click)="openModal('QUE', item.NMODULEC, item.SPRODUCT, item.NPRODUCT, item.NBRANCH)">
+                                            <img alt="Ver detalle" src="assets/icons/preview_soat_box.png"
+                                                title="Ver detalle" style="cursor: pointer;height: 24px;width: 24px">
+                                        </a>
+                                    </td>
+                                    <td class="column-icon">
+                                        <a
+                                            (click)="openModal('EDI', item.NMODULEC, item.SPRODUCT, item.NPRODUCT, item.NBRANCH)">
+                                            <img alt="Editar" src="assets/icons/editar.png" title="Editar"
+                                                style="cursor: pointer;height: 24px;width: 24px">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a alt="Clonar" title="Clonar" class="fa fa-files-o"
+                                            (click)="openModal('CLO', item.NMODULEC, item.SPRODUCT, item.NPRODUCT, item.NBRANCH)"></a>
+                                    </td>
+                                    <td class="column-icon">
+                                        <ng-container [ngSwitch]="item.SSTATE">
+
+                                            <span *ngSwitchCase="'ACTIVO'" style="margin-top:0px;">
+                                                <a
+                                                    (click)="changeState(item.NBRANCH, item.NPRODUCT, item.NMODULEC, item.SSTATE)">
+                                                    <img src="assets/icons/anular.png"
+                                                        style="cursor: pointer;height: 24px;width: 24px" alt="Anular"
+                                                        title="Anular">
+                                                </a>
+                                            </span>
+                                            <span *ngSwitchCase="'ANULADO'" style="margin-top:0px;">
+                                                <a
+                                                    (click)="changeState(item.NBRANCH, item.NPRODUCT, item.NMODULEC, item.SSTATE)">
+                                                    <img src="assets/icons/agregar.png"
+                                                        style="cursor: pointer;height: 24px;width: 24px" alt="Activar"
+                                                        title="Activar">
+                                                </a>
+
+                                            </span>
+                                            <span *ngSwitchDefault>AEA</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+
+
+                    </div>
+                </div>
+
+                <ng-container *ngIf="existResults; then showPagination"></ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage"
+                                [collectionSize]="totalItems" [maxSize]="maxSize"
+                                (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <div [hidden]="!isLoading" class="loadingScreen">
+                    <div style="display:flex;height: 100%;width:100%">
+                        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

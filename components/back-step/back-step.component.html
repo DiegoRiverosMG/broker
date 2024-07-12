@@ -1,0 +1,12 @@
+<div class="volver">
+  <a *ngIf="redirigir == false" routerLink="{{ enlace }}"
+    ><img alt="" src="assets/icons/back_page.png" /><span
+      >Regresar al paso {{ anterior }}</span
+    ></a
+  >
+  <a *ngIf="redirigir == true" href="{{ enlace }}"
+    ><img alt="" src="assets/icons/back_page.png" /><span
+      >Regresar al paso anterior</span
+    ></a
+  >
+</div>

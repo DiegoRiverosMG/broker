@@ -1,0 +1,22 @@
+<app-back-step
+  *ngIf="anterior"
+  anterior="{{ actual - 1 }}"
+  enlace="{{ url }}"
+  [redirigir]="redirigir"
+></app-back-step>
+<div *ngIf="!showempty" class="paso">
+  <div *ngIf="actual < 99" class="numero">
+    <span>{{ actual }}</span>
+  </div>
+  <div class="titulo">
+    <span>{{ titulo }}</span>
+  </div>
+</div>
+<div *ngIf="showempty" class="paso">
+  <div class="numerod">
+    <span>{{ actual }}</span>
+  </div>
+  <div class="titulo">
+    <span>{{ titulo }}</span>
+  </div>
+</div>

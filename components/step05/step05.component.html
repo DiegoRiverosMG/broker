@@ -1,0 +1,855 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row hidden-xs-down"
+           *ngIf="!IS_RESUMEN_PAGE">
+        <div class="col-lg-12">
+          <div class="creaunsoatmanual">
+            <span>{{ mainTitle }}</span>
+          </div>
+        </div>
+      </div>
+      <hr class="linea"
+          [ngClass]="{ 'linea-none': IS_RESUMEN_PAGE }"/>
+      <app-title-step
+        actual="99"
+        titulo=""
+        url="broker/stepAll"
+        *ngIf="!IS_RESUMEN_PAGE"
+        [redirigir]="true"
+      ></app-title-step>
+      <!--<app-title-step actual="5" titulo="Resumen de tu compra" url="../step04"></app-title-step>-->
+      <div class="contenido">
+        <div class="resumen-top">
+          <span class="texto">La Prima del SOAT es:</span>
+          <span class="monto">S/ {{ certificado.P_NPREMIUM }}</span>
+        </div>
+        <div class="resumen-bottom">
+          <div class="compra">
+            <div class="titulo">
+              <h4>Resumen de tu compra: {{ cliente.p_NIDPROCESS }}</h4>
+            </div>
+            <div class="encabezado-vehiculos">
+              <img
+                alt=""
+                src="assets/icons/car_resumen.png"
+                alt="Datos de vehiculo"
+              />
+              <div class="subtitulos">
+                <h5>Datos del Veh&iacute;culo</h5>
+                <h6>Nro. de placa: {{ auto.p_SREGIST }}</h6>
+              </div>
+            </div>
+            <div class="datos-personales">
+              <app-item-personal
+                [label]="'Clase'"
+                [value]="auto.p_SNAMECLASE"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Año'"
+                [value]="auto.p_NYEAR"
+              ></app-item-personal>
+
+              <app-item-personal
+                [label]="'Marca'"
+                [value]="auto.p_SNAME_VEHBRAND"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Uso'"
+                [value]="auto.p_SNAME_USO"
+              ></app-item-personal>
+
+              <app-item-personal
+                [label]="'Modelo'"
+                [value]="auto.p_SNAME_VEHMODEL"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Nro. de Asientos'"
+                [value]="auto.p_SEATNUMBER"
+              ></app-item-personal>
+
+              <app-item-personal
+                [label]="'Nro. de Serie'"
+                [value]="auto.p_SNUMSERIE | uppercase"
+              ></app-item-personal>
+            </div>
+            <div class="hr"></div>
+            <div class="encabezado-personas">
+              <img
+                src="assets/icons/datos_personales_icon.png"
+                alt="Datos de vehiculo"
+              />
+              <div class="subtitulos">
+                <h5>Datos Personales</h5>
+                <h6>
+                  Nro. de {{ this.tpDocumento }}: {{ cliente.p_SDOCUMENT }}
+                </h6>
+              </div>
+            </div>
+            <div class="datos-personales">
+              <app-item-personal
+                [label]="'Nombres'"
+                [value]="cliente.p_SCLIENT_NAME"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Celular'"
+                [value]="cliente.p_SPHONE"
+              ></app-item-personal>
+
+              <app-item-personal
+                [label]="'Apellido Paterno'"
+                [value]="cliente.p_SCLIENT_APPPAT"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Correo'"
+                [value]="cliente.p_SMAIL"
+              ></app-item-personal>
+
+              <app-item-personal
+                [label]="'Apellido Materno'"
+                [value]="cliente.p_SCLIENT_APPMAT"
+              ></app-item-personal>
+              <app-item-personal
+                [label]="'Raz&oacute;n Social'"
+                [value]="cliente.p_SLEGALNAME"
+              ></app-item-personal>
+            </div>
+            <div class="hr"></div>
+            <div class="encabezado-personas">
+              <img
+                src="assets/icons/certificado_icon.png"
+                alt="Datos de certificado"
+              />
+              <div class="subtitulos">
+                <h5>Datos del Certificado</h5>
+                <h6>Nro. de p&oacute;liza: {{ certificado.P_NPOLICY }}</h6>
+              </div>
+            </div>
+            <div class="datos-personales">
+              <app-item-personal
+                [label]="'F. Inicio de Vigencia'"
+                [value]="certificado.P_DSTARTDATE | date : 'dd/MM/yyyy'"
+              >
+              </app-item-personal>
+              <app-item-personal
+                [label]="'Total'"
+                [value]="'S/ ' + certificado.P_NPREMIUM?.toString()"
+              ></app-item-personal>
+            </div>
+            <div
+              *ngIf="
+                DATA_TYPE_DOCUMENTS_OF_USOS.length > 0 &&
+                IS_RESUMEN_PAGE == false
+              "
+            >
+              <div class="hr"></div>
+              <div class="body-interprov mt-3">
+                <div class="table-scroll table-responsive">
+                  <form [formGroup]="FORM_USOS"
+                        class="formulario-usos"
+                        hidden>
+                    <input
+                      type="file"
+                      class="upload-file-uso"
+                      id="u1"
+                      formControlName="files"
+                      (change)="uploadFilesUsos($event)"
+                    />
+                  </form>
+                  <table class="table tbl-files-usos">
+                    <thead>
+                      <tr>
+                        <td>Tipo de Documento</td>
+                        <td>Obligatorio</td>
+                        <td>Acciones</td>
+                        <td>Documento</td>
+                        <td>Acciones</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let data of DATA_TYPE_DOCUMENTS_OF_USOS">
+                        <td class="name-tipodoc-uso">
+                          {{ data.descripcion }}
+                        </td>
+                        <td>
+                          <span *ngIf="data.obligatorio == 1">
+                            Obligatorio
+                          </span>
+                          <span *ngIf="data.obligatorio == 0"> Opcional </span>
+                        </td>
+                        <td>
+                          <label
+                            for="u1"
+                            class="lbl-upload-uso"
+                            (click)="
+                              changeIdTypeDocumentUso(data.idTipoDocumento)
+                            "
+                          >
+                            Adjuntar Archivo
+                          </label>
+                        </td>
+                        <td
+                          [id]="data.idTipoDocumento + 'nameFileUso'"
+                          class="nameDocumento"
+                        ></td>
+                        <td>
+                          <label
+                            role="button"
+                            (click)="dropFile(data.idTipoDocumento)"
+                          >
+                            <i class="fa fa-trash fa-lg"
+                               aria-hidden="true"></i>
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="showSeccionEntrega">
+              <div class="hr"></div>
+              <div class="encabezado-personas">
+                <img src="assets/icons/delivery.png"
+                     alt="Datos de entrega"/>
+                <div class="subtitulos">
+                  <h5>Datos de Entrega</h5>
+                  <h6>
+                    Fecha: {{ certificado.P_DFECHAENTREGADELIVERY | date: "dd/MM/yyyy" }}
+                  </h6>
+                </div>
+              </div>
+              <div class="datos-personales">
+                <app-item-personal
+                  [label]="'Turno de entrega'"
+                  [value]="certificado.P_STURNOENTREGADESCRIPTDELIVERY"
+                >
+                </app-item-personal>
+                <app-item-personal
+                  [label]="'Forma de Pago'"
+                  [value]="certificado.P_SFORMAPAGODESCRIPTDELIVERY"
+                >
+                </app-item-personal>
+                <app-item-personal-full
+                  [label]="'Dirección de Entrega'"
+                  [value]="0"
+                >
+                </app-item-personal-full>
+                <app-item-personal-full
+                  [label]="certificado.P_SDIRECCIONENTREGADELIVERY"
+                  [value]="1"
+                >
+                </app-item-personal-full>
+                <app-item-personal-full [label]="'Comentario'"
+                                        [value]="0">
+                </app-item-personal-full>
+                <app-item-personal-full
+                  [label]="certificado.P_SCOMENTARIODELIVERY"
+                  [value]="1"
+                >
+                </app-item-personal-full>
+                <app-item-personal
+                  [label]="'Departamento'"
+                  [value]="certificado.P_NPROVINCEDESCRIPTDELIVERY"
+                >
+                </app-item-personal>
+                <app-item-personal
+                  [label]="'Provincia'"
+                  [value]="certificado.P_NLOCATDELIVERYDESCRIPTDELIVERY"
+                >
+                </app-item-personal>
+                <app-item-personal
+                  [label]="'Distrito'"
+                  [value]="certificado.P_SMUNICIPALITYDESCRIPTDELIVERY"
+                >
+                </app-item-personal>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="acciones">
+          <!--<div class="accion"
+               [hidden]="true">
+            <span>Mira un ejemplo de un SOAT electr&oacute;nico </span>
+            <a (click)="verEjemploSOAT()">Ver SOAT electr&oacute;nico</a>
+          </div>-->
+          <div class="accion"
+               *ngIf="IS_RESUMEN_PAGE == false && false">
+            <div
+              class="termins d-flex align-items-center"
+              *ngIf="!VALID_IS_SHOW_POLICY_TELEMARKETING"
+            >
+              <input
+                type="checkbox"
+                [checked]="bAceptarTerminos"
+                (change)="acceptTerms($event)"
+                disabled
+              />
+              <span class="acceptar ml-1"
+              >Acepto los
+                <a (click)="openModalTerminos()">
+                  t&eacute;rminos y condiciones</a
+                >
+              </span>
+            </div>
+            <div
+              class="content-termins"
+              *ngIf="VALID_IS_SHOW_POLICY_TELEMARKETING"
+            >
+              <div class="termins d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="term2"
+                  (change)="changeTermPolicyData($event.target.checked)"
+                  [checked]="IS_ACEPT_TERM_POLICY_DATA"
+                />
+                <label for="term2"
+                       class="acceptar ml-1"
+                       role="button">
+                  Acepto la pol&iacute;tica de privacidad de datos personales
+                </label>
+              </div>
+              <div class="termins d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="term3"
+                  [checked]="IS_ACEPT_TERM_PUBLICIDAD"
+                  (change)="changeTermPolicyPublicidad($event.target.checked)"
+                  [disabled]="bloquearCheckEnvioPromociones"
+                />
+                <label for="term3"
+                       class="acceptar ml-1"
+                       role="button">
+                  Acepto el env&iacute;o de comunicaciones comerciales y
+                  publicidad
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pago">
+          <div class="formas-pago">
+            <div class="payment-methods"
+                 *ngIf="bAceptarTerminos">
+              <ng-container *ngIf="((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bPagoEfectivo">
+                <button class="button primary orange"
+                        (click)="onPagar(2)">
+                  PagoEfectivo
+                  <img src="./assets/payment-methods/pagoefectivo.svg"
+                       alt="pagoefectivo logo">
+                </button>
+              </ng-container>
+
+              <div class="col-lg-4 col-sm-12"
+                   hidden>
+                <div>
+                  <div class="btn-visa"></div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bVisa">
+                <button class="button primary orange"
+                        (click)="setMetodoPago(paymentType$.kushkiCard ? 4 : 1, this.methodKushki.card)">
+                  Pago con Tarjeta
+                  <img src="./assets/payment-methods/visa.svg"
+                       alt="visa logo">
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bVisa">
+                <button class="button primary orange"
+                        (click)="setMetodoPago(1)">
+                  Pago con Yape
+                  <img src="./assets/payment-methods/yape.svg"
+                       alt="yape logo">
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="paymentType$.kushkiCash && ((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bVisa">
+                <button class="button primary orange"
+                        (click)="setMetodoPago(4, this.methodKushki.cash)">
+                  Pago con Efectivo
+                  <img src="./assets/payment-methods/cash.svg"
+                       alt="visa logo">
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="paymentType$.kushkiTransfer && ((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bVisa">
+                <button class="button primary orange"
+                        (click)="setMetodoPago(4, this.methodKushki.transfer)">
+                  Pago con Transferencia
+                  <img src="./assets/payment-methods/transfer.svg"
+                       alt="visa logo">
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="((DATA_TYPE_DOCUMENTS_OF_USOS.length == 0 && !IS_RESUMEN_PAGE) || IS_EMISION_PAGE) && bVoucher">
+                <button class="button primary orange"
+                        [disabled]="blockButton"
+                        (click)="setMetodoPago(3)">
+                  Finalizar Venta
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="DATA_TYPE_DOCUMENTS_OF_USOS.length && !IS_RESUMEN_PAGE && !IS_EMISION_PAGE">
+                <button class="button primary orange"
+                        [disabled]="!IS_VALID_DOCUMENTS_USOS"
+                        (click)="showComfirmSendSolicitud()">
+                  Enviar a Aprobación
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="(VALID_IS_SHOW_POLICY_TELEMARKETING && !DATA_TYPE_DOCUMENTS_OF_USOS?.length) || (VALID_IS_SHOW_POLICY_TELEMARKETING && IS_RESUMEN_PAGE)">
+                <div class="link-payment">
+                  <span class="link-payment__info">Generación de link de pago para el cliente.</span>
+                  <button class="button primary orange"
+                          (click)="showModalGeneracion()">
+                    <i class="fa fa-link"
+                       aria-hidden="true"></i>
+                    Generar Link
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+
+            <div *ngIf="bMostrarLoading"
+                 class="loading">
+              <p>Espere unos segundos mientras procesamos su pago...</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!bValido"
+             class="mensaje-validation">
+          <p *ngFor="let mensaje of mensajes">{{ mensaje }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalResultadoPE>
+  <div class="content-modal modal-pagoEfectivo">
+    <section>
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">PagoEfectivo</h4>
+      </div>
+      <div class="modal-body">
+        <iframe
+          *ngIf="showModalPE"
+          [src]="paymentUrl"
+          width="100%"
+          height="100%"
+          frameborder="0"
+        ></iframe>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-orange"
+                (click)="finalizar()">Finalizar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalEjemploSoat>
+  <div class="content-modal modal-ejemploSoat">
+    <section>
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="ejemplo_soat">
+          <img alt=""
+               src="assets/images/soat_large_view.jpg"/>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalTerminosCondiciones>
+  <div class="content-modal modal-terminos">
+    <section>
+      <div class="modal-header">
+        <h1>Nuestros Términos y Condiciones</h1>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="cerrarTerminos()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="terminos-texto">
+          <h5>Términos y condiciones</h5>
+          <p>
+            Declaro en mi calidad de Corredor de Seguros o Comercializador, que
+            he cumplido con brindar la información relevante ​​del Certificado
+            Soat Electrónico al contratante y/o asegurado, quien ha manifestado
+            su consentimiento para contratar el Certificado Soat Electrónico y
+            para que se le remita al correo electrónico que indique en la
+            presente página web, el ​Certificado S​oat ​Electrónico ​y los
+            términos y condiciones de los cuales acepta haber tomado
+            conocimiento​.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="terminos-boton">
+          <button
+            type="button"
+            class="btn btn-orange"
+            (click)="cerrarTerminos()"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalSuccess>
+  <div class="content-modal modal-success">
+    <section>
+      <div class="modal-body modal-emitido my-3">
+        <div class="check-emitido">
+          <img src="assets/backoffice/check-success.png"
+               class="icon-check"/>
+        </div>
+        <h2 class="tituloConfirmacion">{{ TITLE_MODAL_SUCCESS }}</h2>
+        <span>
+          {{ BODY_MODAL_SUCCESS }}
+        </span>
+      </div>
+      <div class="modal-footer footerconf modal-foot-confirm">
+        <button
+          type="button"
+          class="btn full-color btn-aceptar-modal"
+          (click)="hideModalSuccess()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirSendAprobacion>
+  <div class="content-modal modal-aprobacion">
+    <section>
+      <div class="modal-header">
+        <h1>Mensaje de Confirmación</h1>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="hideShowComfirmSendSolicitud()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-comfirm-send-aprob">
+        ¿Estás seguro que desea enviar la solicitud?
+      </div>
+      <div class="modal-footer modal-foot-confirm foot-comfirm-send-aprob">
+        <button
+          type="button"
+          class="btn full-color btn-cancel mx-0 mr-3"
+          (click)="hideShowComfirmSendSolicitud()"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn full-color btn-aceptar-modal mx-0"
+          (click)="submitFormUsos()"
+        >
+          Si
+        </button>
+      </div>
+    </section>
+    >
+  </div>
+</ng-template>
+
+<ng-container *ngIf="modalTimeout">
+  <div class="modal_timout">
+    <div class="modal_timeout__content"
+         [@fade]="true">
+      <div class="modal_timeout__content--info">
+        <i class="fa fa-clock-o fa-large icon-wait"
+           aria-hidden="true"></i>
+        <p class="modal_timeout__content--description">
+          En estos momentos tenemos problemas con nuestro sistema.<br/><br/>Su
+          SOAT se encuentra en proceso de emisión, el cual le llegará en unos
+          minutos.
+        </p>
+      </div>
+      <button
+        type="button"
+        role="button"
+        class="btn-primary modal_timeout__content--btn"
+        (click)="goToHome()"
+      >
+        Aceptar
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #modalGeneracion>
+  <div class="content-modal modal-generacion">
+    <form [formGroup]="formTipoEnvio">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">
+          Envío de Cotización: {{ sessionCertificado?.P_NIDPROCESS }}
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="hideModalGeneracion()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div
+        class="modal-body modal-emitido my-3"
+        [hidden]="!IS_ACEPT_TERM_POLICY_DATA"
+      >
+        <span
+          class="desc-generarlink mb-3 mt-2 subtitle"
+          *ngIf="VALID_IS_SHOW_POLICY_TELEMARKETING"
+        >¿Por cuál vía desea enviar el link de la cotización?</span
+        >
+        <br/>
+        <label class="container">
+          <i class="fa fa-envelope-o nuevoi"
+             aria-hidden="true"></i>
+          Correo Electrónico
+          <input
+            type="checkbox"
+            value="1"
+            formControlName="tipo"
+            id="group"
+            *ngIf="VALID_IS_SHOW_POLICY_TELEMARKETING"
+            (change)="changeTipoEnvio(1, $event.target.checked)"
+          />
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">
+          <i class="fa fa-whatsapp nuevoi"
+             aria-hidden="true"></i>
+          Whatsapp
+          <input
+            type="checkbox"
+            value="2"
+            formControlName="tipo"
+            id="group"
+            *ngIf="VALID_IS_SHOW_POLICY_TELEMARKETING"
+            (change)="changeTipoEnvio(2, $event.target.checked)"
+          />
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="modal-footer modal-foot-confirm">
+        <button
+          type="button"
+          class="btn full-color btn-aceptar-modal"
+          (click)="hideModalGeneracion()"
+          style="margin-right: 0px"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn full-color btn-aceptar-modal"
+          (click)="typeEnviar()"
+          style="margin-right: 30px"
+          *ngIf="VALID_IS_SHOW_POLICY_TELEMARKETING"
+          [disabled]="!tipoEnvio?.length"
+        >
+          Aceptar
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #modalKushkiCard>
+  <div class="content-modal modal-kushkiCard">
+    <section>
+      <div class="modal-header">
+        <button
+          class="modal__header--close"
+          aria-label="close"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <img
+          src="./assets/logos/logo-PS.svg"
+          alt="logo protecta"
+          class="logo-protecta"
+        />
+        <form [formGroup]="kushkiForm">
+          <div class="content-input">
+            <label
+              class="placeholder inside"
+              [class.active]="kushkiFormControl['cardNumber'].value"
+              aria-placeholder="Número de tarjeta"
+            >
+              <input
+                type="text"
+                formControlName="cardNumber"
+                [class.has-error]="
+                  kushkiFormControl['cardNumber'].touched &&
+                  kushkiFormControl['cardNumber'].errors
+                "
+                maxlength="16"
+                autocomplete="nope"
+                (blur)="binInfo()"
+              />
+              <i class="fa fa-credit-card"
+                 aria-hidden="true"></i>
+              <ng-container *ngIf="cardType">
+                <img
+                  [src]="'./assets/logos/payments/visa.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'visa'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/mastercard.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'mastercard'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/diners.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'diners'"
+                />
+                <img
+                  [src]="'./assets/logos/payments/amex.svg'"
+                  class="card-type-image"
+                  width="40"
+                  height="auto"
+                  *ngIf="cardType == 'amex'"
+                />
+              </ng-container>
+            </label>
+          </div>
+          <div class="content-expiredate-cvv">
+            <div class="content-input">
+              <label
+                class="placeholder inside"
+                [class.active]="kushkiFormControl['dueDate'].value"
+                aria-placeholder="MM/AA"
+              >
+                <input
+                  type="text"
+                  formControlName="dueDate"
+                  [class.has-error]="
+                    kushkiFormControl['dueDate'].touched &&
+                    kushkiFormControl['dueDate'].errors
+                  "
+                  autocomplete="nope"
+                />
+                <i class="fa fa-calendar-o"
+                   aria-hidden="true"></i>
+              </label>
+            </div>
+            <div class="content-input">
+              <label
+                class="placeholder inside"
+                [class.active]="kushkiFormControl['cvv'].value"
+                aria-placeholder="CVV"
+              >
+                <input
+                  type="password"
+                  formControlName="cvv"
+                  [class.has-error]="
+                    kushkiFormControl['cvv'].touched &&
+                    kushkiFormControl['cvv'].errors
+                  "
+                  autocomplete="nope"
+                  maxlength="4"
+                />
+                <i class="fa fa-lock"
+                   aria-hidden="true"></i>
+              </label>
+            </div>
+          </div>
+          <button
+            class="button primary orange"
+            [disabled]="kushkiForm.invalid"
+            (click)="kushkiCardSubmit()"
+          >
+            S/ {{ certificado.P_NPREMIUM | number : "1.2-2" }}
+          </button>
+          <small class="has-error"
+                 *ngIf="messageInfoKushki">
+            {{ messageInfoKushki }}
+          </small>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer__left">
+          <img
+            src="./assets/logos/pci_certificate.svg"
+            alt="pci certificate"
+            width="72"
+          />
+        </div>
+        <div class="modal-footer__right">
+          <img
+            src="./assets/logos/payments/diners.svg"
+            class="diners logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/amex.svg"
+            class="amex logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/visa-2.svg"
+            alt="visa logo"
+            width="43"
+          />
+          <img
+            src="./assets/logos/payments/mastercard.svg"
+            alt="mastercard logo"
+            width="43"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>

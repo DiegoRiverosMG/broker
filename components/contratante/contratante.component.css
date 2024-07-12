@@ -1,0 +1,102 @@
+.label-formulario {
+  height: 14px;
+  width: 100%;
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+}
+
+::placeholder {
+  color: #aa9ec0;
+  opacity: 1;
+  text-transform: initial;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(assets/icons/chevron-small-down.png) 97% no-repeat;
+}
+
+.select-formulario {
+  height: 35px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(assets/icons/dropdown_icon.png) no-repeat 97%;
+}
+
+.new-error {
+  position: absolute;
+  white-space: nowrap;
+  display: run-in !important;
+}
+
+.input-text-formulario {
+  height: 35px !important;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #aa9ec0;
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+.input-text-formulario-mail {
+  text-transform: lowercase !important;
+}
+
+.last-row {
+  margin-bottom: -1.3rem;
+}
+.style-chk::before {
+  content: "✔";
+  display: inline-flex;
+  font-size: 12px;
+  margin-right: 0.25rem;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+}
+.chk-gobern:disabled + .style-chk::before {
+  background-color: #2b0d61;
+  border: 1px solid #2b0d61;
+  opacity: 0.5;
+}
+.chk-gobern:checked + .style-chk::before {
+  background-color: #2b0d61;
+  border: 1px solid #2b0d61;
+}
+.style-chk {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+::ng-deep app-email-suggestions .suggestions {
+  left: 1rem !important;
+}

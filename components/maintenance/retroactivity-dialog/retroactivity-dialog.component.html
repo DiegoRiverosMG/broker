@@ -1,0 +1,265 @@
+<div class="modal-header">
+    <h5 class="modal-title">Retroactividad</h5>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">          
+            <div class="col-md-12">                
+                <div class="collapse-list" *ngIf="this.data.SDESCRIPT_TRANSAC != 'Cotización'">
+                    <input class="collapse-open" type="checkbox" id="retroactiv" />
+                    <label class="collapse-btn title" for="retroactiv">Retroactividad<i
+                            class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-md-12 card pb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span style="padding-bottom: 5px;">Inicio de vigencia: &nbsp;</span>
+                                            <input type="text" [(ngModel)]="data.INICIO_VIGENCIA" [disabled]="disable(disableFlags.INICIO_VIGENCIA)" 
+                                            id="inicioVig" [(minDate)]="minDateIni" #dp="bsDatepicker" [bsConfig]="bsConfig" bsDatepicker>
+                                        </div>
+                                        <div class="col-md-4" *ngIf="data.P_SISCLIENT_GBD != '0'">  
+                                            <span style="padding-bottom: 5px;">Tipo de Cuenta: &nbsp;</span>
+                                            <input type="text" [value]="data.P_SISCLIENT_GBD == '1' ? 'GOBIERNO' : 'PRIVADO'"  disabled>
+                                        </div>
+                                        <div [ngClass]="{'col-md-4': data.P_SISCLIENT_GBD != '0', 'col-md-8' : data.P_SISCLIENT_GBD == '0' }">
+                                            <p class="text-right">
+                                                <span style="text-transform: uppercase">Transacción: {{this.data.SDESCRIPT_TRANSAC}}</span>
+                                                <span style="text-transform: uppercase">Perfil: {{this.data.SDESCRIPT_PERFIL}}</span>
+                                            </p>
+                                        </div>
+                                    </div>                                    
+                                </div>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 card pb-2">
+                                    <span style="padding-bottom: 5px;">Retroactividad: &nbsp;</span>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="radio-inline" *ngFor="let config of configDaysList">
+                                                <input class="radio-inline" id="rbRetro{{config.NCONFIG_DIAS}}" name="rbRetro" type="radio" 
+                                                    [(ngModel)]="data.retroactivity" (click)="retroactivityToast(config.NCONFIG_DIAS)"
+                                                    [disabled]="disable(disableFlags.RETRO_DENTRO_MES)" [value]="config.NCONFIG_DIAS"> {{config.SDESCRIPT}} &nbsp;&nbsp;&nbsp;
+                                            </label>
+                                       </div>
+                                    </div>
+                                    <div class="row" *ngIf="data.retroactivity == 1">
+                                        <div class="col-md-3">
+                                            <label class="vcenter" style="padding-top: 13px;">Días posteriores: </label>                                            
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" OnlyNumberDirective maxlength="3" id="postDays" 
+                                            [(ngModel)]="data.postDays" [disabled]="disable(disableFlags.DIAS_POSTERIORES)">
+                                        </div>
+                                        <!--div class="col-md-3" style="padding-top: 13px;">
+                                            <label>
+                                                <input type="checkbox" (click)="checkNoLimit()" [disabled]="disable(disableFlags.SIN_LIMITE_DIAS)" />
+                                                Sin limites de días.
+                                            </label>
+                                        </div-->
+                                    </div>
+                                    <div class="row" *ngIf="data.retroactivity == 2">
+                                        <div class="col-md-3">
+                                            <label class="vcenter" style="padding-top: 13px;">Días Retroactivos: </label>                                            
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" OnlyNumberDirective maxlength="3" id="reactiveDays" [(ngModel)]="data.reactiveDays"  [disabled]="disable(disableFlags.DIAS_RETROACTIVOS)">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="vcenter" style="padding-top: 13px;">Días posteriores: </label>                                            
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" OnlyNumberDirective maxlength="3" id="postDays" [(ngModel)]="data.postDays" [disabled]="disable(disableFlags.DIAS_POSTERIORES)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 card pt-2 pb-2">
+                                    <span>Comentario</span>
+                                    <textarea id="comment" [(ngModel)]="data.comment" maxlength="1000" placeholder="Comentario" cols="30" rows="10" [disabled]="disable(disableFlags.COMENTARIO)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse-list" *ngIf="this.data.SDESCRIPT_TRANSAC == 'Cotización'">
+                    <input class="collapse-open" type="checkbox" id="vigencia" />
+                    <label class="collapse-btn title" for="vigencia">Vigencia de cotización<i
+                            class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-md-12 card pb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span style="padding-bottom: 5px;">Inicio de vigencia: &nbsp;</span>
+                                            <input type="text" [(ngModel)]="data.INICIO_VIGENCIA" [disabled]="disable(disableFlags.INICIO_VIGENCIA)" id="inicioVig2"
+                                            #dp="bsDatepicker" [(minDate)]="minDateIni" [bsConfig]="bsConfig" bsDatepicker>
+                                        </div>
+                                        <div class="col-md-4" *ngIf="data.P_SISCLIENT_GBD != '0'">  
+                                            <span style="padding-bottom: 5px;">Tipo de Cuenta: &nbsp;</span>
+                                            <input type="text" [value]="data.P_SISCLIENT_GBD == '1' ? 'GOBIERNO' : 'PRIVADO'"  disabled>
+                                        </div>
+                                        <div [ngClass]="{'col-md-4': data.P_SISCLIENT_GBD != '0', 'col-md-8' : data.P_SISCLIENT_GBD == '0' }">
+                                            <p class="text-right">
+                                                <span style="text-transform: uppercase">Transacción: {{this.data.SDESCRIPT_TRANSAC}}</span>
+                                                <span style="text-transform: uppercase">Perfil: {{this.data.SDESCRIPT_PERFIL}}</span>
+                                            </p>
+                                        </div>
+                                        <!-- <div class="col-md-8">
+                                            <p class="text-right">
+                                                <span style="text-transform: uppercase">Transacción: {{this.data.SDESCRIPT_TRANSAC}}</span>
+                                                <span style="text-transform: uppercase">Perfil: {{this.data.SDESCRIPT_PERFIL}}</span>
+                                            </p>
+                                        </div> -->
+                                    </div>  
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 card">
+                                    <span style="padding-bottom: 5px;">Vigencia: &nbsp;</span>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="radio-inline" *ngFor="let config of configDaysList">
+                                                <input id="rbVigency{{config.NCONFIG_DIAS}}" type="radio" name="rbVigency" [(ngModel)]="data.vigency" 
+                                                    (click)="vigencyToast(config.NCONFIG_DIAS)" 
+                                                    [disabled]="disable(disableFlags.NCONFIG_DIAS)"
+                                                    [value]="config.NCONFIG_DIAS"> {{config.SDESCRIPT}} &nbsp;&nbsp;&nbsp;
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row pb-2" *ngIf="data.vigency == 2">
+                                        <div class="col-md-1">
+                                            <label class="vcenter" style="padding-top: 13px;">Días: </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" maxlength="2" [disabled]="disable(disableFlags.VIG_CONFIG_DIAS)" 
+                                            OnlyNumberDirective class="vigDays" [(ngModel)]="data.vigDays">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-2 pb-2">
+                    <div class="col-md-12">
+                        <button class="pull-right full-color" *ngIf="this.data.USER_ACCESS == 1" (click)="enableAll()" [hidden]="disableFlag == 0">
+                            <span>Nueva</span>
+                        </button>
+                        <button class="pull-right full-color" (click)="save()" [hidden]="disableFlag != 0">
+                           <span>Agregar</span>
+                       </button>
+                        <button class="pull-right" (click)="reference.dismiss('Cross click')">
+                            <span>Regresar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse-list">
+                    <input class="collapse-open" type="checkbox" id="historial" />
+                    <label class="collapse-btn title" for="historial">Historial<i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="grid form-group">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr class="grid-title">
+                                                        <td class="grid-title-item text-center">Número</td>
+                                                        <td class="grid-title-item text-center">Estado</td>
+                                                        <td class="grid-title-item text-center">Fecha Modif.</td>
+                                                        <td class="grid-title-item text-center">Cambio</td>
+                                                        <td class="grid-title-item text-center">Inicio de Vigencia</td>
+                                                        <td class="grid-title-item text-center">Fin de Vigencia</td>
+                                                        <td class="grid-title-item text-center">Comentario</td>
+                                                        <td class="grid-title-item text-center">Usuario</td>
+                                                        <td class="grid-title-item text-center">Perfil</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of listToShow" [className]="item.ESTADO == 'ACTIVO' ? 'table-success' : ''" >
+                                                        <td class="text-center">{{item.NUMERO}}</td>
+                                                        <td class="text-center">{{item.ESTADO}}</td>
+                                                        <td class="text-center">{{item.FECHA_MODIF | date:'dd/MM/yyyy'}}</td>
+                                                        <td class="text-center">
+                                                            <a *ngIf="this.disableFlag != 0" (click)="seeMovement(item.NUMERO)"><img alt="Ver"
+                                                                src="assets/icons/preview_soat_box.png" title="Ver"
+                                                                style="cursor: pointer;height: 24px"></a>
+                                                        </td>
+                                                        <td class="text-center">{{item.DINI_VIGENCIA}}</td>
+                                                        <td class="text-center">{{item.DFIN_VIGENCIA}}</td>
+                                                        <td class="text-center">{{item.SCOMMENT}}</td>
+                                                        <td class="text-center">{{item.USUARIO}}</td>
+                                                        <td class="text-center">{{item.PERFIL}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                   <div *ngIf="retroactivityList!=null && retroactivityList.length>0" class="row" style="display:flex">
+                                    <div class="col-sm-7">
+                                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span style="display: inline-block;">Mostrar: </span>
+                                        <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal" (change)="mostrarMas()"
+                                            style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+                               </div>
+                               <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="container-fluid">
+
+        </div>
+    </div>
+</div>
+
+<!--
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  -->
+

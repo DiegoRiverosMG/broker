@@ -1,0 +1,156 @@
+<div class="panel-info-evaluacion">
+  <panel-widget
+    [title]="cotizacion.modoVista == CONSTANTS.MODO_VISTA.ANULACION || cotizacion.modoVista == CONSTANTS.MODO_VISTA.EXCLUIR || cotizacion.modoVista == CONSTANTS.MODO_VISTA.POLIZARENOVAR || cotizacion.modoVista ==  CONSTANTS.MODO_VISTA.POLIZAINCLUIR ? 'Datos de transacción' : 'Datos de la evaluación'"
+    *ngIf="cotizacion.modoVista != CONSTANTS.MODO_VISTA.VISUALIZAR">
+
+    <div class="row" *ngIf="CONSTANTS.MODO_VISTA.POLIZARENOVAR !== cotizacion.modoVista &&  CONSTANTS.MODO_VISTA.POLIZAINCLUIR !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.EXCLUIR !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.ENDOSO !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.ANULACION !== cotizacion.modoVista">
+      <div class="col-sm-3">
+        <form-input-select
+          label="Estado"
+          [service]="DesgravamenDevolucionService"
+          method="getQuotationStatusList"
+          [params]="{
+            certype: CONSTANTS.CERTYPE,
+            productId: storageService.productId
+          }"
+          fieldCodigo="Id"
+          fieldValor="Name"
+          [firstSelect]="true"
+          [required]="true"
+          [(value)]="cotizacion.estado"
+          [filterItems]="filtroEstados"
+        ></form-input-select>
+      </div>
+      <div class="col-sm-3" *ngIf="cotizacion.modoVista != CONSTANTS.MODO_VISTA.AUTORIZAR &&
+      cotizacion?.estado?.Id > 0">
+        <form-input-select
+          label="Motivo"
+          [service]="DesgravamenDevolucionService"
+          method="getQuotationReasonList"
+          [params]="{code: cotizacion?.estado?.Id, branch: CONSTANTS.RAMO}"
+          fieldCodigo="Id"
+          fieldValor="Name"
+          [firstSelect]="true"
+          [(value)]="cotizacion.motivo"
+        ></form-input-select>
+      </div>
+    </div>
+    <div class="row" *ngIf="CONSTANTS.MODO_VISTA.ANULACION == cotizacion.modoVista">
+      <div class="col-sm-3">
+        <form-input-select
+          label="Motivo de anulación"
+          [service]="DesgravamenDevolucionService"
+          method="GetAnnulment"
+          fieldCodigo="COD_ANULACION"
+          fieldValor="DES_ANULACION"
+          [firstSelect]="true"
+          [required]="true"
+          [(value)]="cotizacion.motivoAnulacion"
+
+        ></form-input-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <form-input-textarea
+          label="Comentario"
+          [(value)]="cotizacion.comentario"
+          [patternPrevent]="CONSTANTS.REGEX.LEGALNAME"
+        ></form-input-textarea>
+      </div>
+    </div>
+<!--
+    <div class="row" *ngIf="cotizacion.modoVista == CONSTANTS.MODO_VISTA.POLIZARENOVAR">
+      <div class="col-sm-12">
+        <form-input-file
+          label="Documento de siniestralidad"
+          [multiple]="false"
+          [siniestralidad]="true"
+          [(value)]="cotizacion.file_siniestralidad"
+        ></form-input-file>
+      </div>
+    </div>
+-->
+    <div class="row">
+      <div class="col-sm-12">
+        <form-input-file
+          [label]="cotizacion.modoVista == CONSTANTS.MODO_VISTA.ANULACION || cotizacion.modoVista == CONSTANTS.MODO_VISTA.EXCLUIR || cotizacion.modoVista == CONSTANTS.MODO_VISTA.POLIZARENOVAR ||  CONSTANTS.MODO_VISTA.POLIZAINCLUIR == cotizacion.modoVista ? 'Adjuntar documento' : 'Documentos de la evaluación'"
+          [multiple]="true"
+          [(value)]="cotizacion.files"
+        ></form-input-file>
+      </div>
+    </div>
+
+  </panel-widget>
+
+  <panel-widget
+    *ngIf="CONSTANTS.MODO_VISTA.POLIZARENOVAR !== cotizacion.modoVista &&  CONSTANTS.MODO_VISTA.POLIZAINCLUIR !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.EXCLUIR !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.ENDOSO !== cotizacion.modoVista && CONSTANTS.MODO_VISTA.ANULACION !== cotizacion.modoVista"
+    title="Historial de evaluación">
+
+    <div class="row">
+      <div class="col-sm-12">
+        <panel-table
+          classTable="margin-top-20"
+          [slim]="true"
+          [reload]="true"
+          [pagination]="true"
+          [service]="quotationService"
+          method="getTrackingList"
+          fieldItems="GenericResponse"
+          [params]="{QuotationNumber: cotizacion?.numeroCotizacion}"
+          [header]="[]"
+          [headerTemplate]="headerTemplateMovimientos"
+          [bodyTemplate]="bodyTemplateMovimientos"
+        ></panel-table>
+
+        <ng-template #headerTemplateMovimientos>
+          <td class="text-center">Número</td>
+          <td class="text-center">Estado</td>
+          <td class="text-center">Motivo</td>
+          <td class="text-center">Usuario</td>
+          <td class="text-center">Perfil</td>
+          <td class="text-center">Fecha</td>
+          <td class="text-center">Comentario</td>
+          <td class="text-center">Archivos</td>
+          <!--<td class="text-center" >Trama</td>-->
+        </ng-template>
+
+        <ng-template #bodyTemplateMovimientos let-item="item" let-index="indexWithPagination">
+          <td class="text-center">{{item.linea}}</td>
+          <td class="text-center">{{item.Status}}</td>
+          <td class="text-center">{{item.Reason || '---'}}</td>
+          <td class="text-center">{{item.User}}</td>
+          <td class="text-center">{{item.Profile}}</td>
+          <td class="text-center">{{item.EventDate | date: 'dd/MM/yyyy, h:mm a' }}</td>
+          <td class="text-center">{{item.Comment || '---'}}</td>
+
+          <ng-container
+            *ngIf="item.FilePathList!=null && item.FilePathList.length>0; then showButton else hideButton">
+          </ng-container>
+          <ng-template #showButton>
+            <td class="text-center">
+              <a (click)="openFilePicker(item.FilePathList)"><img alt="Ver movimientos"
+                  src="assets/icons/preview_soat_box.png" title="Ver movimientos"
+                  style="cursor: pointer;height: 24px"></a>
+            </td>
+          </ng-template>
+          <ng-template #hideButton>
+            <td class="text-center">Sin Archivos</td>
+          </ng-template>
+          <ng-template [ngIf]="false">
+            <td *ngIf = "!!item.codProceso" class="text-center">
+              <a (click)="getTramaFile(item)"><img alt="descargar"
+                src="assets/icons/download2.png" title="descargar"
+                style="cursor: pointer;height: 24px"></a>
+            </td>
+            <td *ngIf="!item.codProceso" class="text-center">
+                Sin Trama
+            </td>
+          </ng-template>
+        </ng-template>
+      </div>
+    </div>
+  </panel-widget>
+
+</div>

@@ -1,0 +1,364 @@
+<div class="row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Consulta de Transacciones de Pólizas</span>
+          </div>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="card">
+          <div class="card-body" [formGroup]="mainFormGroup">
+            <div class="row">
+              <div class="col-sm-3">
+                <span>TIPO DE TRANSACCIÓN</span>
+                <select (change)="onSelectTypePerson()" formControlName="typeTransac" class="minimal">
+                  <option value="0" selected>TODAS</option>
+                  <option *ngFor="let transaccion of transaccionList" value="{{transaccion.NCOD_TRANSAC}}">
+                    {{transaccion.SDES_TRANSAC}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>RAMO</span>
+                <select formControlName="branch" class="minimal"
+                  (change)="SelectBranch()">
+                  <option value="0" selected>AMBOS</option>
+                  <option *ngFor="let branch of branchList" value="{{branch.NBRANCH}}">
+                    {{branch.SDESCRIPT}}</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3">
+                <span>TIPO PRODUCTO</span>
+                <select formControlName="product" class="minimal">
+                  <option value="0" selected>TODOS</option>
+                  <option *ngFor="let product of productList" value="{{product.COD_PRODUCT}}">
+                    {{product.DES_PRODUCT}}</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3">
+                <span>NRO. PÓLIZA</span>
+                <input type="text" placeholder="Nro. Póliza" formControlName="policy"
+                  (ngModelChange)="changePolicy($event)"
+                  (keyup.enter)="buscarPoliza()" OnlyNumberDirective (keypress)="onKeyPress($event)">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BUSCAR CONTRATANTE</span>
+                <select (change)="cleanContractorInputs()"
+                  formControlName="contractorSearchMode">
+                  <option value="3" disabled>Seleccionar</option>
+                  <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                <span>TIPO DOCUMENTO</span>
+                <select formControlName="contractorDocumentType"
+                  (change)="contractorDocumentTypeChanged()" class="minimal">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2'" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="cleanContractorInputs()" formControlName="contractorPersonType"
+                  class="minimal">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='1'" class="col-sm-3">
+                <span>NRO. DOCUMENTO (*)</span>
+                <input type="text" placeholder="Nro Documento" formControlName="contractorDocumentNumber"
+                  (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.contractorDocumentType.value)"
+                  (keyup.enter)="buscarPoliza()" maxlength={{contractorDocumentMaxLength}}
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.contractorDocumentNumber.valid && !mainFormGroup.valid}"/>
+                  <span
+                      *ngIf="isValidatedInClickButton && !mainFormGroup.controls.contractorDocumentNumber.valid && !mainFormGroup.valid"
+                      class="mensaje-error-control">
+                      <ng-container
+                          *ngIf="mainFormGroup.get('contractorDocumentNumber').hasError('required'); then required_contractorDocumentNumber else invalid_contractorDocumentNumber">
+                      </ng-container>
+                      <ng-template #required_contractorDocumentNumber>El Nro de Documento es requerido.
+                      </ng-template>
+                      <ng-template #invalid_contractorDocumentNumber>El Nro de Documento no es válido.
+                      </ng-template>
+                  </span>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'" class="col-sm-3">
+                <span>NOMBRES</span>
+                <input type="text" placeholder="Nombres" formControlName="contractorFirstName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='2'" class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" formControlName="contractorLegalName"
+                  (keyup.enter)="buscarPoliza()" LegalNameDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'" class="col-sm-3">
+                <span>APELLIDO PATERNO</span>
+                <input type="text" placeholder="Apellido Paterno" formControlName="contractorPaternalLastName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.contractorSearchMode.value=='2' && mainFormGroup.controls.contractorPersonType.value=='1'" class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" formControlName="contractorMaternalLastName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+            </div>
+
+            <!--Buscar Broker-->
+            <div class="row">
+              <div class="col-sm-3">
+                <span>BUSCAR BROKER</span>
+                <select (change)="cleanBrokerInputs()"
+                  formControlName="brokerSearchMode">
+                  <option value="3" disabled>Seleccionar</option>
+                  <option *ngFor="let item of searchModeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                <span>TIPO DOCUMENTO </span>
+                <select formControlName="brokerDocumentType"
+                  (change)="brokerDocumentTypeChanged()" class="minimal">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let documenttype of documentTypeList" value="{{documenttype.Id}}">
+                    {{documenttype.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2'" class="col-sm-3">
+                <span>TIPO DE PERSONA (*)</span>
+                <select (change)="cleanBrokerInputs()" formControlName="brokerPersonType"
+                  class="minimal">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let item of personTypeList" value="{{item.Id}}">
+                      {{item.Name}}</option>
+                </select>
+              </div>
+
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='1'" class="col-sm-3">
+                <span>NRO. DOCUMENTO (*)</span>
+                <input type="text" placeholder="Nro Documento" formControlName="brokerDocumentNumber"
+                  (keypress)="documentNumberKeyPress($event,mainFormGroup.controls.brokerDocumentType.value)" (keyup.enter)="buscarPoliza()" maxlength={{brokerDocumentMaxLength}}
+                  [ngClass]="{'error-validate': isValidatedInClickButton && !mainFormGroup.controls.brokerDocumentNumber.valid && !mainFormGroup.valid}" />
+                  <span
+                      *ngIf="isValidatedInClickButton && !mainFormGroup.controls.brokerDocumentNumber.valid && !mainFormGroup.valid"
+                      class="mensaje-error-control">
+                      <ng-container
+                          *ngIf="mainFormGroup.get('brokerDocumentNumber').hasError('required'); then required_brokerDocumentNumber else invalid_brokerDocumentNumber">
+                      </ng-container>
+                      <ng-template #required_brokerDocumentNumber>El Nro de Documento es requerido.
+                      </ng-template>
+                      <ng-template #invalid_brokerDocumentNumber>El Nro de Documento no es válido.
+                      </ng-template>
+                  </span>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'" class="col-sm-3">
+                <span>NOMBRES</span>
+                <input type="text" placeholder="Nombres" formControlName="brokerFirstName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='2'" class="col-sm-9">
+                <span>RAZÓN SOCIAL (*)</span>
+                <input type="text" placeholder="Razón Social" formControlName="brokerLegalName"
+                  (keyup.enter)="buscarPoliza()" LegalNameDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'" class="col-sm-3">
+                <span>APELLIDO PATERNO</span>
+                <input type="text" placeholder="Apellido Paterno" formControlName="brokerPaternalLastName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+              <div *ngIf="mainFormGroup.controls.brokerSearchMode.value=='2' && mainFormGroup.controls.brokerPersonType.value=='1'" class="col-sm-3">
+                <span>APELLIDO MATERNO</span>
+                <input type="text" placeholder="Apellido Materno" formControlName="brokerMaternalLastName"
+                  (keyup.enter)="buscarPoliza()" OnlyTextSpaceDirective />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="subtitle">FECHA OPERACIÓN</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <span>DESDE </span>
+                <input type="text" #dp="bsDatepicker" (ngModelChange)="valInicio($event)" [bsConfig]="bsConfig"
+                  bsDatepicker [(bsValue)]="bsValueIni" formControlName="startDate"
+                  value="{{ bsValueIni | date:'dd/MM/yyyy' }}" #desde>
+              </div>
+              <div class="col-sm-3">
+                <span>HASTA</span>
+                <input type="text" formControlName="endDate" [bsConfig]="bsConfig" #dp="bsDatepicker"
+                  (ngModelChange)="valFin($event)" bsDatepicker [(bsValue)]="bsValueFin"
+                  value="{{ bsValueFin | date:'dd/MM/yyyy' }}" [(minDate)]="bsValueFinMin" #hasta>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12">
+                  <button class="pull-right" style="margin-top: 15px;" (click)="buscarPoliza(1)">
+                      <span>Descargar Excel</span>
+                </button>
+                  <button class="full-color pull-right" style="margin-top: 15px;" (click)="buscarPoliza()">
+                      <span>Buscar</span>
+                  </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="grid form-group">
+          <div *ngIf="(this.codProducto == 3 && profile != 153 && profile != 136 && isProfileOpe != 1)" class="row">
+            <div class="col-sm-12" *ngIf="policyList.length > 0">
+              <div class="btn-group btn-group-toggle" style="float:right" data-toggle="buttons">
+                <label *ngIf="canRenovate" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 4)">
+                  <input type="radio" name="options"> Renovar
+                </label>
+                <label *ngIf="canInclude" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 2)">
+                  <input type="radio" name="options"> Incluir
+                </label>
+                <label *ngIf="canExclude" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 3)">
+                  <input type="radio" name="options"> Excluir
+                </label>
+                <label *ngIf="canEndoso" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 8)">
+                  <input type="radio" name="options"> Endosar
+                </label>
+                <label *ngIf="canBroker" class="btn btn-secondary"
+                  (click)="choosePolicyClk($event, selectedPolicy, 13)">
+                  <input type="radio" name="options"> Modificar Broker
+                </label>
+                <label *ngIf="canCertificate" class="btn btn-secondary"
+                (click)="choosePolicyClk($event, selectedPolicy, 14)">
+                <input type="radio" name="options"> Emitir Certificados
+              </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid form-group">
+            <div class="table-responsive">
+              <table class="table">
+                <thead *ngIf="this.codProducto == 3">
+                  <tr>
+                    <th colspan="9" class="">
+                    <th colspan="2" class="supercabecera">PÓLIZA</th>
+                    <th colspan="2" class="supercabecera">ASEGURADOS</th>
+                    <th colspan="1" class=""></th>
+
+                  </tr>
+                  <tr class="grid-title">
+                    <td *ngIf="userType!==137 && profile != 153" class="grid-title-item text-center">Sel.</td>
+                    <td class="grid-title-item">Ramo</td>
+                    <td class="grid-title-item" class="text-left">Producto</td>
+                    <td class="grid-title-item">Póliza</td>
+                    <td class="grid-title-item">Cotización</td>
+                    <td class="grid-title-item">Contratante</td>
+                    <td class="grid-title-item">Broker</td>
+                    <td *ngIf="profile!=134 && codProducto==3"  class="grid-title-item text-center">Segmento</td>
+                    <td class="grid-title-item text-center">Fecha Emisión</td>
+                    <td class="grid-title-item text-center">Inicio Vigencia</td>
+                    <td class="grid-title-item text-center">Fin Vigencia</td>
+                    <td class="grid-title-item text-center" *ngIf="this.codProducto == 3">Inicio Vigencia</td>
+                    <td class="grid-title-item text-center" *ngIf="this.codProducto == 3">Fin Vigencia</td>
+                    <td class="grid-title-item text-center">Movimientos</td>
+                  </tr>
+                </thead>
+                <ng-container *ngIf="policyList!=null && policyList.length>0; then showGrid else hideGrid">
+                </ng-container>
+              </table>
+            </div>
+            <ng-template #hideGrid>
+              <tbody>
+                <tr>
+                  <td colspan="14" class="text-center">
+                    No se encontraron registros
+                  </td>
+
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #showGrid>
+              <tbody>
+                <tr *ngFor="let item of listToShow; let row_no = index">
+                  <td *ngIf="userType!==137 && profile != 153" class="text-center">
+                    <input type="radio" [value]="item.NID_COTIZACION == 0 ? 'sc_' + item.NPOLIZA : item.NID_COTIZACION" id="policy{{item.NPOLIZA}}" name="policy" [(ngModel)]="selectedPolicy">
+                  </td>
+                  <td>{{ item.SRAMO }}</td>
+                  <td>{{ item.SPRODUCTO }}</td>
+                  <td>{{ item.NPOLIZA }}</td>
+                  <td>{{ item.SCOTIZACION }}</td>
+                  <td>{{ item.SCONTRATANTE }}</td>
+                  <td>{{ item.SBROKER }}</td>
+                  <td *ngIf="profile!=134 && codProducto==3 " class="text-center" title="{{item.SCLIENT_SEG}}">{{ item.SDESCRIPT_SEG }}</td>
+                  <td class="text-center">{{ item.DFECHA_EMISION }}</td>
+                  <td class="text-center">{{ item.DINICIO_VIGENCIA }}</td>
+                  <td class="text-center">{{ item.DFIN_VIGENCIA }}</td>
+                  <td class="text-center" *ngIf="this.codProducto == 3">{{ item.DINICIO_VIGENCIA_ASEG }}</td>
+                  <td class="text-center" *ngIf="this.codProducto == 3">{{ item.DFIN_VIGENCIA_ASEG }}</td>
+                  <td class="text-center">
+                    <a (click)="openModal(item)"><img alt="ver" src="assets/icons/preview_soat_box.png"
+                        title="Ver detalle" style="cursor: pointer;height: 24px;width: 24px"></a>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-container *ngIf="policyList!=null && policyList.length>0; then showPagination"></ng-container>
+            <ng-template #showPagination>
+              <div class="row mt-4">
+                <div class="col-sm-12">
+                  <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                    [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                  </ngb-pagination>
+                </div>
+              </div>
+            </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla de carga -->
+    <div [hidden]="isLoading==false" class="loadingScreen">
+      <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>

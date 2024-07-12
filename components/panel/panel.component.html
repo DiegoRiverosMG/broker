@@ -1,0 +1,37 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="">
+      <div class="form-group row row-title-principal">
+        <div class="col-sm-12 col-lg-12">
+          <div class="title-princial">
+            <a>Bienvenido a Protecta Security, {{ nombre }}.</a>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="template.ins_bloque_eps"
+           class="row justify-content-center">
+        <div class="col-3 mt-3"
+             *ngFor="let eps of epsList; let row = index">
+          <div class="input-container">
+            <input class="radio-button"
+                   type="radio"
+                   name="radio"
+                   value="{{eps.NCODE}}"
+                   [(ngModel)]="epsSelected"
+                   (change)="onSelectProduct(eps)" />
+            <div class="radio-tile">
+              <div class="icon">
+                <img src="{{eps.SIMAGE}}"
+                     alt="{{eps.SNAME}}" />
+              </div>
+              <label class="radio-tile-label">{{eps.SNAME}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+@import "standard"
+@import "variables"
+
+*
+  &::selection
+    background-color: $orange
+
+.mxwd
+  max-width: 1320px
+  margin: auto
+
+.content
+  width: 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 1rem
+
+  &__info
+    display: none
+
+    @media (min-width: 980px)
+      display: block
+
+    &__banner
+      width: 100%
+      height: 100%
+      max-height: 860px
+
+    .title
+      margin-bottom: 2rem
+      max-width: 640px
+      font-weight: 400
+      font-size: 46px
+      color: #fff
+      text-align: right
+      line-height: 1.5
+
+  &__main
+    height: 100%
+
+    .mxwd
+      min-height: 100%
+      display: grid
+      gap: 6rem
+
+      @media (min-width: 980px)
+        grid-template-columns: 1fr auto
+
+  &__login
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    gap: 2rem
+    width: 100%
+    padding: 7rem 2rem 2rem 2rem
+    max-width: 380px
+
+    &__header
+      width: 100%
+
+      &--logo
+        width: 100%
+        display: block
+        max-width: 280px
+        margin: auto
+
+    .subtitle
+      font-size: 32px
+
+    &__form
+      width: 100%
+      max-width: 360px
+      display: flex
+      flex-direction: column
+      gap: 1.5rem
+
+      &--retrieve
+        display: flex
+        align-items: center
+        justify-content: space-between
+
+        .button
+          color: $orange
+          background-color: transparent
+          min-width: fit-content
+          height: fit-content
+          padding: 0
+          transition: .2s
+          border-bottom: 1px solid #fff
+          border-radius: 0
+          text-decoration: none
+
+          &:hover
+            border-bottom: 1px solid $orange
+
+      .button.primary
+        border-radius: 8px
+
+      .content-input
+        position: relative
+        display: flex
+        align-items: center
+
+        .button-icon
+          position: absolute
+          right: 0
+          width: 40px
+          height: 100%
+          background-color: transparent
+
+        input
+          transition: .2s
+          border-radius: 8px
+          border: 1px solid $purple
+          padding-right: 2.5rem
+
+          &:not(&[type="password"])
+            text-transform: uppercase
+
+          &::placeholder
+            text-transform: none
+            color: $purple_low
+            font-family: "Bliss Pro", Arial, Helvetica, sans-serif
+
+    &__partner
+      &--logo
+        width: 100%
+        max-width: 200px
+
+      .paragraph
+        margin-bottom: 1rem
+        display: block
+        font-size: 18px
+        font-weight: 500
+        text-align: center
+        color: rgba(0, 0, 0, .5)
+
+    &__copyright
+      width: 100%
+      margin-top: auto
+      text-align: center
+
+.has-error
+  color: $error-color
+  margin-top: 5px

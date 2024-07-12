@@ -1,0 +1,224 @@
+.si-mobile {
+  display: none;
+}
+.container-ini {
+  width: 100%;
+}
+
+.top-title {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.top-title .top-main-title {
+  font-family: "Bliss Pro Bold";
+  font-size: 20px;
+  color: #ee740c;
+  line-height: 1;
+}
+
+.top-title .top-main-subtitle {
+  font-family: "Bliss Pro Bold";
+  font-size: 24px;
+  color: #ee740c;
+  line-height: 1;
+}
+
+.col-banner {
+  width: 100%;
+  height: 0;
+  background: url(assets/images/banner_certificado_electronico.png) no-repeat;
+  background-size: contain;
+  padding: 24.64%;
+}
+
+.banner .banner-top {
+  width: 100%;
+  height: 570px;
+}
+
+.container-ini .cuadro {
+  height: 520px;
+  width: 437px;
+  border-radius: 8px;
+  background-color: #2b0d61;
+  border: 1px solid #2b0d61;
+  float: right;
+  margin-top: 8%;
+  margin-right: 7%;
+}
+
+.container-ini .cuadro .marco {
+  box-sizing: border-box;
+  height: 490px;
+  width: 405px;
+  border: 4px solid #553d81;
+  border-radius: 8px;
+  margin: 15px;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  text-align: center;
+}
+
+.container-ini .cuadro .marco .mensaje01 {
+  font-size: 42px;
+  text-align: center;
+  line-height: 46px;
+  margin-top: 16px;
+}
+
+.container-ini .cuadro .marco hr {
+  width: 80%;
+  text-align: center;
+  box-sizing: border-box;
+  border: 2px solid #553d81;
+  margin-top: 20px;
+}
+
+.container-ini .cuadro .marco .mensaje02 {
+  font-size: 25px;
+  text-align: center;
+  padding: 7px;
+  margin-bottom: 119px;
+  line-height: 31px;
+  margin-top: 55px;
+}
+
+.container-ini .cuadro .marco .mensaje03 {
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.container-ini .cuadro .marco .costo-soat {
+  font-size: 60px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.container-ini .cuadro .marco a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.container-adquiere-soat .btn-orange {
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  text-transform: uppercase;
+  background-color: #ed6d00;
+  border-radius: 6px;
+  text-align: center;
+  padding: 13.5px 18px;
+  font-weight: 100 !important;
+}
+
+.banner .banner-bottom {
+  width: 100%;
+}
+
+.banner .banner-bottom .mensaje {
+  margin-left: 10%;
+  padding: 0;
+  font-family: "Bliss Pro";
+  color: #ffffff;
+}
+
+.banner .banner-bottom .mensaje .line-01 {
+  text-transform: uppercase;
+  font-size: 40px;
+  margin: 0;
+}
+
+.banner .banner-bottom .mensaje .line-02 {
+  text-transform: uppercase;
+  font-size: 70px;
+  font-weight: bold;
+  margin: -25px 0 0 0;
+}
+
+.container-canales {
+  width: 100%;
+  height: auto;
+}
+
+.container-canales .canales {
+  width: 100%;
+  height: auto;
+  display: flex;
+  background-color: #2b0d61;
+}
+
+.container-canales .canales .canales-left {
+  width: 45%;
+  height: 100%;
+  margin-left: 10%;
+}
+
+.container-canales .canales .canales-left .texto01 {
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 24px;
+  padding-top: 42px;
+  padding-left: 5px;
+  margin-bottom: 0;
+  line-height: 25px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.container-canales .canales .canales-left .texto02 {
+  color: #aa9ec0;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  padding-left: 5px;
+  margin-top: 12px;
+  line-height: 18px;
+  margin-bottom: 42px;
+}
+
+.container-canales .canales .canales-rigth {
+  width: 60%;
+  height: 100%;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.container-canales .canales .canales-rigth a {
+  display: block;
+  margin: 30px auto;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.container-canales .canales .canales-rigth .btn-orange {
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  text-transform: uppercase;
+  background-color: #ed6d00;
+  border-radius: 6px;
+  text-align: center;
+  padding: 10.5px 19px;
+  width: 282px;
+  font-weight: 100 !important;
+}
+
+.container-canales .canales .canales-rigth .btn-gray {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  text-transform: uppercase;
+  background-color: #d5cfdf;
+  border-radius: 6px;
+  text-align: center;
+  padding: 10.5px 58px;
+  width: 282px;
+  font-weight: bold;
+}
+
+.container-adquiere-soat {
+  width: 100%;
+  height: 44px;
+}

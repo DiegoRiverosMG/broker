@@ -1,0 +1,553 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 no-left">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid">
+      <div class="header-content pb-2">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Mis Comprobantes</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item  rigth-item">
+            <button class="full-color"
+                    (click)="descargarComprobante()"
+                    *ngIf="comprobantes.length > 0">
+              <img alt=""
+                   src="assets/icons/transferir_blanco.png" />
+              <span>Descargar ({{ comprobantes.length }})</span>
+            </button>
+          </div>
+
+          <div class="header-item  rigth-item">
+            <button (click)="enviarMail()"
+                    class="full-color"
+                    *ngIf="comprobantes.length > 0">
+              <span>Enviar Mail ({{ comprobantes.length }})</span>
+            </button>
+          </div>
+
+          <div class="header-item rigth-item">
+            <button (click)="descargarExcel()" class="m-0">
+              <img alt=""
+                   src="assets/icons/descargar.png" />
+              <span>Exportar</span>
+            </button>
+          </div>
+
+          <div *ngIf="showDescarga"
+               class="header-item rigth-item">
+            <button (click)="getReporteEnvios()">
+              <img alt=""
+                   src="assets/icons/descargar.png" />
+              <span>Exportar Envío C.</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="filter mt-3"
+           *ngIf="!isProtecta">
+        <div class="form-group row filter-row">
+          <div class="col-sm-12 col-lg-5 filter-row-cell">
+            <span>POR CANAL:</span>
+
+            <select (change)="onSelectChannelSales($event.target.value)"
+                    class="form-control"
+                    id="ChannelSalesSelect">
+              <option *ngFor="let channelsales of channelList"
+                      [selected]="channelsales.nchannel == channelUser"
+                      value="{{ channelsales.nchannel }}">
+                {{ channelsales.sdescript }}</option>
+            </select>
+          </div>
+          <div class="col-sm-12 col-lg-2 filter-row-cell">
+            <span>ENVIADO:</span>
+            <select (change)="onSelectEnviado($event.target.value)"
+                    class="form-control"
+                    [(ngModel)]="searchcheck"
+                    id="cboenviado">
+              <option value="-1"
+                      selected>Todos</option>
+              <option value="1">SI</option>
+              <option value="0">NO</option>
+            </select>
+          </div>
+          <div class="col-sm-12 col-lg-4 filter-row-cell">
+            <span>BUSQUEDA:</span>
+            <input placeholder="Ingrese un criterio de búsqueda"
+                   class="form-control input-search"
+                   type="text"
+                   name="prima"
+                   id="prima"
+                   [(ngModel)]="searchtext"
+                   (keyup)="search()" />
+          </div>
+        </div>
+      </div>
+      <div class="filter mt-3"
+           *ngIf="isProtecta">
+        <form class="form-group row filter-row content-search d-flex align-items-start justify-content-between"
+              [formGroup]="frmSearchForAdmin"
+              (ngSubmit)="listComprobantesForAdmin(frmSearchForAdmin.value)">
+          <div class="content-lef col-lg-8 d-flex flex-row align-items-center">
+            <div class="col-lg-3 filter-row-cell pl-0">
+              <span>POLIZA:</span>
+              <input class="form-control input-search"
+                     type="number"
+                     formControlName="poliza" />
+            </div>
+            <div class="col-lg-3 filter-row-cell">
+              <span>COMPROBANTE:</span>
+              <input class="form-control input-search"
+                     type="text"
+                     formControlName="comprobante" />
+            </div>
+            <div class="col-lg-3 filter-row-cell">
+              <span>DOCUMENTO:</span>
+              <input class="form-control input-search"
+                     type="text"
+                     formControlName="documento" />
+            </div>
+            <small class="errorSearchForm"
+                   #errorSearchForm></small>
+          </div>
+
+          <div class="col-lg-2 filter-row-cell w-ft pr-0">
+            <span style="color: rgba(0,0,0,0);"></span>
+            <button type="submit"
+                    class="searchForAdmin">Buscar</button>
+          </div>
+          <div class="col-lg-2 filter-row-cell w-ft pl-0">
+            <span style="color: rgba(0,0,0,0);"></span>
+            <button type="button"
+                    class="searchForAdmin mr-0"
+                    (click)="clearFrmSearch()">Limpiar</button>
+          </div>
+        </form>
+      </div>
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">
+                  <i title="Si el comprobante está aprobado por SUNAT podrá descargarlo/enviarlo."
+                     class="ml-2 fa fa-info-circle fa-lg"></i>
+                </td>
+                <td class="grid-title-item">Producto</td>
+                <td class="grid-title-item">Doc. Referencia</td>
+                <td class="grid-title-item">Tipo Comprobante</td>
+                <td class="grid-title-item">Serie Número</td>
+                <td class="grid-title-item">Monto</td>
+                <td class="grid-title-item">Nº Documento</td>
+                <td class="grid-title-item">Contratante</td>
+                <td class="grid-title-item">Póliza</td>
+                <td class="grid-title-item">Placa</td>
+                <td class="grid-title-item">Fecha Emisión</td>
+                <td class="grid-title-item">Estado Comprobante</td>
+
+              </tr>
+            </thead>
+            <div *ngIf="haveBillsData; then ocultarGrilla; else mostrarGrilla"></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="13">No se encontraron Registros..</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let row of billsData | paginate: { itemsPerPage: 20, currentPage: p }">
+              <tr>
+                <td> <input id="x"
+                         #ref
+                         type="checkbox"
+                         (click)="validarComprobante($event, row, ref)"
+                         [checked]="documentChecked(row)" /> </td>
+                <td>{{ row.producto }}</td>
+                <td>{{ row.documentoReferencia }}</td>
+                <td>{{ row.tipoComprobante }}</td>
+                <td>{{ getSerialNumber(row) }}</td>
+                <td>{{ getTotalAmount(row.moneda, row.montoTotal) }} </td>
+                <td>{{ row.tipoDocumentoContratante }} {{ row.documentoContratante }}</td>
+                <td> {{ row.contratante }} </td>
+                <td>{{ row.poliza }}</td>
+                <td>{{ row.placa }}</td>
+                <td>{{ row.fechaEmision | date: "dd/MM/yyyy" }}</td>
+                <td>{{ row.estado }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <pagination-controls *ngIf="billsData?.length > 0"
+                               class="my-pagination"
+                               (pageChange)="p = $event"
+                               autoHide="true"
+                               responsive="true"
+                               previousLabel="Anterior"
+                               nextLabel="Siguiente"
+                               screenReaderPaginationLabel="Paginación"
+                               screenReaderPageLabel="pagina"
+                               screenReaderCurrentLabel="Estás en la pagina"></pagination-controls>
+        </div>
+      </div>
+      <!-- <div *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination-controls class="my-pagination"
+                                 (pageChange)="p = $event"
+                                 autoHide="true"
+                                 responsive="true"
+                                 previousLabel="Anterior"
+                                 nextLabel="Siguiente"
+                                 screenReaderPaginationLabel="Paginación"
+                                 screenReaderPageLabel="pagina"
+                                 screenReaderCurrentLabel="Estás en la pagina"></pagination-controls>
+          </div>
+        </div>
+      </ng-template> -->
+    </div>
+</div>
+</div>
+</div>
+
+
+<div bsModal
+     #childModalMensaje="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="
+           dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo">
+          Validación
+        </h4>
+        <button type="button"
+                class="close close-button"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="closeModalMensaje()">
+          <span aria-hidden="true">
+            <img alt=""
+                 src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12 contenido-modal"
+               id="msjEmail">
+            {{ messagevalidation }}
+          </div>
+        </div>
+
+        <div class="form-group row button-modal">
+          <div class="col-sm-12 col-lg-12">
+            <button type="button"
+                    class="button-close button-center"
+                    (click)="closeModalMensaje()">
+              <span>Cerrar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModalEdicion="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <form [formGroup]="edicionForm"
+        (ngSubmit)="onSave()"
+        #myform="ngForm">
+    <div class="modal-dialog modal-md div-edicion">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="
+             dialog-child-name"
+              class="modal-title pull-left titlemensajeinfo">
+            Envío de Comprobantes
+          </h4>
+          <button type="button"
+                  class="close close-button"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  (click)="onClose()">
+            <span aria-hidden="true">
+              <img alt=""
+                   src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+
+
+
+            <div class="col-lg-7 contenido-modal"
+                 id="msjEmail">
+              Seleccione tipo de envío :
+            </div>
+            <div class="col-lg-5 contenido-modal"
+                 id="msjEmail">
+              Email
+            </div>
+
+
+            <div class="col-lg-7 contenido-modal"
+                 id="facturacion">
+              <select formControlName="tipoenvio"
+                      class="form-control select-formulario">
+                <option value="0">Enviar correo a corredor de negocios</option>
+                <option value="1">Envio correo a otra cuenta</option>
+              </select>
+              <div class="error-message"
+                   *ngIf="showError('tipoenvio')">
+                <i></i><span>Por favor seleccione un tipo de envío</span>
+              </div>
+            </div>
+
+            <div class="col-lg-5 contenido-modal"
+                 id="mailbroker">
+              <input type="text"
+                     formControlName="mailbroker"
+                     name="txtMailBroker"
+                     id="txtMailBroker"
+                     class="form-control"
+                     maxlength="50"
+                     mixlength="1"
+                     placeholder="Ingrese un correo electrónico"
+                     inputmode="numeric"
+                     [ngClass]="{ inputerror: showError('mailbroker') }" />
+              <div class="error-message"
+                   *ngIf="showError('mailbroker')">
+                <i></i><span>Por favor ingrese un correo válido</span>
+              </div>
+            </div>
+
+
+
+
+            <div class="col-lg-4">&nbsp; </div>
+            <div class="col-lg-4">&nbsp; </div>
+            <div class="col-lg-4">&nbsp; </div>
+
+            <div class="col-lg-12 contenido-modal"
+                 id="msjEmail">
+              <label style="width: 100%;margin-bottom: 0;">
+                <input type="checkbox"
+                       class="checkbox"
+                       formControlName="envioContratante"
+                       (change)="changeEnvioContratante($event)">
+                <span class="schk"
+                      style="margin-top: 5px;; font-size: 13px;">
+                  ¿Envío a contratantes seleccionados ?
+                </span>
+              </label>
+
+
+            </div>
+
+
+            <div class="col-lg-12 contenido-modal pt-fc"
+                 id="propuesta">
+
+
+              <div *ngIf="enviarContratantes"
+                   class="grid form-group">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr class="grid-title">
+
+                        <td class="grid-title-item">Contratante</td>
+                        <td class="grid-title-item">Correo</td>
+                        <td class="grid-title-item">Editar</td>
+
+                      </tr>
+                    </thead>
+
+
+
+                    <tbody *ngFor="let row of uniqueMailCollection">
+                      <tr>
+                        <td class="grid-title-item">{{ row.razonSocial }}</td>
+                        <td class="grid-title-item">{{ row.email }}</td>
+
+                        <td class="grid-title-item">
+                          <a (click)="onEditarMail(row)">
+                            <i title="Imprimir"
+                               style="cursor: pointer;"
+                               class="fa fa-edit fa-lg"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-group row button-modal">
+            <div class="col-sm-6 col-lg-6">
+              <div class="centrar">
+                <button type="button"
+                        class="button-close"
+                        (click)="onClose()">
+                  <span>Cancelar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+              <div class="centrar">
+                <button [disabled]="!edicionForm.valid"
+                        type="submit"
+                        class="full-color-modal">
+                  <span>Enviar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalSuccessSenMail="bs-modal">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="hideModalSuccessSendMail()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <div class="check-emitido">
+          <img src="assets/backoffice/check-success.png"
+               class="icon-check">
+        </div>
+        El correo se envió correctamente
+      </div>
+      <div class="modal-footer modal-foot-confirm d-flex align-items-center justify-content-center">
+        <button type="button"
+                class="btn full-color btn-aceptar-modal"
+                (click)="hideModalSuccessSendMail()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal
+     #childModalEdicionMail="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="dialog-child-name">
+  <form [formGroup]="edicionMailForm"
+        (ngSubmit)="onSaveMail()"
+        #myform="ngForm">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="
+             dialog-child-name"
+              class="modal-title pull-left titlemensajeinfo">
+            Cambiar correo electrónico
+          </h4>
+          <button type="button"
+                  class="close close-button"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  (click)="onCloseMail()">
+            <span aria-hidden="true">
+              <img alt=""
+                   src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+
+
+            <div class="col-lg-12 contenido-modal"
+                 id="msjEmail">
+              Email
+            </div>
+
+            <div class="col-lg-12 contenido-modal"
+                 id="txtMailContratante">
+              <input type="text"
+                     formControlName="mailcontratante"
+                     name="txtMailContratante"
+                     id="txtMailContratante"
+                     class="form-control"
+                     maxlength="50"
+                     mixlength="1"
+                     placeholder="Ingrese un correo electrónico" />
+              <div class="error-message"
+                   *ngIf="showErrorMail('mailcontratante')">
+                <i></i><span>Por favor ingrese un correo válido</span>
+              </div>
+              <input type="hidden"
+                     formControlName="codigocontratante"
+                     name="txtCodigoContratante"
+                     id="txtCodigoContratante"
+                     class="form-control"
+                     maxlength="50"
+                     mixlength="1" />
+            </div>
+
+            <div class="col-lg-12">&nbsp; </div>
+
+          </div>
+
+          <div class="form-group row button-modal">
+            <div class="col-sm-6 col-lg-6">
+              <div class="centrar">
+                <button type="button"
+                        class="button-close"
+                        (click)="onCloseMail()">
+                  <span>Cancelar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+              <div class="centrar">
+                <button [disabled]="!edicionMailForm.valid"
+                        type="submit"
+                        class="full-color-modal">
+                  <span>Grabar </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

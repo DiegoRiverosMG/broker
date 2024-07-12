@@ -1,0 +1,74 @@
+<div class="modal-header">
+    <h5 class="modal-title">Historial Porcentaje RMV</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="collapse-list">
+                    <input class="collapse-open" type="checkbox" id="historial" />
+                    <label class="collapse-btn title" for="historial">Historial<i class="fa fa-angle-down pull-right"
+                            style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="grid form-group">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr class="grid-title">
+                                                        <td class="grid-title-item text-center">Porcentaje</td>
+                                                        <td class="grid-title-item text-center">Estado</td>
+                                                        <td class="grid-title-item text-center">Inicio de Vigencia</td>
+                                                        <td class="grid-title-item text-center">Fin de Vigencia</td>
+                                                        <td class="grid-title-item text-center">Usuario</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of listToShow"
+                                                        [className]="item.ESTADO == 'ACTIVO' ? 'table-success' : ''">
+                                                        <td class="text-center">{{item.PORCENTAJE}} %</td>
+                                                        <td class="text-center">{{item.ESTADO}}</td>
+                                                        <td class="text-center">{{item.INICIO_VIG}}</td>
+                                                        <td class="text-center">{{item.FIN_VIG}}</td>
+                                                        <td class="text-center">{{item.USUARIO}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="retroactivityList!=null && retroactivityList.length>0" class="row"
+                                        style="display:flex">
+                                        <div class="col-sm-7">
+                                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage"
+                                                [collectionSize]="totalItems" [maxSize]="maxSize"
+                                                (pageChange)="pageChanged(currentPage)">
+                                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                            </ngb-pagination>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <span style="display: inline-block;">Mostrar: </span>
+                                            <select [(ngModel)]="itemsPerPage" name="LimitPerPage" class="minimal"
+                                                (change)="mostrarMas()"
+                                                style="display: inline-block; width: 50%; float: right; position: relative; top: -10px;">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

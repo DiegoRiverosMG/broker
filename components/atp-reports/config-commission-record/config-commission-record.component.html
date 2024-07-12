@@ -1,0 +1,98 @@
+<div class="p-2">
+  <h4 class="modal-title text-uppercase mt-1">Historial de Configuración de Comisiones VDP+</h4>
+  <div class="d-flex flex-row-reverse my-1 g-2">
+    <button type="button" class="full-color" (click)="reference.close()">
+      <span>Cancelar</span>
+    </button>
+    <button type="button" class="full-color" (click)="downloadExcel()">
+      <span>Descargar</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-body p-2">
+  <div class="table-responsive">
+    <table class="table grid form-group">
+      <thead class="thead-light">
+        <tr class="grid-title">
+          <th class="grid-title-item text-center">Mes de inicio de comisión</th>
+          <th class="grid-title-item text-center">Cantidad de meses de comisión</th>
+          <th class="grid-title-item text-center">Fecha de inicio de comisión</th>
+          <th class="grid-title-item text-center">Estado</th>
+          <th class="grid-title-item text-center">Usuario de registro</th>
+          <th class="grid-title-item text-center">Fecha de registro</th>
+          <th class="grid-title-item text-center">Usuario de aprobación/rechazo</th>
+          <th class="grid-title-item text-center">Fecha de aprobación/rechazo</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        <ng-container *ngIf="list_commission!=null && list_commission.length>0; then showGrid else hideGrid">
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #hideGrid>
+    <tr>
+      <td colspan="9" class="text-center">
+        No se encontraron registros
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #showGrid>
+    <tr *ngFor="let commission of listToShow; let row_no = index">
+
+      <td class="text-center">
+        {{commission.ninI_MONTH}}
+      </td>
+
+      <td class="text-center">
+        {{commission.ncantmonths}}
+      </td>
+
+      <td class="text-center">
+        {{commission.deffecdate}}
+      </td>
+
+      <td>
+        {{commission.desC_STATE}}
+      </td>
+
+      <td class="text-center">
+        {{commission.desC_USU_REGISTER}}
+      </td>
+
+      <td class="text-center">
+        {{commission.dinidate}}
+      </td>
+
+      <td class="text-center">
+        {{commission.desC_USU_APROB}}
+      </td>
+
+      <td class="text-center">
+        {{commission.deffecdatE_ACTION}}
+      </td>
+
+    </tr>
+  </ng-template>
+  <ng-container *ngIf="list_commission!=null && list_commission.length>0; then showPagination">
+  </ng-container>
+  <ng-template #showPagination>
+    <div class="row mt-4">
+      <div class="col-sm-12">
+        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize"
+          (pageChange)="pageChanged(currentPage)">
+          <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+          <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+        </ngb-pagination>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

@@ -1,0 +1,228 @@
+
+<div class="form-group row">
+  <div class="col-lg-12">
+    <div class="container-fluid">
+      <div class="modal-header mb-3">
+        <h4 class="modal-title" id="modal-basic-title">GESTIONAR RESTRICCIÓN DE CLIENTE </h4>
+        <button type="button" class="close" aria-label="Close" (click)="reference.close()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="collapse-list">
+          <div>
+            <input class="collapse-open" type="checkbox" id="gestionar" />
+            <label class="collapse-btn title" for="gestionar">
+              INFORMACIÓN GENERAL
+              <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i></label>
+              <div class="collapse-panel">
+                <div class="collapse-inner colapse-border">
+                  <div class="grid form-group">
+                    <div class="table-responsive">
+                        <div class="filter">
+                          <div class="card">
+                              <div class="card-body">
+                                  <div class="row">
+                                      <div  class="col-sm-4">
+                                          <span>RAMO</span>
+                                          <select [disabled]="this.isDetail || cabRestriClient.action == 1 || codBranchSelected==73" [(ngModel)]="codBranchSelected" name="codBranchSelected" (change)="onSelectBranch()" class="minimal">
+                                          <option value="0" selected>Selecione</option>
+                                          <option *ngFor="let item of branchList" value="{{item.NBRANCH}}">
+                                                  {{item.SDESCRIPT}}</option>
+                                      </select>
+                                        </div>
+                                        <!-- JDD ACC PERSONALES-->
+                                        <!-- <div  class="col-sm-4">
+                                          <span>PRODUCTO</span>
+                                          <select [disabled]="this.isDetail" [(ngModel)]="codProductSelected" name="codProductSelected" class="minimal">
+                                              <option value="0" selected>Selecione</option>
+                                          <option *ngFor="let item of productList" value="{{item.COD_PRODUCT}}">
+                                                  {{item.DES_PRODUCT}}</option>
+                                      </select>
+                                        </div> -->
+                                        <div  class="col-sm-4">
+                                          <span>TIPO DE RESTRICCIÓN</span>
+                                          <select (change) = 'changeTypeRestric()' [disabled]="this.isDetail" [(ngModel)]="codRestricSelected" name="codRestricSelected" class="minimal">
+                                              <option value="0" selected>Selecione</option>
+                                          <option *ngFor="let item of restricList" value="{{item.idTypeRestric}}">
+                                                  {{item.description}}</option>
+                                      </select>
+                                        </div>
+                                  </div>
+
+                                  <div class="row">
+                                      <div  class="col-sm-4">
+                                          <span>TIPO DE DOCUMENTO</span>
+                                          <select disabled [(ngModel)]="codTipoDocumentSelected" name="codTipoDocumentSelected"  class="minimal">
+                                          <option *ngFor="let item of documentTypeList" value="{{item.Id}}">
+                                                  {{item.Name}}</option>
+                                          </select>
+                                        </div>
+                                        <div  class="col-sm-4">
+                                          <span>NRO. DOC.</span>
+                                          <input type="text" placeholder="Nro. Doc. " disabled [(ngModel)] = "cabRestriClient.nroDocumento"
+                                              />
+                                      </div>
+                                        <div class="col-sm-4">
+                                          <span> {{codBranchSelected==73 ?"RAZÓN SOCIAL":"DESCRIPCION"}}</span>
+                                          <input type="text"  [disabled]="this.isDetail || (this.codBranchSelected==73 && contractor.razonSocial!='')" (keypress)="textValidate($event, 4)" maxlength="60"
+                                        [(ngModel)]="cabRestriClient.descripcion"
+                                        />
+                                        </div>
+                                  </div>
+                                  <div class="row">
+                                      <div  class="col-sm-8">
+                                      <span>COMENTARIO</span>
+                                      <input type="text" (keypress)="textValidate($event, 3)"  [disabled]="this.isDetail" maxlength="60"
+                                    [(ngModel)]="cabRestriClient.observacion"
+                                    />
+                                      </div>
+                                  </div>
+                                  <ng-template>
+                                  </ng-template>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div *ngIf = "this.isPrivilegios && this.PagoDirecto" class="collapse-list">
+          <div>
+            <input class="collapse-open" type="checkbox" id="directo" />
+            <label class="collapse-btn title" for="directo">
+              <span> {{codBranchSelected==71 ?"RANGO DE FECHAS PERMITIDO PARA RIESGO CREDITICIO
+                ALTO":"CONFIGURACIÓN PAGO DIRECTO"}}</span>
+              <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i></label>
+            <div class="collapse-panel">
+              <div class="collapse-inner collapse-border">
+                <div>
+
+                    <div class="row">
+                      <div class="col-1 centerCheck">
+                          <!--label style="width: 100%;margin-bottom: 0;"-->
+                          <input type="checkbox" id="chbkDirecto" (change) = "ActivarPagoDirecto($event)"
+                             class="checkbox" [checked]="cabRestriClient.chkPagoDirecto" [disabled]="this.isDetail" >
+                      </div>
+                      <div class="col-sm-2">
+                        <span>INICIO DE PAGO</span>
+                          <input type="text" #dp="bsDatepicker" [bsConfig] ="bsConfig" bsDatepicker
+
+                          value="{{cabRestriClient.FDateInitPago | date:'dd//MM/yyyy' }}"
+                          [disabled]="true">
+                      </div>
+                      <div class="col-sm-2">
+                        <span>VIGENCIA DE PAGO</span>
+                          <input type="text" #dp="bsDatepicker"
+                          [bsConfig] ="bsConfig" bsDatepicker
+                          [(ngModel)] = "cabRestriClient.FDateVigenPago" [disabled]="(this.cabRestriClient.chkPagoDirecto==false || this.isDetail  )"
+                          [(minDate)]="bsValueIni"
+                          value="{{cabRestriClient.FDateVigenPago | date:'dd//MM/yyyy' }}"
+                           >
+                      </div>
+                  </div>
+                  <ng-template>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf = "this.isPrivilegios" class="collapse-list">
+          <div>
+            <input class="collapse-open" type="checkbox" id="transactions" />
+            <label class="collapse-btn title" for="transactions">
+              TRANSACCIONES
+              <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i></label>
+            <div class="collapse-panel">
+              <div class="collapse-inner collapse-border">
+                <div>
+                  <br><br>
+                  <div class="row marginRow">
+                      <div class="col-sm-2 centerCheck">
+                          <label style="width: 100%;margin-bottom: 0;"><input [disabled]="this.isDetail"  type="checkbox" (change) = "ChangeInputInd(1)"
+                              [(ngModel)]="cabRestriClient.chkEmision" class="checkbox"><span
+                              class="schk chk-mina">EMISIÓN</span></label>
+                      </div>
+                      <div class="col-sm-2">
+                          <input type="text"   placeholder=""  (keypress)="textValidate($event, 1)" maxlength="3"
+                          [(ngModel)] = "cabRestriClient.diasEmision" [disabled]="(!this.cabRestriClient.chkEmision || this.cabRestriClient.sinLimiteEmision) || this.isDetail"
+                          />
+                      </div>
+                      <div class="col-sm-3 centerCheck" *ngIf="this.cabRestriClient.chkEmision">
+                          <label style="width: 100%;margin-bottom: 0;"><input type="checkbox"  [disabled]="this.isDetail"
+                              (change) = "ChangeInputDias(1)"
+                              [(ngModel)]="cabRestriClient.sinLimiteEmision" class="checkbox"><span
+                              class="schk chk-mina">SIN LIMITE DE DÍAS</span></label>
+                      </div>
+                  </div>
+
+                  <div class="row marginRow">
+                      <div class="col-sm-2 centerCheck">
+                          <label style="width: 100%;margin-bottom: 0;"><input type="checkbox"  [disabled]="this.isDetail" (change) = "ChangeInputInd(2)"
+                              [(ngModel)]="cabRestriClient.chkInclusion" class="checkbox"><span
+                              class="schk chk-mina">INCLUSIÓN</span></label>
+                      </div>
+                      <div class="col-sm-2">
+                          <input type="text" placeholder=""  (keypress)="textValidate($event, 1)" maxlength="3"
+                          [(ngModel)] = "cabRestriClient.diasInclusion" [disabled]="(!this.cabRestriClient.chkInclusion || this.cabRestriClient.sinLimiteInclusion) || this.isDetail"
+                          />
+                      </div>
+                      <div class="col-sm-3 centerCheck" *ngIf="this.cabRestriClient.chkInclusion">
+                          <label style="width: 100%;margin-bottom: 0;"><input type="checkbox"
+                              (change) = "ChangeInputDias(2)"  [disabled]="this.isDetail"
+                              [(ngModel)]="cabRestriClient.sinLimiteInclusion" class="checkbox"><span
+                              class="schk chk-mina">SIN LIMITE DE DÍAS</span></label>
+                      </div>
+                  </div>
+
+                  <div class="row marginRow">
+                      <div class="col-sm-2 centerCheck">
+                          <label style="width: 100%;margin-bottom: 0;"><input type="checkbox"  [disabled]="this.isDetail" (change) = "ChangeInputInd(3)"
+                              [(ngModel)]="cabRestriClient.chkRenovacion" class="checkbox"><span
+                              class="schk chk-mina">RENOVACIÓN</span></label>
+                      </div>
+                      <div class="col-sm-2">
+                          <input type="text" placeholder=""  (keypress)="textValidate($event, 1)" maxlength="3"
+                          [(ngModel)] = "cabRestriClient.diasRenovacion" [disabled]="(!this.cabRestriClient.chkRenovacion || this.cabRestriClient.sinLimiteRenovacion) || this.isDetail"
+                          />
+                      </div>
+                      <div class="col-sm-3 centerCheck" *ngIf="this.cabRestriClient.chkRenovacion">
+                          <label style="width: 100%;margin-bottom: 0;"  >
+                              <input type="checkbox"  [disabled]="this.isDetail"
+                            (change) = "ChangeInputDias(3)"
+                            [checked] = "cabRestriClient.chkRenovacion"
+                              [(ngModel)]="cabRestriClient.sinLimiteRenovacion" class="checkbox" /> <span
+                              class="schk chk-mina">SIN LIMITE DE DÍAS</span></label>
+                      </div>
+                  </div>
+                    <ng-template>
+                    </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display:flex;height: 100%;width:100%">
+         <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div> -->
+
+      <div class="modal-footer">
+        <button [hidden]="this.contractor.action==2"  [disabled]="this.isDetail"  class="full-color" (click)="SaveRestricClient()" style="margin-top: 5px;">
+          <span>Guardar</span>
+        </button>
+        <button (click)="reference.close()"><span>Volver</span></button>
+      </div>
+
+
+    </div>
+  </div>
+</div>

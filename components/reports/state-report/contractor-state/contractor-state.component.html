@@ -1,0 +1,212 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Consulta de Movimientos</span>
+                    </div>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h5>Datos del Contratante</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>TIPO DOCUMENTO</span>
+                                <input value="{{contractor.DocumentType}}" type="text" placeholder="Tipo Documento"
+                                    disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>NÚMERO DOCUMENTO</span>
+                                <input value="{{contractor.DocumentNumber}}" type="text" placeholder="Número Documento"
+                                    disabled>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>CONTRATANTE</span>
+                                <input value="{{contractor.FullName}}" type="text" placeholder="Contratante" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>EJECUCIÓN DE MOVIMIENTOS</span>
+                                <input value="{{contractor.MovementEnablementName}}" type="text" disabled>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>ULT. EVAL. CREDITICIA</span>
+                                <input value="{{contractor.LastCreditEvaluationName}}" type="text" disabled>
+                            </div>
+                            <div class="col-sm-2">
+                                <button style="margin-top: 35px;" (click)="seeQualificationTracking()">
+                                    <span>Score</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card" [formGroup]="mainFormGroup">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h5>Datos de movimientos</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>TIPO PRODUCTO</span>
+                                <select formControlName="product">
+                                    <option value="">Todos</option>
+                                    <option *ngFor="let item of productList" value="{{item.Id}}">{{item.Name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>ESTADO DE PAGO</span>
+                                <select formControlName="paymentState">
+                                    <option value="">Todos</option>
+                                    <option *ngFor="let item of paymentStateList" value="{{item.Id}}">{{item.Name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>DESDE</span>
+                                <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy"
+                                    #dp="bsDatepicker" (keyup.enter)="firstSearch(false)" [bsConfig]="bsConfig"
+                                    bsDatepicker DateDirective (focus)="cleanValidation()" [(bsValue)]="bsValueIni"
+                                    value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}"
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid}" />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid">
+                                    <span *ngSwitchCase="mainFormGroup.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La
+                                        fecha inicial es requerida.</span>
+                                    <span
+                                        *ngSwitchCase="!mainFormGroup.controls.startDate.valid && !mainFormGroup.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">{{invalidStartDateMessage}}</span>
+                                    <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">{{invalidStartDateOrderMessage}}</span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>HASTA</span>
+                                <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                    (keyup.enter)="firstSearch(false)" [bsConfig]="bsConfig" bsDatepicker DateDirective
+                                    (focus)="cleanValidation()" [(bsValue)]="bsValueFin"
+                                    value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}"
+                                    [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid}" />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid">
+                                    <span *ngSwitchCase="mainFormGroup.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La
+                                        fecha final es requerida.</span>
+                                    <span
+                                        *ngSwitchCase="!mainFormGroup.controls.endDate.valid && !mainFormGroup.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">{{invalidEndDateMessage}}</span>
+                                    <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">{{invalidEndDateOrderMessage}}</span>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row pull-right">
+                            <div class="col-sm-3">
+                                <button (click)="firstSearch(false)">
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid form-group">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="grid-title">
+                                        <td class="grid-title-item">Producto</td>
+                                        <td class="grid-title-item">Nro. Contrato</td>
+                                        <td class="grid-title-item">Inicio Vigencia</td>
+                                        <td class="grid-title-item">Fin Vigencia</td>
+                                        <td class="grid-title-item">Proforma</td>
+                                        <td class="grid-title-item">Vencimiento</td>
+                                        <td class="grid-title-item">Estado de Pago</td>
+                                        <td class="grid-title-item">Documento Legal</td>
+                                        <td class="grid-title-item">Fecha de Pago</td>
+                                        <td class="grid-title-item">Importe</td>
+                                    </tr>
+                                </thead>
+                                <ng-container
+                                    *ngIf="foundResults!=null && foundResults.length>0; then showContent;else hideContent">
+                                </ng-container>
+                                <ng-template #showContent>
+                                    <tbody *ngFor="let item of foundResults">
+                                        <tr>
+                                            <td>{{item.Product}}</td>
+                                            <td>{{item.ContractNumber}}</td>
+                                            <td>{{item.VigencyStartDate | date:'dd/MM/yyyy'}}</td>
+                                            <td>{{item.VigencyEndDate | date:'dd/MM/yyyy'}}</td>
+                                            <td>{{item.ProformaCode}}</td>
+                                            <td>{{item.ExpirationDate | date:'dd/MM/yyyy'}}</td>
+                                            <td>{{item.PaymentState}}</td>
+                                            <td>{{item.LegalDocument}}</td>
+                                            <td>{{item.PaymentDate | date:'dd/MM/yyyy'}}</td>
+                                            <td>{{item.Amount}}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </ng-template>
+                                <ng-template #hideContent>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="10">No se encontraron registros</td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+
+                            </table>
+
+                        </div>
+                        <ng-container *ngIf="foundResults!=null && foundResults.length>0; then showPagination">
+                        </ng-container>
+                        <ng-template #showPagination>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <ngb-pagination [(page)]="filter.PageNumber" [pageSize]="filter.LimitPerPage"
+                                        [collectionSize]="totalItems" (pageChange)="pageChanged()">
+                                        <ng-template ngbPaginationPrevious>Anterior</ng-template>
+                                        <ng-template ngbPaginationNext>Siguiente</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="row pull-right mt-2">
+                    <button (click)="goBack()">
+                        <span>Cancelar</span>
+                    </button>
+
+                    <button *ngIf="canEnableContractorMovement && contractor.MovementEnablementId=='1'"
+                        class="full-color" (click)="enable()">
+                        <span>Habilitar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

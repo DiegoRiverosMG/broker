@@ -1,0 +1,20 @@
+@media (max-width: 768px) {
+	.main-nav {
+		display: none !important;
+		position: absolute;
+		height: fit-content;
+		background: white;
+		z-index: 999;
+		margin: 0px;
+		border: 2px solid #c5bdd2;
+		border-top: 0px none;
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+		width: 97.5%;
+		left: 16px;
+	}
+
+	.show {
+		display: block !important;
+	}
+}

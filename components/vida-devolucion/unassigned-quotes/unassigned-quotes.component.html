@@ -1,0 +1,233 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr">
+      <div class="row group1">
+        <h1 class="title">Prospectos sin asignar</h1>
+      </div>
+
+      <!-- FILTROS -->
+
+      <form class="row group2" [formGroup]="FormFilter">
+        <div class="inputs">
+          <div class="conten-input input1">
+            <label
+              for="type-document"
+              class="placeholder-u"
+              aria-placeholder="TIPO DE DOCUMENTO:"
+            >
+              <select
+                id="type-document"
+                class="input-u"
+                formControlName="type_document"
+              >
+                <option [value]="null" selected disabled hidden>
+                  SELECCIONE
+                </option>
+                <option value="2">DNI</option>
+                <option value="4">C.E.</option>
+              </select>
+            </label>
+          </div>
+          <div class="conten-input input2">
+            <label
+              for="document-number"
+              class="placeholder-u"
+              aria-placeholder="NÚMERO DE DOCUMENTO:"
+            >
+              <input
+                type="text"
+                id="document-number"
+                class="input-u"
+                autocomplete="off"
+                [minlength]="LimitdocumentNumber.min"
+                [maxlength]="LimitdocumentNumber.max"
+                formControlName="document_number"
+              />
+            </label>
+          </div>
+          <div
+            style="
+              width: 70%;
+              display: flex;
+              justify-content: flex-end;
+              margin-top: 38px;
+            "
+          >
+            <button
+              class="btn-primary-u"
+              style="width: 190px; height: 48px"
+              (click)="buscar()"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA -->
+
+      <div
+        class="grid form-group row"
+        style="
+          border-top: 1px solid rgb(84, 61, 129);
+          margin-top: 25px;
+          margin-right: 0px;
+        "
+      >
+        <div
+          class="table-responsive div-tableban"
+          id="table-scroll"
+          style="margin-top: 20px"
+        >
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">Código de cliente</td>
+                <td class="grid-title-item">Nombre del cliente</td>
+                <td class="grid-title-item">Tipo de documento</td>
+                <td class="grid-title-item">DNI/CE</td>
+                <td class="grid-title-item">Fecha de última actualización</td>
+                <td class="grid-title-item">Motivos</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Acciones</td>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!data?.length">
+                <tr class="grid-body">
+                  <td
+                    class="grid-body-item"
+                    colspan="8"
+                    style="text-align: center"
+                  >
+                    No hay informacion para mostrar
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="!!data?.length">
+                <tr
+                  class="grid-body"
+                  *ngFor="
+                    let data of data
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: p,
+                            totalItems: data.length,
+                            id: 'bdj'
+                          };
+                    let i = index
+                  "
+                  [id]="'row' + data.number_caso"
+                >
+                  <td class="grid-title-item">{{ data.number_caso }}</td>
+                  <td class="grid-title-item">{{ data.name_cliente }}</td>
+                  <td class="grid-title-item">{{ data.type_document }}</td>
+                  <td class="grid-title-item">{{ data.dni_ce }}</td>
+                  <td class="grid-title-item">{{ data.date_create }}</td>
+                  <td class="grid-title-item">{{ data.motivo_rechazo }}</td>
+                  <td class="grid-title-item">{{ data.state_cotizacion }}</td>
+                  <td
+                    class="tbl__body--row-item tbl-actions"
+                    ngbDropdown
+                    [placement]="i > 3 ? 'top-right' : 'bottom-right'"
+                  >
+                    <button
+                      class="btn-dropdown-u"
+                      tabindex="0"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      ngbDropdownToggle
+                    >
+                      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-u" display="dynamic" ngbDropdownMenu>
+                      <li class="dropdown-item-u">
+                        <button
+                          class="dropdown-item-btn-u"
+                          (click)="
+                            setViewCotizacion(
+                              data.number_caso,
+                              data.state_cotizacion
+                            )
+                          "
+                        >
+                          <i title="Asignar" class="fa fa-eye fa-lg"></i>Ver
+                        </button>
+                      </li>
+                      <li class="dropdown-item-u">
+                        <button
+                          class="dropdown-item-btn-u"
+                          (click)="descartar(data.number_caso)"
+                        >
+                          <i title="Descartar" class="fa fa-times fa-lg"></i
+                          >Descartar
+                        </button>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content-pagination pag-ban">
+        <pagination-controls
+          class="my-pagination"
+          id="bdj"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+          (pageChange)="currentPage = $event"
+          *ngIf="!!data?.length"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECHAZAR SOLICITUD -->
+<ng-template #modalAsignar>
+  <div class="content-modal-u">
+    <div class="modal-u mfb" style="width: 440px px">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Rechazar solicitud</h6>
+        <button class="modal__header--close" (click)="closeModals()">
+          &times;
+        </button>
+      </div>
+      <div
+        class="modal__body"
+        style="text-align: center; margin-top: 1.5rem; margin-bottom: 2.5rem"
+      >
+        <span>¿Estás seguro(a) que desea rechazar esta solicitud?</span>
+      </div>
+      <div class="modal__footer" style="grid-gap: 1rem">
+        <button
+          class="btn-primary-u orange"
+          style="width: 180px; height: 48px"
+          (click)="aceptarRechazar()"
+        >
+          Aceptar
+        </button>
+        <button
+          class="btn-secondary-u"
+          style="width: 180px; height: 48px"
+          (click)="closeModals()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

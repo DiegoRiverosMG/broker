@@ -1,0 +1,61 @@
+<div class="padding-modal">
+  <div class="modal-header border-none">
+    <h4 class="modal-title title-re" id="modal-basic-title">
+      Asignar ejecutivo
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="formModalReference.dismiss()"
+      value="&times;"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-one-section">
+      <form-input-select-re
+        [items]="opcionesEjecutivos"
+        [itemsArray]="true"
+        fieldCodigo="codigo"
+        fieldValor="valor"
+        [firstSelect]="true"
+        [(value)]="inputs.P_EJECUTIVO"
+      ></form-input-select-re>
+    </div>
+    <div class="container-two-section">
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="t-head">
+            <tr class="grid-title">
+              <td class="grid-title-item">Ejecutivo responsable</td>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tbody>
+            <ng-container>
+              <tr *ngIf="ejecutivos.length === 0" class="grid-title row-item">
+                <td class="grid-item">
+                  Debes seleccionar un ejecutivo responsable
+                </td>
+              </tr>
+              <tr *ngIf="ejecutivos.length > 0" class="grid-title row-item">
+                <td class="grid-item">{{ inputs.P_EJECUTIVO.valor }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-none">
+    <button class="button-cancelar" (click)="formModalReference.dismiss()">
+      <span>Cancelar</span>
+    </button>
+    <button class="button-Guardar" (click)="select()">
+      <span>Seleccionar</span>
+    </button>
+  </div>
+</div>

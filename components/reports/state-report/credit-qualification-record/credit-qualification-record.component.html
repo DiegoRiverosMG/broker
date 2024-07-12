@@ -1,0 +1,121 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Historial de Evaluaciones</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.close(contractor)">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="filter" [formGroup]="mainFormGroup">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span>CALIFICACIÓN</span>
+                            <select formControlName="qualification">
+                                <option value="">Todos</option>
+                                <option *ngFor="let item of qualificationList" value="{{item.Id}}">{{item.Name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <span>DESDE</span>
+                            <input type="text" formControlName="startDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}" (keyup.enter)="firstSearch(false)"
+                                [bsConfig]="bsConfig" bsDatepicker DateDirective (focus)="cleanValidation()"
+                                [(bsValue)]="bsValueIni"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid}" />
+                            <ng-container [ngSwitch]="true"
+                                *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.startDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly')) && !mainFormGroup.valid">
+                                <span *ngSwitchCase="mainFormGroup.get('startDate').hasError('required')"
+                                    class="mensaje-error-control">La
+                                    fecha inicial es requerida.</span>
+                                <span
+                                    *ngSwitchCase="!mainFormGroup.controls.startDate.valid && !mainFormGroup.get('startDate').hasError('required')"
+                                    class="mensaje-error-control">{{invalidStartDateMessage}}</span>
+                                <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                    class="mensaje-error-control">{{invalidStartDateOrderMessage}}</span>
+                            </ng-container>
+                        </div>
+                        <div class="col-sm-4">
+                            <span>HASTA</span>
+                            <input type="text" formControlName="endDate" placeholder="dd/mm/yyyy" #dp="bsDatepicker"
+                                value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}" (keyup.enter)="firstSearch(false)"
+                                [bsConfig]="bsConfig" bsDatepicker DateDirective (focus)="cleanValidation()"
+                                [(bsValue)]="bsValueFin"
+                                [ngClass]="{'error-validate': isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid}" />
+                            <ng-container [ngSwitch]="true"
+                                *ngIf="isValidatedInClickButton && (!mainFormGroup.controls.endDate.valid || mainFormGroup.hasError('datesNotSortedCorrectly'))  && !mainFormGroup.valid">
+                                <span *ngSwitchCase="mainFormGroup.get('endDate').hasError('required')"
+                                    class="mensaje-error-control">La
+                                    fecha final es requerida.</span>
+                                <span
+                                    *ngSwitchCase="!mainFormGroup.controls.endDate.valid && !mainFormGroup.get('endDate').hasError('required')"
+                                    class="mensaje-error-control">{{invalidEndDateMessage}}</span>
+                                <span *ngSwitchCase="mainFormGroup.hasError('datesNotSortedCorrectly')"
+                                    class="mensaje-error-control">{{invalidEndDateOrderMessage}}</span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row pull-right" style="margin-bottom: 15px;">
+                        <div class="col-sm-3">
+                            <button (click)="firstSearch(false)">
+                                <span>Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="grid form-group mt-2">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="grid-title">
+                                        <td class="grid-title-item">Calificación</td>
+                                        <td class="grid-title-item">Fecha</td>
+                                        <td class="grid-title-item">Usuario</td>
+                                    </tr>
+                                </thead>
+                                <ng-container
+                                    *ngIf="foundResults==null || foundResults.length==0; then hideGrid else showGrid">
+                                </ng-container>
+                            </table>
+                            <ng-template #hideGrid>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3">No se encontraron registros.</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                            <ng-template #showGrid>
+                                <tbody *ngFor="let item of foundResults;let rownum=index">
+                                    <tr>
+                                        <td>{{item.Qualification}}</td>
+                                        <td>{{item.Date | date:'dd/MM/yyyy, h:mm a' }}</td>
+                                        <td>{{item.User}}</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                        </div>
+                        <div class="row" *ngIf="foundResults!=null && foundResults.length!=0">
+                            <div class="col-xs-12 col-12">
+                                <ngb-pagination [(page)]="filter.PageNumber" [pageSize]="filter.LimitPerPage"
+                                    [collectionSize]="totalItems" (pageChange)="pageChanged()">
+                                    <ng-template ngbPaginationPrevious>Anterior</ng-template>
+                                    <ng-template ngbPaginationNext>Siguiente</ng-template>
+                                </ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="" (click)="reference.close(contractor)"><span>Volver</span></button>
+    <button *ngIf="canEvaluateCredit" class="full-color" (click)="evaluate()">
+        <span>Evaluar</span>
+    </button>
+</div>

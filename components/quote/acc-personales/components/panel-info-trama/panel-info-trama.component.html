@@ -1,0 +1,35 @@
+<div class="panel-info-trama">
+    <panel-widget
+      title="DATOS DE  TRAMA">
+  
+      <div class="row">
+        <div class="col-sm-6">
+          <form-input-file
+            label="Trama"
+            [(value)]="trama.excelSubir"
+            [siniestralidad]="false"
+            [required]="true"
+            [(cotizacion)]="cotizacion"
+            onclick="clickClearExcel()"
+          ></form-input-file>
+        </div>
+        <div class="col-sm-3">
+          <form-button
+            label="Validar"
+            [inlineInput]="true"
+            (click)="validarExcel(true)"
+        ></form-button>        
+      </div>
+      <div hidden class="col-sm-1"  *ngIf="(this.cotizacion.modoVista == this.CONSTANTS.MODO_VISTA.EXCLUIR)">
+        <form-button
+          label="Ver Cupones"
+          [inlineInput]="true"
+          (click)="verCupones()"
+          ></form-button>
+        </div>
+  
+      </div>
+  
+    </panel-widget>
+  </div>
+  

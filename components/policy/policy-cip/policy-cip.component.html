@@ -1,0 +1,293 @@
+<div class="form-group row">
+    <div class="col-lg-3"
+         *ngIf="policyData.flagTramite != 1">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-sm-2 col-md-2 col-lg-3"
+         *ngIf="policyData.flagTramite == 1">
+    </div>
+    <div [ngClass]="policyData.flagTramite == 1 ? 'col-sm-8 col-md-8 col-lg-6' : 'col-lg-9'">
+        <div class="container-fluid"
+             style="margin: 40px 0;">
+            <div class="container soat-container">
+                <!-- <div *ngIf="successfullPayment">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            El proceso de su compra ya fue finalizado.
+                        </h2>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch" (click)="goToMain()">
+                                <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+                                Realizar otra Compra
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div *ngIf="loading && !successfullPayment">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            Por favor espere unos segundos mientras generamos su código de pago...
+                        </h2>
+                    </div>
+                </div>
+
+                <div
+                     *ngIf="!loading && approve && valid && !successfullPayment && !existentecip && !pagadocip && !expiradocip">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            ¡Estás a punto de culminar la compra {{ desTransaction }}!
+                        </h2>
+                    </div>
+                    <p>
+                        Acércate dentro de las próximas 24 horas con tu código de pago al
+                        establecimiento elegido de tu preferencia para pagar la {{transac}}
+                        de sus pólizas.
+                    </p>
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(true, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!loading && approve && valid && !successfullPayment && existentecip">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            ¡El cip ya fue generado para la compra {{ desTransaction }}!
+                        </h2>
+                    </div>
+                    <p>
+                        Acércate dentro de las próximas 24 horas con tu código de pago, código CIP {{cipNumber}} al
+                        establecimiento elegido de tu preferencia para pagar la {{transac}}
+                        de sus pólizas.
+                    </p>
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(true, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!loading && approve && valid && !successfullPayment && pagadocip">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            ¡El cip ya fue pagado!
+                        </h2>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(true, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!loading && approve && valid && !successfullPayment && expiradocip">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            ¡El cip ya ha expirado!
+                        </h2>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(true, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!loading && !approve && valid && !successfullPayment">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            Lamentablemente el código de pago no se realizó satisfactoriamente.
+                        </h2>
+                    </div>
+                    <p>
+                        Estimado cliente, ha ocurrido un error al intentar comunicarnos con la
+                        entidad que seleccionaste, vuelve a intentar nuevamente por favor
+                    </p>
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(false, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Volver a Intentar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!loading && !approve && !valid && !successfullPayment">
+                    <div class="soat-header">
+                        <h2 class="title">
+                            No se realizó la generación de Código de Pago.
+                        </h2>
+                    </div>
+                    <p>
+                        Lamentablemente, los valores ingresados para la {{transac}} no cumplen con las
+                        validaciones necesarias:
+                    </p>
+                    <!-- <p *ngFor="let message of messages">- {{ message }}</p> -->
+                    <div class="row justify-content-center">
+                        <div class="col soat-text-align-center space">
+                            <button class="soat-button ripple stretch"
+                                    (click)="goToMain(false, policyData.transaccion)">
+                                <i class="fa fa-circle-o-notch"
+                                   *ngIf="loading"></i>
+                                Volver a Intentar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <ng-template #payment>
+                <div *ngIf="this.valMixSAPSA == 1 && this.epsItem.NCODE == '3'; else valSCTRMIX">
+                    <div class="modal-container modal-lg"
+                         style="width: 874px !important;height: 924px;background-color: white;border-radius: 0.3rem;max-width: none !important;">
+                        <div class="modal-header"
+                             style="color: #27246d;border-bottom: none !important;">
+                            <h4 style="color: #27246d;border-bottom: none !important;font-size: 21px;margin-left: 10px;"
+                                class="modal-title pull-left">PAGOEFECTIVO</h4>
+                            <button type="button"
+                                    class="close pull-right"
+                                    aria-label="Close"
+                                    style="border: none !important;"
+                                    (click)="modalRef.hide()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div
+                             style="background-color: #edf6ff;padding: 6px;width: 296px;display: flex;align-items: center;margin-left: 25px;border-radius: 0.3rem;">
+                            <img src="assets/icons/cipInformation.png"
+                                 alt="sctrPENSION"
+                                 style="width: 21px;margin-right: 10px;" />
+                            <span style="color: #27246d;text-transform: none !important;font-weight: bold;">Se genera 1
+                                código CIP por cada producto</span>
+                        </div>
+                        <div class="modal-body"
+                             style="display: flex;">
+                            <div style="flex: 1;">
+                                <div class="row"
+                                     style="margin-left: -7px">
+                                    <div class="col-sm">
+                                        <h5 style="color: #5790d3;">
+                                            <img src="assets/images/SCTR_SALUD.png"
+                                                 alt="sctrSALUD"
+                                                 style="width: 36px;" />
+                                            SCTR SALUD
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="iframe-container"
+                                     id="scroller"
+                                     style="height: 50vh;width: 398px;">
+                                    <iframe [src]="paymentUrl_Salud"
+                                            width="100%"
+                                            height="100%"
+                                            frameborder="0"></iframe>
+                                </div>
+                            </div>
+                            <div class="divider"
+                                 style="margin: 0 14px;background-color: #ccc;width: 1px;"></div>
+                            <div style="flex: 1;">
+                                <div class="row"
+                                     style="margin-left: -6px;">
+                                    <div class="col-sm">
+                                        <h5 style="color: #ff9a3b;">
+                                            <img src="assets/images/SCTR_PENSION.png"
+                                                 alt="sctrPENSION"
+                                                 style="width: 34px;" />
+                                            SCTR PENSIÓN
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="iframe-container"
+                                     id="scroller"
+                                     style="height: 50vh;width: 398px;">
+                                    <iframe [src]="paymentUrl_Pension"
+                                            width="100%"
+                                            height="100%"
+                                            frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row justify-content-center">
+                                <div class="col soat-text-align-center">
+                                    <button class="soat-button ripple stretch"
+                                            (click)="modalRef.hide()">
+                                        <i class="fa fa-circle-o-notch"
+                                           *ngIf="loading"></i>
+                                        Cerrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #valSCTRMIX>
+                    <div class="modal-header">
+                        <h4 class="modal-title pull-left">PAGOEFECTIVO</h4>
+                        <button type="button"
+                                class="close pull-right"
+                                aria-label="Close"
+                                (click)="modalRef.hide()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body iframe">
+                        <div id="scroller"
+                             style="height: 50vh; width: 100%;">
+                            <iframe [src]="paymentUrl"
+                                    width="100%"
+                                    height="100%"
+                                    frameborder="0"></iframe>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row justify-content-center">
+                            <div class="col soat-text-align-center">
+                                <button class="soat-button ripple stretch"
+                                        (click)="modalRef.hide()">
+                                    <i class="fa fa-circle-o-notch"
+                                       *ngIf="loading"></i>
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ng-template>
+
+        </div>
+    </div>
+    <!-- Pantalla de carga -->
+    <!-- <div [hidden]="!loading" class="loadingScreen">
+	<div style="display:flex;height: 100%;width:100%">
+		<i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+	</div>
+</div> -->

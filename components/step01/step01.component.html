@@ -1,0 +1,123 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row hidden-xs-down">
+        <div class="col-lg-12 ">
+          <div class="creaunsoatmanual">
+            <a>{{ mainTitle }}</a>
+          </div>
+        </div>
+      </div>
+      <hr class="linea" />
+      <div class="form-group row">
+        <div class="col-lg-7">
+          <app-title-step
+            actual="1"
+            titulo="Ingresa la placa del contratante"
+            [anterior]="false"
+          ></app-title-step>
+          <div class="col-md-12">
+            <div class="placa">
+              <input
+                type="text"
+                class="form-control input-placa"
+                maxlength="{{ longitudPlaca }}"
+                placeholder="XXX XXX"
+                [(ngModel)]="placa"
+                [disabled]="bValidar"
+              />
+              <div *ngIf="bValidado && !bValido" class="mensaje-placa">
+                <!--<p>Ups! No encontramos este n&uacute;mero de placa en nuestro sistema de datos. Por favor, verifica que hayas ingresado el n&uacute;mero correcto de caracteres: 5 &oacute; 6.</p>-->
+                <p>{{ mensaje }}</p>
+              </div>
+              <button
+                [disabled]="bValidar"
+                type="button"
+                class="btn btn-validar-placa"
+                (click)="validarPlaca()"
+              >
+                Validar
+              </button>
+            </div>
+            <div class="img-valida-placa">
+              <img alt="" *ngIf="bLoading" src="assets/icons/loading.gif" />
+              <img
+                alt=""
+                *ngIf="bValidado && bValido"
+                src="assets/icons/verify_form.png"
+                alt="Correcto"
+              />
+              <!---->
+              <img
+                alt=""
+                *ngIf="bValidado && !bValido"
+                src="assets/icons/incorrect_form.png"
+                alt="Incorrecto"
+              />
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="tipo-vehiculo">
+            <div class="imagenes">
+              <img
+                *ngIf="bTipoVehiculo"
+                src="assets/icons/soat_big_car.svg"
+                class="img-fluid"
+                alt="auto"
+              />
+              <img
+                *ngIf="!bTipoVehiculo"
+                src="assets/icons/soat_bigmoto.svg"
+                class="img-fluid"
+                alt="moto"
+              />
+            </div>
+            <div class="botones">
+              <button
+                type="button"
+                class="btn-white"
+                [ngClass]="{ 'btn-selected': bTipoVehiculo == true }"
+                (click)="onSetTipoVehiculo(true)"
+              >
+                TENGO AUTO
+              </button>
+              <button
+                type="button"
+                class="btn-white"
+                [ngClass]="{ 'btn-selected': bTipoVehiculo == false }"
+                (click)="onSetTipoVehiculo(false)"
+              >
+                TENGO MOTO
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" [hidden]="true">
+        <div class="mensaje">
+          <div class="imagen">
+            <img alt="" src="assets/icons/que_es_soat.svg" alt="SOAT" />
+          </div>
+          <div class="texto">
+            <div class="pregunta">
+              <p>P: ¿Que es SOAT electr&oacute;nico?</p>
+            </div>
+            <div class="respuesta">
+              <p>
+                R: Es tener disponible tu SOAT Security todos los d&iacute;as a
+                todas horas sin tener que manejar dinero en efectivo a un solo
+                click de distancia desde tu celular, tu lugar de trabajo o la
+                comodidad de tu hogar. Todo de manera r&aacute;pida y segura.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,511 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   MODULE-COST-CENTER.COMPONENT.HTML                                    */
+/*  DESCRIPCIÓN         :   MODULO CENTRO DE COSTOS                                              */
+/*  AUTOR               :   MATERIA GRIS - MAXIMO JOSUE CORONEL FLORES                           */
+/*  FECHA               :   29-09-2022                                                           */
+/*  VERSIÓN             :   1.0 - MODULO CENTRO DE COSTOS                                        */
+/************************************************************************************************-->
+
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">CENTRO DE COSTOS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTROS PRINCIPALES -->
+            <div class="filter">
+                <div class="row"
+                     [formGroup]="filterForm">
+                    <div class="col-sm-9">
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <span>RAMOS</span>
+                                        <select class="form-control"
+                                                formControlName="NBRANCH"
+                                                (change)="seleccionarRamos($event.target.value)">
+                                            <option *ngFor="let x of ramosTodos"
+                                                    value="{{ x.NBRANCH }}">{{ x.SDESCRIPT }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>PRODUCTOS</span>
+                                        <select class="form-control"
+                                                formControlName="NPRODUCT">
+                                            <option value="0">TODOS</option>
+                                            <option *ngFor="let x of productosTodos"
+                                                    value="{{ x.NPRODUCT }}">{{ x.SDESCRIPT }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>BUSCAR POR FECHA</span>
+                                        <div class="m-2">
+                                            <input class=""
+                                                   type="checkbox"
+                                                   [checked]="temp_centroCostos_is_checked"
+                                                   (change)="incluirFecha(chkEnableCentroCostos.checked)"
+                                                   #chkEnableCentroCostos
+                                                   formControlName="CFLAGALLN">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 mt-3 mb-3">
+                                        <span class="">FECHA INICIO</span>
+                                        <input class="form-control"
+                                               type="text"
+                                               maxlength="10"
+                                               placeholder="Ingrese la fecha de inicio"
+                                               formControlName="DFECINI"
+                                               #dp="bsDatepicker"
+                                               bsDatepicker
+                                               DateDirective
+                                               [bsConfig]="bsConfig" />
+                                    </div>
+                                    <div class="col-sm-4 mt-3 mb-3">
+                                        <span class="">FECHA FIN</span>
+                                        <input class="form-control"
+                                               type="text"
+                                               maxlength="10"
+                                               placeholder="Ingrese la fecha de fin"
+                                               formControlName="DFECFIN"
+                                               #dp="bsDatepicker"
+                                               bsDatepicker
+                                               DateDirective
+                                               [bsConfig]="bsConfig" />
+                                    </div>
+                                    <div class="col-sm-4 mt-3 mb-3">
+                                        <span>&nbsp;</span>
+                                        <button class="full-color" (click)="buscarCentroCostos()">
+                                            <span>BUSCAR</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <div>
+                                    <span>CENTRO DE COSTOS</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el Código"
+                                           formControlName="CODCC"
+                                           maxlength="11">
+                                    <button class="full-color mt-3" (click)="buscarDocumento()">
+                                        <span>BUSCAR C.C.</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-1 mt-2">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <button class="full-colorN" (click)="mostrarModalAgregar(contentAgregar)">
+                                        <span>AGREGAR</span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="full-colorN" (click)="mostrarModalAsignar(contentAsignar)">
+                                        <span>ASIGNAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LISTADO DE CENTRO DE COSTOS GENERALES -->
+            <div class="card">
+                <div class="row m-2">
+                    <div class="grid form-group">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="grid-title">
+                                        <td class="grid-title-item text-center">RIESGO</td>
+                                        <td class="grid-title-item text-center">PRODUCTO</td>
+                                        <td class="grid-title-item text-center">CÓDIGO CORE</td>
+                                        <td class="grid-title-item text-center">FECHA CREACIÓN</td>
+                                        <td class="grid-title-item text-center">USUARIO</td>
+                                    </tr>
+                                </thead>
+                                <ng-container *ngIf="listToShow==null || listToShow.length==0; then hideGrid1 else showGrid1"></ng-container>
+                            </table>
+                            <ng-template #hideGrid1>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="5">No se encontraron registros.</td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                            <ng-template #showGrid1>
+                                <tbody *ngFor="let item of listToShow"
+                                       style="cursor: pointer;">
+                                    <tr>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SRIESGO }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SPRODUCT }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SCENCOS }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.DFECREG }}
+                                        </td>
+                                        <td class="data-table-tr-td text-center">
+                                            {{ item.SUSER }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div *ngIf="listToShow!=null && listToShow.length>0"
+                         class="row"
+                         style="display:flex">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- AGREGAR NUEVO CENTRO DE COSTOS -->
+            <ng-template #contentAgregar
+                         let-modal>
+                <div class="modal-header">
+                    <h4 class="modal-title"
+                        id="modal-basic-title">
+                        NUEVO CENTRO DE COSTOS
+                    </h4>
+                </div>
+                <div class="modal-body pt-0">
+                    <form [formGroup]="newForm">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>RAMOS</span>
+                                <select class="form-control"
+                                        formControlName="NBRANCH"
+                                        (change)="seleccionarRamosAgregar()">
+                                    <option *ngFor="let x of ramos"
+                                            value="{{ x.NBRANCH }}">{{ x.SDESCRIPT }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>PRODUCTOS</span>
+                                <select class="form-control"
+                                        formControlName="NPRODUCT"
+                                        [ngClass]="{ 'is-invalid': submitted && controlRegister.NCODGRU.errors }">
+                                    <option [value]="0"
+                                            selected
+                                            class="d-none">SELECCIONE</option>
+                                    <option *ngFor="let x of productos"
+                                            value="{{ x.NPRODUCT }}">{{ x.SDESCRIPT }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>DOCUMENTO</span>
+                                <input class="form-control"
+                                       type="text"
+                                       placeholder="Ingrese el documento"
+                                       formControlName="SCLINUMDOCU"
+                                       maxlength="11"
+                                       (keypress)='soloNumero($event)'>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>&nbsp;</span>
+                                <button class="full-color" (click)="buscarModalAgregar()">
+                                    <span>BUSCAR</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="color-purple">
+                                <h5 class="modal-title"
+                                    id="modal-basic-title">Datos nuevos para Centro de Costos</h5>
+                            </div>
+                            <div class="row pd-11">
+                                <div class="col-sm-12 d-flex">
+                                    <span class="w-50">CONTRATANTE</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el contratante"
+                                           formControlName="CONTRATA">
+                                </div>
+                                <div class="col-sm-12 d-flex">
+                                    <span class="w-50">TIPO FACTURACIÓN</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el tipo de facturación"
+                                           formControlName="SFACCENCOS">
+                                </div>
+                                <div class="col-sm-12 d-flex">
+                                    <span class="w-50">CÓDIGO</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el código de centro de costos"
+                                           formControlName="CODCC">
+                                </div>
+                                <div class="col-sm-12 d-flex">
+                                    <span class="w-50">DESCRIPCIÓN</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese la descripción"
+                                           formControlName="SDESCENCOS">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary buttonN"
+                            (click)="modal.dismiss('Cross click')">
+                        Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary ml-2 buttonN"
+                            (click)="agregarCentroCosto()">
+                        Guardar
+                    </button>
+                </div>
+            </ng-template>
+
+            <!-- ASIGNAR CENTRO DE COSTOS -->
+            <ng-template #contentAsignar
+                         let-modal>
+                <div class="modal-header">
+                    <h4 class="modal-title"
+                        id="modal-basic-title">
+                        ASIGNAR CENTRO DE COSTOS
+                    </h4>
+                </div>
+                <div class="modal-body pt-0">
+                    <form [formGroup]="assignForm">
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span>RAMO</span>
+                                    <select class="form-control"
+                                            formControlName="NBRANCH"
+                                            (change)="seleccionarRamosAsignar()">
+                                        <option *ngFor="let x of ramos"
+                                                value="{{ x.NBRANCH }}">{{ x.SDESCRIPT }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span>PRODUCTOS</span>
+                                    <select class="form-control"
+                                            formControlName="NPRODUCT">
+                                        <option [value]="0"
+                                                selected
+                                                class="d-none">SELECCIONE</option>
+                                        <option *ngFor="let x of productos"
+                                                value="{{ x.NPRODUCT }}">{{ x.SDESCRIPT }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span>CÓDIGO CENTRO DE COSTOS</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el centro de costos"
+                                           formControlName="CODCC"
+                                           maxlength="11">
+                                </div>
+                                <div class="col-sm-6">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="buscarAsignarCC()">
+                                        <span>BUSCAR CÓDIGO</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="color-purple">
+                                    <h5 class="modal-title"
+                                        id="modal-basic-title">Centros de costos existentes</h5>
+                                </div>
+                                <div class="row tab-asig">
+                                    <div class="table-responsive table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title"></tr>
+                                            </thead>
+                                            <ng-container
+                                                          *ngIf="listToShowAsig==null || listToShowAsig.length==0; then hideGrid1 else showGrid1"></ng-container>
+                                        </table>
+                                        <ng-template #hideGrid1>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center">No se encontraron registros.</td>
+                                                </tr>
+                                            </tbody>
+                                        </ng-template>
+                                        <ng-template #showGrid1>
+                                            <tbody style="cursor: pointer;">
+                                                <tr *ngFor="let item of listToShowAsig">
+                                                    <td class="data-table-tr-td d-flex">
+                                                        <input class="chkAsignar"
+                                                               type="checkbox"
+                                                               [checked]="temp_centroCostos_is_checked"
+                                                               (change)="comprobarCenCos($event.target, item)"
+                                                               #chkEnableAsignar
+                                                               style="transform: scale(1.5);">
+                                                        <span style="font-size: 15px;padding-left: 15px;">
+                                                            {{ item.SRIESGO }} - {{item.SCENCOS}}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span>TIPO BÚSQUEDA</span>
+                                    <select class="form-control"
+                                            formControlName="NTIPOBUSQ"
+                                            (change)="tipoBusqueda()">
+                                        <option [value]="0"
+                                                selected>POR PÓLIZA</option>
+                                        <option [value]="1">POR FECHA</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span>PÓLIZA</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           placeholder="Ingrese el número de póliza"
+                                           formControlName="NPOLICY"
+                                           maxlength="11"
+                                           (keypress)='soloNumero($event)'>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span class="">FECHA INICIO</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           maxlength="10"
+                                           placeholder="Ingrese la fecha de inicio"
+                                           formControlName="DFECINI"
+                                           #dp="bsDatepicker"
+                                           bsDatepicker
+                                           DateDirective
+                                           [bsConfig]="bsConfig" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <span class="">FECHA FIN</span>
+                                    <input class="form-control"
+                                           type="text"
+                                           maxlength="10"
+                                           placeholder="Ingrese la fecha de fin"
+                                           formControlName="DFECFIN"
+                                           #dp="bsDatepicker"
+                                           bsDatepicker
+                                           DateDirective
+                                           [bsConfig]="bsConfig" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="buscarAsignarPoliza()">
+                                        <span>BUSCAR PÓLIZA</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="color-purple">
+                                    <h5 class="modal-title"
+                                        id="modal-basic-title">Asignación de Póliza</h5>
+                                </div>
+                                <div class="row tab-asig">
+                                    <div class="table-responsive table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title"></tr>
+                                            </thead>
+                                            <tbody style="cursor: pointer;">
+                                                <tr class="mostrar-ocultar"
+                                                    style="display:none">
+                                                    <td class="data-table-tr-td d-flex">
+                                                        <input type="checkbox"
+                                                               [checked]="checkAll"
+                                                               (click)="seleccionarTodos(chkEnablePolizaTotal.checked, tablaPoliza)"
+                                                               style="transform: scale(1.5);"
+                                                               #chkEnablePolizaTotal>
+                                                        <span style="font-size: 15px;padding-left: 15px;">
+                                                            Seleccionar Todos
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <ng-container
+                                                              *ngIf="listToShowPoliza==null || listToShowPoliza.length==0; then hideGrid2 else showGrid2"></ng-container>
+                                            </tbody>
+                                        </table>
+                                        <ng-template #hideGrid2>
+                                            <tr>
+                                                <td class="text-center">No se encontraron registros.</td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template #showGrid2>
+                                            <tr *ngFor="let item of listToShowPoliza">
+                                                <td class="data-table-tr-td d-flex">
+                                                    <input class="chkPoliza"
+                                                           type="checkbox"
+                                                           [checked]="checkOnly"
+                                                           (click)="comprobarPoliza(chkEnablePoliza.checked, item)"
+                                                           style="transform: scale(1.5);"
+                                                           #chkEnablePoliza>
+                                                    <span style="font-size: 15px;padding-left: 15px;">
+                                                        {{ item.SBRANCH }} - {{item.SPRODUCT}} - N° de Póliza:
+                                                        {{item.NPOLICY}} - {{item.FECHA}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary buttonN"
+                            (click)="modal.dismiss('Cross click')">
+                        Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary ml-2 buttonN"
+                            (click)="guardarAsignacion()">
+                        Guardar
+                    </button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

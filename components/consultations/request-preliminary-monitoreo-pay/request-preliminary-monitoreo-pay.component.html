@@ -1,0 +1,160 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Monitoreo de Reportes Definitivos Cobranzas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="filterForm">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>RAMO</span>
+                                <select formControlName="branch" class="minimal">
+                                    <option value="0">TODOS</option>
+                                    <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                        {{item.Description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>INICIO DE PROCESO(*)</span>
+                                <input type="text" formControlName="startDate" #dp="bsDatepicker"
+                                  bsDatepicker DateDirective (focus)="cleanValidation()" [bsConfig]="bsConfig"
+                                  [(bsValue)]="bsValueIni" value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}"
+                                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                  readonly />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                                    <span *ngSwitchCase="filterForm.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha inicial es requerida.
+                                    </span>
+                                    <span *ngSwitchCase="!filterForm.controls.startDate.valid && !filterForm.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha
+                                        inicial no es válida.
+                                    </span>
+                                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">La fecha inicial está después de la fecha
+                                        final
+                                    </span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>FIN DE PROCESO(*)</span>
+                                <input type="text" formControlName="endDate" #dp="bsDatepicker"
+                                  bsDatepicker DateDirective (focus)="cleanValidation()"  [bsConfig]="bsConfig"
+                                  [(bsValue)]="bsValueFin" value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}"
+                                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid}"
+                                  readonly />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                                    <span *ngSwitchCase="filterForm.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha final es requerida.
+                                    </span>
+                                    <span *ngSwitchCase="!filterForm.controls.endDate.valid && !filterForm.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha
+                                        final no es válida.
+                                    </span>
+                                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">La fecha final está antes de la fecha
+                                        inicial.
+                                    </span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="pull-right" (click)="generateFindMonitor()">
+                                    <span class="spanBtn">Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">ESTADO</td>
+                                    <td class="grid-title-item">ID. PROCESO</td>
+                                    <td class="grid-title-item">ID.</td>
+                                    <td class="grid-title-item">RAMO</td>
+                                    <td class="grid-title-item">DEFINITIVO</td>
+                                    <td class="grid-title-item">INICIO PERIODO</td>
+                                    <td class="grid-title-item">FIN PERIODO</td>
+                                    <td class="grid-title-item">FECHA PROCESO</td>
+                                    <td class="grid-title-item">USUARIO</td>
+                                    <td class="grid-title-item">PROCESO</td>
+                                    <td class="grid-title-item">DESCARGA</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="preliminaryResults==null || preliminaryResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="12">No ha generado ninguna validación.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="text-center">
+                                        <img *ngIf="item.NSTATUSPROC == 1" src="assets/icons/loadingtc.gif" title="Cargando" alt="Cargando" />
+                                        <img *ngIf="item.NSTATUSPROC == 2" src="assets/icons/verifyct.png" title="Finalizado" alt="Finalizado" />
+                                        <img *ngIf="item.NSTATUSPROC == 3" src="assets/icons/incorrecttc.png" title="Incorrecto" alt="Incorrecto" />
+                                        <img *ngIf="item.NSTATUSPROC == 4" src="assets/icons/warntc.png" title="Reporte sin datos" alt="Reporte sin datos"/>
+                                    </td>
+                                    <td>{{ item.IDMONITOR }}</td>
+                                    <td>{{ item.NPRELCAB_ID }}</td>
+                                    <td>{{ item.SBRANCH_NAME }}</td>
+                                    <td>{{ item.SREPORT_TYPE }}</td>
+                                    <td>{{ item.DSTART_DATE | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.DEND_DATE | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.DCOMPDATE | date:'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.SUSERNAME }}</td>
+                                    <td>
+                                        <P *ngIf= "item.STIPO == 1">P</P>
+                                        <P *ngIf= "item.STIPO == 2">D</P>
+                                    </td>
+                                    <td class="text-center">
+                                        <img *ngIf="item.NSTATUSPROC == 2" src="assets/icons/download2.png" title="Descargar" alt="Descargar"
+                                          style="cursor: pointer;" (click)="getFilePreliminaryReport(item.IDMONITOR)"
+                                          style="padding: 0px 18px 0px 18x;" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <!--Aqui se realiza la paginación-->
+                <ng-container *ngIf="preliminaryResults!=null && preliminaryResults.length>0; then showPagination"></ng-container>
+                <ng-template #showPagination>
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+      <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

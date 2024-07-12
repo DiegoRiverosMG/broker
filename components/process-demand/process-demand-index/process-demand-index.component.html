@@ -1,0 +1,208 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Proceso a demanda</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle">Datos del proceso</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <span>RAMO</span>
+                                        <ng-select [items]="branchList" (change)="onSelectBranch()"
+                                            bindLabel="SDESCRIPT" [disabled]="stateSearch" bindValue="NBRANCH"
+                                            [(ngModel)]="inputsDemandProcess.NBRANCH" class="border-ng"
+                                            [clearable]="true" placeholder="Todos" dropdownPosition="bottom"
+                                            notFoundText="No hay resultados">
+                                        </ng-select>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <span>PRODUCTO</span>
+                                        <ng-select [items]="productList" bindLabel="DES_PRODUCT"
+                                            [disabled]="stateSearch" bindValue="COD_PRODUCT"
+                                            [(ngModel)]="inputsDemandProcess.NPRODUCT" class="border-ng"
+                                            [clearable]="true" placeholder="Todos" dropdownPosition="bottom"
+                                            notFoundText="No hay resultados">
+                                        </ng-select>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <span>NRO. PÓLIZA</span>
+                                        <input type="text" placeholder="Nro. Póliza"
+                                            [(ngModel)]="inputsDemandProcess.NPOLICY" [disabled]="stateSearch"
+                                            (keyup.enter)="searchProcess('SEARCH')" OnlyNumberDirective
+                                            (keypress)="policyKeyPress($event)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>DESDE</span>
+                                <input id="fechaEfecto" type="text" #bsDatepicker placeholder="dd/mm/yyyy"
+                                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                    value="{{ bsValueIni.toString() | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                    [disabled]="stateSearch" />
+                                <ng-container [ngSwitch]="valueErrorDate">
+                                    <span class="mensaje-error-control" *ngSwitchCase="'required'">La fecha de
+                                        efecto es requerida</span>
+                                    <span class="mensaje-error-control" *ngSwitchCase="'badFormat'">Formato de fecha
+                                        incorrecta</span>
+                                    <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>HASTA</span>
+                                <input id="fechaEfecto" type="text" #bsDatepicker placeholder="dd/mm/yyyy"
+                                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueFin"
+                                    value="{{ bsValueFin.toString() | date:'dd/MM/yyyy' }}" [(maxDate)]="bsValueFinMax"
+                                    [disabled]="stateSearch" />
+                                <ng-container [ngSwitch]="valueErrorDate">
+                                    <span class="mensaje-error-control" *ngSwitchCase="'required'">La fecha de
+                                        efecto es requerida</span>
+                                    <span class="mensaje-error-control" *ngSwitchCase="'badFormat'">Formato de fecha
+                                        incorrecta</span>
+                                    <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                </ng-container>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="subtitle">Documento</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <span class="margin-bottom">Tipo Documento</span>
+                                        <select [(ngModel)]="inputsDemandProcess.SBILLTYPE" class="minimal">
+                                            <option *ngFor="let item of documentTypeSntList" value="{{item.SBILLTYPE}}">
+                                                {{item.SDOCUMENT_TYPE}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>Serie</span>
+                                        <input type="text" [(ngModel)]="inputsDemandProcess.NSERIENUM" placeholder="0"
+                                            (ngModelChange)="changeSerie($event)"
+                                            (keyup.enter)="searchProcess('SEARCH')" />
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <span>Número</span>
+                                        <input type="text" [(ngModel)]="inputsDemandProcess.NBILLNUM" placeholder="0"
+                                            (keypress)="numberKeyPress($event)"
+                                            (keyup.enter)="searchProcess('SEARCH')" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <input type="text" style="margin-top:0px !important" placeholder="Correo a enviar"
+                                    [(ngModel)]="inputsDemandProcess.SMAIL">
+                            </div>
+                            <div class="col-sm-3">
+                                <button (click)="sendSunat()" class="full-color">
+                                    <span>Enviar</span>
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row pull-right">
+                                    <button (click)="searchProcess('SEARCH')" class="full-color">
+                                        <span>Buscar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td><input type="checkbox" #checkboxes class="checkbox" (change)="selectAll($event)">
+                                </td>
+                                <td class="grid-title-item" style="text-align: left;">Ramo</td>
+                                <td class="grid-title-item" style="text-align: left;">Producto</td>
+                                <td class="grid-title-item">Póliza</td>
+                                <td class="grid-title-item">Documento</td>
+                                <td class="grid-title-item">Monto</td>
+                                <td class="grid-title-item">Fecha de emisión</td>
+                                <td class="grid-title-item" style="text-align: left;">Estado</td>
+                                <td style="display:none">Tipo documento</td>
+                                <td style="display:none">Factura proforma</td>
+                                <td style="display:none">Número serie</td>
+                            </tr>
+                        </thead>
+
+                        <div *ngIf="existResults; then showGrid else hideGrid"></div>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr>
+                                <td colspan="7">No se encontraron registros</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td><input type="checkbox" #checkboxes class="checkbox" [(ngModel)]="item.chk"
+                                        id="checkbox{{row_no+1}}" (change)="selectOne(item, row_no+1)"></td>
+                                <td style="text-align: left;">{{ item.SBRANCH }} </td>
+                                <td style="text-align: left;">{{ item.SPRODUCT }} </td>
+                                <td>{{ item.NPOLICY }} </td>
+                                <td>{{ item.NBILLNUM }} </td>
+                                <td>{{ item.NPREMIUM }} </td>
+                                <td>{{ item.DSTATDATE}} </td>
+                                <td style="text-align: left;">{{ item.SSTATE}} </td>
+                                <td style="display:none">{{ item.SBILLTYPE}} </td>
+                                <td style="display:none">{{ item.SBILLING}} </td>
+                                <td style="display:none">{{ item.NINSUR_AREA}} </td>
+                                <td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+            </div>
+            <div [hidden]="!isLoading" class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

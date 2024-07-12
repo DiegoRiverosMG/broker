@@ -1,0 +1,332 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   INTERFACE-DEPENDENCE.COMPONENT.HTML                                  */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   16-09-2022                                                           */
+/*  VERSIÓN             :   2.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/***********************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">DEPENDENCIA DE INTERFAZ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [formGroup]="filterForm">
+            <div class="col-sm-3">
+                <span>ORIGEN</span>
+                <select class="form-control" (change)="seleccionarOrigen($event.target.value)" formControlName="NNUMORI">
+                    <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>RAMO</span>
+                <select class="form-control" formControlName="NBRANCH">
+                    <!-- <option value="0" disabled>TODOS</option> -->
+                    <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="listarDependenciasInterfaces()">
+                    <span>BUSCAR</span>
+                </button>
+            </div>
+            <div class="col-sm-3">
+                <span>&nbsp;</span>
+                <button class="full-color" (click)="mostrarModalAgregar(contentAgregar)">
+                    <span>AGREGAR</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">RAMO</td>
+                                    <td class="grid-title-item text-center">INTERFAZ</td>
+                                    <td class="grid-title-item text-center">INTERFAZ PREDECESORA</td>
+                                    <td class="grid-title-item text-center">EJECUCIÓN SIMULTÁNEA</td>
+                                    <td class="grid-title-item text-center">NÚMERO DE REPETICIONES</td>
+                                    <td class="grid-title-item text-center">TIEMPO DE ESPERA (EN MINUTOS)</td>
+                                    <td class="grid-title-item text-center"></td>
+                                    <td class="grid-title-item text-center"></td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="listToShow == null || listToShow.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="7">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShow">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SDESCRIPT }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MVT_CDESCRI_1 }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.MVT_CDESCRI_2 ? item.MVT_CDESCRI_2 : 'NINGUNO' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NASINCRONO == 0 ? 'NO' : 'SÍ' }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NREPIT }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.NTESPERA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="mostrarModalEditar(contentEditar, item)">
+                                            <i title="Editar" style="cursor: pointer;" class="fa fa-edit fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        <a (click)="eliminarDependenciasInterfaces(item)">
+                                            <i title="Eliminar" style="cursor: pointer;" class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="listToShow != null && listToShow.length > 0" class="row" style="display: flex;">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AGREGAR DEPENDENCIA -->
+<ng-template #contentAgregar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            NUEVA DEPENDENCIA DE INTERFAZ
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2" [formGroup]="registerForm">
+                <div class="col-sm-6">
+                    <span>ORIGEN</span>
+                    <select class="form-control" formControlName="NNUMORI" [ngClass]="{'error-validate': submitted && (!registerForm.controls.NNUMORI.valid || registerForm.hasError('required')) && !registerForm.controls.NNUMORI.disabled}">
+                        <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NNUMORI.valid || registerForm.hasError('required')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NNUMORI').hasError('required')" class="mensaje-error-control">
+                            El origen es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>RAMO</span>
+                    <select class="form-control" formControlName="NBRANCH" [ngClass]="{'error-validate': submitted && (!registerForm.controls.NBRANCH.valid || registerForm.hasError('required')) && !registerForm.controls.NBRANCH.disabled}">
+                        <!-- <option value="0" disabled>TODOS</option> -->
+                        <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NBRANCH.valid || registerForm.hasError('required')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NBRANCH').hasError('required')" class="mensaje-error-control">
+                            El ramo es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ (*)</span>
+                    <select class="form-control" formControlName="NCODGRU" [ngClass]="{'error-validate': submitted && (!registerForm.controls.NCODGRU.valid || registerForm.hasError('equalsValues'))}">
+                        <option value="" disabled>SELECCIONE INTERFAZ</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NCODGRU.valid || registerForm.hasError('equalsValues')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NCODGRU').hasError('required')" class="mensaje-error-control">
+                            La interfaz es requerida.
+                        </span>
+                        <span *ngSwitchCase="registerForm.hasError('equalsValues')" class="mensaje-error-control">
+                            La interfaz no puede ser igual a la interfaz predecesora.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ PREDECESORA (*)</span>
+                    <select class="form-control" formControlName="NCODGRUDEP" [ngClass]="{'error-validate': submitted && (!registerForm.controls.NCODGRUDEP.valid || registerForm.hasError('equalsValues'))}">
+                        <option value="" disabled>SELECCIONE INTERFAZ PREDECESORA</option>
+                        <option value="99">NINGUNO</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NCODGRUDEP.valid || registerForm.hasError('equalsValues')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NCODGRUDEP').hasError('required')" class="mensaje-error-control">
+                            La interfaz predecesora es requerida.
+                        </span>
+                        <span *ngSwitchCase="registerForm.hasError('equalsValues')" class="mensaje-error-control">
+                            La interfaz predecesora no puede ser igual a la interfaz.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>NÚMERO DE REPETICIONES (*)</span>
+                    <input class="form-control" type="number" placeholder="NÚMERO DE REPETICIONES" formControlName="NREPIT" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==3) return false;"
+                        [ngClass]="{'error-validate': submitted && (!registerForm.controls.NREPIT.valid || registerForm.hasError('required'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NREPIT.valid || registerForm.hasError('required')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NREPIT').hasError('required')" class="mensaje-error-control">
+                            El número de repeticiones es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>TIEMPO DE ESPERA (EN MINUTOS) (*)</span>
+                    <input class="form-control" type="number" placeholder="TIEMPO DE ESPERA" formControlName="NTESPERA" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==4) return false;"
+                        [ngClass]="{'error-validate': submitted && (!registerForm.controls.NTESPERA.valid || registerForm.hasError('required'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!registerForm.controls.NTESPERA.valid || registerForm.hasError('required')) && !registerForm.valid">
+                        <span *ngSwitchCase="registerForm.get('NTESPERA').hasError('required')" class="mensaje-error-control">
+                            El tiempo de espera es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>EJECUCIÓN SIMULTÁNEA</span>
+                    <div class="m-2">
+                        <input type="checkbox" formControlName="NASINCRONO" [ngClass]="{'error-validate': submitted && (!registerForm.controls.NASINCRONO.valid || registerForm.hasError('required'))}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="agregarDependenciasInterfaces()">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- EDITAR DEPENDENCIA -->
+<ng-template #contentEditar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            EDITAR DEPENDENCIA DE INTERFAZ
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2" [formGroup]="editForm">
+                <div class="col-sm-6">
+                    <span>ORIGEN</span>
+                    <select class="form-control" formControlName="NNUMORI" [ngClass]="{'error-validate': submitted && (!editForm.controls.NNUMORI.valid || editForm.hasError('required')) && !editForm.controls.NNUMORI.disabled}">
+                        <option *ngFor="let x of origen" value="{{ x.mvt_nnumori }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NNUMORI.valid || editForm.hasError('required')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NNUMORI').hasError('required')" class="mensaje-error-control">
+                            El origen es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>RAMO</span>
+                    <select class="form-control" formControlName="NBRANCH" [ngClass]="{'error-validate': submitted && (!editForm.controls.NBRANCH.valid || editForm.hasError('required')) && !editForm.controls.NBRANCH.disabled}">
+                        <option *ngFor="let x of ramos" value="{{ x.NBRANCH }}">{{ x.SBRANCH_DESC }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NBRANCH.valid || editForm.hasError('required')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NBRANCH').hasError('required')" class="mensaje-error-control">
+                            El ramo es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ (*)</span>
+                    <select class="form-control" formControlName="NCODGRU" [ngClass]="{'error-validate': submitted && (!editForm.controls.NCODGRU.valid || editForm.hasError('equalsValues')) && !editForm.controls.NCODGRU.disabled}">
+                        <option value="" disabled>SELECCIONE INTERFAZ</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NCODGRU.valid || editForm.hasError('equalsValues')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NCODGRU').hasError('required')" class="mensaje-error-control">
+                            La interfaz es requerida.
+                        </span>
+                        <span *ngSwitchCase="editForm.hasError('equalsValues')" class="mensaje-error-control">
+                            La interfaz no puede ser igual a la interfaz predecesora.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>INTERFAZ PREDECESORA (*)</span>
+                    <select class="form-control" formControlName="NCODGRUDEP" [ngClass]="{'error-validate': submitted && (!editForm.controls.NCODGRUDEP.valid || editForm.hasError('equalsValues')) && !editForm.controls.NCODGRUDEP.disabled}">
+                        <option value="" disabled>SELECCIONE INTERFAZ PREDECESORA</option>
+                        <option value="99">NINGUNO</option>
+                        <option *ngFor="let x of interfaces" value="{{ x.mvt_ncodgru }}">{{ x.mvt_cdescri }}</option>
+                    </select>
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NCODGRUDEP.valid || editForm.hasError('equalsValues')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NCODGRUDEP').hasError('required')" class="mensaje-error-control">
+                            La interfaz predecesora es requerida.
+                        </span>
+                        <span *ngSwitchCase="editForm.hasError('equalsValues')" class="mensaje-error-control">
+                            La interfaz predecesora no puede ser igual a la interfaz.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>NÚMERO DE REPETICIONES (*)</span>
+                    <input class="form-control" type="number" placeholder="NÚMERO DE REPETICIONES" formControlName="NREPIT" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==3) return false;"
+                        [ngClass]="{'error-validate': submitted && (!editForm.controls.NREPIT.valid || editForm.hasError('required'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NREPIT.valid || editForm.hasError('required')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NREPIT').hasError('required')" class="mensaje-error-control">
+                            El número de repeticiones es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>TIEMPO DE ESPERA (EN MINUTOS) (*)</span>
+                    <input class="form-control" type="number" placeholder="TIEMPO DE ESPERA" formControlName="NTESPERA" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==4) return false;"
+                        [ngClass]="{'error-validate': submitted && (!editForm.controls.NTESPERA.valid || editForm.hasError('required'))}" />
+                    <ng-container [ngSwitch]="true" *ngIf="submitted && (!editForm.controls.NTESPERA.valid || editForm.hasError('required')) && !editForm.valid">
+                        <span *ngSwitchCase="editForm.get('NTESPERA').hasError('required')" class="mensaje-error-control">
+                            El tiempo de espera es requerido.
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="col-sm-6">
+                    <span>EJECUCIÓN SIMULTÁNEA</span>
+                    <div class="m-2">
+                        <input type="checkbox" formControlName="NASINCRONO" [ngClass]="{'error-validate': submitted && (!editForm.controls.NASINCRONO.valid || editForm.hasError('required'))}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="editarDependenciasInterfaces()">
+            Guardar
+        </button>
+    </div>
+</ng-template>

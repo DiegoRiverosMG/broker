@@ -1,0 +1,85 @@
+<div class="panel-table">
+  <div class=" table-responsive">
+    <table class="table  tblbroker {{classTable}}" [class.panel-slim]="slim">
+      <thead>
+        <tr>
+          <ng-template [ngTemplateOutlet]="headerTemplateBefore"></ng-template>
+        </tr>
+        <tr class="{{classRow}}">
+          <th class="{{classCell}} text-center" *ngIf="itemsSelectedChange?.observers?.length">
+            <input type="checkbox" style="width: 18px; height: 18px; cursor: pointer;" (change)="selectAll($event.target.checked)">
+          </th>
+          <th class="{{classCell}} text-center" *ngIf="numeration===true">N°</th>
+          <th class="{{classCell}} text-center" *ngFor="let th of header">
+            {{th}}
+          </th>
+          <ng-template [ngTemplateOutlet]="headerTemplate"></ng-template>
+          <th class="{{classCell}} text-center" *ngIf="verifyAccions() && !detail">
+            {{labelAccions || 'Acciones'}}
+          </th>
+        </tr>
+        <tr>
+          <ng-template [ngTemplateOutlet]="headerTemplateAfter"></ng-template>
+        </tr>
+      </thead>
+      <tbody *ngIf="!!items?.length">
+        <tr class="{{classRow}}" *ngFor="let item of (((pagination || paginationChange?.observers?.length) && !reloadByPagination) ? itemsPerPage : items); let index = index">
+          <th class="{{classCell}} text-center" *ngIf="itemsSelectedChange?.observers?.length">
+            <input type="checkbox" style="width: 18px; height: 18px; cursor: pointer;" [(ngModel)]="item.selected" (change)="selecItem(item)">
+          </th>
+
+          <td class="{{classCell}} text-center" *ngIf="numeration===true">{{index +  1}}</td>
+
+          <ng-template
+            [ngTemplateOutlet]="bodyTemplate"
+            [ngTemplateOutletContext]="{
+              item: item,
+              index: index,
+              indexWithPagination: ((pagination?.currentPage - 1)*pagination?.itemsPerPage || 0) + index
+            }"
+          ></ng-template>
+          <td class="{{classCell}} text-center vertical-center" *ngIf="verifyAccions() && !detail || verifyAccions() && showDelete">
+            <div class="width-{{getAccitionWith()}} panel-table-acciones">
+              <img *ngIf="clickExpand.observers.length && item.showExpand !== false" class="cursor-pointer" style="width: 14px;" src="assets/icons/search-icon.png" (click)="clickExpand.emit(item)" title="Expandir" alt="Expandir" />
+              <img *ngIf="clickDetail.observers.length && item.showDetail !== false && showDetail !== false" class="cursor-pointer" style="width: 20px;" src="assets/icons/see.svg" (click)="clickDetail.emit(item)" title="{{item[fieldDetailTitle] || 'Visualizar'}}" alt="Visualizar" />
+              <img *ngIf="clickFile.observers.length && item.showFile !== false" class="cursor-pointer" style="width: 20px;" src="assets/icons/printertc.png" (click)="clickFile.emit(item)" [attr.title]="tituloBtnFile || 'Ver archivo'"/>
+              <img *ngIf="clickEdit.observers.length && item.showEdit !== false" class="cursor-pointer" src="assets/icons/editar.png" (click)="clickEdit.emit(item)" title="Editar" alt="Editar" />
+              <img *ngIf="clickDelete.observers.length && item.showDelete !== false && showDelete !== false || showDelete == true " class="cursor-pointer" src="assets/icons/anular.png" (click)="clickDelete.emit(item)" title="Eliminar" alt="Eliminar" />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="!items?.length">
+        <tr class="{{classRow}} ">
+          <td colspan="15" class="col-sm text-center padding-top-15">No se encontraron registros</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="(pagination || paginationChange?.observers?.length) && itemsPerPage?.length>0" class="row padding-left-20 padding-right-20" style="display:flex">
+    <div class="col-sm-9">
+      <ngb-pagination
+        [(page)]="pagination.currentPage" (pageChange)="pageChanged($event)"
+        [pageSize]="pagination.itemsPerPage"
+        [collectionSize]="items?.length || 0"
+        [maxSize]="pagination.maxSize">
+
+        <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+        <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+
+      </ngb-pagination>
+    </div>
+    <div class="col-sm-3 text-right">
+      <form-input-select
+        style="position: relative; top: -4px;"
+        label="Mostrar"
+        [labelInline]="true"
+        [items]=[5,10,15,20]
+        [isValue]="true"
+        [small]="true"
+        [(value)]="pagination.itemsPerPage"
+        (onSelect)="pageChanged(pagination.currentPage)"
+      ></form-input-select>
+    </div>
+  </div>
+</div>

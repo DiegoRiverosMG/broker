@@ -1,0 +1,16 @@
+<div class="panel-widget">
+  <div class="collapse-list">
+    <div>
+      <input class="collapse-open " type="checkbox" id="{{widgetId}}" />
+      <label class="collapse-btn title" for="{{widgetId}}">
+        {{title}}
+        <i class="fa fa-angle-down pull-right"></i>
+      </label>
+      <div class="collapse-panel">
+        <div class="collapse-inner collapse-border {{classInner}}">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

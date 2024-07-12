@@ -1,0 +1,26 @@
+<div class="panel-info-trama">
+  <panel-widget
+    title="DATOS DE  TRAMA">
+
+    <div class="row">
+      <div class="col-sm-6">
+        <form-input-file
+          label="Trama"
+          [(value)]="trama.excelSubir"
+          [siniestralidad]="false"
+          [required]="true"
+          onclick="this.value=null;"
+        ></form-input-file>
+      </div>
+      <div class="col-sm-3">
+        <form-button
+          label="Validar"
+          [inlineInput]="true"
+          (click)="validarExcel(true)"
+        ></form-button>
+      </div>
+
+    </div>
+
+  </panel-widget>
+</div>

@@ -1,0 +1,14 @@
+<div class="form-input-date-re">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+
+  <input type="text" #dp="bsDatepicker"
+    [(ngModel)]="value" (ngModelChange)="valueChange.emit($event); varifyConditions()"
+    bsDatepicker
+    [bsConfig]="bsConfig"
+    [(bsValue)]="value"
+    (bsValueChange)="onSelectItem()"
+    value="{{ value | date:'dd/MM/yyyy' }}"
+    [(maxDate)]="maxDate" #desde readonly
+    [(minDate)]="minDate"
+    [disabled]="disabled">
+</div>

@@ -1,0 +1,21 @@
+<div class="form-input-select" [class.label-inline]="labelInline" [class.small-input]="small">
+  <span *ngIf="!!label">{{label}}<ng-template [ngIf]="required === true">(*)</ng-template>&nbsp;</span>
+  <select
+    *ngIf="!detail"
+    [ngModel]="value" (ngModelChange)="onChange($event)"
+    (change)="onSelectItem();"
+    class="minimal"
+    [class.only-input]="onlyInput"
+    [disabled]="disabled">
+    <option *ngFor="let item of items" [ngValue]="item">
+      {{isValue ? item : item?.text}}
+    </option>
+  </select>
+
+  <input
+    *ngIf="detail"
+    type="text"
+    value="{{isValue ? value : value?.text}}"
+    [disabled]="true"
+    [class.only-input]="onlyInput"/>
+</div>

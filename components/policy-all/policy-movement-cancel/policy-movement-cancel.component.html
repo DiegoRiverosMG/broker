@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Anulación de Movimiento</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <!--  -->
+    <div class="col-sm-12 mt-3">
+        <span>&nbsp;</span>
+        <label style="width: 100%;margin-bottom: 0;">
+            <input type="checkbox" class="checkbox" 
+                (change)="onRequired($event)" [(ngModel)]="isCorrelativeGenerated">
+            <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                ¿Desea generar un correlativo de factura?
+            </span> 
+        </label>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="reference.close()"><span>Regresar</span></button>
+    <button (click)="anularMovimiento()" class="full-color"><span>Anular</span></button>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

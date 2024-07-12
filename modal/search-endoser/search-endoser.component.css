@@ -1,0 +1,477 @@
+@import '../../sctr.component.css';
+.container {
+    float: left;
+    width: 75%;
+    padding: 10px 30px;
+}
+
+.underline {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(0, 0, 0, .125);
+}
+
+::placeholder {
+    color: rgb(146, 138, 163);
+}
+
+.filter {
+    width: 100%;
+    margin: 10px auto;
+    /* border-bottom: 1px solid rgb(84, 61, 129); */
+    padding: 10px 0 15px;
+}
+
+.filter .filter-row {
+    width: 100%;
+    display: flex;
+}
+
+.filter .filter-row .filter-row-cell {
+    padding: 8px 5px;
+}
+
+.filter .filter-row .filter-row-cell span {
+    width: 100%;
+    color: #2b0d61;
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    height: 24px;
+    line-height: 24px;
+}
+
+.grid table .grid-title td {
+    padding: 15px !important;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 0.25rem 1.25rem 0.75rem;
+}
+
+input[type="text"] {
+    /* outline: auto; */
+    border: none;
+    border-radius: 2px;
+    padding: 7px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid #aa9ec0;
+    color: #aa9ec0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+    text-transform: uppercase;
+}
+
+.pminima {
+    width: 90% !important;
+    float: right;
+}
+
+.chk input[type="checkbox"] {
+    position: absolute;
+    top: 66%;
+}
+
+.schk {
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    padding: 0 10px;
+}
+
+.t-search {
+    margin-left: 10px;
+    position: relative;
+    top: 2px;
+}
+
+.checkbox {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    display: inline-block;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+}
+
+.checkbox:after {
+    content: '';
+    position: absolute;
+    display: block;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #aa9ec0;
+    border-radius: 2px;
+}
+
+.checkbox[type=checkbox]:before {
+    background: #806ea0 url("http://i.imgur.com/dR1TM0y.png");
+    background-size: 10px 8px;
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    position: absolute;
+    left: 2px;
+    z-index: 2;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    color: #806ea0;
+}
+
+.checkbox[type=checkbox]:checked:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    opacity: 1;
+    left: 0px;
+    border: 1px solid #806ea0;
+    border-radius: 2px;
+}
+
+.filter input[type="date"] {
+    /* outline: auto; */
+    border: none;
+    border-radius: 2px;
+    padding: 6px 5px;
+    margin-top: 5px;
+    border: 1px solid rgb(146, 138, 163);
+    color: rgb(146, 138, 163);
+    width: 100%;
+    /* margin-left: 5px; */
+    font-size: 14px;
+    border: 1px solid #aa9ec0;
+    color: #aa9ec0;
+    height: 45px;
+    font-weight: 300;
+    padding-left: 12px;
+}
+
+select {
+    width: 100%;
+    border: none;
+    display: block;
+    padding: 8px 5px;
+    border: 1px solid rgb(146, 138, 163);
+    border-radius: 2px;
+    margin-top: 5px;
+    color: rgb(146, 138, 163);
+    /* outline: auto; */
+    /* margin-left: 3px; */
+    font-family: "Bliss Pro";
+    font-size: 14px;
+    height: 45px;
+    padding-left: 12px;
+    font-weight: 300;
+    color: #aa9ec0;
+    border: 1px solid #aa9ec0;
+    text-transform: uppercase;
+}
+
+select:disabled {
+    background-color: rgb(235, 235, 228);
+}
+
+.ctasa span {
+    margin: 3px 0;
+}
+
+span, textarea {
+    margin-top: 0.7em;
+    display: block;
+}
+
+.card {
+    margin-top: 0.7em;
+}
+
+.grid {
+    width: 100%;
+    margin: auto;
+    font-size: 14px;
+    font-weight: 300;
+    /* border: 1px solid rgb(146, 138, 163); */
+}
+
+.modal-body {
+    padding: 0.5rem 1rem;
+}
+
+.grid table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grid table tr td {
+    padding: 15px 15px;
+    color: rgb(146, 138, 163);
+}
+
+.grid table .grid-title td {
+    font-family: "Bliss Pro";
+    padding: 25px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(42, 18, 99, 0.78);
+}
+
+.grid table tr td button {
+    border: none;
+    display: block;
+    padding: 7px 9px;
+    border-radius: 2px;
+    background: rgb(169, 157, 192);
+    color: #fff;
+    margin: 0 2px;
+    /* outline: none; */
+    height: 30px;
+    width: 25px;
+    font-family: "Bliss Pro";
+}
+
+.grid table tr .flex {
+    display: flex;
+    justify-content: center;
+}
+
+.header-content {
+    width: 100%;
+    margin-top: 10px;
+    border-bottom: 1px solid rgb(109, 99, 129);
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0px;
+}
+
+.header-content .containt-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-content .header-item {
+    display: block;
+    padding: 5px 0;
+}
+
+.header-content .header-item .title {
+    color: #553d81;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 31px;
+    display: block;
+    margin-top: 8px;
+    margin-right: 18px;
+}
+
+.header-content .header-item button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #fff;
+    padding: 8px 5px;
+    min-width: 170px;
+    height: 45px;
+    /* outline: none; */
+}
+
+.header-content .header-item button:hover {
+    cursor: pointer;
+}
+
+.header-content .header-item button span {
+    display: block;
+    margin-left: 10px;
+    font-weight: 600;
+    color: rgb(83, 66, 121);
+}
+
+.header-content .header-item .purple {
+    background: #553d81;
+}
+
+.header-content .header-item .purple span {
+    color: #fff;
+}
+
+.header-content .rigth-item {
+    float: right;
+}
+
+.header-content .rigth-item {
+    float: right;
+}
+
+.rigth-item button img {
+    display: table-cell;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.full-color {
+    background: #553d81 !important;
+}
+
+.full-color span {
+    margin: 0 10px;
+    color: #fff !important;
+}
+
+button span {
+    margin: 0 10px;
+}
+
+.full-color img, button img {
+    display: table-cell;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.riesgo td, .riesgo th {
+    padding: .2rem !important;
+}
+
+.file {
+    margin: 0.7em 0;
+}
+
+.header-content .header-item .full-color button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #553d81;
+    color: #fff;
+    padding: 8px 5px;
+    min-width: 177px;
+    height: 45px;
+    outline: none;
+}
+
+/*
+.header-content .header-item .full-color span{
+  color: #fff;
+}*/
+
+.input-date {
+    height: 45px;
+    width: fit-content;
+    display: inline-block;
+    border: 1px solid #aa9ec0;
+    border-radius: 2px;
+}
+
+.div-date {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.float-right {
+    margin-top: 10px;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(129, 118, 157);
+    border-radius: 2px;
+    margin: 0 5px;
+    background: #fff;
+    padding: 8px 5px;
+    min-width: 200px;
+    height: 45px;
+    outline: none;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button span {
+    display: block;
+    margin-left: 10px;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: rgb(83, 66, 121);
+}
+
+/*Bootstrap sobreescritura*/
+
+.modal-header button {
+    padding: 1rem 1rem;
+    margin: -1rem -1rem -1rem auto;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    font-family: "Bliss Pro";
+    text-transform: none;
+    overflow: visible;
+    border-radius: 0;
+    min-width: 0px;
+}
+
+.modal-header button span {
+    font-size: 24px !important;
+}
+
+span {
+    font-size: 14px
+}
+
+/* .loadingScreen{
+    opacity: 0.7;
+    transition: opacity .8s ease-in-out;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 10000000000;
+  } */
+
+.loadingScreen {
+    opacity: 0.7;
+    transition: opacity .8s ease-in-out;
+    /* position: fixed; */
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 10000000000;
+}
+
+.selectable:hover {
+    background-color: #dedddd;
+    cursor: pointer;
+}
+
+/**/

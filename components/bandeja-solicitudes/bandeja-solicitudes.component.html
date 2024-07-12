@@ -1,0 +1,623 @@
+<div class="content-all scroll">
+  <app-nav-menuprod></app-nav-menuprod>
+  <div class="content">
+    <div class="header-u">
+      <h1 class="title-u">Bandeja de Solicitudes</h1>
+    </div>
+
+    <form class="filters" [formGroup]="form">
+      <label
+        for="f-channel-name"
+        class="placeholder-u"
+        aria-placeholder="CANAL DE VENTA:"
+      >
+        <select id="f-channel-name" class="input-u" formControlName="channel">
+          <option value="" disabled hidden selected>SELECCIONE</option>
+          <ng-container *ngIf="!channelSales$.length">
+            <option value="" disabled>No hay resultados</option>
+          </ng-container>
+          <ng-container *ngIf="channelSales$.length">
+            <option value="0" *ngIf="channelSales$.length > 1">TODOS</option>
+            <option [value]="data.id" *ngFor="let data of channelSales$">
+              {{ data.description }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+
+      <label
+        for="f-process-id"
+        class="placeholder-u request-number"
+        aria-placeholder="N° SOLICITUD:"
+      >
+        <input
+          type="text"
+          id="f-process-id"
+          class="input-u"
+          maxlength="10"
+          formControlName="request"
+        />
+      </label>
+
+      <label
+        for="f-placa"
+        class="placeholder-u license-plate-control"
+        aria-placeholder="PLACA:"
+      >
+        <input
+          type="text"
+          id="f-placa"
+          class="input-u"
+          formControlName="licensePlate"
+          [maxlength]="7"
+        />
+      </label>
+
+      <label
+        for="f-startdate"
+        class="placeholder-u"
+        aria-placeholder="FECHA DE INICIO:"
+      >
+        <input
+          type="text"
+          id="f-startdate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="startDate"
+        />
+      </label>
+
+      <label
+        for="f-enddate"
+        class="placeholder-u"
+        aria-placeholder="FECHA DE FIN:"
+      >
+        <input
+          type="text"
+          id="f-enddate"
+          class="input-u"
+          #dp="bsDatepicker"
+          bsDatepicker
+          readonly
+          [bsConfig]="datePickerConfig"
+          formControlName="endDate"
+        />
+      </label>
+
+      <label for="f-state" class="placeholder-u" aria-placeholder="ESTADO:">
+        <select id="f-state" class="input-u" formControlName="state">
+          <option value="" disabled hidden selected>SELECCIONE</option>
+          <ng-container *ngIf="!listStates$.length">
+            <option value="" disabled>No hay resultados</option>
+          </ng-container>
+          <ng-container *ngIf="listStates$.length">
+            <option value="0">TODOS</option>
+            <option *ngFor="let data of listStates$" [value]="data.id">
+              {{ data.label }}
+            </option>
+          </ng-container>
+        </select>
+      </label>
+    </form>
+
+    <div class="content-actions">
+      <button class="btn-secondary-u" (click)="resetForm()">Limpiar</button>
+      <button
+        class="btn-primary-u btn-new btn-buscar"
+        (click)="getRequests(true)"
+      >
+        Buscar
+      </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <section class="content-table">
+      <table class="table tbl">
+        <thead class="tbl__head">
+          <tr class="tbl__head--row">
+            <th class="tbl__head--row-item">ID Solicitud</th>
+            <th class="tbl__head--row-item">Canal</th>
+            <th class="tbl__head--row-item">Placa</th>
+            <th class="tbl__head--row-item">Fecha de registro</th>
+            <th class="tbl__head--row-item">Estado</th>
+            <th class="tbl__head--row-item">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="tbl__body">
+          <ng-container *ngIf="!listRequest$.length">
+            <tr class="tbl__body--row">
+              <td class="tbl__body--row-item" colspan="9">
+                No se encontraron resultados
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="listRequest$.length">
+            <tr
+              class="tbl__body--row"
+              *ngFor="
+                let data of listRequest$
+                  | paginate
+                    : {
+                        itemsPerPage: 10,
+                        currentPage: currentPage,
+                        totalItems: listRequest$[0]?.cantidadRegistros || 0,
+                        id: 'bdj'
+                      };
+                let index = index
+              "
+            >
+              <td class="tbl__body--row-item tbl-process-id">
+                {{ data.idSolicitud }}
+              </td>
+              <td class="tbl__body--row-item tbl-channel-name">
+                {{ data.canal }}
+              </td>
+              <td class="tbl__body--row-item tbl-placa">{{ data.placa }}</td>
+              <td class="tbl__body--row-item tbl-placa">
+                {{ data.fechaSolicitud }}
+              </td>
+              <td class="tbl__body--row-item tbl-state">
+                <span class="tbl-state-desc">{{ data.estadoSolicitud }}</span>
+              </td>
+              <td class="tbl__body--row-item tbl-actions dropdown">
+                <div
+                  ngbDropdown
+                  [placement]="
+                    index > listRequest$?.length / 2
+                      ? 'top-right'
+                      : 'bottom-right'
+                  "
+                >
+                  <button
+                    class="btn-dropdown-u"
+                    tabindex="0"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                  <ul class="dropdown-u" display="dynamic" ngbDropdownMenu>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="getDetail(data, requestActionType.VIEW)"
+                      >
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        Ver solicitud
+                      </button>
+                    </li>
+                    <li
+                      class="dropdown-item-u"
+                      *ngIf="
+                        isOperations &&
+                        (data.idEstadoSolicitud == 1 ||
+                          data.idEstadoSolicitud == 2)
+                      "
+                    >
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="getDetail(data, requestActionType.ATTEND)"
+                      >
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        Atender
+                      </button>
+                    </li>
+                    <li class="dropdown-item-u">
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="getLogHistory(data)"
+                      >
+                        <i class="fa fa-history" aria-hidden="true"></i>
+                        Ver historial
+                      </button>
+                    </li>
+                    <li
+                      class="dropdown-item-u"
+                      *ngIf="data.idEstadoSolicitud == 1 && !isOperations"
+                    >
+                      <button
+                        class="dropdown-item-btn-u"
+                        (click)="
+                          openModalConfirm(data, requestTypeConfirm.CANCEL)
+                        "
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        Anular
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </section>
+    <div class="content-pagination">
+      <pagination-controls
+        class="my-pagination"
+        id="bdj"
+        autoHide="true"
+        responsive="true"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        screenReaderPaginationLabel="Paginación"
+        screenReaderPageLabel="pagina"
+        screenReaderCurrentLabel="Estás en la pagina"
+        (pageChange)="currentPage = $event"
+      >
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+<ng-template #modalDetail>
+  <div class="content-modal-u">
+    <div class="modal-u mp modal-request">
+      <div class="modal__header">
+        <h6 class="modal__header--title">
+          Solicitud N° {{ requestSelected.idSolicitud }}
+        </h6>
+        <button class="modal__header--close" (click)="closeModalDetail()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="mp-content-info">
+          <div class="mp-group">
+            <div class="comparission" @fade>
+              <table class="mp-info-group">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Versión vigente</th>
+                    <th>Versión solicitada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Marca</td>
+                    <td>{{ requestInfo$.datosVigentes.marca }}</td>
+                    <td>{{ requestInfo$.datosSolicitados.marca || "-" }}</td>
+                  </tr>
+                  <tr>
+                    <td>Modelo</td>
+                    <td>{{ requestInfo$.datosVigentes.modelo }}</td>
+                    <td>{{ requestInfo$.datosSolicitados.modelo || "-" }}</td>
+                  </tr>
+                  <tr>
+                    <td>Versión</td>
+                    <td>{{ requestInfo$.datosVigentes.version }}</td>
+                    <td>{{ requestInfo$.datosSolicitados.version || "-" }}</td>
+                  </tr>
+                  <tr>
+                    <td>Clase</td>
+                    <td>{{ requestInfo$.datosVigentes.clase }}</td>
+                    <td>{{ requestInfo$.datosSolicitados.clase || "-" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <ng-container
+          *ngIf="
+            isOperations &&
+            requestActionTypeSelected == requestActionType.ATTEND
+          "
+        >
+          <span class="mp-subtitle">
+            Confirmar nuevos datos de la placa {{ requestSelected.placa }}
+          </span>
+
+          <div class="plate-info">
+            <form class="plate-info__inputs" [formGroup]="formAuto">
+              <pro-select
+                placeholder="Marca"
+                [inside]="true"
+                [items]="listBrands$"
+                value="idMarca"
+                label="marca"
+                formControlName="brand"
+              ></pro-select>
+              <pro-select
+                placeholder="Modelo"
+                [inside]="true"
+                [items]="listModels$"
+                value="idModelo"
+                label="modelo"
+                formControlName="model"
+              ></pro-select>
+              <pro-select
+                placeholder="Version"
+                [inside]="true"
+                [items]="listVersions$"
+                value="idVersion"
+                label="version"
+                formControlName="version"
+              ></pro-select>
+              <pro-select
+                placeholder="Clase"
+                [inside]="true"
+                [items]="listClasses$"
+                value="idClase"
+                label="clase"
+                formControlName="class"
+              ></pro-select>
+            </form>
+            <ng-container *ngIf="requestSelected.idEstadoSolicitud == 1">
+              <p class="text mt-2">
+                Si los datos solicitados no existen, pedir autorización al área
+                técnica haciendo
+                <button
+                  class="button-link"
+                  (click)="
+                    openModalConfirm(
+                      requestSelected,
+                      requestTypeConfirm.SEND_TECHNIQUE
+                    )
+                  "
+                >
+                  clic aquí
+                </button>
+              </p>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <span class="mp-subtitle"> Documentos adjuntos </span>
+        <div class="mp-content-table">
+          <table class="mp-tbl-files">
+            <thead>
+              <tr>
+                <th>Tipo de documento</th>
+                <th>Obligatorio</th>
+                <th>Documento</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ requestInfo$.documentos.tipoDocumento }}</td>
+                <td>
+                  {{ requestInfo$.documentos.obligatorio }}
+                </td>
+                <td>
+                  <span class="file-name">{{
+                    requestInfo$.documentos.nombreArchivo
+                  }}</span>
+                </td>
+                <td>
+                  <button
+                    class="tbl-btn-action btn-download"
+                    (click)="downloadFileRequest(requestInfo$.documentos)"
+                  >
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    Descargar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="mp-subtitle"> Comentarios </span>
+        <div class="content-input">
+          <textarea
+            placeholder="Comentario"
+            readonly
+            [value]="requestInfo$.datosSolicitados.comentarios || ''"
+          ></textarea>
+        </div>
+        <div
+          class="selection"
+          *ngIf="
+            isOperations &&
+            requestSelected?.idEstadoSolicitud == 2 &&
+            requestActionTypeSelected == requestActionType.ATTEND
+          "
+        >
+          <input
+            type="checkbox"
+            id="chk-auth-technique"
+            [formControl]="authTechniqueCheckControl"
+          />
+          <label for="chk-auth-technique" class="label-auth-technique">
+            Se recibió autorización del área técnica
+          </label>
+        </div>
+      </div>
+      <ng-container
+        *ngIf="
+          isOperations && requestActionTypeSelected == requestActionType.ATTEND
+        "
+      >
+        <div class="modal__footer">
+          <button
+            class="btn-secondary-u"
+            (click)="
+              openModalConfirm(requestSelected, requestTypeConfirm.REJECT)
+            "
+          >
+            <i class="fa fa-times" aria-hidden="true"></i>
+            Rechazar
+          </button>
+          <button
+            class="btn-primary-u purple"
+            [disabled]="isInvalidRequestForApprove"
+            (click)="
+              openModalConfirm(requestSelected, requestTypeConfirm.APPROVE)
+            "
+          >
+            <i class="fa fa-check" aria-hidden="true"></i>
+            Aprobar
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalHistory>
+  <div class="content-modal-u">
+    <div class="modal-u mh">
+      <div class="modal__header">
+        <h6 class="modal__header--title">
+          Historial de la solicitud: {{ requestSelected.idSolicitud }}
+        </h6>
+        <button class="modal__header--close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="mh-content-table">
+          <table class="mh-table">
+            <thead>
+              <tr>
+                <th>Secuencia</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Comentario</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of requestLogHistory$; let index = index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ data.estado }}</td>
+                <td>{{ data.fecha }}</td>
+                <td>{{ data.usuario }}</td>
+                <td>{{ data.comentario || "-" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-u purple btn-history" (click)="closeModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalConfirm>
+  <div class="content-modal">
+    <section class="modal-confirm-cancel-request">
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+        <button (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ng-container [ngSwitch]="modalConfirmRequestType">
+          <p class="text" *ngSwitchCase="requestTypeConfirm.APPROVE">
+            ¿Está seguro que desea aprobar esta solicitud?
+          </p>
+          <p class="text" *ngSwitchCase="requestTypeConfirm.REJECT">
+            ¿Está seguro que desea rechazar esta solicitud?
+          </p>
+          <p class="text" *ngSwitchCase="requestTypeConfirm.CANCEL">
+            ¿Está seguro que desea anular esta solicitud?
+          </p>
+          <p class="text" *ngSwitchCase="requestTypeConfirm.SEND_TECHNIQUE">
+            ¿Está seguro que desea notificar al área técnica?
+          </p>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button class="button secondary fit" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="button primary fit" (click)="acceptConfirm()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalMessage>
+  <div class="content-modal">
+    <section class="modal-message">
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="messageResponse.showImage">
+          <img
+            src="./assets/backoffice/check-success.png"
+            *ngIf="messageResponse.success"
+          />
+          <img
+            src="./assets/backoffice/check-error.png"
+            *ngIf="!messageResponse.success"
+          />
+        </ng-container>
+        <p class="text">
+          {{ messageResponse.message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button primary fit" (click)="closeModal()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalMotiveReject>
+  <div class="content-modal">
+    <section class="modal-motive-reject">
+      <div class="modal-header">
+        <h6>Rechazar solicitud</h6>
+        <button (click)="closeModal()">&times;</button>
+      </div>
+      <form class="modal-body" [formGroup]="formMotiveReject">
+        <label class="placeholder-u mb-3" aria-placeholder="Motivo rechazo">
+          <select class="input-u" formControlName="motive">
+            <ng-container *ngIf="!listReasons$.length">
+              <option [value]="null">No se encontraron resultados</option>
+            </ng-container>
+            <ng-container *ngIf="listReasons$.length">
+              <option [value]="null">Seleccione</option>
+              <option *ngFor="let data of listReasons$" [value]="data.id">
+                {{ data.label }}
+              </option>
+            </ng-container>
+          </select>
+        </label>
+        <label
+          for="motive-text"
+          class="placeholder-u"
+          aria-placeholder="Observación"
+        >
+          <textarea
+            class="input-u"
+            id="motive-text"
+            formControlName="observation"
+          ></textarea>
+        </label>
+      </form>
+      <div class="modal-footer">
+        <button class="button secondary fit" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button
+          class="button primary fit"
+          (click)="rejectRequest()"
+          [disabled]="formMotiveReject.invalid"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

@@ -1,0 +1,525 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 content">
+      <div class="container-fluid">
+        <div class="header-u">
+          <div class="header__left">
+            <h1 class="title-u">Aprobar comisiones</h1>
+          </div>
+          <div class="header__right">
+            <button
+              (click)="descargarDisponibilizar()"
+              class="button-default secondary"
+            >
+              <i class="fa fa-download" aria-hidden="true"></i>
+              Por Aprobar
+            </button>
+            <button
+              (click)="descargarExcel()"
+              [disabled]="!fExistRegistro"
+              class="button-default secondary"
+            >
+              <i class="fa fa-download" aria-hidden="true"></i>
+              Descargar Excel
+            </button>
+          </div>
+        </div>
+
+        <form class="form-filters" [formGroup]="formFilters">
+          <label
+            for="f-start-date"
+            class="placeholder upper"
+            aria-placeholder="Fecha inicio comprobante"
+          >
+            <input
+              id="f-start-date"
+              type="text"
+              autocomplete="off"
+              #dp="bsDatepicker"
+              [bsConfig]="startDateConfig"
+              bsDatepicker
+              title="Fecha inicio"
+              placeholder="Fecha inicio"
+              readonly
+              formControlName="startDate"
+            />
+          </label>
+          <label
+            for="f-end-date"
+            class="placeholder upper"
+            aria-placeholder="Fecha fin comprobante"
+          >
+            <input
+              id="f-end-date"
+              type="text"
+              autocomplete="off"
+              [bsConfig]="endDateConfig"
+              #dp="bsDatepicker"
+              bsDatepicker
+              title="Fecha fin"
+              placeholder="Fecha fin"
+              readonly
+              formControlName="endDate"
+            />
+          </label>
+          <pro-select
+            placeholder="CANAL*"
+            [clearable]="true"
+            [items]="lstCanales"
+            label="sdescript"
+            value="nchannel"
+            formControlName="salesChannel"
+          ></pro-select>
+          <label
+            for="f-policy"
+            class="placeholder upper"
+            aria-placeholder="Por N° de póliza*"
+          >
+            <input
+              type="text"
+              id="f-policy"
+              placeholder="N° de Póliza"
+              autocomplete="off"
+              title="Número de póliza"
+              maxlength="20"
+              formControlName="policy"
+            />
+          </label>
+          <label
+            for="f-payroll"
+            class="placeholder upper"
+            aria-placeholder="Por N° de planilla*"
+          >
+            <input
+              type="text"
+              id="f-payroll"
+              placeholder="N° de Planilla"
+              autocomplete="off"
+              title="Número de planilla"
+              maxlength="20"
+              formControlName="payroll"
+            />
+          </label>
+          <label
+            for="f-state"
+            class="placeholder upper select"
+            aria-placeholder="Estado"
+          >
+            <select formControlName="state">
+              <option value="0">Todos</option>
+              <option value="1">Potencial</option>
+              <option value="2">Pendiente de pago</option>
+              <option value="3">Por cobrar</option>
+            </select>
+          </label>
+          <label
+            for="f-state"
+            class="placeholder upper select"
+            aria-placeholder="Aprobación"
+          >
+            <select formControlName="approval">
+              <option value="0">Por aprobar</option>
+              <option value="1">Aprobado</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button
+              type="button"
+              class="button-default secondary"
+              role="button"
+              aria-label="limpiar formulario"
+              (click)="initValuesFormFilters()"
+            >
+              Limpiar
+            </button>
+            <button
+              type="button"
+              role="button"
+              class="button-default primary button-submit"
+              aria-labe="buscar comisiones"
+              [disabled]="!enableSearch || bloqueoBuscar"
+              (click)="buscarComisiones()"
+            >
+              Buscar comisiones
+            </button>
+          </div>
+        </form>
+        <div class="divider"></div>
+        <div class="grid form-group">
+          <ng-container *ngIf="showDisponibilizar">
+            <div class="content-info-table">
+              <button
+                (click)="disponibilizarComisionesNuevo()"
+                [disabled]="!selectedItem.length || !enableApproved"
+                class="button-default primary mb-2"
+              >
+                Aprobar
+              </button>
+
+              <div class="col-right col-md-5 px-0 content-sum">
+                <span
+                  >Suma Total: {{ currency }}
+                  {{ contadorTotal | number : "1.2-2" }}</span
+                >
+                <span>Recuento Total: {{ contadorItems }}</span>
+              </div>
+            </div>
+
+            <ng-container *ngIf="this.messageApproved.length">
+              <span class="message-error">{{ messageApproved }}</span>
+            </ng-container>
+
+            <ng-container *ngIf="this.messageInfoRangoAprob.length">
+              <span class="message-info">{{ messageInfoRangoAprob }}</span>
+            </ng-container>
+
+            <div class="divider"></div>
+          </ng-container>
+          <div class="grid form-group">
+            <div class="content-table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" *ngIf="showDisponibilizar">
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="selectedAll"
+                        (change)="markAllItems($event.target.checked)"
+                      />
+                    </th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Planilla</th>
+                    <th scope="col">N° Póliza</th>
+                    <th scope="col">Canal</th>
+                    <th scope="col" *ngIf="showDisponibilizar">
+                      Fecha facturación
+                    </th>
+                    <th scope="col" *ngIf="!showDisponibilizar">
+                      F.Aprobación
+                    </th>
+                    <th scope="col">Prima Total</th>
+                    <th scope="col">Prima Neta</th>
+                    <th scope="col">% Comisión</th>
+                    <th scope="col">Comisión</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Facturas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let fila of lstComisionAuth
+                        | paginate
+                          : {
+                              itemsPerPage: itemsPerPage,
+                              currentPage: npage,
+                              totalItems: polizasTotales
+                            };
+                      let index = index
+                    "
+                    [title]="
+                      fila.disabled
+                        ? 'No está autorizado aprobar esta comisión'
+                        : ''
+                    "
+                  >
+                    <td>{{ index + 1 + (npage - 1) * 20 }}</td>
+                    <td *ngIf="showDisponibilizar">
+                      <input
+                        type="checkbox"
+                        [checked]="fila.checked"
+                        [disabled]="fila.disabled"
+                        (change)="markItem(fila, $event.target.checked)"
+                      />
+                    </td>
+                    <td>{{ fila.producto }}</td>
+                    <td>
+                      {{ !!fila.idJob ? fila.idJob : "-" }}
+                    </td>
+                    <td>
+                      {{
+                        fila.numeroPoliza == 0 ? "Varios" : fila.numeroPoliza
+                      }}
+                    </td>
+                    <td [attr.title]="fila.canal">{{ fila.canal }}</td>
+                    <td>
+                      <span *ngIf="fila.agrupado === true">
+                        {{ fila.fechaDisponibilizacion }}
+                      </span>
+                      <span
+                        *ngIf="fila.agrupado === false && showDisponibilizar"
+                        >{{ fila.fechaPago }}
+                      </span>
+                      <span *ngIf="fila.agrupado === true && showDisponibilizar"
+                        >{{ fila.fechaPago }}
+                      </span>
+                      <span
+                        *ngIf="fila.agrupado === false && !showDisponibilizar"
+                      >
+                        {{ fila.fechaDisponibilizacion }}
+                      </span>
+                    </td>
+                    <td>
+                      {{ fila.moneda }} {{ fila.primaTotal | number : "1.2-2" }}
+                    </td>
+                    <td>
+                      {{ fila.moneda }} {{ fila.primaNeta | number : "1.2-2" }}
+                    </td>
+                    <td>
+                      <span *ngIf="!fila.agrupado">
+                        {{ fila.porcentajeComision }}%</span
+                      >
+                      <span *ngIf="fila.agrupado">
+                        {{
+                          fila.porcentajeComision == 0
+                            ? "Varios"
+                            : fila.porcentajeComision + "%"
+                        }}
+                      </span>
+                    </td>
+
+                    <td>
+                      {{ fila.moneda }}
+                      {{ fila.montoComision | number : "1.2-2" }}
+                    </td>
+                    <td>
+                      {{ fila.estadoComision }}
+                    </td>
+                    <td *ngIf="fila.agrupado">
+                      <a (click)="verFacturas(fila)">
+                        <i
+                          [attr.title]="
+                            textoInicioFin(
+                              fila.comprobanteInicio,
+                              fila.comprobanteFin
+                            )
+                          "
+                          style="cursor: pointer"
+                          class="fa fa-file-text fa-lg"
+                        ></i
+                      ></a>
+                    </td>
+                    <td *ngIf="!fila.agrupado">
+                      {{ fila.comprobante || "-" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            lstComisionAuth.length > 0;
+            then mostrarPaginado;
+            else ocultarPaginado
+          "
+        ></div>
+
+        <ng-template #ocultarPaginado>
+          <div></div>
+        </ng-template>
+
+        <ng-template #mostrarPaginado>
+          <div class="row">
+            <div class="col-xs-12 col-12">
+              <pagination-controls
+                class="my-pagination"
+                (pageChange)="pageChanged($event)"
+                autoHide="true"
+                responsive="true"
+                previousLabel="Anterior"
+                nextLabel="Siguiente"
+                screenReaderPaginationLabel="Paginación"
+                screenReaderPageLabel="pagina"
+                screenReaderCurrentLabel="Estás en la pagina"
+              >
+              </pagination-controls>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalMessage>
+  <div class="content-modal modal-message">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button aria-label="cerrar" (click)="closeModals()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="message$?.showImage">
+          <ng-container *ngIf="message$?.success">
+            <img src="assets/backoffice/check-success.png" alt="succes image" />
+          </ng-container>
+          <ng-container *ngIf="!message$?.success">
+            <img src="assets/backoffice/check-error.png" alt="error image" />
+          </ng-container>
+        </ng-container>
+        <p class="paragraph">
+          {{ message$?.message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="closeModals()">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalHistory>
+  <div class="content-modal modal-history">
+    <section>
+      <div class="modal-header">
+        <h6>
+          DETALLE DE LA PLANILLA: {{ P_NIDJOB }} / CANTIDAD DE COMPROBANTES:
+          {{ lstComisionToFilter?.length }}
+        </h6>
+        <button aria-label="cerrar" (click)="closeHistorial()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <span class="text-right colorModal" *ngIf="showDisponibilizar"
+          >Recuento Total: {{ contadorItemsModal }}</span
+        >
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" *ngIf="showDisponibilizar">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="chooseAll"
+                  (change)="markAllItemModal($event.target.checked)"
+                />
+              </th>
+              <th scope="col">#</th>
+              <th scope="col">Canal</th>
+              <th scope="col">Comprobante</th>
+              <th scope="col">Prima Total</th>
+              <th scope="col">Prima Neta</th>
+              <th scope="col">Fecha de Pago</th>
+              <th scope="col">Comisión(%)</th>
+              <th scope="col">Comisión Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let fila of lstComisionToFilter
+                  | paginate
+                    : {
+                        id: 'pagination-modal',
+                        itemsPerPage: 10,
+                        currentPage: numberPage,
+                        totalItems: lstComisionToFilter?.length
+                      };
+                let index = index
+              "
+            >
+              <td *ngIf="showDisponibilizar">
+                <input
+                  type="checkbox"
+                  [checked]="fila.checked"
+                  (change)="markItemModal(fila, $event.target.checked)"
+                />
+              </td>
+              <td>{{ index + 1 + (numberPage - 1) * 10 }}</td>
+              <td>
+                {{ fila.canal }}
+              </td>
+              <td>
+                {{ fila.comprobante }}
+              </td>
+              <td>{{ fila.moneda }} {{ fila.primaTotal }}</td>
+              <td>{{ fila.moneda }} {{ fila.primaNeta }}</td>
+              <td>
+                {{ fila.fechaPago }}
+              </td>
+              <td>{{ fila.porcentajeComision }}%</td>
+              <td>
+                {{ fila.moneda }} {{ fila.montoComision | number : "1.2-2" }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <pagination-controls
+          class="my-pagination"
+          id="pagination-modal"
+          (pageChange)="numberPage = $event"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+        >
+        </pagination-controls>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default secondary" (click)="closeHistorial()">
+          Cerrar
+        </button>
+        <button
+          (click)="disponibilizarComisionesModal()"
+          *ngIf="showDisponibilizar"
+          [disabled]="!chooseItem.length"
+          class="button-default primary"
+        >
+          Aprobar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalApproval>
+  <div class="content-modal modal-validate">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button aria-label="cerrar" (click)="hideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph" *ngFor="let error of dataMessageErrors">
+          {{ error }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="hideModal()">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalMessageInfo>
+  <div class="content-modal modal-validate">
+    <section>
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button aria-label="cerrar" (click)="hideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="paragraph">
+          {{ message$?.message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button-default primary" (click)="hideModal()">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

@@ -1,0 +1,188 @@
+<div class="modal-header">
+    <h4 class="modal-title"
+        id="modal-basic-title">Búsqueda de Colegios</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="formModalReference.dismiss()"
+            value="&times;">
+        <span aria-hidden="true">&times;</span>
+    </button>
+
+</div>
+<div class="modal-body">
+    <div class="grid form-group">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label><span>BÚSQUEDA:</span></label>
+                                <label><span><input type="radio"
+                                               [(ngModel)]="InputsColegio.P_TYPE_SEARCH"
+                                               name="searchSchool"
+                                               value="1"
+                                               (change)="onSelectTypeSearch()"
+                                               class="t-search" /> POR NRO. DOCUMENTO</span></label>
+                                <label><span><input type="radio"
+                                               [(ngModel)]="InputsColegio.P_TYPE_SEARCH"
+                                               name="searchSchool"
+                                               value="2"
+                                               (change)="onSelectTypeSearch()"
+                                               class="t-search" /> POR NOMBRES</span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div *ngIf="blockSearch"
+                                 class="col-sm-4">
+                                <span>TIPO DOCUMENTO (*)</span>
+                                <select [(ngModel)]="InputsColegio.P_NIDDOC_TYPE"
+                                        disabled
+                                        class="minimal">
+                                    <option value="1"
+                                            selected>RUC</option>
+                                </select>
+                            </div>
+                            <div *ngIf="!blockSearch"
+                                 class="col-sm-4">
+                                <span>TIPO DE PERSONA (*)</span>
+                                <select [(ngModel)]="InputsColegio.P_PERSON_TYPE"
+                                        disabled
+                                        class="minimal">
+                                    <option value="2"
+                                            selected>Persona Jurídica</option>
+                                </select>
+                            </div>
+                            <div *ngIf="blockSearch"
+                                 class="col-sm-4">
+                                <span>NRO. DE DOCUMENTO (*)</span>
+                                <input type="text"
+                                       placeholder="Nro. Documento"
+                                       [(ngModel)]="InputsColegio.P_SIDDOC"
+                                       (keypress)="documentNumberKeyPress($event)"
+                                       maxlength={{maxlength}}
+                                       (keyup.enter)="SearchContrator()" />
+                            </div>
+                            <div class="col-sm-4"
+                                 style="margin-top: 35px;">
+                                <button (click)="SearchContrator()">
+                                    <img src="assets/icons/buscar_certificado.png" />
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div *ngIf="!blockDoc"
+                                 class="col-sm-8">
+                                <span>RAZÓN SOCIAL (*)</span>
+                                <input type="text"
+                                       placeholder="Razón Social"
+                                       [(ngModel)]="InputsColegio.P_SLEGALNAME"
+                                       (keyup.enter)="SearchContrator()"
+                                       (keypress)="textValidate($event, 4)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <input type="text"
+                                       [(ngModel)]="searchText"
+                                       placeholder="FILTRAR"
+                                       style="text-transform: uppercase">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item text-center">#</td>
+                                <td class="grid-title-item">TIPO DOCUMENTO</td>
+                                <td class="grid-title-item">NRO. DOCUMENTO</td>
+                                <td class="grid-title-item">RAZÓN SOCIAL</td>
+                            </tr>
+                        </thead>
+                        <ng-container
+                                      *ngIf="colegioList!=null && colegioList.length>0; then showGrid else hideGrid"></ng-container>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr>
+                                <td colspan="4"
+                                    class="text-center">NO SE ENCONTRARON REGISTROS</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <tr class="selectable"
+                                (dblclick)="chooseSchool(item)"
+                                *ngFor="let item of listToShow  | filter : {P_SIDDOC: searchText, P_SLEGALNAME:searchText, list: colegioList}; let row_no = index">
+                                <td class="text-center"><input value={{item.P_SIDDOC}}
+                                           type="radio"
+                                           name="colegiosList"
+                                           [(ngModel)]="selectedColegio"></td>
+                                <td>{{ item.P_NIDDOC_TYPE | typeDocument }}</td>
+                                <td>{{ item.P_SIDDOC}}</td>
+                                <td>{{ item.P_SLEGALNAME }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+                <ng-container
+                              *ngIf="colegioList!=null && colegioList.length>0 && searchText == ''; then showPagination">
+                </ng-container>
+                <ng-template #showPagination>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <ngb-pagination [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                            </ngb-pagination>
+                        </div>
+                        <div class="col-sm-3">
+                            <span style="display: inline-block;">Mostrar: </span>
+                            <select [(ngModel)]="itemsPerPage"
+                                    class="minimal"
+                                    (change)="mostrarMas()"
+                                    style="display: inline-block; width: 50%; float: right; position: relative; top: -5px;">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button (click)="validarSalida()"><span>Volver</span></button>
+    <button (click)="chooseSchoolClk(selectedColegio)"
+            class="full-color"><span>Seleccionar</span></button>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading"
+     class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%">
+        <i style="margin: auto; font-size: 50px"
+           class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

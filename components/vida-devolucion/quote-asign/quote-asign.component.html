@@ -1,0 +1,494 @@
+<!-- ESTO ES PARA COPIAR, ES LA MAQUETACION DE CARGA MASIVA EN VDP NO HACE NADA -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr" style="padding: 13px">
+      <div class="row group1 h1tittle">
+        <h1 class="title">Carga masiva</h1>
+      </div>
+      <form
+        class="form-filters"
+        [formGroup]="FormFilter"
+        style="grid-template-columns: repeat(6, 1fr)"
+      >
+        <label
+          for="document-number"
+          class="placeholder-u"
+          aria-placeholder="ID:"
+        >
+          <input
+            type="text"
+            id="document-number"
+            class="input-u"
+            autocomplete="off"
+            aria-placeholder="ID"
+            placeholder="ID"
+            formControlName="id"
+          />
+        </label>
+        <label
+          for="validity"
+          class="placeholder-u"
+          aria-placeholder="FECHA DE INICIO:"
+        >
+          <input
+            type="text"
+            id="validity"
+            class="input-u"
+            autocomplete="off"
+            #dp="bsDatepicker"
+            bsDatepicker
+            [bsConfig]="bsConfigValidity"
+            [readonly]="true"
+            formControlName="validity"
+          />
+        </label>
+        <label
+          for="validity-end"
+          class="placeholder-u"
+          aria-placeholder="FECHA DE FIN:"
+        >
+          <input
+            type="text"
+            id="validity-end"
+            class="input-u"
+            autocomplete="off"
+            #dp="bsDatepicker"
+            bsDatepicker
+            [bsConfig]="bsConfigValidityEnd"
+            [readonly]="true"
+            formControlName="validityEnd"
+          />
+        </label>
+        <label for="reason" class="placeholder-u" aria-placeholder="ESTADO:">
+          <select id="reason" class="input-u" formControlName="state">
+            <option [value]="null" selected disabled hidden>SELECCIONE</option>
+            <option value="0">TODOS</option>
+            <option *ngFor="let data of estados" [value]="data.id">
+              {{ data.descripcion }}
+            </option>
+          </select>
+        </label>
+        <label class="placeholder-u" aria-placeholder=" ">
+          <button class="button secondary fit" (click)="openUpload()">
+            Cargar datos
+          </button>
+        </label>
+        <label class="placeholder-u" aria-placeholder=" ">
+          <button class="button primary fit" (click)="obtainData()">
+            Buscar
+          </button>
+        </label>
+        <div class="form-actions"></div>
+      </form>
+      <div class="tablestyle">
+        <div class="table-responsive div-tableban" id="table-scroll">
+          <table class="table-u">
+            <thead>
+              <tr class="grid-title">
+                <th class="grid-title-item">#</th>
+                <th class="grid-title-item">Tipo</th>
+                <th class="grid-title-item">Nombre del archivo</th>
+                <th class="grid-title-item">Fecha y hora de carga</th>
+                <th class="grid-title-item">Estado</th>
+                <th class="grid-title-item">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!data?.length">
+                <tr class="grid-body">
+                  <td
+                    class="grid-body-item"
+                    colspan="10"
+                    style="text-align: center"
+                  >
+                    No hay informacion para mostrar
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="!!data?.length">
+                <tr
+                  class="grid-body"
+                  *ngFor="
+                    let item of data
+                      | paginate
+                        : {
+                            itemsPerPage: 15,
+                            currentPage: p,
+                            totalItems: data.length,
+                            id: 'bdj'
+                          };
+                    let index = index
+                  "
+                  [id]="'row' + index"
+                >
+                  <td class="grid-title-item">{{ item.number || "-" }}</td>
+                  <td class="grid-title-item">
+                    {{ item.tipo }}
+                  </td>
+                  <td class="grid-title-item">{{ item.file }}</td>
+
+                  <td class="grid-title-item">{{ item.fechayhora }}</td>
+                  <td class="grid-title-item">{{ item.estado.description }}</td>
+                  <ng-container>
+                    <td
+                      class="tbl__body--row-item tbl-actions actions grid-title-item"
+                      ngbDropdown
+                      [placement]="index > 3 ? 'top-right' : 'bottom-right'"
+                    >
+                      <button
+                        class="btn-dropdown-u"
+                        tabindex="0"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        ngbDropdownToggle
+                      >
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                      </button>
+                      <ul class="dropdown-u" display="dynamic" ngbDropdownMenu>
+                        <li class="dropdown-item-u">
+                          <button class="dropdown-item-btn-u" title="Reasignar">
+                            <i class="fa fa-paint-brush"></i>Descargar Excel
+                            original
+                          </button>
+                        </li>
+                        <li class="dropdown-item-u">
+                          <button
+                            class="dropdown-item-btn-u"
+                            title="Checklist"
+                            (click)="Checklist(item)"
+                          >
+                            <i
+                              class="fa fa-check-circle-o"
+                              aria-hidden="true"
+                            ></i
+                            >Checklist
+                          </button>
+                        </li>
+                      </ul>
+                    </td>
+                  </ng-container>
+                </tr></ng-container
+              >
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content-pagination pag-ban">
+        <pagination-controls
+          class="my-pagination"
+          id="bdj"
+          autoHide="true"
+          responsive="true"
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          screenReaderPaginationLabel="Paginación"
+          screenReaderPageLabel="pagina"
+          screenReaderCurrentLabel="Estás en la pagina"
+          (pageChange)="currentPage = $event"
+          *ngIf="!!data?.length"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+  <ng-template #modalUploadFile>
+    <div class="content-modal-u">
+      <section class="modal-u">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Cargar archivo</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div class="uploadstyle">
+          <div class="">
+            <button class="button ps-button-max-width">
+              <i class="fa fa-download" aria-hidden="true"></i> Descargar
+              formato
+            </button>
+          </div>
+        </div>
+        <div class="formadj">
+          <form class="upload-btn-wrapper" [formGroup]="formFile">
+            <button
+              #btnfileInput
+              *ngIf="this.tipoArchivo != 0"
+              class="btn btntipoupload btn_center"
+              style="margin-right: 72px"
+            >
+              Adjuntar
+            </button>
+            <input
+              type="file"
+              formControlName="file"
+              (change)="onVotedResultFileUpload($event.target.files)"
+            />
+          </form>
+        </div>
+        <div style="text-align: center; color: red">
+          <label>{{ messageinfo }}</label>
+        </div>
+        <div class="modal__footer">
+          <button
+            class="button btn-primary-u ps-button-max-width"
+            (click)="openfin()"
+            [disabled]="!start"
+          >
+            Validar archivo
+          </button>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <ng-template #modalChecklist>
+    <div class="content-modal-u">
+      <section class="modal-u" style="width: auto; max-width: fit-content">
+        <div class="modal__header">
+          <h6 class="modal__header--title">
+            Carga Masiva N° {{ resumen.number }}
+          </h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div
+          class="row"
+          style="font-size: 16px; padding: 5px; text-align: -webkit-center"
+        >
+          <div class="separator stateMasiv">
+            <label>Nombre: {{ resumen.file }} </label>
+          </div>
+          <div class="separator stateMasiv">
+            <label>Fecha: {{ resumen.fechayhora }}</label>
+          </div>
+          <div
+            class="separator stateMasiv"
+            [class.pending]="resumen.estado.id == 2"
+            [class.success]="resumen.estado.id == 1"
+          >
+            <label>Estado: {{ resumen.estado.description }}</label>
+          </div>
+        </div>
+        <div class="">
+          <div
+            class="modal__body"
+            style="height: fit-content; text-align: center"
+          >
+            <div
+              class="form-group centerItem modal__header"
+              style="justify-content: center"
+            >
+              <button class="button btn-primary-u ps-button-max-width">
+                Descargar log
+              </button>
+            </div>
+            <table class="table-u">
+              <thead>
+                <tr>
+                  <th>Resultado</th>
+                  <th>Validación</th>
+                  <th>Cantidad de casos</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let data of validates">
+                <tr *ngIf="resumen.estado.id == 1">
+                  <td>
+                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                  </td>
+                  <td>{{ data }}</td>
+                  <td>0</td>
+                </tr>
+                <tr *ngIf="resumen.estado.id == 2">
+                  <td>
+                    <i
+                      class="fa fa-exclamation-circle"
+                      aria-hidden="true"
+                      style="color: orange"
+                    ></i>
+                  </td>
+                  <td>{{ data }}</td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal__footer"></div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <ng-template #modalUploadData>
+    <div class="content-modal-u">
+      <section class="modal-u" style="width: auto; max-width: fit-content">
+        <div class="modal__header">
+          <h6 class="modal__header--title">Carga de archivo</h6>
+          <button class="modal__header--close" (click)="closeModals()">
+            &times;
+          </button>
+        </div>
+        <div
+          class="row"
+          style="font-size: 16px; padding: 5px; text-align: -webkit-center"
+        >
+          <div class="separator stateMasiv">
+            <label>Nombre: {{ nameFile }} </label>
+          </div>
+        </div>
+        <div class="">
+          <div
+            class="modal__body"
+            style="height: fit-content; text-align: center"
+          >
+            <div
+              class="form-group centerItem modal__header"
+              style="justify-content: center"
+            >
+              <button class="button btn-primary-u ps-button-max-width">
+                Descargar log
+              </button>
+            </div>
+            <table class="table-u">
+              <thead>
+                <tr>
+                  <th>Resultado</th>
+                  <th>Validación</th>
+                  <th>Cantidad de casos</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let data of validates">
+                <tr>
+                  <td>
+                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                  </td>
+                  <td>{{ data }}</td>
+                  <td>0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal__footer">
+            <button class="button ps-button-max-width" (click)="closeModals()">
+              Cancelar
+            </button>
+            <button
+              class="button btn-primary-u ps-button-max-width"
+              (click)="closeModals()"
+            >
+              Cargar
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+  <div
+    bsModal
+    #childModalInfo="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+    [config]="{
+      backdrop: 'static'
+    }"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Mensaje
+          </h4>
+          <button
+            type="button"
+            class="close close-button close-button-new"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeModals()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+            <div class="col-lg-12">
+              <p class="messageinfo">{{ messageinfo }}</p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-12">
+              <button
+                style="min-width: 100%"
+                class="full-color-modal"
+                (click)="closeModals()"
+              >
+                <span>Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    bsModal
+    #childModalValidate="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="dialog-child-name"
+    [config]="{
+      backdrop: 'static'
+    }"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Mensaje
+          </h4>
+          <button
+            type="button"
+            class="close close-button close-button-new"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeModals()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row message">
+            <div class="col-lg-12">
+              <p class="messageinfo">{{ messageinfo }}</p>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-12">
+              <button
+                style="min-width: 100%"
+                class="full-color-modal"
+                (click)="closeModals()"
+              >
+                <span>Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="container-fluid">
+        <div class="header-content pl-0">
+          <div class="containt-item">
+            <div class="header-item">
+              <span class="title">Reporte de comisiones por canal</span>
+            </div>
+          </div>
+          <div class="containt-item">
+            <!-- <div class="header-item  rigth-item">
+              <button class="full-color">
+                <img alt=""
+                     src="assets/icons/add.png" />
+                <span>Agregar planilla</span>
+              </button>
+            </div>
+            <div class="header-item  rigth-item">
+              <button class="min-color">
+                <img alt=""
+                     src="assets/icons/delete.png" />
+                <span>Eliminar planillas</span>
+              </button>
+            </div> -->
+            <div class="header-item right-item">
+              <button (click)="descargarExcel()"
+                      *ngIf="fExistRegistro"
+                      class="min-color">
+                <img alt=""
+                     src="assets/icons/download2.png" />
+                <span>Descargar Excel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter">
+          <div class="form-group row filter-row mx-0 my-3">
+            <div class="col-lg-1 filter-row-cell pl-0">
+              <span class="filter-text">FECHA DE VENTA:</span>
+
+              <input type="text"
+                     class="form-control"
+                     #dp="bsDatepicker"
+                     [bsConfig]="bsConfig"
+                     bsDatepicker
+                     [(bsValue)]="bsValueIni"
+                     value="{{ bsValueIni | date: 'dd/MM/yyyy' }}" />
+            </div>
+            <div class="col-lg-1 filter-row-cell">
+              <span class="filter-text">&nbsp;</span>
+
+              <input type="text"
+                     class="form-control"
+                     [bsConfig]="bsConfig"
+                     #dp="bsDatepicker"
+                     bsDatepicker
+                     [(bsValue)]="bsValueFin"
+                     value="{{ bsValueFin | date: 'dd/MM/yyyy' }}" />
+            </div>
+            <!-- <div class="col-lg-2 filter-row-cell">
+              <span class="filter-text">ESTADO:</span>
+              <select (change)="onSelectState($event.target.value)">
+                <option value="0"
+                        selected>Todos</option>
+                <option *ngFor="let Item of lstStateChannel"
+                        value="{{ Item.nidstate }}">{{ Item.sdescription }}</option>
+              </select>
+            </div> -->
+            <!--  <div class="col-lg-1 filter-row-cell">
+              <span class="filter-text">NRO. PLANILLA:</span>
+              <input type="text"
+                     (keypress)="
+                  this.utilityService._kpPolicy($event, planillaBuscar)
+                "
+                     placeholder="Nro. Planilla"
+                     class="form-control"
+                     [(ngModel)]="InputsFilter.P_NIDPAYROLL" />
+            </div> -->
+            <div class="col-lg-5 filter-row-cell">
+              <app-channelpoint *ngIf="!isAdmin"
+                                (evResultChannelSales)="onVotedParentChannelSales($event)"
+                                (evResultChannelPoint)="onVotedParentChannelPoint($event)"></app-channelpoint>
+
+              <span *ngIf="isAdmin"
+                    class="filter-text">CANAL:</span>
+              <select *ngIf="isAdmin"
+                      class="cboCanal"
+                      id="ChannelSalesSelect"
+                      (change)="onSelectChannel($event.target.value)">
+                <option value="0">Todos</option>
+                <option *ngFor="let channelsales of lstCanales"
+                        value="{{ channelsales.nchannel }}">
+                  {{ channelsales.sdescript }}</option>
+              </select>
+            </div>
+            <div class="col-lg-2 filter-row-cell">
+              <span class="filter-text">POR ESTADO:</span>
+              <select (change)="seleccionEstado($event.target.value)">
+                <option value="0"
+                        selected>Todos</option>
+                <option *ngFor="let Item of lstEstadoComision"
+                        value="{{ Item.nidstate }}">{{ Item.sdescription }}
+                </option>
+              </select>
+
+            </div>
+            <div class="col-lg-3 filter-row-cell px-0">
+              <span class="filter-text">&nbsp;</span>
+              <div class="float-right">
+                <button class="mx-0 px-0"
+                        (click)="buscarComisiones()">
+                  <span>Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid form-group row ">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr class="grid-title">
+                  <td class="grid-title-item">Poliza</td>
+                  <td class="grid-title-item">Canal</td>
+                  <td class="grid-title-item">Prima</td>
+                  <td class="grid-title-item">F.Vigencia</td>
+                  <td class="grid-title-item">F.Venta</td>
+                  <td class="grid-title-item">Placa</td>
+                  <td class="grid-title-item">Marca</td>
+                  <td class="grid-title-item">Modelo</td>
+                  <td class="grid-title-item">Uso</td>
+                  <td class="grid-title-item">Clase</td>
+                  <td class="grid-title-item">% Comision</td>
+                  <td class="grid-title-item">Comision</td>
+                  <td class="grid-title-item">Estado</td>
+                </tr>
+              </thead>
+              <div *ngIf="fExistRegistro; then showTable ; else showDefaultMessage"></div>
+            </table>
+            <ng-template #showDefaultMessage>
+              <tbody>
+                <tr>
+                  <td colspan="12">No se encontraron datos</td>
+                </tr>
+              </tbody>
+            </ng-template>
+            <ng-template #showTable>
+              <tbody *ngFor="let result of lstComision">
+                <tr>
+                  <td class="data-table-tr-td">{{ result.poliza }}</td>
+                  <td class="data-table-tr-td">{{ result.canal }}</td>
+                  <td class="data-table-tr-td">{{ result.prima | number: "1.2-2"}}</td>
+                  <td class="data-table-tr-td">
+                    {{ this.datePipe.transform(result.fechaInicio, "dd/MM/yy") }}
+                    -
+                    {{ this.datePipe.transform(result.fechaFin, "dd/MM/yy") }}</td>
+                  <td class="data-table-tr-td">{{ this.datePipe.transform(result.fechaVenta, "dd/MM/yy") }} </td>
+                  <td class="data-table-tr-td">{{ result.placa }}</td>
+                  <td class="data-table-tr-td">{{ result.marca }}</td>
+                  <td class="data-table-tr-td">{{ result.version }}</td>
+                  <td class="data-table-tr-td">{{ result.uso }}</td>
+                  <td class="data-table-tr-td">{{ result.clase }}</td>
+                  <td class="data-table-tr-td">{{ result.comision }}%</td>
+                  <td class="data-table-tr-td">{{ result.montoComision | number: "1.2-2"}}</td>
+                  <td class="data-table-tr-td">{{ result.estado }}</td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </div>
+        </div>
+
+        <div *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"></div>
+        <ng-template #mostrarPaginado>
+          <div></div>
+        </ng-template>
+
+        <ng-template #ocultarPaginado>
+          <div class="row">
+            <div class="col-xs-12 col-12">
+              <pagination [totalItems]="totalItems"
+                          [itemsPerPage]="itemsPerPage"
+                          [rotate]="rotate"
+                          [maxSize]="maxSize"
+                          [(ngModel)]="currentPage"
+                          previousText="&lsaquo;"
+                          nextText="&rsaquo;"
+                          firstText="&laquo;"
+                          lastText="&raquo;"
+                          (pageChanged)="pageChanged($event)">
+              </pagination>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

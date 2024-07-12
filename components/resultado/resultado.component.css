@@ -1,0 +1,158 @@
+.contenido {
+  width: 90%;
+  margin-top: 34px;
+}
+
+.contenido .mensaje-carga {
+  padding: 5px;
+}
+
+.contenido .mensaje-carga h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 900;
+}
+
+/*.contenido .mensaje-carga p {
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 18px;
+    font-weight: 500;
+  }*/
+
+.contenido .mensaje-aprobado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.contenido .mensaje-aprobado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.contenido .mensaje-denegado h4 {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.contenido .mensaje-denegado p {
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.mensaje-denegado {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.btn-white-blue {
+  text-decoration: none;
+  padding: 10px;
+  border: 1px solid #2b0d61;
+  border-radius: 2px;
+  background-color: #ffffff;
+  cursor: pointer;
+
+  color: #2b0d61;
+  font-family: "Bliss Pro";
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-compra {
+  height: 46px;
+  /* width: 100%; */
+  width: 282px;
+  border-radius: 6px;
+  background-color: #ed6e00;
+  color: #ffffff;
+  font-family: "Bliss Pro";
+  font-size: 16px;
+  font-weight: 100;
+  line-height: 19px;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.loader-titulo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.loader-subtitulo {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.loader-pago {
+  width: 396px;
+  margin: 0 auto;
+  border-radius: 10px;
+  border: 4px solid transparent;
+  position: relative;
+  padding: 4px;
+}
+.loader-pago:before {
+  content: "";
+  border: 1px solid #ed6e00;
+  border-radius: 10px;
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+}
+.loader-pago .loaderBar-pago {
+  position: absolute;
+  border-radius: 10px;
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #ed6e00;
+  width: 0;
+  animation: borealisBar 2s linear infinite;
+}
+
+.container-pago {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  align-items: center;
+  font-family: Bliss Pro;
+  color: #7b7095;
+}
+
+@keyframes borealisBar {
+  0% {
+    left: 0%;
+    right: 100%;
+    width: 0%;
+  }
+  10% {
+    left: 0%;
+    right: 75%;
+    width: 25%;
+  }
+  90% {
+    right: 0%;
+    left: 75%;
+    width: 25%;
+  }
+  100% {
+    left: 100%;
+    right: 0%;
+    width: 0%;
+  }
+}

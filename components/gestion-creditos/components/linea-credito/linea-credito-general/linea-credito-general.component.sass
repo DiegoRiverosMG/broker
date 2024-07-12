@@ -1,0 +1,62 @@
+@import "standard"
+@import "modal"
+@import "variables"
+
+.placeholder
+  select,
+  input
+    border: 1px solid $purple
+
+.content
+  &__actions
+    display: flex
+    justify-content: space-between
+    align-items: center
+    flex-wrap: wrap
+    gap: 1rem
+    margin-bottom: 1.5rem
+
+    &--right
+      display: flex
+      align-items: center
+      gap: 1rem
+      flex-wrap: wrap
+
+.table
+  tr.locked
+    background-color: #FFEBEE
+
+    &:hover
+      background-color: #FFEBEE !important
+
+.content-check
+  margin-top: 1rem
+  align-items: center
+
+.chkcredito
+  margin-left: 5px
+
+.modal-config
+  section
+    max-width: 880px
+
+  .form-configuration
+    display: grid
+    gap: 1rem
+
+    @media (min-width: 580px)
+      grid-template-columns: repeat(2, 1fr)
+
+    @media (min-width: 840px)
+      grid-template-columns: repeat(3, 1fr)
+
+.modal-history
+  section
+    max-width: 1300px
+    max-height: 700px
+  thead
+    th
+      padding: 5px !important
+  tbody
+    td
+      padding: 5px !important

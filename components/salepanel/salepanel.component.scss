@@ -1,0 +1,812 @@
+@import "modal";
+
+.div-grafica {
+    max-width: 850px !important;
+}
+
+.row-title-principal {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.select-year-graph {
+    margin: auto !important;
+    margin-bottom: 1rem !important;
+    height: 33px !important;
+    max-width: 125px !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    margin-left: 1.75rem;
+    box-shadow: none;
+    border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+    -moz-border-radius: 5px !important;
+    -ms-border-radius: 5px !important;
+    -o-border-radius: 5px !important;
+}
+
+.body-graph {
+    max-height: 470px;
+}
+
+.rectangle-light-box {
+    height: auto !important;
+}
+
+.title-princial {
+    height: auto;
+    width: 100%;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 10px;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.text-descripcion {
+    height: auto;
+    width: 100%;
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.text-descripcion p {
+    height: 48px;
+    width: 662px;
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-top: 0px;
+}
+
+.rectangle {
+    margin-top: 14px;
+    min-height: 510px;
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+.title-rectangle {
+    width: 100%;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center !important;
+}
+
+.cabera {
+    text-align: center;
+}
+
+.content-rectagle-score {
+    margin-top: -4px !important;
+}
+
+.face-score {
+    height: 70px;
+}
+
+.center-anio {
+    float: none;
+    margin: 0 auto;
+}
+
+.content-rectagle {
+    width: 100%;
+    text-align: center;
+}
+
+.rectangle-copy-left,
+.rectangle-copy-rigth {
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+.rectangle-footer {
+    width: 100%;
+    text-align: center;
+}
+
+.rectangle-copy-parrafo-ini {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+}
+
+.rectangle-copy-parrafo-ie {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+}
+
+.rectangle-copy-parrafo {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.75);
+    font-family: "Bliss Pro";
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+    display: contents;
+}
+
+.rectangle-copy-parrafo-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+    margin-top: 57px;
+    display: contents;
+}
+
+.rectangle-copy-numero {
+    color: #553d81;
+    font-family: "Bliss Pro";
+    font-size: 25px !important;
+    font-weight: bold;
+    line-height: 36px;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.rectangle-copy-numero-pa {
+    color: #48903b;
+    font-family: "Bliss Pro";
+    font-size: 47px;
+    font-weight: bold;
+    line-height: 36px;
+    text-align: center;
+    margin-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.btn-compra {
+    height: 46px;
+    width: 100%;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+}
+
+.btn-historial {
+    height: 46px;
+    width: 204px;
+    border-radius: 6px;
+    background-color: #ed6e00;
+    color: #ffffff;
+    font-family: "Bliss Pro";
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+}
+
+.rectangle-footer-parrafo {
+    margin-top: 9px;
+    height: 16px;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 14px !important;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+}
+
+.container-historial-venta {
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+    padding-top: 29px;
+    padding-bottom: 47px;
+}
+
+.header-historial-venta {
+    text-align: center;
+}
+
+.contenido-historial-venta {
+    min-height: 50px;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    margin-top: 14px;
+}
+
+.footer-historial-venta {
+    text-align: center;
+    padding: 2px 30%;
+}
+
+@media only screen and (max-width: 576px) {
+    .title-princial {
+        font-size: 14px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 14px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: justify;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+
+    .btn-historial {
+        height: 46px;
+        width: 100%;
+        border-radius: 6px;
+        background-color: #ed6e00;
+        color: #ffffff;
+        font-family: "Bliss Pro";
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 19px;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .title-princial {
+        font-size: 20px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 14px;
+        padding: 0px 0px;
+        text-align: justify;
+        width: 50%;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .title-princial {
+        font-size: 28px;
+        display: inline;
+        padding: 0px 0px;
+        text-align: center;
+        text-align: justify;
+    }
+
+    .text-descripcion {
+        font-size: 15px;
+        padding: 0px 0px;
+        text-align: justify;
+        display: inline;
+    }
+
+    .footer-historial-venta {
+        padding: 0px 30px;
+    }
+}
+
+.img-help {
+    margin-bottom: 3px !important;
+    margin-left: 3px !important;
+}
+
+.fila {
+    padding: 5px;
+}
+
+select {
+    width: 100%;
+    border: none;
+    display: block;
+    padding: 8px 5px;
+    border: 1px solid rgb(146, 138, 163);
+    border-radius: 2px;
+    margin-top: 5px;
+    color: rgb(146, 138, 163);
+    font-family: "Bliss Pro";
+    font-size: 14px;
+    height: 45px;
+    padding-left: 12px;
+    font-weight: 300;
+    color: #aa9ec0;
+    border: 1px solid #aa9ec0;
+}
+
+.semaforobase {
+    height: 67px;
+    width: 67px;
+    padding: 5px;
+    border: 3px solid gray;
+    border-radius: 300px;
+    float: left;
+}
+
+.luzverde {
+    margin-left: 9px;
+    background-color: green;
+    opacity: 1;
+}
+
+.luzambar {
+    margin-left: 5px;
+    background-color: #ffbf00;
+    opacity: 0.1;
+}
+
+.luzroja {
+    margin-left: 5px;
+    background-color: red;
+    opacity: 0.1;
+}
+
+.container-semaforo {
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.title-salepoint {
+    min-height: 40px;
+    width: 100%;
+    color: #2b0d61;
+    font-family: "Bliss Pro";
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    padding: 2px 12px;
+    margin-top: 8px;
+}
+
+.container-selectpv {
+    width: 100%;
+    border: 1px solid #d5cfdf;
+    border-radius: 6px;
+    background-color: #ffffff;
+    padding-top: 16px;
+    padding-bottom: 11px;
+}
+
+.row-title-secondary {
+    height: 66px;
+}
+
+.rectangle-light {
+    height: 79px;
+    border: 1px solid #aa9ec0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    display: -ms-inline-grid;
+    width: 232px !important;
+    padding-top: 5px;
+    display: inline-block;
+}
+
+.cabera-light {
+    text-align: center;
+    margin-bottom: -4px;
+    margin-top: 15px;
+}
+
+.rectangle-light-box {
+    height: 119px;
+    border-radius: 6px;
+    display: inline-grid;
+    display: -ms-inline-grid;
+    width: 90% !important;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-left: 10px;
+}
+
+.text-danger {
+    color: red !important;
+}
+
+.text-success {
+    color: green !important;
+}
+
+.rectangle-light-box-danger {
+    border: 1px solid red;
+}
+
+.rectangle-light-box-success {
+    border: 1px solid green;
+}
+
+.rectangle-light-box-parrafo {
+    font-family: "Bliss Pro";
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    display: contents;
+}
+
+.saldos {
+    color: #2b0d61;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.btngrafica {
+    background-color: #553d81;
+}
+
+.radiografica {
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.contenedor-principal {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    perspective: 1500px;
+}
+
+#contenedor-secundario {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+.content__score {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 1rem;
+    height: auto;
+    border-radius: 10px;
+    min-height: auto;
+}
+
+.saldos {
+    margin-top: 1rem;
+}
+
+.rectangle-light-box {
+    border: none !important;
+}
+
+.venta {
+    height: auto;
+}
+
+.venta__item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.fa-trophy {
+    font-size: 50px;
+    color: #ed6e00;
+    background-color: #fff7f2;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rectangle {
+    padding: 1rem;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.cabera {
+    margin-right: 1.5rem;
+}
+
+.btn-compra {
+    height: 37px;
+    border: none;
+    font-weight: normal;
+    max-width: 120px;
+    margin: auto;
+}
+
+.rectangle {
+    min-height: auto;
+}
+
+.title-rectangle {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem !important;
+}
+
+.title-rectangle span {
+    font-size: 21px;
+}
+
+.rectangle-copy-left,
+.title-rectangle {
+    text-align: left;
+}
+
+.face-score {
+    margin-bottom: 1rem;
+}
+
+.items_ventas {
+    width: 100%;
+    margin: 10px;
+}
+
+.body-grafico {
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    height: calc(30vh + 200px);
+    min-height: 460px !important;
+}
+
+.content__face,
+.content__face .title-rectangle {
+    text-align: center;
+}
+
+.content__score {
+    margin: 0 !important;
+}
+
+.chk {
+    display: none;
+}
+
+.chk-style {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.chk-style::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+    font-size: 12px;
+    content: "✔";
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.chk:checked+.chk-style::before {
+    background-color: #ed6e00;
+    border: 1px solid #ed6e00;
+}
+
+.credit {
+    padding-right: 30px;
+}
+
+.radios-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio:first-child {
+    margin-right: 1rem;
+}
+
+.container-fluid {
+    margin-top: 2rem;
+}
+
+.select-formulario {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.items_ventas--col {
+    margin: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.content__face .title-rectangle {
+    font-size: 25px;
+    max-width: 90px;
+    line-height: 1.1em;
+    margin-left: 1rem;
+}
+
+/*
+.content__face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}*/
+.content__score {
+    /*flex-direction: column;*/
+    height: 100%;
+}
+
+.saldos {
+    font-size: 14px;
+}
+
+.rectangle-copy-parrafo-ini select,
+.body-grafico,
+.rectangle {
+    min-height: auto;
+    background-color: rgba(0, 0, 0, 0.025);
+    border: none;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.rectangle-copy-parrafo-ini select {
+    box-shadow: none;
+    color: #2b0d61;
+    cursor: pointer;
+}
+
+.rectangle-copy-left {
+    background-color: transparent !important;
+}
+
+.title-rectangle {
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+
+.container-title {
+    color: #2b0d61;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.content__point {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.title-salepoint {
+    padding-left: 0 !important;
+    width: fit-content;
+}
+
+.rectangle-copy-parrafo-ini {
+    max-width: 420px;
+}
+
+.rectangle-copy-parrafo-ini select {
+    width: 100%;
+}
+
+.rectangle-light-box-parrafo,
+.saldos {
+    font-size: 18px !important;
+}
+
+.fa-frown-o {
+    color: red;
+}
+
+.fa-smile-o {
+    color: green;
+}
+
+.content__face .fa-smile-o,
+.content__face .fa-frown-o {
+    font-size: 100px;
+    margin: 1rem;
+    margin-bottom: 0;
+}
+
+.btn-compra[disabled] {
+    opacity: 0.5 !important;
+}
+
+*::selection {
+    background-color: #ed6e00;
+    color: #fff;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-export {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    height: 40px;
+    min-width: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ed6e00;
+    color: #fff;
+    box-shadow: none;
+    border: none;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+}
+
+.btn-export .fa-download {
+    margin: 0 !important;
+    margin-right: 13px !important;
+    font-size: 20px !important;
+}
+
+.content-score {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}

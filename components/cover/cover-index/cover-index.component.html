@@ -1,0 +1,134 @@
+<div class="row">
+    <div class="col-md-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+
+    <div class="col-md-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Mantenimiento Cobertura Genérica</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h5>Datos de la cobertura</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>ESTADO</span>
+                                <ng-select [items]="stateList" bindLabel="SDESCRIPT" bindValue="NCODIGINT"
+                                    [(ngModel)]="inputsCover.NCODIGINT" class="border-ng" [clearable]="true"
+                                    placeholder="Todos" dropdownPosition="bottom" notFoundText="No hay resultados">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="row pull-right">
+                            <div class="col-sm-6">
+                                <button (click)="getCoverList()">
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                            <div class="col-sm-3">
+                                <button (click)="newCover('INS')">
+                                    <span>Nuevo</span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item">Código</td>
+                                <td class="grid-title-item" style="text-align: left;">Cobertura</td>
+                                <td class="grid-title-item" style="text-align: left;">Estado</td>
+                                <td class="grid-title-item">Consultar</td>
+                                <td class="grid-title-item">Editar</td>
+                                <td class="grid-title-item">Acción</td>
+                            </tr>
+                        </thead>
+
+                        <div *ngIf="existResults; then showGrid else hideGrid"></div>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr>
+                                <td colspan="7">No se encontraron registros</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td> {{ item.NCOVERGEN }}</td>
+                                <td style="text-align: left;"> {{ item.SDESCRIPT}} </td>
+                                <td style="text-align: left;"> {{ item.SSTATE }}</td>
+                                <td class="column-icon">
+                                    <a (click)="openModal(item, 'QUE')">
+                                        <img alt="ver" src="assets/icons/preview_soat_box.png" title="Ver detalle"
+                                            style="cursor: pointer;height: 24px;width: 24px">
+                                    </a>
+                                </td>
+                                <td class="column-icon">
+                                    <a (click)="openModal(item, 'UPD')">
+                                        <img alt="ver" src="assets/icons/editar.png" title="Editar"
+                                            style="cursor: pointer;height: 24px;width: 24px">
+                                    </a>
+                                </td>
+                                <td class="column-icon">
+                                    <ng-container [ngSwitch]="item.SSTATE">
+                                        <span *ngSwitchCase="'Activo'" style="margin-top:0px;">
+                                            <a (click)="changeState(item.NCOVERGEN, item.SSTATE)">
+                                                <img src="assets/icons/anular.png"
+                                                    style="cursor: pointer;height: 24px;width: 24px">
+                                            </a>
+                                        </span>
+                                        <span *ngSwitchCase="'Anulado'" style="margin-top:0px;">
+                                            <a (click)="changeState(item.NCOVERGEN, item.SSTATE)">
+                                                <img src="assets/icons/agregar.png"
+                                                    style="cursor: pointer;height: 24px;width: 24px">
+                                            </a>
+                                        </span>
+                                        <span *ngSwitchDefault>AEA</span>
+                                    </ng-container>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+            </div>
+            <ng-container *ngIf="existResults; then showPagination"></ng-container>
+            <ng-template #showPagination>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                            [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </ng-template>
+            <div [hidden]="!isLoading" class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

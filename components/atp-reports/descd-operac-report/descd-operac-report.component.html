@@ -1,0 +1,66 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <!-- <navmenusctr></navmenusctr> -->
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Reporte Operaciones de Desgravamen con Devolución</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>FECHA DE OPERACIÓN INICIO </span>
+                                <input type="text"
+                                       #dp="bsDatepicker"
+                                       [bsConfig]="bsConfig"
+                                       bsDatepicker
+                                       [(bsValue)]="bsValueIni"
+                                       value="{{ bsValueIni | date:'dd/MM/yyyy' }}"
+                                       [(maxDate)]="bsValueFinMax">
+                            </div>
+                            <div class="col-sm-6">
+                                <span>FECHA DE OPERACIÓN FIN </span>
+                                <input type="text"
+                                       #dp="bsDatepicker"
+                                       [bsConfig]="bsConfig"
+                                       bsDatepicker
+                                       [(bsValue)]="bsValueFin"
+                                       value="{{ bsValueFin | date:'dd/MM/yyyy' }}"
+                                       [(maxDate)]="bsValueFinMax">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                            </div>
+                            <div class="col-sm-2">
+                                <span>&nbsp;</span>
+                                <button class="full-color"
+                                        (click)="processReportsOperac()"
+                                        [disabled]="">
+                                    <span>PROCESAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div [hidden]="!isLoading"
+                 class="loadingScreen">
+                <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px"
+                       class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

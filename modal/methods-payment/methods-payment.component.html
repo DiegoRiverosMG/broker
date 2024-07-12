@@ -1,0 +1,52 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Formas de pago</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <p style="padding: 20px; text-align: center;">{{configData.textSlogan}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="btn-pago-efectivo" style="text-align: center; margin: 25px 0;">
+        <a (click)="manageOperation(1)">
+          <img src="assets/images/payment-visa.png" class="img-pago-efectivo" alt="Visa"
+            style="cursor: pointer;" />
+        </a>
+      </div>
+    </div>
+    <div class="col">
+      <div class="btn-pago-efectivo" style="text-align: center; margin: 25px 0;">
+        <a (click)="manageOperation(2)">
+          <img src="assets/images/logo_pagoefectivo_112x52.png" class="img-pago-efectivo" alt="PagoEfectivo"
+            style="cursor: pointer;" />
+        </a>
+      </div>
+    </div>
+    <div class="col">
+      <!-- <button *ngIf="configData.creditHistory.nflag === 1 && configData.contactList.length > 0" -->
+        <button *ngIf="configData.contactList.length > 0"
+        class="full-color" (click)="manageOperation(3)">
+        <span>Emitir</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="finalizar(true)"><span>Omitir Pago</span></button>
+</div>
+
+<app-modal #modalResultadoPE [close]="false" [efectivoCss]="true">
+  <div class="m-body efectivo">
+    <div class="frame-result"></div>
+    <div class="botones">
+      <button class="btn-orange" (click)="finalizar(true)">Finalizar</button>
+    </div>
+  </div>
+</app-modal>
+<div [hidden]="!isLoading" class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>

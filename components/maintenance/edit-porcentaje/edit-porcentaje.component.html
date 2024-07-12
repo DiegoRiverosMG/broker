@@ -1,0 +1,60 @@
+<div class="modal-header">
+    <h5 class="modal-title">Edicion Porcentaje RMV</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 card pb-2">
+                <div class="collapse-list">
+                    <input class="collapse-open" type="checkbox" id="retroactiv" />
+                    <label class="collapse-btn title" for="retroactiv">Porcentaje RMV: <i
+                        class="fa fa-angle-down pull-right" style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">Ramo: &nbsp;</span>
+                                        <input type="text" [(ngModel)]="data.RAMO" disabled id="ramo">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">Tipo de trabajador: &nbsp;</span>
+                                        <input type="text" [(ngModel)]="data.TIPO_TRABAJADOR" disabled id="tipo_trabajador">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">Tipo de transacción: &nbsp;</span>
+                                        <input type="text" [(ngModel)]="data.TIPO_TRANSACCION" disabled id="tipo_transaccion">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">RMV: &nbsp;</span>
+                                        <input type="text" [(ngModel)]="data.RMV" disabled id="rmv">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">Porcentaje (%): &nbsp;</span>
+                                        <input type="text" FloatSixDirective [(ngModel)]="data.PORCENTAJE"  (ngModelChange)="changePorcentaje()" id="porcentaje">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="padding-bottom: 5px;">Resultado: &nbsp;</span>
+                                        <input type="text" [(ngModel)]="data.VALOR_PORCENTAJE" disabled id="resultado" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pt-2 pb-2">
+                            <div class="col-md-12">
+                                <button class="pull-right" (click)="save()">
+                                    <span>Guardar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>

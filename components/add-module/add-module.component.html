@@ -1,0 +1,337 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content mb-3">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Módulo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse-list">
+            <div>
+                <input class="collapse-open " type="checkbox" id="cotizador" />
+                <label class="collapse-btn title" for="cotizador">MÓDULOS DE UN PRODUCTO</label>
+                <div class="collapse-panel">
+                    <div class="collapse-inner collapse-border">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Producto</span>
+                                <input type="text" [disabled]="controlAlwaysDisabled" placeholder="PRODUCTO"
+                                    [(ngModel)]="inputsProduct.DES_PRODUCT" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Módulo</span>
+                                <input type="text" [disabled]="controlAlwaysDisabled" placeholder="MÓDULO" maxlength="5"
+                                    [(ngModel)]="inputsModule.NMODULEC" OnlyNumberDirective />
+                            </div>
+                            <div class="col-sm-6">
+                                <span>FECHA EFECTO (*)</span>
+                                <input id="fechaEfecto" type="text" #dp="bsDatepicker" placeholder="dd/mm/yyyy"
+                                    [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="bsValueIni"
+                                    value="{{ bsValueIni.toString() | date:'dd/MM/yyyy' }}" [disabled]="controlDisabled"
+                                    #fefecto (click)="clearValidate(0)" (focus)="clearValidate(0)"
+                                    [ngClass]="{'error-validate': inputsValidate[0]}" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Descripción (*)</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="DESCRIPCIÓN"
+                                    [(ngModel)]="inputsModule.SDESCRIPT" maxlength="30" OnlyTextNumberSpaceDirective
+                                    (click)="clearValidate(1)" (focus)="clearValidate(1)"
+                                    [ngClass]="{'error-validate': inputsValidate[1]}" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Descripción abreviada (*)</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="DESCRIPCIÓN ABREVIADA"
+                                    [(ngModel)]="inputsModule.SSHORT_DES" maxlength="12" OnlyTextNumberSpaceDotDirective
+                                    (click)="clearValidate(2)" (focus)="clearValidate(2)"
+                                    [ngClass]="{'error-validate': inputsValidate[2]}" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>Condicionado</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="CONDICIONADO"
+                                    [(ngModel)]="inputsModule.SCONDSVS" maxlength="30" OnlyTextNumberJustDirective />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <span>Nivel de usuario</span>
+                                <input type="text" [disabled]="controlDisabled" placeholder="NIVEL DE USUARIO"
+                                    [(ngModel)]="inputsModule.NCHPRELEV" (keypress)="documentNumberKeypress($event)"
+                                    maxlength="5" OnlyNumberDirective />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle"> </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onRequired($event)" [(ngModel)]="isRequired">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Obligatorio
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onPreselected($event)" [(ngModel)]="isPreselected">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Preseleccionado
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onSellAllowed($event)" [(ngModel)]="isSellAllowed">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Permite venta
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle"> </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onChangeAllowed($event)" [(ngModel)]="isChangeAllowed">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Permite cambios
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: auto;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="chkIncreaseDisabled"
+                                        (change)="onPercentChanged($event, 'inc')" [(ngModel)]="isIncreased">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Aumentar
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>% Porcentaje</span>
+                                <input type="text" [disabled]="increaseDisabled" placeholder="0.0" maxlength="7"
+                                    [(ngModel)]="inputsModule.NRATEPREADD" (paste)="onPaste($event)" OnlyNumberDecimals
+                                    (blur)="validateDecimal('1,4','1,2', 3)"
+                                    [ngClass]="{'error-validate': inputsValidate[3]}" />
+                                <ng-container [ngSwitch]="inputsValidate[3]">
+                                    <span class="mensaje-error-control"
+                                        *ngSwitchCase="inputsValidate[3]">{{ inputsValidate_module[3] }}</span>
+                                    <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                </ng-container>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: auto;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="chkDecreaseDisabled"
+                                        (change)="onPercentChanged($event,'dec')" [(ngModel)]="isDecreased">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Disminuir
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>% Porcentaje</span>
+                                <input type="text" [disabled]="decreaseDisabled" placeholder="0.0" maxlength="7"
+                                    [(ngModel)]="inputsModule.NRATEPRESUB" (paste)="onPaste($event)" OnlyNumberDecimals
+                                    (blur)="validateDecimal('1,4','1,2', 4)"
+                                    [ngClass]="{'error-validate': inputsValidate[4]}" />
+                                <ng-container [ngSwitch]="inputsValidate[4]">
+                                    <span class="mensaje-error-control"
+                                        *ngSwitchCase="inputsValidate[4]">{{ inputsValidate_module[4] }}</span>
+                                    <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="subtitle"> </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <span>&nbsp;</span>
+                                <label style="width: 100%;margin-bottom: 0;">
+                                    <input type="checkbox" class="checkbox" [disabled]="controlDisabled"
+                                        (change)="onPercentChanged($event, 'rat')" [(ngModel)]="isRatedByModule">
+                                    <span class="schk" style="margin-top: 5px;; font-size: 13px;">
+                                        Tarificación por módulo
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span>Tasa(0/00)</span>
+                                <input type="text" [disabled]="taxByModuleDisabled" placeholder="0.0" maxlength="10"
+                                    [(ngModel)]="inputsModule.NPREMIRAT" (paste)="onPaste($event)" OnlyNumberDecimals
+                                    (blur)="validateDecimal('1,3','1,6', 5)"
+                                    [ngClass]="{'error-validate': inputsValidate[5]}" />
+                                <ng-container [ngSwitch]="inputsValidate[5]">
+                                    <span class="mensaje-error-control"
+                                        *ngSwitchCase="inputsValidate[5]">{{ inputsValidate_module[5] }}</span>
+                                    <span class="mensaje-error-control" *ngSwitchDefault></span>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="row pull-right">
+                            <button (click)="back()">
+
+                                <span *ngIf="inputsCover.Accion =='QUE'">Salir</span>
+                                <span *ngIf="inputsCover.Accion !='QUE'">Cancelar</span>
+
+
+                            </button>
+                            <button *ngIf="inputsCover.Accion !== 'QUE'" class="full-color" (click)="eventSave($event)"
+                                [disabled]="controlDisabled">
+                                <span>Guardar</span>
+                            </button>
+                        </div>
+                        <br>
+                        <br>
+
+                        <div class="grid form-group">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="grid-title">
+                                            <td class="grid-title-item">
+                                            </td>
+                                            <td class="grid-title-item">Código</td>
+                                            <td class="grid-title-item" style="text-align: left;">Cobertura</td>
+                                            <td class="grid-title-item">Estado</td>
+                                            <td colspan="2" class="grid-title-item">Acción</td>
+
+                                        </tr>
+                                    </thead>
+
+                                    <div *ngIf="listToShow.length > 0; then showGrid else hideGrid"></div>
+                                </table>
+                                <ng-template #hideGrid>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4">No se encontraron registros</td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                                <ng-template #showGrid>
+                                    <tbody>
+                                        <tr *ngFor="let item of listToShow; let row_no = index">
+                                            <td><input type="checkbox" [disabled]="item.state" #checkboxes
+                                                    class="checkbox" [(ngModel)]="item.chk" id="checkbox{{row_no+1}}"
+                                                    (change)="selectOne(item, 0, 'INS', row_no+1)"></td>
+                                            <td> {{ item.NCOVERGEN }} </td>
+                                            <td style="text-align: left;"> {{ item.SDESCRIPT }} </td>
+                                            <td> {{ item.SSTATE }} </td>
+                                            <td class="column-icon">
+                                                <ng-container [ngSwitch]="inputsCover.Accion">
+                                                    <span *ngSwitchCase="'QUE'" style="margin-top:0px">
+                                                        <a id="edit-{{row_no+1}}" [ngClass]="{'disabled': item.state}"
+                                                            (click)="editSpecificCover(item, 0, 'UPD', row_no+1)">
+                                                            <img id="edit-{{row_no+1}}" alt="Consultar"
+                                                                src="assets/icons/preview_soat_box.png"
+                                                                title="Consultar"
+                                                                style="cursor: pointer;height: 24px;width: 24px">
+                                                        </a>
+                                                    </span>
+                                                    <span *ngSwitchDefault style="margin-top:0px">
+                                                        <a id="edit-{{row_no+1}}" [ngClass]="{'disabled': item.state}"
+                                                            (click)="editSpecificCover(item, 0, 'UPD', row_no+1)">
+                                                            <img id="edit-{{row_no+1}}" alt="Editar"
+                                                                src="assets/icons/editar.png" title="Editar"
+                                                                style="cursor: pointer;height: 24px;width: 24px">
+                                                        </a>
+                                                    </span>
+                                                </ng-container>
+                                            </td>
+                                            <td class="column-icon">
+                                                <a id="edit" [ngClass]="{'disabled': item.state}" class="fa fa-percent"
+                                                    (click)="addRate(item, 'UPD', row_no+1)" title="Registrar tasa"
+                                                    alt="Registrar tasa">
+                                                    <!--<img alt="Registrar tasa" src="assets/icons/editar.png" title="Registrar tasa"
+                                                style="cursor: pointer;height: 24px;width: 24px">-->
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                            </div>
+                            <!--<ng-container *ngIf="coverList.length>0; then showPagination"></ng-container>
+                            <ng-template #showPagination>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems" [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                </div>
+                            </ng-template>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+    </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

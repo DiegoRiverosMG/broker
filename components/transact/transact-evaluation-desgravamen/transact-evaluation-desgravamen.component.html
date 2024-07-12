@@ -1,0 +1,263 @@
+<div class="container text-evaluation">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-sm-12 col-md-12 col-lg-10">
+            <div class="row">
+                <div class="col">
+                    <h2 class="naranja">Seguro Vida Crédito Fácil</h2>
+                </div>
+                <div class="col"
+                     style="text-align: right;">
+                    <span class="text-primary">Fecha actual: {{currentDate | date: "dd/MM/yyyy" }}</span>
+                </div>
+            </div>
+            <hr class="bg-hr">
+            <div class="row">
+                <div class="col">
+                    <h5>Estimado cliente : <b>{{tramite.NOMBRE_RAZON}}</b></h5>
+                    <!-- <p>Se ha registrado un trámite N° {{tramite.NID_TRAMITE}} para la transacción de {{QuotationData.TypeTransac}} de Póliza:
+                        {{QuotationData.PolicyNumber}}</p>-->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-secondary p-1">
+                        <!--<h5 class="naranja m-1">Datos de {{QuotationData.TypeTransac}}</h5> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-sm-12">
+                    <div class="row"
+                         *ngIf="sAbrTran=='EM'">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>Vigencia de póliza : </p>
+                                </div>
+                                <div class="col-md-8 descript">
+                                    <p>{{tramite.EFECTO_COTIZACION | date: "dd/MM/yyyy"}} -
+                                        {{tramite.EXPIRACION_COTIZACION |
+                                        date: "dd/MM/yyyy"}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <hr style="margin-top: 0;">
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col">
+                            <p class="align-self-end">
+                                <a class="text-primary" *ngIf="nTransac != 8" (click)="getTramaFile()" role="button"
+                                    style="cursor: pointer;"><u>Descarga el listado de asegurados.</u></a>
+                                <a class="text-primary" *ngIf="nTransac == 8" (click)="getTramaFileEndoso()"
+                                    role="button" style="cursor: pointer;"><u>Descarga el listado de asegurados.</u></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="align-self-end" *ngIf="nTransac == 2 || nTransac == 4">
+                                <a class="text-primary" (click)="getCoverDetail()" role="button"
+                                    style="cursor: pointer;"><u>Descarga el detalle de coberturas.</u></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                -->
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 col-sm-12">
+                    <div class="row"
+                         *ngIf="sAbrTran=='EM'">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>Endosatario : </p>
+                                </div>
+                                <div class="col-md-8 descript">
+                                    <p>{{endosatario[0].nombre_legal}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <hr style="margin-top: 0;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class=""></div>
+                <div></div>
+            </div>
+            <div class="alert alert-secondary p-1">
+                <h5 class="naranja m-1">Datos de facturación</h5>
+            </div>
+            <!--<p *ngIf="nTransac == 8 && AuthorizedDetailList[2].AmountAuthorized <= 0">Este tipo de Endoso no genera un cobro adicional, o devolución.</p>-->
+
+            <div class="col-sm-12">
+                <div class=""></div>
+                <div></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <p class="col-auto mr-auto">
+                            Frecuencia de pago:
+                        </p>
+                        <p class="col-auto">
+                            {{tramite.DES_FREQ_PAGO}}
+                        </p>
+                    </div>
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <p class="col-auto mr-auto">
+                            Capital:
+                        </p>
+                        <p class="col-auto">
+                            {{symbolMoney}}&nbsp;{{tramite.NCAPITAL}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <p class="col-auto mr-auto">
+                            Tipo de Crédito:
+                        </p>
+                        <p class="col-auto">
+                            {{tramite.SDES_TYPE_PROFILE}}
+                        </p>
+                    </div>
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <p class="col-auto mr-auto">
+                            Número de Crédito:
+                        </p>
+                        <p class="col-auto">
+                            {{tramite.NNUM_CREDIT}}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <p class="col-auto mr-auto">
+                            Número de cuotas:
+                        </p>
+                        <p class="col-auto">
+                            {{tramite.NNUM_CUOTA}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p *ngIf="nTransac == 3">
+                * Tipo de devolución: MENSUAL
+            </p>
+            <div class="alert alert-secondary">
+                <div class="row">
+                    <div class="col-sm-8">
+
+                    </div>
+                    <p class="col-auto mr-auto">Dirección: {{tramite.DIRECCION}} </p>
+
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <p class="col-auto mr-auto"
+                               style="margin-bottom: 0; vertical-align: bottom;">Primer Pago:</p>
+                            <p class="col-auto"
+                               style="vertical-align: bottom;">{{symbolMoney}}&nbsp;{{this.npremiumnpro | number
+                                : '1.2-2'}}</p>
+                            <p class="col-auto"
+                               style="font-weight: bold; font-size: 10px; color: grey">(*)La cuota inicial se
+                                calcula desde la contratación hasta el último dia del mes (Prima Prorrateada)</p>
+                        </div>
+                        <div class="row">
+                            <p class="col-auto mr-auto">Prima neta:</p>
+                            <!--<p class="col-auto">{{symbolMoney}}&nbsp;{{CalculateDetailList[0].AmountCalculate | number : '1.2-2'}}</p>-->
+                            <p class="col-auto">{{symbolMoney}}&nbsp;{{detallecot.NSUM_PREMIUM| number : '1.2-2'}}</p>
+                        </div>
+                        <div class="row">
+                            <p class="col-auto mr-auto">IGV:</p>
+                            <!--<p class="col-auto">{{symbolMoney}}&nbsp;{{CalculateDetailList[1].AmountCalculate | number : '1.2-2'}}</p>-->
+                            <p class="col-auto">{{symbolMoney}}&nbsp;{{detallecot.NSUM_IGV | number : '1.2-2'}}</p>
+                        </div>
+                        <div class="row">
+                            <p class="col-auto mr-auto">Prima neta + IGV:</p>
+                            <!--<p class="col-auto" style="font-weight: bold;">
+                               {{symbolMoney}}&nbsp;{{CalculateDetailList[2].AmountCalculate | number : '1.2-2'}}</p>-->
+                            <p class="col-auto"
+                               style="font-weight: bold;">
+                                {{symbolMoney}}&nbsp;{{detallecot.NSUM_PREMIUMN | number : '1.2-2'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span>Comentario</span>
+                    <textarea class="form-control"
+                              rows="4"
+                              placeholder="Comentario"
+                              [(ngModel)]="comment"
+                              maxlength="4000"></textarea>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12 mt-2 ml-2">
+                    <input type="checkbox"
+                           [checked]="check1Bool"
+                           [(ngModel)]="check1Bool">
+                    <label class="control-label ml-3">Declaro haber leído y aceptado la Cotización y los Términos y
+                        Condiciones.</label>
+                </div>
+                <div class="col-md-12 mt-2 ml-2">
+                    <input type="checkbox"
+                           [checked]="check2Bool"
+                           [(ngModel)]="check2Bool">
+                    <label class="control-label ml-3">Acepto las condiciones de la presente solicitud.</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 pt-3">
+                    <button class="btn btn-primary rounded-pill pull-right"
+                            (click)="processTransact()">
+                        GENERAR PAGO
+                    </button>
+                </div>
+            </div>
+            <div class="m-1 pt-3 pb-2 row justify-content-end">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div [hidden]="!isLoading"
+     class="loadingScreen">
+    <div style="display:flex;height: 100%; width:100%">
+        <i style="margin:auto;font-size: 50px"
+           class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>
+<panel-info-pago [(abrir)]="modal.pagos"
+                 [cotizacion]="cotizacion"
+                 (confirmar)="formaPagoElegido()"
+                 [(isLoading)]="isLoading">
+</panel-info-pago>

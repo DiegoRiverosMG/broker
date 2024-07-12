@@ -1,0 +1,158 @@
+<div *ngIf="resultOK" class="mensaje-aprobado">
+  <div class="title_confirm">
+    <h4>Completaste el pago de tus ventas</h4>
+  </div>
+  <!--<div class="title_confirm">
+    <p>
+      La compra del SOAT se ha efectuado con éxito. Hemos enviado tu certificado a la siguiente dirección:
+      <b>{{result.email}}</b>. Recuerda generar tus planillas y efectuar tus pagos en la opción
+      <b>“Mis Planillas”</b>.
+    </p>
+  </div>-->
+  <div class="box-pay-info row">
+    <div class="col-sm-3">
+      <b>N&Uacute;MERO DE PEDIDO:</b>
+      <br />
+      <span>{{ result.orderNumber }}</span>
+    </div>
+    <div class="col-sm-3">
+      <b>FECHA:</b>
+      <br />
+      <span>{{ result.transactionDateTime }}</span>
+    </div>
+    <div class="col-sm-3">
+      <b>TOTAL:</b>
+      <br />
+      <span>S/ {{ result.authorizedAmount }}</span>
+    </div>
+    <div class="col-sm-3">
+      <b>M&Eacute;TODO DE PAGO:</b>
+      <br />
+      <span>Visa</span>
+    </div>
+  </div>
+
+  <div class="box-detail">
+    <div
+      *ngIf="
+        !result.canal && result.customerName !== 'undefined undefined undefined'
+      "
+    >
+      <b>Cliente:</b>
+      <span>{{ result.customerName }}</span>
+      <br />
+    </div>
+    <div *ngIf="result.canal">
+      <b>Canal:</b>
+      <span>{{ result.canal }}</span>
+      <br />
+    </div>
+    <div>
+      <b>Fecha:</b>
+      <span>{{ result.fullDate }}</span>
+      <br />
+    </div>
+    <div>
+      <b>Nro. de tarjeta:</b>
+      <span>{{ result.cardNumber }}</span>
+      <br />
+    </div>
+    <div>
+      <b>Moneda:</b>
+      <span>Soles</span>
+      <br />
+    </div>
+    <div>
+      <a
+        class="link-terminos"
+        href="javascript:void(0)"
+        (click)="mostrarTerminosCondiciones()"
+        >Nuestros t&eacute;rminos y condiciones</a
+      >
+    </div>
+    <button type="button" class="btn-print" (click)="descargarVoucherNiubiz()">
+      <i class="fa fa-print print-color"></i>
+      <span>Imprimir Reporte</span>
+    </button>
+    <button type="button" class="btn-print" (click)="descargarConstanciaSOAT()">
+      <i class="fa fa-download print-color"></i>
+      <span>Descargar constancia SOAT</span>
+    </button>
+    <div class="h-divider"></div>
+    <h5>Detalles del pedido</h5>
+    <div class="div-result">
+      <table class="tb-result">
+        <tr>
+          <td class="tl">Producto</td>
+          <td class="tr">Total</td>
+        </tr>
+        <tr>
+          <td>SOAT Protecta Security x 1</td>
+          <td>S/ {{ result.authorizedAmount }}</td>
+        </tr>
+        <tr>
+          <td>Subtotal:</td>
+          <td>S/ {{ result.authorizedAmount }}</td>
+        </tr>
+        <tr>
+          <td>M&eacute;todo de pago:</td>
+          <td>Visa</td>
+        </tr>
+        <tr>
+          <td>Total:</td>
+          <td>S/ {{ result.authorizedAmount }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <br />
+
+  <br />
+</div>
+
+<div *ngIf="!loading && !resultOK" class="mensaje-aprobado">
+  <h4>Pedido Recibido</h4>
+  <p>
+    Desgraciadamente, tu pedido no puede procesarse; el banco/comercio ha
+    rechazado tu transacción. Por favor, intenta realizar la compra de nuevo.
+  </p>
+
+  <!--<button type="button" class="btn-again" (click)="nuevoPago()">Pagar</button>-->
+
+  <div class="box-pay-info row">
+    <div class="col-sm-3">
+      <b>N&Uacute;MERO DE PEDIDO:</b>
+      <br />
+      <span>{{ result.orderNumber }}</span>
+    </div>
+    <div class="col-sm-3">
+      <b>FECHA:</b>
+      <br />
+      <span>{{ result.transactionDateTime }}</span>
+    </div>
+    <div class="col-sm-6">
+      <b>MOTIVO RECHAZO:</b>
+      <br />
+      <span>{{ result.errorMessage }}</span>
+    </div>
+  </div>
+  <div class="link-container">
+    <a
+      class="link-terminos"
+      href="javascript:void(0)"
+      (click)="mostrarTerminosCondiciones()"
+      >Nuestros t&eacute;rminos y condiciones</a
+    >
+  </div>
+  <!-- <button type="button"
+          class="btn-print"
+          (click)="descargarVoucherNiubiz()">
+    <i class="fa fa-print print-color"></i>
+    <span>Imprimir Reporte</span>
+  </button> -->
+</div>
+
+<iframe id="ifrmPdf"></iframe>
+<app-terminos-condiciones
+  [(visualizar)]="verTerminos"
+></app-terminos-condiciones>

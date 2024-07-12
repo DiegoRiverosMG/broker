@@ -1,0 +1,418 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Generador de Campañas</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item  rigth-item">
+            <button class="full-color" (click)="gotoCampaignAdd()">
+              <img src="assets/icons/add.png" />
+              <span>Agregar Campaña</span>
+            </button>
+          </div>
+          <div class="header-item  rigth-item">
+            <button class="min-color" (click)="openModalConfirmacionMasivo()">
+              <img src="assets/icons/delete.png" />
+              <span>Eliminar Campaña</span>
+            </button>
+          </div>
+          <div class="header-item rigth-item">
+            <button (click)="EventDownload($event)">
+              <img src="assets/icons/descargar.png" />
+              <span>Descargar Excel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="form-group row filter-row">
+          <div class="col-lg-3 filter-row-cell">
+            <span>POR FECHA DE CREACI&Oacute;N:</span>
+            <input
+              type="text"
+              class="form-control"
+              #dp="bsDatepicker"
+              [bsConfig]="bsConfig"
+              bsDatepicker
+              maxlength="10"
+              [(bsValue)]="bsValueIni"
+              value="{{ bsValueIni | date: 'dd/MM/yyyy' }}"
+            />
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>&nbsp;</span>
+            <input
+              type="text"
+              class="form-control"
+              [bsConfig]="bsConfig"
+              #dp="bsDatepicker"
+              bsDatepicker
+              maxlength="10"
+              [(bsValue)]="bsValueFin"
+              value="{{ bsValueFin | date: 'dd/MM/yyyy' }}"
+            />
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>POR ESTADO:</span>
+            <select
+              id="StateSelect"
+              (change)="onSelectState($event.target.value)"
+            >
+              <option value="0">Todos</option>
+              <option value="1">Activo</option>
+              <option value="2">Inactivo</option>
+            </select>
+          </div>
+          <div class="col-lg-3 filter-row-cell">
+            <span>POR DESCRIPCI&Oacute;N:</span>
+            <input
+              [(ngModel)]="Filter.P_DESCRIPCION"
+              placeholder="Ingrese la descripci&oacute;n"
+              type="text"
+              maxlength="500"
+            />
+          </div>
+        </div>
+        <div class="form-group row filter-row">
+          <div class="col-sm-12 col-lg-6 filter-row-cell">
+            <span>POR CANAL:</span>
+            <select
+              id="ChannelSalesSelect"
+              (change)="onSelectChannel($event.target.value)"
+            >
+              <option value="0">Todos</option>
+              <option
+                *ngFor="let channelsales of ListChannelSales"
+                value="{{ channelsales.nchannel }}"
+              >
+                {{ channelsales.sdescript }}</option
+              >
+            </select>
+          </div>
+          <div class="col-sm-12 col-lg-6 filter-row-cell  rigth-item">
+            <span>&nbsp;</span>
+            <button (click)="onEventSearch()">
+              <span>Buscar</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!resultError" class="alert alert-danger">
+          La Fecha Fin no puede ser menor a la Fecha Inicial
+        </div>
+      </div>
+
+      <div class="grid form-group row ">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="selectedAll"
+                    (change)="selectAll()"
+                  />
+                </td>
+                <td class="grid-title-item">Nro. de Campaña</td>
+                <td class="grid-title-item">Nro. Personas</td>
+                <td class="grid-title-item">Descripci&oacute;n</td>
+                <td class="grid-title-item">Canal de Venta</td>
+                <td class="grid-title-item">Fecha Inicio</td>
+                <td class="grid-title-item">Fecha Fin</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Acciones</td>
+              </tr>
+            </thead>
+            <div
+              *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+            ></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="8">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let result of ListCampaign">
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="result.bselected"
+                    (change)="checkIfAllSelected()"
+                  />
+                </td>
+                <td class="data-table-tr-td">{{ result.nidcampaign }}</td>
+                <td class="data-table-tr-td">{{ result.ncountperson }}</td>
+                <td class="data-table-tr-td">{{ result.sdescript }}</td>
+                <td class="data-table-tr-td">{{ result.schanneldes }}</td>
+                <td class="data-table-tr-td">
+                  {{
+                    this.oDatePipe.transform(result.dstartdate, "dd/MM/yyyy")
+                  }}
+                </td>
+                <td class="data-table-tr-td">
+                  {{
+                    this.oDatePipe.transform(result.dexpirdate, "dd/MM/yyyy")
+                  }}
+                </td>
+                <td class="data-table-tr-td">{{ result.sstatedes }}</td>
+                <td class="data-table-tr-td">
+                  <a
+                    *ngIf="result.nstate == 1"
+                    (click)="openModalConfirmacion(result.nidcampaign)"
+                  >
+                    <img
+                      src="assets/icons/anular.png"
+                      title="Anular"
+                      alt="Anular"
+                    />
+                  </a>
+                  <a
+                    *ngIf="result.nstate == 1"
+                    (click)="ActualizarCampaign(result.nidcampaign)"
+                  >
+                    <img
+                      src="assets/icons/editar.png"
+                      title="Editar"
+                      alt="Editar"
+                    />
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+
+      <div
+        *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+      ></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination
+              [totalItems]="totalItems"
+              [itemsPerPage]="itemsPerPage"
+              [rotate]="rotate"
+              [maxSize]="maxSize"
+              [(ngModel)]="currentPage"
+              (pageChanged)="pageChanged($event)"
+            >
+            </pagination>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmasivo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          {{ msjHeader }}
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeconfirm()"
+        >
+          <span aria-hidden="true">
+            <img src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div
+          class="form-group row message"
+          [ngClass]="{ bHideBody: bHideBody }"
+        >
+          <div class="col-lg-12 contenido-modal" id="msjModal">
+            <p class="messageinfo">{{ message }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="full-color-modal"
+              (click)="confirm()"
+            >
+              <span>Si</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="button-close"
+              (click)="closeconfirm()"
+            >
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="aceptarmsginfo()"
+        >
+          <span aria-hidden="true">
+            <img src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-12">
+            <button
+              style="min-width: 100%;"
+              class="full-color-modal"
+              (click)="aceptarmsginfo()"
+            >
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalEliminarIndividual="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          {{ msjHeader }}
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeconfirmIndividual()"
+        >
+          <span aria-hidden="true">
+            <img src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row ">
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Nro. de Campaña</span><br />
+              {{ strIdCampaign }}
+            </p>
+          </div>
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Cantidad de Personas</span><br />
+              {{ strCountPerson }}
+            </p>
+          </div>
+        </div>
+        <div class="form-group row ">
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Fecha Inicio</span><br />
+              {{ strFechaInicio }}
+            </p>
+          </div>
+          <div class="col-lg-6">
+            <p class="messageinfo">
+              <span class="Titulo">Fecha Fin</span><br />
+              {{ strFechaFin }}
+            </p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="full-color-modal"
+              (click)="confirm()"
+            >
+              <span>Si, deseo anularlo</span>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button
+              style="min-width: 100%;"
+              class="button-close"
+              (click)="closeconfirmIndividual()"
+            >
+              <span>No, deseo cancelarlo</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

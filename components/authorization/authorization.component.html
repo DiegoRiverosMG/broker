@@ -1,0 +1,598 @@
+<div class="form-group row">
+  <div class="col-md-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-md-9">
+    <div class="container-fluid mt-4">
+      <div class="header-content col-md-12 px-0 pb-1 mb-3">
+        <h1 class="title-page">Bandeja de Aprobaciones</h1>
+      </div>
+      <form class="row row-filters px-0 mx-0 mb-3 pb-3 frmSearch"
+            [formGroup]="FORM_SEARCH_AUTH">
+        <div class="filters col-lg-8 px-0">
+          <app-channel-point (CANAL_VENTA_DATA_OUT)="CanalVentaData($event)"
+                             (PUNTO_VENTA_DATA_OUT)="PuntoVentaData($event)"></app-channel-point>
+        </div>
+        <div class="col-lg-2 pr-0 filter-row-cell">
+          <label for=""
+                 class="filter-text">FECHA DE INICIO:</label>
+          <input type="text"
+                 class="form-control date-search input-date"
+                 #dp="bsDatepicker"
+                 [bsConfig]="bsConfig"
+                 bsDatepicker
+                 formControlName="fechaIni"
+                 [(bsValue)]="bsValueIni"
+                 value="{{ bsValueIni | date: 'dd/MM/yyyy' }}" />
+        </div>
+        <div class="col-lg-2 filter-row-cell mr-0 pr-0">
+          <label for=""
+                 class="filter-text">FECHA DE FIN:</label>
+          <input type="text"
+                 class="form-control date-search input-date"
+                 #dp="bsDatepicker"
+                 [bsConfig]="bsConfig"
+                 bsDatepicker
+                 formControlName="fechaFin"
+                 [(bsValue)]="bsValueFin"
+                 value="{{ bsValueFin | date: 'dd/MM/yyyy' }}" />
+        </div>
+        <div class="row col-lg-12 mt-3 mx-0 px-0">
+          <div class="col-lg-2 pl-0">
+            <label for=""
+                   class="filter-text">ID PROCESO:</label>
+            <input type="number"
+                   class="form-control date-search input-date"
+                   formControlName="idProceso">
+          </div>
+          <div class="col-lg-2 pl-0">
+            <label for=""
+                   class="filter-text">USO:</label>
+            <select class="form-control date-search input-date"
+                    formControlName="idUso">
+              <option value="0"
+                      selected>TODOS</option>
+              <option *ngFor="let data of DATA_USOS"
+                      [value]="data.idUso"> {{ data.nameUso }}</option>
+            </select>
+          </div>
+          <div class="col-lg-3 pl-0">
+            <label for=""
+                   class="filter-text">ESTADO:</label>
+            <select class="form-control date-search input-date"
+                    formControlName="idEstado">
+              <option value="0">TODOS</option>
+              <option value="1">PENDIENTE</option>
+              <option value="2">APROBADO</option>
+              <option value="3">RECHAZADO</option>
+              <option value="4">ANULADO</option>
+              <option value="5">EMITIDO</option>
+              <option value="6">VENCIDO</option>
+              <option value="7">EN PROCESO DE PAGO</option>
+            </select>
+          </div>
+          <ng-container *ngIf="IsAdmin">
+            <div class="col-lg-2 pl-0">
+              <label for=""
+                     class="filter-text">SEGMENTO:</label>
+              <select class="form-control date-search input-date"
+                      formControlName="segmento">
+                <option value="0">TODOS</option>
+                <option value="2">S1</option>
+                <option value="3">S2</option>
+                <option value="4">S3</option>
+              </select>
+            </div>
+          </ng-container>
+          <div class="col-lg-3 mr-0 pr-0 div-search pl-0"
+               [class.col-lg-5]="!IsAdmin">
+            <button class="full-color btn-search mx-0"
+                    (click)="searchDataFormSubmit()">
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="row grid form-group mx-0 my-0">
+        <div class="table-responsive"
+             id="table-scroll">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="tbl__head--row-item tbl__head--row-id">ID Proceso</td>
+                <!-- <td>Cant. Documentos</td> -->
+                <td class="tbl__head--row-item tbl__head--row-placa">Placa</td>
+                <td class="tbl__head--row-item tbl__head--row-channel">Canal</td>
+                <td class="tbl__head--row-item tbl__head--row-use">Uso</td>
+                <td class="tbl__head--row-item tbl__head--row-user">Usuario</td>
+                <td class="tbl__head--row-item tbl__head--row-state">Estado</td>
+                <ng-container *ngIf="IsAdmin">
+                  <td class="tbl__head--row-item tbl__head--row-segment">Segmento</td>
+                  <td class="tbl__head--row-item tbl__head--row-sla">SLA</td>
+                </ng-container>
+                <td class="tbl__head--row-item tbl__head--row-date">Fecha de Solicitud</td>
+                <!-- <td>Fecha de Expiración</td> -->
+                <td class="tbl__head--row-item tbl__head--row-actions">Acciones</td>
+              </tr>
+            </thead>
+            <tbody #skeletonLoading
+                   hidden>
+              <tr class="grid-body skeleton-loading"
+                  *ngFor="let skeletons of NSKELETON">
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td>
+                <ng-container *ngIf="IsAdmin">
+                  <td class="grid-title-item">
+                    <div class="skel"></div>
+                  </td>
+                  <td class="grid-title-item">
+                    <div class="skel"></div>
+                  </td>
+                </ng-container>
+
+                <!-- <td class="grid-title-item">
+                  <div class="skel"></div>
+                </td> -->
+              </tr>
+            </tbody>
+            <tbody class="grilla-aprobs">
+              <tr class="grid-body"
+                  *ngFor="let data of DATA_AUTORIZACIONES; let index = index"
+                  [id]="'row' + data.idProceso">
+                <td>{{ data.idProceso }}</td>
+                <td>{{ data.placa }}</td>
+                <!-- <td>{{ data.cantidadAdjuntos }}</td> -->
+                <td>{{ data.nombreCanal }}</td>
+                <td>{{ data.nombreUso }}</td>
+                <td>{{ data.usuario }}</td>
+                <td [attr.title]="data.fechaExpiracion">{{ data.estado }}</td>
+                <ng-container *ngIf="IsAdmin">
+                  <td>{{ data.segmento || '-' }}</td>
+                  <td>{{ data.sla || '-' }}</td>
+                </ng-container>
+                <td>{{ data.fechaSolicitud }}</td>
+                <!-- <td>{{ data.fechaExpiracion }}</td> -->
+                <td class="actions">
+                  <button class="btn-action"
+                          title="Opciones"
+                          (click)="showHideOptionsRowGrid(data.idProceso, index)">
+                    <i class="fa fa-ellipsis-v"
+                       aria-hidden="true"></i>
+                  </button>
+                  <div class="item-action"
+                       [id]="'actions' + data.idProceso"
+                       (blur)="hideAllMenusActions()"
+                       tabindex="1"
+                       hidden>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="showHideModalConfirmSolicitud(true, data.idProceso)"
+                       *ngIf="data.estado == 'PENDIENTE' && IsAdmin">
+                      <i class="fa fa-check fa-lg"
+                         aria-hidden="true"></i>
+                      Aprobar
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="showHideModalConfirmRechazarSolicitud(true, data.idProceso)"
+                       *ngIf="data.estado == 'PENDIENTE' && IsAdmin">
+                      <i class="fa fa-times fa-lg"
+                         aria-hidden="true"></i>
+                      Rechazar
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       color="red"
+                       *ngIf="data.estado == 'PENDIENTE' || data.estado == 'APROBADO'"
+                       (click)="showHideModalConfirmAnular(true, data.idProceso)">
+                      <i class="fa fa-trash fa-lg"
+                         aria-hidden="true"></i>
+                      Anular
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="verDocumentosSubidos(data.idProceso)">
+                      <i class="fa fa-file-text fa-lg"
+                         aria-hidden="true"></i>
+                      Ver Documentos
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="showModalResumen(data.idProceso)">
+                      <i class="fa fa-eye fa-lg"
+                         aria-hidden="true"></i>
+                      Ver Resumen
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="showModalHistorial(data.idProceso)">
+                      <i class="fa fa-search fa-lg"
+                         aria-hidden="true"></i>
+                      Ver Historial
+                    </a>
+                    <a class="item-action-op"
+                       role="button"
+                       (click)="emitirDocumento(data.idProceso)"
+                       *ngIf="data.estado == 'APROBADO' && !isAdmin">
+                      <i class="fa fa-paper-plane"
+                         aria-hidden="true"></i>
+                      Emitir
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalHistorial="bs-modal">
+  <div class="modal-dialog modal-ver-detalle modal-historial"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Historial de Proceso: {{ ID_PROCCESS }}</h5>
+        <button type="button"
+                class="close"
+                (click)="hideModalHistorial()"
+                data-dismiss="modal"
+                aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 px-0 mb-3 py-0">
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-history">
+          <thead class="thead">
+            <tr class="grid-title">
+              <td class="grid-title-item">Secuencia</td>
+              <td class="grid-title-item">Estado</td>
+              <td class="grid-title-item">Fecha</td>
+              <td class="grid-title-item">Usuario</td>
+              <td class="grid-title-item td-historial">Comentario</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grid-body"
+                *ngIf="DATA_HISTORIAL_SOLICITUD.length == 0">
+              <td class="grid-body-item"
+                  colspan="4">No se encontraron registros</td>
+            </tr>
+            <tr class="grid-body"
+                *ngFor="let data of DATA_HISTORIAL_SOLICITUD; let index = index">
+              <td class="grid-body-item">{{ index + 1 }}</td>
+              <td class="grid-body-item">{{ data.nombreEstado }}</td>
+              <td class="grid-body-item">{{ data.fechaRegistro }}</td>
+              <td class="grid-body-item">{{ data.usuario }}</td>
+              <td class="grid-body-item">{{ data.comentario }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="full-color btn-export-excel mx-0"
+                (click)="hideModalHistorial()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalResumen="bs-modal">
+  <div class="modal-dialog modal-ver-detalle modal-resumen"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Resumen del Proceso: {{ DATA_RESUMEN?.idProceso }}</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="hideModalResumen()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 px-0 mb-3 py-0">
+        <label class="lbl-title-resumen">Datos del Vehículo:</label>
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-resumen-auto">
+          <tbody>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Placa</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.placa }}</td>
+              <td class="grid-title grid-title-item">Marca</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.marca }}</td>
+            </tr>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Uso</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.uso }}</td>
+              <td class="grid-title grid-title-item">Modelo</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.modelo }}</td>
+            </tr>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Clase</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.clase }}</td>
+              <td class="grid-title grid-title-item">Nro. Serie</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.numeroSerie }}</td>
+            </tr>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Año</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.anio }}</td>
+              <td class="grid-title grid-title-item">Asientos</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.numeroAsientos }}</td>
+            </tr>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Zona Circulación</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.auto?.zonaCirculacion }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <label class="lbl-title-resumen">Datos del Contratante: </label>
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-resumen-auto">
+          <tbody>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Contratante</td>
+              <td class="grid-body-item"
+                  *ngIf="(DATA_RESUMEN?.cliente?.idTipoDocumento == 2 || DATA_RESUMEN?.cliente?.idTipoDocumento == 4) ||
+                  (DATA_RESUMEN?.cliente?.idTipoDocumento == 1 && DATA_RESUMEN?.cliente?.idTipoPersona == 1)">{{
+                DATA_RESUMEN?.cliente?.nombre + ' ' +
+                DATA_RESUMEN?.cliente?.apellidoPaterno + ' ' + DATA_RESUMEN?.cliente?.apellidoMaterno }}
+              </td>
+              <td class="grid-body-item"
+                  *ngIf="DATA_RESUMEN?.cliente?.idTipoDocumento == 1 && DATA_RESUMEN?.cliente?.idTipoPersona == 2">
+                {{
+                DATA_RESUMEN?.cliente?.razonSocial }}</td>
+
+              <td class="grid-title grid-title-item">Documento</td>
+              <td class="grid-body-item">
+                <span *ngIf="DATA_RESUMEN?.cliente?.idTipoDocumento == 2">DNI - {{
+                  DATA_RESUMEN?.cliente?.numeroDocumento }}</span>
+                <span *ngIf="DATA_RESUMEN?.cliente?.idTipoDocumento == 4">CE - {{
+                  DATA_RESUMEN?.cliente?.numeroDocumento
+                  }}</span>
+                <span *ngIf="DATA_RESUMEN?.cliente?.idTipoDocumento == 1">RUC - {{
+                  DATA_RESUMEN?.cliente?.numeroDocumento }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <label class="lbl-title-resumen">Datos de la Póliza:</label>
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-resumen-auto">
+          <tbody>
+            <tr class="grid-body">
+              <td class="grid-title grid-title-item">Vigencia</td>
+              <td class="grid-body-item">{{ DATA_RESUMEN?.poliza?.inicioVigencia | date: 'dd/MM/yyyy' }} -
+                {{
+                DATA_RESUMEN?.poliza?.finVigencia | date: 'dd/MM/yyyy' }}</td>
+              <td class="grid-title grid-title-item">Prima</td>
+              <td class="grid-body-item">S/. {{ DATA_RESUMEN?.poliza?.prima }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="full-color btn-export-excel mx-0"
+                (click)="hideModalResumen()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalDocumentosSubidos="bs-modal">
+  <div class="modal-dialog modal-ver-detalle modal-documents-subidos"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Documentos del Proceso: {{ ID_PROCCESS }}</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="hideDocumentosSubidos()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 px-0 mb-3 py-0">
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-resumen-auto">
+          <thead class="thead">
+            <tr class="grid-title">
+              <td class="grid-title-item">Tipo de Documento</td>
+              <td class="grid-title-item">Nombre del Documento</td>
+              <td class="grid-title-item">Acción</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grid-body"
+                *ngFor="let data of DATA_DOCUMENTOS_SUBIDOS">
+              <td class="grid-body-item">{{ data.nombreTipoDocumento }}</td>
+              <td class="grid-body-item">{{ data.nombreArchivo }}</td>
+              <td class="grid-body-item">
+                <label role="button"
+                       class="download-file-doc"
+                       (click)="descargarDocumento(data)">
+                  Descargar
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="full-color btn-export-excel mx-0"
+                (click)="hideDocumentosSubidos()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalComfirmAprobar="bs-modal">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Mensaje de Confirmación</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="showHideModalConfirmSolicitud(false)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <label for="">
+          ¿Estás seguro que desea aprobar la solicitud {{ ID_PROCESO_SOLICITUD }}?
+        </label>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn full-color btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="showHideModalConfirmSolicitud(false)">Cancelar</button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="confirmAprobarSolicitud()">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalComfirmRechazar="bs-modal">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Mensaje de Confirmación</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="showHideModalConfirmRechazarSolicitud(false)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <label for="">
+          ¿Estás seguro que desea rechazar la solicitud {{ ID_PROCESO_SOLICITUD }}?
+        </label>
+        <textarea type="text"
+                  placeholder="Comentario"
+                  class="comentario-txt"
+                  rows="3"
+                  [(ngModel)]="COMENTARIO_SOLICITUD"></textarea>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn full-color btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="showHideModalConfirmRechazarSolicitud(false)">Cancelar</button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="confirmRechazarSolicitud()"
+                [disabled]="COMENTARIO_SOLICITUD?.length == 0">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalSuccess="bs-modal">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="hideModalSuccess()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <div class="check-emitido">
+          <img src="assets/backoffice/check-success.png"
+               class="icon-check">
+        </div>
+        {{BODY_MODAL_SUCCESS}}
+      </div>
+      <div class="modal-footer modal-foot-confirm d-flex align-items-center justify-content-center">
+        <button type="button"
+                class="btn full-color btn-aceptar-modal"
+                (click)="hideModalSuccess()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalComfirmAnular="bs-modal">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Mensaje de Confirmación</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="showHideModalConfirmAnular(false)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <label for="">
+          ¿Estás seguro que desea anular la solicitud {{ ID_PROCESO_SOLICITUD }}?
+        </label>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn full-color btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="showHideModalConfirmAnular(false)">Cancelar</button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="confirmAnularSolicitud()">Si</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9">
+      <div class="content">
+        <h4 class="subtitle">PROMOTOR</h4>
+        <h4 class="subtitle username">{{ currentPromotor?.completeNames }}</h4>
+        <h5 class="subtitle">CÓDIGO - {{ currentPromotor?.documentNumber }}</h5>
+        <span class="product-title"> Productos Comercializados </span>
+        <div class="products-list">
+          <figure *ngFor="let item of currentPromotor?.productList">
+            <img [src]="'assets/shop/' + item.img" [attr.alt]="item.name" />
+            <figcaption>{{ item.description }}</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

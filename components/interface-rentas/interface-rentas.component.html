@@ -1,0 +1,264 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">APROBACIÓN DE ÓRDENES DE PAGO - RENTAS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            
+                            <div class="col-sm">
+                                <span>ORIGEN</span>
+                                <select class="form-control" [(ngModel)]="pago.P_NNUMORI" (change)="changeOrigin($event.target.value)">
+                                    <option value="0" disabled>
+                                        SELECCIONE
+                                    </option>
+                                    <option *ngFor="let item of origen" value="{{ item.COD_MAE }}">
+                                        {{ item.DESC_MAE }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm">
+                                <span>PAGO SINIESTRO</span>
+                                <select class="form-control" [(ngModel)]="pago.P_NTYPEOP">
+                                    <option value="0" disabled>
+                                        SELECCIONE
+                                    </option>
+                                    <option *ngFor="let item of pagoSiniestro" value="{{ item.COD_MAE }}">
+                                        {{ item.DESC_MAE }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm">
+                                <span>FECHA INICIO</span>
+                                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="pago.P_DFECINI">
+                            </div>
+
+                            <div class="col-sm">
+                                <span>FECHA FIN</span>
+                                <input class="form-control" type="text" #dp="bsDatepicker" bsDatepicker DateDirective [bsConfig]="bsConfig" [(ngModel)]="pago.P_DFECFIN">
+                            </div>
+
+                            <!-- <div class="col-sm">
+                                <span>PÓLIZA</span>
+                                <input type="text" class="form-control" [(ngModel)]="pago.P_SPOLIZA" maxlength="10" />
+                            </div> -->
+                            
+                            <div class="col-sm">
+                                <span>&nbsp;</span>
+                                <button class="full-color" (click)="search(1)">
+                                    <span>CONSULTAR</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <span>&nbsp;</span>
+                                <button class="full-colorN" (click)="downloadRes()">
+                                    <span>DESCARGAR EXCEL</span>
+                                    <img class="icon-btn" src="./assets/icons/download2.png" />
+                                </button>
+                            </div>
+                            <div class="col-sm"></div>
+                            <div class="col-sm"></div>
+                            <div class="col-sm"></div>
+                            <div class="col-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid form-group">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="grid-title">
+                                <td class="grid-title-item text-center">
+                                    <input type="checkbox" [(ngModel)]="checked" (change)="checkAllProc()" class="mr-2" />
+                                    SEL.
+                                </td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaDirecto || ahorroDirecto">BANCO</td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaDirecto">VIA DE PAGO</td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaAFP">AFP</td>
+                                <td class="grid-title-item text-center">MONEDA</td>
+                                <td class="grid-title-item text-center">{{ seacsaAFP ? 'MONTO TOTAL' : 'MONTO' }}</td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaAFP">LÍQUIDO</td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaAFP">SALUD</td>
+                                <td class="grid-title-item text-center" *ngIf="seacsaAFP">RETENCIÓN</td>
+                                <td class="grid-title-item text-center">CANT. REGISTROS</td>
+                                <td class="grid-title-item text-center">ACCIONES</td>
+                            </tr>
+                        </thead>
+                        <ng-container *ngIf="pagos != null && pagos.length > 0; then showGrid else hideGrid"></ng-container>
+                    </table>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr style="text-align: center;">
+                                <td colspan="7">No se encontraron registros.</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody>
+                            <tr *ngFor="let item of listToShow; let row_no = index">
+                                <td class="text-center">
+                                    <input type="checkbox" [(ngModel)]="item.IS_SELECTED" (change)="checkProc()" class="mvChk" />
+                                </td>
+                                <td class="text-center" *ngIf="seacsaDirecto || ahorroDirecto">{{ item.DES_BANK }}</td>
+                                <td class="text-center" *ngIf="seacsaDirecto">{{ item.DES_VIAPAGO }}</td>
+                                <td class="text-center" *ngIf="seacsaAFP">{{ item.DES_AFP }}</td>
+                                <td class="text-center">{{ item.DES_MONEDA }}</td>
+                                <td class="text-right">{{ item.NMTO_PENSION }}</td>
+                                <td class="text-right" *ngIf="seacsaAFP">{{ item.NMTO_LIQPAGAR }}</td>
+                                <td class="text-right" *ngIf="seacsaAFP">{{ item.NMTO_LIQSALUD }}</td>
+                                <td class="text-right" *ngIf="seacsaAFP">{{ item.NMTO_LIQRJUD }}</td>
+                                <td class="text-center">{{ item.CANT_REG }}</td>
+                                <td class="text-center">
+                                    <a (click)="open(content, item)">
+                                        <i title="Visualizar" style="cursor: pointer;" class="fa fa-eye fa-lg mr-2"></i>
+                                    </a>
+                                    <a (click)="downloadDet(item)">
+                                        <i title="Reporte" style="cursor: pointer;" class="fa fa-file-text fa-lg"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </div>
+            </div>
+
+            <ng-container *ngIf="pagos != null && pagos.length > 0; then showPagination"></ng-container>
+
+            <ng-template #showPagination>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </ng-template>
+
+            <div class="text-right">
+                <button class="full-colorNWS d-inline-block" (click)="limpiar()">
+                    <span>LIMPIAR</span>
+                </button>
+                <button class="full-colorWS d-inline-block ml-2" (click)="aprobar()">
+                    <span>APROBAR</span>
+                </button>
+            </div>
+
+            <div [hidden]="!isLoading" class="loadingScreen">
+                <div style="display: flex; height: 100%; width: 100%">
+                    <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            DETALLE DE PAGOS
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="card">
+            <div class="row m-2">
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item text-center">ORIGEN</td>
+                                    <td class="grid-title-item text-center">PÓLIZA</td>
+                                    <td class="grid-title-item text-center">TIPO DE DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">NRO. DOCUMENTO</td>
+                                    <td class="grid-title-item text-center">BENEFICIARIO</td>
+                                    <td class="grid-title-item text-center">RECEPTOR</td>
+                                    <td class="grid-title-item text-center">PAGO SINIESTRO</td>
+                                    <td class="grid-title-item text-center">FECHA PAGO</td>
+                                    <td class="grid-title-item text-center">MONEDA</td>
+                                    <td class="grid-title-item text-center">MONTO A LIQUIDAR</td>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="detalles == null || detalles.length == 0; then hideGrid else showGrid"></ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" colspan="10">No se encontraron registros.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of listToShowDet">
+                                <tr>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DES_NUMORI }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SNUM_POLIZA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DES_TYPE_IDENBEN }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SNUM_IDENBEN }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SNOM_BENEFICIA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.SNOM_RECEPTOR }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DES_TYPEPAGO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DFEC_PAGO }}
+                                    </td>
+                                    <td class="data-table-tr-td text-center">
+                                        {{ item.DES_MONEDA }}
+                                    </td>
+                                    <td class="data-table-tr-td text-right">
+                                        {{ item.NMTO_PENSION }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div *ngIf="detalles != null && detalles.length > 0" class="row" style="display: flex">
+                    <div class="col-sm-12">
+                        <ngb-pagination [(page)]="currentPageDet" [pageSize]="itemsPerPageDet" [collectionSize]="totalItemsDet" [maxSize]="maxSizeDet" (pageChange)="pageChangedDet(currentPageDet)">
+                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="full-colorWS" (click)="modal.dismiss('Cross click')">
+            <span>CERRAR</span>
+        </button>
+    </div>
+</ng-template>

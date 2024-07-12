@@ -1,0 +1,876 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-sm-12 col-lg-9">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="containt-item">
+          <div class="header-item">
+            <span class="title">Mi Historial de Ventas</span>
+          </div>
+        </div>
+        <div class="containt-item">
+          <div class="header-item rigth-item">
+            <button
+              class="full-color"
+              (click)="facturar()"
+              *ngIf="invoiceList.length > 0"
+            >
+              <img alt="" src="assets/icons/transferir_blanco.png" />
+              <span>Facturar ({{ invoiceList.length }})</span>
+            </button>
+          </div>
+
+          <div class="header-item rigth-item">
+            <button class="full-color" (click)="AddSales()">
+              <img alt="" src="assets/icons/add.png" />
+              <span>Agregar Ventas</span>
+            </button>
+          </div>
+
+          <div class="header-item rigth-item">
+            <button (click)="EventDownload()">
+              <img alt="" src="assets/icons/descargar.png" />
+              <span>Descargar Excel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="filter__section__channel">
+            <app-channelpoint
+              [myInput]="true"
+              (evResultChannelSales)="onVotedParentChannelSales($event)"
+              (evResultChannelPoint)="onVotedParentChannelPoint($event)"
+            ></app-channelpoint>
+          </div>
+        <div class="filter__section">
+            <span class="filter__section--placeholder">POR ESTADO:</span>
+            <app-statesales
+              (evResultStateSales)="onVotedParentStateSales($event)"
+            ></app-statesales>
+          </div>
+          <div class="filter__section">
+            <span class="filter__section--placeholder">POR TIPO:</span>
+            <app-salesmode
+              (evResultSalesMode)="onVotedParentSalesMode($event)"
+            ></app-salesmode>
+          </div>
+          <div class="filter__section">
+            <span class="filter__section--placeholder">POR P&Oacute;LIZA:</span>
+            <input
+              [(ngModel)]="filter.NumPolicy"
+              placeholder="Nro. P&oacute;liza"
+              type="text"
+              name="prima"
+              id="prima"
+              (keypress)="this.utilityService._kpPolicy($event, primaBuscar)"
+            />
+          </div>
+          <div class="filter__section">
+            <span class="filter__section--placeholder">POR FECHA DE EMISI&Oacute;N:</span>
+            <input
+              type="text"
+              class="form-control"
+              #dp="bsDatepicker"
+              [bsConfig]="bsConfig"
+              bsDatepicker
+              [(bsValue)]="bsValueIni"
+              value="{{ bsValueIni | date: 'dd/MM/yyyy' }}"
+            />
+          </div>
+          <div class="filter__section">
+            <span>&nbsp;</span>
+            <input
+              type="text"
+              class="form-control"
+              [bsConfig]="bsConfig"
+              #dp="bsDatepicker"
+              bsDatepicker
+              [(bsValue)]="bsValueFin"
+              value="{{ bsValueFin | date: 'dd/MM/yyyy' }}"
+            />
+          </div>
+          
+          <div class="filter__section">
+            <span class="filter__section--placeholder">POR PLACA:</span>
+            <input type="text"
+                   class="license-plate"
+                   maxlength="6"
+                   [formControl]="plateControl"/>
+          </div>
+          <div class="filter__section contractor-filter">
+            <span class="filter__section--placeholder">POR CONTRATANTE:</span>
+            <div class="field-container-input">
+              <i class="fa fa-search"
+                 aria-hidden="true"></i>
+              <input
+                type="text"
+                id="contractor-filter"
+                class="field-container__input"
+                [class.active]="contractorSelected.id"
+                [class.cursor-default]="contractorSelected.id"
+                readonly
+                placeholder="Buscar contratante"
+                [formControl]="contractorControl"
+                (click)="showHideModalContractor(true)"
+              />
+
+              <button
+                class="button search-contractor"
+                (click)="removeContractorSelected()"
+                *ngIf="contractorSelected.id"
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+          <div></div>
+          <div class="filter__section__button">
+            <span>&nbsp;</span>
+            <button class="full-color button-search" (click)="buscar()">
+              <span>Buscar</span>
+            </button>
+          </div>
+        <div *ngIf="!resultError" class="alert alert-danger">
+          La Fecha Fin no puede ser menor a la Fecha Inicial
+        </div>
+      </div>
+      <div class="grid form-group">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td *ngIf="showchkFacturar" class="grid-title-item">
+                  Facturar
+                </td>
+                <td class="grid-title-item">Procedencia</td>
+                <td class="grid-title-item">Placa</td>
+                <td class="grid-title-item">Nro. de P&oacute;liza</td>
+                <td class="grid-title-item">Prima</td>
+                <td class="grid-title-item">Vigencia</td>
+                <td class="grid-title-item">Nro. de Documento</td>
+                <td class="grid-title-item">Contratante</td>
+                <td class="grid-title-item">Fecha de Emisión</td>
+                <td class="grid-title-item">Tipo</td>
+                <td class="grid-title-item">Estado</td>
+                <td class="grid-title-item">Acciones</td>
+              </tr>
+            </thead>
+            <div
+              *ngIf="fExistRegistro; then ocultarGrilla; else mostrarGrilla"
+            ></div>
+          </table>
+          <ng-template #mostrarGrilla>
+            <tbody>
+              <tr>
+                <td colspan="10">{{ msgErrorLista }}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+          <ng-template #ocultarGrilla>
+            <tbody *ngFor="let historia of historialGrilla">
+              <tr>
+                <td *ngIf="showchkFacturar">
+                  <input
+                    *ngIf="isNullValue(historia.comprobantecore)"
+                    [checked]="invoiceSelected(historia)"
+                    type="checkbox"
+                    id="x"
+                    (change)="checkUncheckInvoice($event, historia)"
+                  />
+                </td>
+                <td>{{ historia.ssource }}</td>
+                <td>{{ historia.sregist }}</td>
+                <td>{{ historia.npolicy }}</td>
+                <td>S/ {{ historia.npremium | number: "1.2-2" }}</td>
+                <td>
+                  {{ this.datePipe.transform(historia.dstartdate, "dd/MM/yy") }}
+                  -
+                  {{ this.datePipe.transform(historia.dexpirdat, "dd/MM/yy") }}
+                </td>
+                <td>{{ historia.ndocuments }}</td>
+                <td class="col-client">{{ historia.snamecomplete }}</td>
+                <td>
+                  {{ this.datePipe.transform(historia.dissuedat, "dd/MM/yy") }}
+                </td>
+                <td>{{ historia.ssalemode }}</td>
+                <td>{{ historia.sstatuS_POL_DES }}</td>
+                <td class="data-table-tr-td">
+                  <a
+                    *ngIf="historia.ssalemode !== 'MANUAL'"
+                    (click)="onImprimir(historia.npolicy)"
+                  >
+                    <i
+                      title="Imprimir"
+                      style="cursor: pointer"
+                      class="fa fa-print fa-lg"
+                    ></i>
+                  </a>
+                  <a
+                    *ngIf="historia.ssalemode == 'DIGITAL'"
+                    (click)="openModalConfirExactus(historia.npolicy)"
+                  >
+                    <i
+                      title="Enviar Email"
+                      style="cursor: pointer; margin-left: 3px"
+                      class="fa fa-envelope fa-lg"
+                    ></i>
+                  </a>
+                  <a
+                    *ngIf="
+                      showAnulacion(historia) &&
+                      isNullValue(historia.comprobantecore)
+                    "
+                    (click)="onAnular(historia)"
+                  >
+                    <i
+                      title="Anular"
+                      style="cursor: pointer; color: #d43f3a; margin-left: 3px"
+                      class="fa fa-trash fa-lg"
+                    ></i>
+                  </a>
+                  <a
+                    *ngIf="!isNullValue(historia.comprobantecore)"
+                    class="anchordisabled"
+                  >
+                    <i
+                      title="La póliza indicada ya cuenta con una factura, por favor comunicarse con su asesor de servicio."
+                      style="cursor: pointer; color: #d43f3a; margin-left: 3px"
+                      class="fa fa-trash fa-lg"
+                    ></i>
+                  </a>
+                  <a
+                    *ngIf="
+                      historia.comprobantesunat !== null &&
+                      historia.comprobantesunat !== undefined
+                    "
+                    (click)="descargarComprobante(historia)"
+                  >
+                    <i
+                      title="Descargar Factura"
+                      style="cursor: pointer; margin-left: 3px"
+                      class="fa fa-download fa-lg"
+                    ></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </div>
+      </div>
+      <div
+        *ngIf="fExistRegistro; then ocultarPaginado; else mostrarPaginado"
+      ></div>
+      <ng-template #mostrarPaginado>
+        <div></div>
+      </ng-template>
+      <ng-template #ocultarPaginado>
+        <div class="row">
+          <div class="col-xs-12 col-12">
+            <pagination
+              [totalItems]="totalItems"
+              [itemsPerPage]="itemsPerPage"
+              [rotate]="rotate"
+              [maxSize]="maxSize"
+              [(ngModel)]="currentPage"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+              (pageChanged)="pageChanged($event)"
+            >
+            </pagination>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Mensaje
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="aceptarmsginfo()"
+        >
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row message">
+          <div class="col-lg-12">
+            <p class="messageinfo">{{ messageinfo }}</p>
+          </div>
+        </div>
+        <div class="form-group row button-modal">
+          <div class="col-lg-12">
+            <button
+              style="min-width: 100%"
+              class="full-color-modal"
+              (click)="aceptarmsginfo()"
+            >
+              <span>Aceptar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalConfirmasivo="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <form
+    action=""
+    [formGroup]="emailForm"
+    (ngSubmit)="confirm()"
+    autocomplete="off"
+  >
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            {{ msjHeader }}
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeconfirm()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            class="form-group row message"
+            [ngClass]="{ bHideBody: bHideBody }"
+          >
+            <div class="col-lg-12 contenido-modal" id="msjModal">
+              <p class="messageinfo">{{ message }}</p>
+            </div>
+            <div class="col-lg-12 contenido-modal" id="msjEmail">
+              <input
+                type="text"
+                id="email"
+                formControlName="email"
+                maxlength="50"
+                class="form-control"
+                placeholder="Ingrese correo electrónico"
+                [ngClass]="{ errormail: showError('email') }"
+              />
+            </div>
+            <div
+              style="padding-left: 15px; padding-top: 2px"
+              class="soat-error-message"
+              *ngIf="showError('email')"
+            >
+              <ng-container *ngIf="cForm['email'].errors.required">
+                <i></i><span>Necesitamos conocer tu correo</span>
+              </ng-container>
+              <ng-container *ngIf="cForm['email'].errors.pattern">
+                <i></i><span>Formato de correo inválido</span>
+              </ng-container>
+            </div>
+          </div>
+          <div class="form-group row button-modal">
+            <div class="col-lg-6">
+              <button type="submit" class="full-color-modal">
+                <span>Si</span>
+              </button>
+            </div>
+            <div class="col-lg-6">
+              <button class="button-close" (click)="closeconfirm()">
+                <span>No</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div
+  bsModal
+  #childModalAnulacion="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <form [formGroup]="anulacionForm" (ngSubmit)="anular()" #myform="ngForm">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Solicitud de anulación
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeModalAnulacion()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            class="form-group row message"
+            [ngClass]="{ bHideBody: bHideBody }"
+          >
+            <div class="col-lg-12 contenido-modal" id="msjEmail">
+              <select
+                formControlName="tipoanulacion"
+                class="form-control select-formulario"
+              >
+                <option value="1">Por error en la emisión</option>
+                <option value="0">Por desestimiento de cliente</option>
+              </select>
+            </div>
+            <div class="col-lg-12 contenido-modal pt-fc" id="msjEmail">
+              <textarea
+                formControlName="observacion"
+                name="txtMotivoAnula"
+                id="txtMotivoAnula"
+                class="form-control"
+                maxlength="250"
+                mixlength="20"
+                placeholder="Ingrese una observación para la anulación"
+                rows="3"
+              ></textarea>
+              <label [ngClass]="'error'">
+                Por favor complete el campo observación (mínimo 20 caracteres)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group row button-modal">
+            <div class="col-sm-6 col-lg-6">
+              <button
+                type="button"
+                class="button-close"
+                (click)="closeModalAnulacion()"
+              >
+                <span>Cancelar</span>
+              </button>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+              <button type="submit" class="full-color-modal">
+                <span>Anular</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div
+  bsModal
+  #childModalMensaje="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+        <h4
+          id="dialog-child-name"
+          class="modal-title pull-left titlemensajeinfo"
+        >
+          Validación
+        </h4>
+        <button
+          type="button"
+          class="close close-button"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModalMensaje()"
+        >
+          <span aria-hidden="true">
+            <img alt="" src="assets/icons/close_modal.png" />
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div
+          class="form-group row message"
+          [ngClass]="{ bHideBody: bHideBody }"
+        >
+          <div class="col-lg-12 contenido-modal" id="msjEmail">
+            {{ messagevalidation }}
+          </div>
+        </div>
+
+        <div class="form-group row button-modal">
+          <div class="col-sm-12 col-lg-12">
+            <button
+              type="button"
+              class="button-close button-center"
+              (click)="closeModalMensaje()"
+            >
+              <span>Cerrar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #childModalFacturar="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <form
+    [formGroup]="facturacionForm"
+    (ngSubmit)="onFacturar()"
+    #myform="ngForm"
+  >
+    <div class="modal-dialog modal-md div-contratante">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="{ bHideHeader: bHideBody }">
+          <h4
+            id="dialog-child-name"
+            class="modal-title pull-left titlemensajeinfo"
+          >
+            Facturación Grupal
+          </h4>
+          <button
+            type="button"
+            class="close close-button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="closeModalFacturacion()"
+          >
+            <span aria-hidden="true">
+              <img alt="" src="assets/icons/close_modal.png" />
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            class="form-group row message"
+            [ngClass]="{ bHideBody: bHideBody }"
+          >
+            <div class="col-lg-12 contenido-modal" id="msjEmail">
+              Contratante:
+            </div>
+
+            <div class="col-lg-12 contenido-modal" id="msjEmail">
+              <app-contrantante
+                #appcontrantante
+                [cliente]="contratante"
+                [bloqueado]="blockContratante"
+                [showempty]="false"
+                actual="99"
+                titulo=""
+                (clienteResult)="assignContratante($event)"
+              >
+              </app-contrantante>
+            </div>
+          </div>
+
+          <div class="form-group row button-modal">
+            <div class="col-sm-6 col-lg-6">
+              <button
+                type="button"
+                class="button-close button-center"
+                (click)="closeModalFacturacion()"
+              >
+                <span>Cancelar</span>
+              </button>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+              <button type="submit" class="full-color-modal button-center">
+                <span>Facturar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-template #modalContractor>
+  <div class="content-modal">
+    <section class="modal-contractor">
+      <div class="modal-header">
+        <h6>Buscar contratante</h6>
+      </div>
+      <div class="modal-body">
+        <form class="form-contractor"
+              [formGroup]="formContractor">
+          <label class="placeholder"
+                 aria-label="Buscar por:">
+            <div class="content-search-type">
+              <div class="selection radio">
+                <input
+                  type="radio"
+                  id="search-by-document"
+                  [value]="SEARCHTYPES.document"
+                  formControlName="searchType"
+                />
+                <label for="search-by-document">Documento</label>
+              </div>
+              <div class="selection radio">
+                <input
+                  type="radio"
+                  id="search-by-names"
+                  [value]="SEARCHTYPES.names"
+                  formControlName="searchType"
+                />
+                <label for="search-by-names">{{
+                    formContractorControl["personType"].value ==
+                    PERSONTYPES.business
+                      ? "Razón Social"
+                      : "Nombres y Apellidos"
+                  }}</label>
+              </div>
+            </div>
+          </label>
+
+          <ng-container
+            *ngIf="
+              formContractorControl['searchType'].value == SEARCHTYPES.document
+            "
+          >
+            <div class="content-document">
+              <label for=""
+                     class="placeholder select">
+                <select
+                  type="text"
+                  class="field-container__input"
+                  formControlName="documentType"
+                >
+                  <option value="1">RUC</option>
+                  <option value="2">DNI</option>
+                  <option value="4">CE</option>
+                </select>
+              </label>
+
+              <label
+                for="form-contractor-document-number"
+                class="placeholder inside"
+                [class.active]="formContractorControl['documentNumber'].value"
+                aria-label="Número de documento"
+              >
+                <input
+                  type="text"
+                  id="form-contractor-document-number"
+                  class="field-container__input upper"
+                  [maxlength]="documentNumberContractorValidations.maxLength"
+                  formControlName="documentNumber"
+                  (blur)="getDocumentInfo()"
+                />
+              </label>
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              formContractorControl['searchType'].value == SEARCHTYPES.names
+            "
+          >
+            <label class="placeholder"
+                   aria-label="Tipo de persona">
+              <select
+                class="field-container__input upper"
+                formControlName="personType"
+              >
+                <option [value]="PERSONTYPES.natural">Persona Natural</option>
+                <option [value]="PERSONTYPES.business">Persona Jurídica</option>
+              </select>
+            </label>
+            <ng-container
+              *ngIf="
+                formContractorControl['personType'].value ==
+                PERSONTYPES.business
+              "
+            >
+              <label class="placeholder"
+                     aria-label="Razón Social:">
+                <input
+                  type="text"
+                  class="field-container__input upper"
+                  formControlName="legalName"
+                />
+              </label>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                formContractorControl['personType'].value == PERSONTYPES.natural
+              "
+            >
+              <label class="placeholder"
+                     aria-label="Nombres:">
+                <input
+                  type="text"
+                  class="field-container__input upper"
+                  formControlName="names"
+                />
+              </label>
+              <div class="content-names">
+                <label class="placeholder"
+                       aria-label="Apellido Paterno:">
+                  <input
+                    type="text"
+                    class="field-container__input upper"
+                    formControlName="apePat"
+                  />
+                </label>
+                <label class="placeholder"
+                       aria-label="Apellido Materno:">
+                  <input
+                    type="text"
+                    class="field-container__input upper"
+                    formControlName="apeMat"
+                  />
+                </label>
+              </div>
+            </ng-container>
+
+            <button
+              class="button primary fit"
+              [disabled]="formContractor.invalid"
+              (click)="getDocumentInfo()"
+              *ngIf="
+                formContractorControl['searchType'].value == SEARCHTYPES.names
+              "
+            >
+              Buscar
+            </button>
+          </ng-container>
+        </form>
+
+        <div class="content-table">
+          <table class="table-u table-contractors">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Documento</th>
+                <th>Contratante</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="!listContractors$.length">
+                <tr>
+                  <td colspan="3">No se encontraron resultados</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="listContractors$.length">
+                <tr
+                  class="list-contractors-row"
+                  *ngFor="
+                    let item of listContractors$
+                      | paginate
+                        : {
+                            id: 'current-page-list-contractors',
+                            itemsPerPage: 4,
+                            currentPage: currentPageListContractors,
+                            totalItems: listContractors$.length
+                          };
+                    let index = index
+                  "
+                >
+                  <td>
+                    <div class="selection radio">
+                      <input
+                        type="radio"
+                        name="contractor-radio"
+                        [attr.id]="'select-contractor-' + index"
+                        [value]="item.clientCode"
+                        [formControl]="clientCodeContractorControl"
+                        (change)="onChangeSelectContractor(item)"
+                      />
+                      <label [attr.for]="'select-contractor-' + index"></label>
+                    </div>
+                  </td>
+                  <td>
+                    {{ DOCUMENTTYPES[item.documentType] }} -
+                    {{ item.documentNumber }}
+                  </td>
+                  <td>{{ item.contractor }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <ng-container *ngIf="listContractors$.length">
+          <pagination-controls
+            id="current-page-list-contractors"
+            [autoHide]="true"
+            (pageChange)="currentPageListContractors = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+          ></pagination-controls>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="button secondary fit"
+          (click)="showHideModalContractor(false)"
+        >
+          Cancelar
+        </button>
+        <button
+          class="button primary fit"
+          [disabled]="!contractorSelected.id"
+          (click)="selectContractor()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

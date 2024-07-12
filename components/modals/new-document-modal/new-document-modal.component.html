@@ -1,0 +1,49 @@
+<div class="padding-modal">
+  <div class="modal-header border-none">
+    <div class="container-title-modal">
+      <h3 class="title">Cargar nuevo documento</h3>
+    </div>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="formModalReference.dismiss()"
+      value="&times;"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="content">
+      <input
+        class="nameFile"
+        type="text"
+        [value]="pdfFile ? pdfFile.name : ''"
+        readonly
+        placeholder="Nombre del archivo"
+      />
+      <input
+        type="file"
+        (change)="onFileChange($event)"
+        accept=".pdf"
+        id="fileInput"
+        style="display: none"
+      />
+
+      <div class="content-buttons">
+        <label class="button" for="fileInput" id="fileInputLabel"
+          >Seleccionar</label
+        >
+        <div *ngIf="errorMessage">{{ errorMessage }}</div>
+        <button
+          class="button"
+          id="button"
+          (click)="onSubmit()"
+          [disabled]="!pdfFile"
+        >
+          Cargar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="reference.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <!--  -->
+    <div class="col-sm-12 mt-3" *ngIf="motAnulacion != ''">
+        <span>Motivo de Anulación</span>
+        <input type="text" [(ngModel)]="motAnulacion" disabled />
+    </div>
+    <div class="col-sm-12 mt-3" *ngIf="codTransac != 6 && codTransac != 7">
+        <div class="card">
+
+            <div class="col-sm-12 mt-3">
+                <h5>Documentos de la póliza</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td class="col">Documento</td>
+                            <td class="col">Descargar</td>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="generadosList!=null && generadosList.length>0">
+                        <tr *ngFor="let item of generadosList">
+                            <td><span>{{ item | fileName }}</span></td>
+                            <td><span class="text-center"><a (click)="downloadFile(item)"><img
+                                            src="assets/icons/download2.png" title="Descargar" style="cursor:pointer;"
+                                            alt="Descargar" /></a></span></td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="generadosList==null || generadosList.length==0">
+                        <tr>
+                            <td colspan="2" class="col-sm text-center"><span>No se encontraron archivos</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-2 mb-3" *ngIf="codTransac != 6 && codTransac != 7">
+        <div class="card">
+            <div class="col-sm-12 mt-3">
+                <h5>Archivos adjuntos</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td class="col">Documento</td>
+                            <td class="col">Descargar</td>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="adjuntosList!=null && adjuntosList.length>0">
+                        <tr *ngFor="let item of adjuntosList">
+                            <td><span>{{ item | fileName }}</span></td>
+                            <td><span class="text-center"><a (click)="downloadFile(item)"><img
+                                            src="assets/icons/download2.png" title="Descargar" style="cursor:pointer;"
+                                            alt="Descargar" /></a></span></td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="adjuntosList==null || adjuntosList.length==0">
+                        <tr>
+                            <td colspan="2" class="col-sm text-center"><span>No se encontraron archivos</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card">
+                    <div class="col-sm-12 mt-3 mb-3">
+                        <span>Comentarios</span>
+                        <textarea cols="40" [(ngModel)]="comentario" rows="5" style="width:100%" placeholder="SIN COMENTARIOS"
+                            [disabled]="true"></textarea>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-2 mb-3" *ngIf="codTransac == 6 || codTransac == 7">
+        <span>Comentarios</span>
+        <textarea cols="40" [(ngModel)]="comentario" placeholder="SIN COMENTARIOS" rows="5" style="width:100%" [disabled]="true"></textarea>
+    </div>
+</div>
+<div class="modal-footer">
+    <button (click)="reference.close()">Regresar</button>
+</div>

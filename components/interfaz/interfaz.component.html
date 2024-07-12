@@ -1,0 +1,501 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   INTERFAZ.COMPONENT.HTML                                              */
+/*  DESCRIPCIÓN         :   BROKER COMPONENTS                                                    */
+/*  AUTOR               :   MATERIA GRIS - DIEGO ARMANDO GONZALES CHOCANO                        */
+/*  FECHA               :   12-12-2022                                                           */
+/*  VERSIÓN             :   2.0 - MEJORAS CONTABLES AUTOMÁTICAS                                  */
+/************************************************************************************************-->
+
+<div class="row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="header-content">
+            <div class="containt-item">
+                <div class="header-item">
+                    <span class="title">INTERFAZ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-sm-3">
+                        <span>ORIGEN DE DATOS</span>
+                        <select class="form-control" [(ngModel)]="filtroOrigen.mvt_nnumori" (change)="clean()">
+                            <option *ngFor="let item of origen" value="{{ item.mvt_nnumori }}">
+                                {{ item.mvt_cdescri }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-3">
+                        <span>&nbsp;</span>
+                        <button class="full-colorN" (click)="listarInterfaz()">
+                            <span>BUSCAR</span>
+                            <img class="icon-btn" src="./assets/icons/buscar_certificado.png" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-sm-9">
+                        <span class="titleN">Listado de Interfaces</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="full-color" (click)="mostrarModalInterfazAgregar(contentNuevaInterfaz)">
+                            <span>AGREGAR INTERFAZ</span>
+                        </button>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="grid form-group">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="grid-title">
+                                            <td class="grid-title-item text-center" style="width: 10%;">CÓDIGO</td>
+                                            <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                            <td class="grid-title-item text-center">ESTADO</td>
+                                            <td class="grid-title-item text-center"></td>
+                                            <td class="grid-title-item text-center"></td>
+                                        </tr>
+                                    </thead>
+                                    <ng-container *ngIf="listToShow == null || listToShow.length == 0; then hideGrid1 else showGrid1"></ng-container>
+                                </table>
+                                <ng-template #hideGrid1>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center" colspan="5">No se encontraron registros.</td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                                <ng-template #showGrid1>
+                                    <tbody *ngFor="let item of listToShow" style="cursor: pointer;">
+                                        <tr (click)="seleccionarInterfaz(item)" [ngClass]="{'highlight' : item.mvt_ncodgru == selectedName}">
+                                            <td class="data-table-tr-td text-center" style="width: 10%;">
+                                                {{ item.mvt_ncodgru }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                {{ item.mvt_cdescri }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                {{ item.mvt_destado }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                <a (click)="mostrarModalInterfazEditar(contentEditarInterfaz, item)">
+                                                    <i title="Editar" style="cursor: pointer;" class="fa fa-edit fa-lg"></i>
+                                                </a>
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                <a (click)="eliminarInterfaz(item)">
+                                                    <i title="Eliminar" style="cursor: pointer;" class="fa fa-trash fa-lg"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div *ngIf="listToShow != null && listToShow.length > 0" class="row" style="display: flex;">
+                            <div class="col-sm-12">
+                                <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems" [maxSize]="maxSize" (pageChange)="pageChanged(currentPage)">
+                                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                </ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-sm-9">
+                        <span class="titleN">Listado de Movimientos</span>
+                        <span class="titleM">INTERFAZ: {{ seleccionInterfaz }}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <button [disabled]="booleanMov" [ngClass]="booleanMov ? 'disabled' : 'full-color'" (click)="mostrarModalMovimientoAgregar(contentNuevoMovimiento)">
+                            <span>AGREGAR MOVIMIENTO</span>
+                        </button>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="grid form-group">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="grid-title">
+                                            <td class="grid-title-item text-center" style="width: 10%;">CÓDIGO</td>
+                                            <td class="grid-title-item text-center">DESCRIPCIÓN</td>
+                                            <td class="grid-title-item text-center">REPORTE ASOCIADO</td>
+                                            <td class="grid-title-item text-center" style="width: 10%;">TIPO DE ASIENTO</td>
+                                            <td class="grid-title-item text-center">ESTADO</td>
+                                            <td class="grid-title-item text-center"></td>
+                                            <td class="grid-title-item text-center"></td>
+                                        </tr>
+                                    </thead>
+                                    <ng-container *ngIf="listToShowMovimientos == null || listToShowMovimientos.length == 0; then hideGrid2 else showGrid2"></ng-container>
+
+                                </table>
+                                <ng-template #hideGrid2>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center" colspan="7">No se encontraron registros.</td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                                <ng-template #showGrid2>
+                                    <tbody *ngFor="let item of listToShowMovimientos">
+                                        <tr>
+                                            <td class="data-table-tr-td text-center" style="width: 10%;">
+                                                {{ item.mct_ncodcon }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                {{ item.mct_cdescri }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                {{ item.mct_repasoc ? item.mct_repasoc : "—" }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center" style="width: 10%;">
+                                                {{ item.mct_ctipreg }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                {{ item.mct_destado }}
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                <a (click)="mostrarModalMovimientoEditar(contentEditarMovimiento, item)">
+                                                    <i title="Editar" style="cursor: pointer;" class="fa fa-edit fa-lg"></i>
+                                                </a>
+                                            </td>
+                                            <td class="data-table-tr-td text-center">
+                                                <a (click)="eliminarMovimientos(item)">
+                                                    <i title="Eliminar" style="cursor: pointer;" class="fa fa-trash fa-lg"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div *ngIf="listToShowMovimientos != null && listToShowMovimientos.length > 0" class="row" style="display: flex;">
+                            <div class="col-sm-12">
+                                <ngb-pagination [(page)]="currentPageMovimientos" [pageSize]="itemsPerPageMovimientos" [collectionSize]="totalItemsMovimientos" [maxSize]="maxSizeMovimientos" (pageChange)="pageChangedMovimientos(currentPageMovimientos)">
+                                    <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                    <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                </ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NUEVA INTERFAZ -->
+<ng-template #contentNuevaInterfaz let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            NUEVA INTERFAZ
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="interfazRegisterForm">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span>ORIGEN DE DATOS</span>
+                    <select class="form-control" formControlName="mvt_nnumori" [ngClass]="{ 'is-invalid': submitted && controlInterfazRegister.mvt_nnumori.errors }">
+                        <option *ngFor="let item of origen" value="{{ item.mvt_nnumori }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlInterfazRegister.mvt_nnumori.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazRegister.mvt_nnumori.errors.required">El origen es requerido.</div>
+                    </div>
+
+                    <span>CÓDIGO</span>
+                    <input class="form-control" type="number" formControlName="mvt_ncodgru" placeholder="INGRESAR CÓDIGO" [ngClass]="{ 'is-invalid': submitted && controlInterfazRegister.mvt_ncodgru.errors }">
+                    <div *ngIf="submitted && controlInterfazRegister.mvt_ncodgru.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazRegister.mvt_ncodgru.errors.required">El código es requerido.</div>
+                    </div>
+
+                    <span>DESCRIPCIÓN</span>
+                    <input class="form-control" type="text" formControlName="mvt_cdescri" placeholder="INGRESAR DESCRIPCIÓN" [ngClass]="{ 'is-invalid': submitted && controlInterfazRegister.mvt_cdescri.errors }">
+                    <div *ngIf="submitted && controlInterfazRegister.mvt_cdescri.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazRegister.mvt_cdescri.errors.required">La descripción es requerida.</div>
+                    </div>
+
+                    <span>ESTADO</span>
+                    <select class="form-control" formControlName="mvt_vestado" [ngClass]="{ 'is-invalid': submitted && controlInterfazRegister.mvt_vestado.errors }">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of estados" value="{{ item.mvt_vestado }}">
+                            {{ item.mvt_destado }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlInterfazRegister.mvt_vestado.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazRegister.mvt_vestado.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="agregarInterfaz()">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- EDITAR INTERFAZ -->
+<ng-template #contentEditarInterfaz let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            EDITAR INTERFAZ
+        </h4>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="interfazEditForm">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span>ORIGEN DE DATOS</span>
+                    <select class="form-control" formControlName="mvt_nnumori" [ngClass]="{ 'is-invalid': submitted && controlInterfazEdit.mvt_nnumori.errors }">
+                        <option *ngFor="let item of origen" value="{{ item.mvt_nnumori }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlInterfazEdit.mvt_nnumori.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazEdit.mvt_nnumori.errors.required">El origen es requerido.</div>
+                    </div>
+
+                    <span>CÓDIGO</span>
+                    <input class="form-control" type="number" formControlName="mvt_ncodgru" placeholder="INGRESAR CÓDIGO" [ngClass]="{ 'is-invalid': submitted && controlInterfazEdit.mvt_ncodgru.errors }">
+                    <div *ngIf="submitted && controlInterfazEdit.mvt_ncodgru.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazEdit.mvt_ncodgru.errors.required">El código es requerido.</div>
+                    </div>
+
+                    <span>DESCRIPCIÓN</span>
+                    <input class="form-control" type="text" formControlName="mvt_cdescri" placeholder="INGRESAR DESCRIPCIÓN" [ngClass]="{ 'is-invalid': submitted && controlInterfazEdit.mvt_cdescri.errors }">
+                    <div *ngIf="submitted && controlInterfazEdit.mvt_cdescri.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazEdit.mvt_cdescri.errors.required">La descripción es requerida.</div>
+                    </div>
+
+                    <span>ESTADO</span>
+                    <select class="form-control" formControlName="mvt_vestado" [ngClass]="{ 'is-invalid': submitted && controlInterfazEdit.mvt_vestado.errors }">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of estados" value="{{ item.mvt_vestado }}">
+                            {{ item.mvt_destado }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlInterfazEdit.mvt_vestado.errors" class="invalid-feedback">
+                        <div *ngIf="controlInterfazEdit.mvt_vestado.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="modificarInterfaz()">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- NUEVO MOVIMIENTO -->
+<ng-template #contentNuevoMovimiento let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            NUEVO MOVIMIENTO
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="movimientoRegisterForm">
+            <div class="row">
+                <div class="col-sm-6">
+                    <span class="mb-3">ORIGEN DE DATOS</span>
+                    <select class="form-control" formControlName="mct_nnumori" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_nnumori.errors }">
+                        <option *ngFor="let item of origen" value="{{ item.mvt_nnumori }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_nnumori.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_nnumori.errors.required">El origen es requerido.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">CÓDIGO</span>
+                    <input class="form-control" type="number" formControlName="mct_ncodcon" placeholder="INGRESAR CÓDIGO" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_ncodcon.errors }">
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_ncodcon.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_ncodcon.errors.required">El código es requerido.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">DESCRIPCIÓN</span>
+                    <input class="form-control" type="text" formControlName="mct_cdescri" placeholder="INGRESAR DESCRIPCIÓN" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_cdescri.errors }">
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_cdescri.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_cdescri.errors.required">La descripción es requerida.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">ESTADO</span>
+                    <select class="form-control" formControlName="mct_vestado" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_vestado.errors }">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of estados" value="{{ item.mvt_vestado }}">
+                            {{ item.mvt_destado }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_vestado.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_vestado.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <span class="mb-3">INTERFAZ</span>
+                    <select class="form-control" formControlName="mct_ncodgru" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_ncodgru.errors }">
+                        <option *ngFor="let item of interfaces" value="{{ item.mvt_ncodgru }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_ncodgru.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_ncodgru.errors.required">La interfaz es requerida.</div>
+                    </div>
+                    
+                    <span class="mt-3 mb-2 ml-2">
+                        <input type="checkbox" #chkEnableReporte (change)="activarReporteAdd(chkEnableReporte.checked)" formControlName="mct_flagrep">
+                        <label class="control-label ml-3">REPORTE ASOCIADO</label>
+                    </span>
+                    <select class="form-control" formControlName="mct_descbco">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of reportesAsociados" value="{{ item.id_cbco }}">
+                            {{ item.descripcion }}
+                        </option>
+                    </select>
+
+                    <span class="mt-3 mb-3">TIPO DE ASIENTO</span>
+                    <input class="form-control" type="text" maxlength="2" #input (input)="input.value=$event.target.value.toUpperCase()" formControlName="mct_ctipreg" placeholder="INGRESAR TIPO DE ASIENTO" [ngClass]="{ 'is-invalid': submitted && controlMovimientoRegister.mct_ctipreg.errors }">
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_ctipreg.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_ctipreg.errors.required">El tipo de asiento es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlMovimientoRegister.mct_ctipreg.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoRegister.mct_ctipreg.errors.pattern">Ingrese solo letras.</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="agregarMovimientos()">
+            Guardar
+        </button>
+    </div>
+</ng-template>
+
+<!-- EDITAR MOVIMIENTO -->
+<ng-template #contentEditarMovimiento let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            EDITAR MOVIMIENTO
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="movimientoEditForm">
+            <div class="row">
+                <div class="col-sm-6">
+                    <span class="mb-3">ORIGEN DE DATOS</span>
+                    <select class="form-control" formControlName="mct_nnumori" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_nnumori.errors }">
+                        <option *ngFor="let item of origen" value="{{ item.mvt_nnumori }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_nnumori.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_nnumori.errors.required">El origen es requerido.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">CÓDIGO</span>
+                    <input class="form-control" type="number" formControlName="mct_ncodcon" placeholder="INGRESAR CÓDIGO" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_ncodcon.errors }">
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_ncodcon.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_ncodcon.errors.required">El código es requerido.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">DESCRIPCIÓN</span>
+                    <input class="form-control" type="text" formControlName="mct_cdescri" placeholder="INGRESAR DESCRIPCIÓN" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_cdescri.errors }">
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_cdescri.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_cdescri.errors.required">La descripción es requerida.</div>
+                    </div>
+
+                    <span class="mt-3 mb-3">ESTADO</span>
+                    <select class="form-control" formControlName="mct_vestado" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_vestado.errors }">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of estados" value="{{ item.mvt_vestado }}">
+                            {{ item.mvt_destado }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_vestado.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_vestado.errors.required">El estado es requerido.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <span class="mb-3">INTERFAZ</span>
+                    <select class="form-control" formControlName="mct_ncodgru" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_ncodgru.errors }">
+                        <option *ngFor="let item of interfaces" value="{{ item.mvt_ncodgru }}">
+                            {{ item.mvt_cdescri }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_ncodgru.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_ncodgru.errors.required">La interfaz es requerida.</div>
+                    </div>
+                    
+                    <span class="mt-3 mb-2 ml-2">
+                        <input type="checkbox" #chkEnableReporte (change)="activarReporteEdit(chkEnableReporte.checked)" formControlName="mct_flagrep">
+                        <label class="control-label ml-3">REPORTE ASOCIADO</label>
+                    </span>
+                    <select class="form-control" formControlName="mct_descbco">
+                        <option value="" disabled>SELECCIONE</option>
+                        <option *ngFor="let item of reportesAsociados" value="{{ item.id_cbco }}">
+                            {{ item.descripcion }}
+                        </option>
+                    </select>
+
+                    <span class="mt-3 mb-3">TIPO DE ASIENTO</span>
+                    <input class="form-control" type="text" maxlength="2" #input (input)="input.value=$event.target.value.toUpperCase()" formControlName="mct_ctipreg" placeholder="INGRESAR TIPO DE ASIENTO" [ngClass]="{ 'is-invalid': submitted && controlMovimientoEdit.mct_ctipreg.errors }">
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_ctipreg.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_ctipreg.errors.required">El tipo de asiento es requerido.</div>
+                    </div>
+                    <div *ngIf="submitted && controlMovimientoEdit.mct_ctipreg.errors" class="invalid-feedback">
+                        <div *ngIf="controlMovimientoEdit.mct_ctipreg.errors.pattern">Ingrese solo letras.</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary buttonN" (click)="modal.dismiss('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-secondary ml-2 buttonN" (click)="modificarMovimientos()">
+            Guardar
+        </button>
+    </div>
+</ng-template>

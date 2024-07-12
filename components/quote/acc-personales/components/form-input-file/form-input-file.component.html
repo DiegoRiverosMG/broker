@@ -1,0 +1,93 @@
+<div class="form-input-file">
+  <span *ngIf="!!label">{{label}} <ng-template [ngIf]="required === true">(*)</ng-template></span>
+  <ng-template [ngIf]="!multiple && !siniestralidad">
+    <input type="file" class="mt-10" (change)="seleccionFile($event.target.files[0])"
+      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+  </ng-template>
+  <ng-template [ngIf]="multiple && !siniestralidad">
+    <div class="row">
+      <div class="col-sm-12">
+         <button type="button" class="btn-multiple" (click)="fileInput.click()" style="margin: 15px 0;">
+            <span>Seleccionar Archivo</span></button>
+        <input hidden #fileInput ngfSelect multiple class="mt-10" type="file" [(files)]="files" (filesChange)="seleccionFiles($event)"
+          accept="application/pdf,image/png,image/jpeg,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div *ngIf="files.length > 0">
+          <div style="margin-bottom: 0px">
+            <span class="margin-top-20">Archivos Seleccionados ({{files.length}})</span>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <!-- <th>Tipo</th> -->
+                  <th class="text-center">Tamaño</th>
+                  <th class="text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of files;let i=index">
+                  <td>
+                    <strong>{{ item.name }}</strong>
+                  </td>
+                  <td class="text-center">
+                    {{ item.size/1024/1024 | number:'.2' }} MB
+                  </td>
+                  <td class="text-center">
+                    <img src="assets/icons/anular.png" (click)="files.splice(i,1)"
+                      title="Eliminar" alt="Eliminar" class="cursor-pointer"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template [ngIf]="!multiple && siniestralidad">
+    <div class="row" *ngIf="files.length == 0">
+      <div class="col-sm-12">
+         <button type="button" class="btn-multiple" (click)="fileInput.click()" style="margin: 15px 0;">
+            <span>Seleccionar Archivo</span></button>
+        <input hidden #fileInput ngfSelect class="mt-10" type="file" [(files)]="files" (filesChange)="seleccionFiles($event)"
+          accept="application/pdf,image/png,image/jpeg,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div *ngIf="files.length > 0">
+          <div style="margin-bottom: 0px">
+            <span class="margin-top-20"></span>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <!-- <th>Tipo</th> -->
+                  <th class="text-center">Tamaño</th>
+                  <th class="text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of files;let i=index">
+                  <td>
+                    <strong>{{ item.name }}</strong>
+                  </td>
+                  <td class="text-center">
+                    {{ item.size/1024/1024 | number:'.2' }} MB
+                  </td>
+                  <td class="text-center">
+                    <img src="assets/icons/anular.png" (click)="files.splice(i,1)"
+                      title="Eliminar" alt="Eliminar" class="cursor-pointer"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

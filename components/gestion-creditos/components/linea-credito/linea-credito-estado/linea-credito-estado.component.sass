@@ -1,0 +1,150 @@
+@import "standard"
+@import "modal"
+@import "variables"
+
+.button-toggle
+  margin: auto
+  &::after
+    content: "×"
+
+  &.active::after
+    content: "✓"
+
+.section
+  display: flex
+  flex-direction: column
+  gap: 1rem
+
+  &__subheader
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 1rem
+    flex-wrap: wrap
+
+    &--right
+      display: flex
+      align-items: center
+      justify-content: flex-end
+      gap: 1rem
+      flex-wrap: wrap
+
+.form
+  display: grid
+  gap: 1rem
+
+  @media (min-width: 640px)
+    grid-template-columns: 1fr 1fr
+
+  @media (min-width: 940px)
+    grid-template-columns: repeat(5, 1fr)
+    grid-template-rows: repeat(2, 1fr)
+
+    &-search
+      grid-area: 1 / 1 / 2 / 3
+
+.table-responsive
+  height: 450px
+  max-height: 500px
+  tr
+    padding: 3px !important
+  td
+    padding: 5px !important
+
+.table
+  tr.locked
+    background-color: #FFEBEE
+
+    &:hover
+      background-color: #FFEBEE !important
+
+.state
+  display: flex
+  justify-content: center
+
+.status
+  display: flex
+  align-items: center
+  justify-content: center
+  width: fit-content
+  height: 28px
+  padding: 4px 12px
+  color: #fff
+  font-size: 12px
+  border-radius: 50px
+
+
+.color1
+  background-color: #0066FF
+
+.color2
+  background-color: #1EB224
+
+.color3
+  background-color: #7B61FF
+
+.color4
+  background-color: #FC5555
+
+.modal-summary
+  section
+    width: 600px
+    max-width: 700px
+  h6
+    font-weight: bold
+  .summary__info
+    display: grid !important
+    grid-template-columns: 1fr
+    gap: 0.2rem
+    .subTitle
+      font-weight: bold
+    &--section
+      display: grid
+      grid-template-columns: 0.6fr 1fr
+
+.modal-edit
+  h6
+    font-weight: bold
+  .hasLocked
+    color: red
+  .placeholder
+    margin-top: 1rem
+
+.modal-history
+  section
+    max-width: 1000px
+    max-height: 700px
+
+.modal-create
+  h6
+    font-weight: bold
+  section
+    width: 900px
+    max-width: 900px
+  .form-create
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 1rem
+  .mayusc
+    text-transform: uppercase
+
+.modal-confirm
+  text-align: center
+  .title
+    text-align: center !important
+
+.fa-angle-down
+  position: absolute
+  right: 15px
+  bottom: 20%
+  font-size: 18px
+
+.fa-calendar
+  position: absolute
+  right: 15px
+  bottom: 20%
+  font-size: 18px
+
+.fa-trash
+  color: red
+

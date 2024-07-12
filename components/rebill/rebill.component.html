@@ -1,0 +1,535 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <!-- <navmenusctr></navmenusctr> -->
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+
+    <div class="col-lg-9">
+        <div class="container-fluid p-0">
+            <!-- Titulo -->
+            <div class="header-content mb-3">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">Re-Facturación</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Cabecera comprobante -->
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open "
+                           type="checkbox"
+                           id="busqueda" />
+                    <label class="collapse-btn title"
+                           for="busqueda">BUSQUEDA <i class="fa fa-angle-down pull-right"
+                           style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>COMPROBANTE</span>
+                                    <input type="text"
+                                           placeholder=""
+                                           #inputComprobante
+                                           [(ngModel)]="inputsRebill.P_NUMBILL"
+                                           (keyup.enter)="getBills()"
+                                           maxlength={{maxlengthNumBill}}
+                                           [disabled]="disableTextQuery"
+                                           (keypress)="textValidate($event, 7)"
+                                           mask />
+                                </div>
+                                <div class="col-sm-9"
+                                     style="margin-top: 15px;">
+                                    <button (click)="goActionConsultar()"
+                                            style="margin: 0"
+                                            class="pull-right">
+                                        <!-- <img src="assets/icons/buscar_certificado.png" /> -->
+                                        <!-- <span>{{labelButtonConsulta}}</span> -->
+                                        <span>Limpiar</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <label>EJM: B001-0001 ó F001-0001</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12"
+                                     style="margin-top: 15px;">
+                                    <button (click)="confPeriodo(content)"
+                                            style="margin: 0"
+                                            class="pull-right full-color">
+                                        <span>CONFIG. PERIODO</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12"
+                                     style="margin-top: 15px;">
+                                    <button (click)="getBills()"
+                                            style="margin: 0"
+                                            class="pull-right full-color"
+                                            [disabled]="disableButtonSearch">
+                                        <img src="assets/icons/buscar_certificado.png" />
+                                        <span>Buscar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Datos del recibo -->
+            <div class="collapse-list"
+                 *ngIf="visibleDivDatos">
+                <div>
+                    <input class="collapse-open "
+                           type="checkbox"
+                           id="datos" />
+                    <label class="collapse-btn title"
+                           for="datos">DATOS DEL RECIBO <i class="fa fa-angle-down pull-right"
+                           style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>RAMO:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.IDBRANCH}} - {{billData.DESBRANCH}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>PRODUCTO:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.NPRODUCT}} - {{billData.DESPRODUCT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>PÓLIZA:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.IDPOLICY}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>TITULAR:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.IDCLIENT}} - {{billData.NAMECLIENT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>{{billData.DESTYPEDOCCLIENT}}:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.NUMDOCCLIENT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>DIRECCIÓN:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.ADDRESSCLIENT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label>INTERMEDIARIO:</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label>{{billData.IDINTERMED}} - {{billData.DESINTERMED}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>FECHA FACTURACIÓN:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.DATEBILL}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>ESTADO FACTURACIÓN:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.DESSTATEFAC}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>FECHA INICIO:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.DATEBEGIN}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>FINAL:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.DATEEND}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>ESTADO RECIBO:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.DESSTATUSRECEIPT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>NRO. RECIBO:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.NUMRECEIPT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>ENVIADO A SUNAT:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.ENSUNAT}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>INTERFAZ FACTURACIÓN:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.ENINTPROD}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>INTERFAZ COBRANZA:</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>{{billData.ENINTCOBR}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detalle Recibo -->
+                            <div class="row">
+                                <table class="table table-borderless riesgo tblbroker"
+                                       style="margin-top: 60px;">
+                                    <thead>
+                                        <tr class="d-flex">
+                                            <th class="col-sm text-center"><label>FACTURA</label></th>
+                                            <th class="col-sm text-center"><label>MONEDA</label></th>
+                                            <th class="col-sm text-center"><label>CAPITAL</label></th>
+                                            <th class="col-sm text-center"><label>PRIMA NETA PURA</label></th>
+                                            <th class="col-sm text-center"><label>DERECHO EMISIÓN</label></th>
+                                            <th class="col-sm text-center"><label>PRIMA TOTAL</label></th>
+                                            <th class="col-sm text-center"><label>IGV</label></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="d-flex">
+                                            <td class="col-sm text-center"><span>{{billData.NUMBILL}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.DESCURRENCY}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.AMOUCAPITAL}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.AMOUPREMIUMN}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.AMOUDE}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.AMOUPREMIUMT}}</span></td>
+                                            <td class="col-sm text-center"><span>{{billData.IGVBILL}}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Opciones de cambio -->
+            <div class="collapse-list"
+                 *ngIf="visibleDivOpciones">
+                <div>
+                    <input class="collapse-open "
+                           type="checkbox"
+                           id="opciones" />
+                    <label class="collapse-btn title"
+                           for="opciones">OPCIONES DE CAMBIO <i class="fa fa-angle-down pull-right"
+                           style="position: relative; top: 4px;"></i></label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row"
+                                 *ngIf="disableOpcionNuevoRuc && disableOpcionCambioDir">
+                                <div class="col-sm-12">
+                                    <div class="row"
+                                         *ngIf="mensajeNoRefactura != ''">
+                                        <label class="msg-error"><span>Re-Facturación no permitida</span></label>
+                                    </div>
+                                    <div class="row">
+                                        <label class="msg-error"><span>{{mensajeNoRefactura}}</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"
+                                 *ngIf="!disableOpcionNuevoRuc">
+                                <div class="col-sm-9">
+                                    <div class="row"
+                                         *ngIf="estadoCambioRuc == 1">
+                                        <div class="col-sm-3">
+                                            <label><span>NUEVO RUC: </span></label>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="text"
+                                                   placeholder=""
+                                                   #inputNuevoRuc
+                                                   [(ngModel)]="inputsRebill.P_NEWRUC"
+                                                   maxlength="11"
+                                                   [disabled]="disableNuevoRuc"
+                                                   [ngClass]="{'error-validate': inputsValidate[2]}"
+                                                   (keypress)="textValidate($event, 1)" />
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <!-- <label><span>{{newClientData.viewFullName}}</span></label> -->
+                                            <label><span>{{newClientData.viewFullName}}</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3"
+                                     style="margin-top: 35px;">
+                                    <button (click)="goBuscaNuevoRuc()"
+                                            style="margin: 0"
+                                            class="pull-right"
+                                            [disabled]="disableButtonValRegRuc"
+                                            *ngIf="!disableButtonValRegRuc">
+                                        <span>{{labelButtonCambioRuc}}</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row"
+                                 *ngIf="!disableOpcionCambioDir">
+                                <div class="col-sm-9">
+                                    <div class="row"
+                                         *ngIf="flagCambDir">
+                                        <div class="col-sm-3">
+                                            <label><span>DIRECCIÓN: </span></label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <label><span>{{newAddress.L_ADDRESS}}</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-3"
+                                     style="margin-top: 15px;">
+                                    <button (click)="openModalDireccion()"
+                                            style="margin: 0"
+                                            class="pull-right"
+                                            [disabled]="disableButtonCambiarDir"
+                                            *ngIf="!disableButtonCambiarDir">
+                                        <span>CAMBIO DIRECCIÓN</span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-12"
+                                     style="margin-top: 15px;">
+                                    <button (click)="cambioFecha()"
+                                            style="margin: 0"
+                                            class="pull-right"
+                                            [disabled]="disableButtonCambiarDir"
+                                            *ngIf="!disableButtonCambiarFech">
+                                        <span>CAMBIO DE FECHA</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row"
+                                 *ngIf="!disableOpcionReFacturar">
+                                <div class="col-sm-12"
+                                     style="margin-top: 15px;">
+                                    <button (click)="goRefacturar()"
+                                            style="margin: 0"
+                                            class="pull-right full-color"
+                                            [disabled]="disableButtonReFacturar">
+                                        <span>RE-FACTURAR</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #content
+             let-c="close"
+             let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title"
+            id="modal-basic-title">Mantenimiento de periodo</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <span>(*)RAMO</span>
+                <select [(ngModel)]="idBranch"
+                        (change)="SelectBranch()"
+                        class="minimal"
+                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.idBranch.valid || filterForm.hasError('required'))}">
+                    <option value=0
+                            class="d-none">SELECCIONE</option>
+                    <option *ngFor="let item of ListBranch"
+                            value="{{item.nBranch}}">{{item.sDescript}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span>(*)PRODUCTO</span>
+                <select [(ngModel)]="idProduct"
+                        name="idProduct"
+                        class="minimal"
+                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.idProduct.valid || filterForm.hasError('required'))}">
+                    <option value="0"
+                            class="d-none">SELECCIONE</option>
+                    <option *ngFor="let item of ListProduct"
+                            value="{{item.nProduct}}">
+                        {{item.sDescript}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span>(*)PERFIL</span>
+                <select [(ngModel)]="idPerfil"
+                        name="idPerfil"
+                        class="minimal"
+                        [ngClass]="{'error-validate': submitted && (!filterForm.controls.idProduct.valid || filterForm.hasError('required'))}">
+                    <option value="0"
+                            class="d-none">SELECCIONE</option>
+                    <option *ngFor="let item of ListPerfil"
+                            value="{{item.nPerfil}}">
+                        {{item.sDescript}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button"
+                class="full-color ml-3"
+                (click)="buscarPer(content)">
+            <span>BUSCAR</span>
+        </button>
+        <button type="button"
+                class="full-color ml-3"
+                (click)="nuevo(content)">
+            <span>NUEVA</span>
+        </button>
+        <button type="button"
+                class="full-color ml-3"
+                (click)="cerrar(content)">
+            <span>CERRAR</span>
+        </button>
+    </div>
+    <div class="header-content"></div>
+    <div class="modal-body">
+        <h5 class="modal-title"
+            id="modal-basic-title">Configuración por dias y reporte</h5>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="col-sm-8">
+                    &nbsp;
+                </div>
+                <span class="w-50">
+                    <input type="checkbox"
+                           [(ngModel)]="chkMotRef" />&nbsp; Ver motivo de refacturación
+                </span>
+            </div>
+            <div class="col-sm-8">
+                <span class="w-50">Dias de refacturación:&nbsp;
+                    <input class="box"
+                           style="width : 50px; height: 20px;"
+                           type="text"
+                           (keypress)="soloNumeros($event)"
+                           [(ngModel)]="nDiasRef"
+                           placeholder="0">
+                </span>
+            </div>
+            <div class="col-sm-12"
+                 text-align="right"
+                 *ngIf="selectedBotonNuevo == 'opentype'">
+                <span class="w-50">Comentario</span>
+                <input class="box"
+                       type="text"
+                       [(ngModel)]="sComentario">
+
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="grid form-group">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class="grid-title">
+                            <td class="grid-title-item">Estado</td>
+                            <td class="grid-title-item">Fecha Modif.</td>
+                            <td class="grid-title-item">Comentario</td>
+                            <td class="grid-title-item">Usuario</td>
+                            <td class="grid-title-item">Perfil</td>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="listPerPerfil.length ==0; then hideGrid else showGrid">
+                    </ng-container>
+                    <ng-template #hideGrid>
+                        <tbody>
+                            <tr>
+                                <td class="text-center"
+                                    colspan="11">No se encontraron registros.</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                    <ng-template #showGrid>
+                        <tbody *ngFor="let item2 of listPerPerfil">
+                            <tr>
+                                <td class="data-table-tr-td">{{item2.estado}}</td>
+                                <td class="data-table-tr-td">{{item2.fecha_modf | date:'dd/MM/yyyy'}}</td>
+                                <td class="data-table-tr-td">{{item2.comentario}}</td>
+                                <td class="data-table-tr-td">{{item2.usuario}}</td>
+                                <td class="data-table-tr-td">{{item2.perfil}}</td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button"
+                class="full-color"
+                (click)="filtrarDato()"
+                *ngIf="selectedBotonNuevo2 == 'opentype'">
+            <span>GUARDAR</span>
+        </button>
+    </div>
+</ng-template>
+
+<!-- Pantalla de carga -->
+<div [hidden]="!isLoading"
+     class="loadingScreen">
+    <div style="display:flex;height: 100%;width:100%">
+        <i style="margin:auto;font-size: 50px"
+           class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>

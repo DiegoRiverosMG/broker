@@ -1,0 +1,132 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+        <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="containt-item">
+                    <div class="header-item">
+                        <span class="title">REPORTES SUCAVE SCTR</span>
+                    </div>
+                </div>
+                <div class="containt-item">
+                    <button class="pull-right" (click)="generateSoat()">
+                        <span>Generar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="card">
+                    <div class="card-body" [formGroup]="filterForm">
+                        <div class="row">
+                            <div class="col-sm-3">
+                              <span>RAMO</span>
+                              <select formControlName="branch" class="minimal" (change)="seleccionarRamo()">
+                                <option *ngFor="let item of branchTypeList" value="{{item.Id}}">
+                                    {{item.Description}}</option>
+                              </select>
+                            </div>
+                            <div class="col-sm-3">
+                              <span>PRODUCTO</span>
+                              <select formControlName="product" class="minimal">
+                                <option value="0" class="d-none" selected>SELECCIONAR</option>
+                                <option *ngFor="let item of productTypeList" value="{{item.Id}}">
+                                    {{item.Description}}</option>
+                              </select>
+                          </div>
+                            <div class="col-sm-3">
+                                <span>FECHA DE INICIO(*)</span>
+                                <input type="text" formControlName="startDate" #dp="bsDatepicker"
+                                  bsDatepicker DateDirective (focus)="cleanValidation()" [bsConfig]="bsConfig"
+                                  [(bsValue)]="bsValueIni" value="{{bsValueIni.toString() | date:'dd/MM/yyyy'}}" [(maxDate)]="bsValueFinMax"
+                                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly'))}"
+                                  readonly />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!filterForm.controls.startDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                                    <span *ngSwitchCase="filterForm.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha inicial es requerida.
+                                    </span>
+                                    <span *ngSwitchCase="!filterForm.controls.startDate.valid && !filterForm.get('startDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha
+                                        inicial no es válida.
+                                    </span>
+                                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">La fecha inicial está después de la fecha
+                                        final
+                                    </span>
+                                </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>FECHA DE FIN(*)</span>
+                                <input type="text" formControlName="endDate" #dp="bsDatepicker"
+                                  bsDatepicker DateDirective (focus)="cleanValidation()"  [bsConfig]="bsConfig"
+                                  [(bsValue)]="bsValueFin" value="{{bsValueFin.toString() | date:'dd/MM/yyyy'}}" [(maxDate)]="bsValueFinMax"
+                                  [ngClass]="{'error-validate': isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid}"
+                                  readonly />
+                                <ng-container [ngSwitch]="true"
+                                    *ngIf="isValidatedInClickButton && (!filterForm.controls.endDate.valid || filterForm.hasError('datesNotSortedCorrectly')) && !filterForm.valid">
+                                    <span *ngSwitchCase="filterForm.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha final es requerida.
+                                    </span>
+                                    <span *ngSwitchCase="!filterForm.controls.endDate.valid && !filterForm.get('endDate').hasError('required')"
+                                        class="mensaje-error-control">La fecha
+                                        final no es válida.
+                                    </span>
+                                    <span *ngSwitchCase="filterForm.hasError('datesNotSortedCorrectly')"
+                                        class="mensaje-error-control">La fecha final está antes de la fecha
+                                        inicial.
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid form-group">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="grid-title">
+                                    <td class="grid-title-item">Id. Reporte</td>
+                                    <td class="grid-title-item">Descripción</td>
+                                    <td class="grid-title-item">Ramo</td>
+                                    <td class="grid-title-item">Producto</td>
+                                    <td class="grid-title-item">Usuario</td>
+                                    <td class="grid-title-item">Fecha Inicio Producción</td>
+                                    <td class="grid-title-item">Fecha Fin Producción</td>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngIf="reporteSoatResults==null || reporteSoatResults.length==0; then hideGrid else showGrid">
+                            </ng-container>
+                        </table>
+                        <ng-template #hideGrid>
+                            <tbody>
+                                <tr>
+                                    <td colspan="12">No ha generado ningún reporte.</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                        <ng-template #showGrid>
+                            <tbody *ngFor="let item of reporteSoatResults">
+                                <tr>
+                                    <td>{{ item.IdHeaderProcess }}</td>
+                                    <td>{{ item.SDescript }}</td>
+                                    <td>{{ item.DescriptionBranch }}</td>
+                                    <td>{{ item.DescriptionProduct }}</td>
+                                    <td>{{ item.UserCode }}</td>
+                                    <td>{{ item.DIniProcess }}</td>
+                                    <td>{{ item.DFinProcess }}</td>
+                                </tr>
+                            </tbody>
+                        </ng-template>
+                    </div>
+                </div>
+                <div [hidden]="!isLoading" class="loadingScreen">
+                  <div style="display:flex;height: 100%;width:100%">
+                    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+                  </div>
+                </div>
+        </div>
+    </div>
+</div>

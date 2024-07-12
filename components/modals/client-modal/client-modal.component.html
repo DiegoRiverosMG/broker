@@ -1,0 +1,250 @@
+<div class="padding-modal">
+  <div class="modal-header border-none">
+    <h4 class="modal-title title-re" id="modal-basic-title">
+      Búsqueda de cliente
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="formModalReference.dismiss()"
+      value="&times;"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h5 class="subtitle-re">Buscar por</h5>
+    <div class="container-one-section">
+      <div class="filter-container">
+        <label
+          [ngClass]="{ disabled: listActions?.BUSCAR_POR_CLIENT !== 'TRUE' }"
+          class="container"
+          >NRO. DOCUMENTO
+          <input
+            (click)="onSelectTypeSearch(1)"
+            value="1"
+            type="radio"
+            checked="checked"
+            name="radio"
+          />
+          <span class="checkmark"></span>
+        </label>
+        <label
+          [ngClass]="{ disabled: listActions?.BUSCAR_POR_CLIENT !== 'TRUE' }"
+          class="container"
+          >NOMBRES
+          <input
+            (click)="onSelectTypeSearch(2)"
+            value="2"
+            type="radio"
+            name="radio"
+          />
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="filter-container">
+        <div *ngIf="inputs.P_TYPE_SEARCH == 1">
+          <form-input-select-re
+            label="Tipo de documento"
+            [items]="opcionesTipoDocumentos"
+            [itemsArray]="true"
+            checked="checked"
+            fieldCodigo="codigo"
+            fieldValor="valor"
+            [disabled]="listActions.TIPO_DOC_CLIENT == 'TRUE' ? false : true"
+            [(value)]="inputs.typeDocument"
+          ></form-input-select-re>
+        </div>
+        <div *ngIf="inputs.P_TYPE_SEARCH == 1">
+          <form-input-text-re
+            [patternPrevent]="CONSTANTS.REGEX.NUMBER"
+            label="Nº de documento"
+            [disabled]="listActions.NRO_DOC_CLIENT == 'TRUE' ? false : true"
+            [(value)]="inputs.NumberDocument"
+          ></form-input-text-re>
+        </div>
+        <div *ngIf="inputs.P_TYPE_SEARCH == 2">
+          <form-input-select-re
+            label="Tipo de persona"
+            [items]="opcionesTipoPersonas"
+            [itemsArray]="true"
+            fieldCodigo="codigo"
+            fieldValor="valor"
+            (change)="changePerson()"
+            [disabled]="listActions.TIPO_PER_CLIENT == 'TRUE' ? false : true"
+            [(value)]="inputs.tipoPersona"
+          ></form-input-select-re>
+        </div>
+        <div
+          *ngIf="inputs.P_TYPE_SEARCH == 2 && inputs.tipoPersona?.codigo == 2"
+        >
+          <form-input-text-re
+            label="Razón social"
+            [disabled]="
+              listActions.RAZON_SOCIAL_CLIENT == 'TRUE' ? false : true
+            "
+            [(value)]="inputs.razonSocial"
+          ></form-input-text-re>
+        </div>
+        <div
+          *ngIf="inputs.P_TYPE_SEARCH == 2 && inputs.tipoPersona?.codigo == 1"
+        >
+          <form-input-text-re
+            label="Nombre"
+            [disabled]="listActions.NOMBRE_CLIENT == 'TRUE' ? false : true"
+            [(value)]="inputs.nombre"
+          ></form-input-text-re>
+        </div>
+        <div
+          [disabled]="listActions.APELLIDOP_CLIENT == 'TRUE' ? false : true"
+          *ngIf="inputs.P_TYPE_SEARCH == 2 && inputs.tipoPersona?.codigo == 1"
+        >
+          <form-input-text-re
+            label="Apellido paterno"
+            [(value)]="inputs.ApePaterno"
+          ></form-input-text-re>
+        </div>
+        <div
+          [disabled]="listActions.APELLIDOM_CLIENT == 'TRUE' ? false : true"
+          *ngIf="inputs.P_TYPE_SEARCH == 2 && inputs.tipoPersona?.codigo == 1"
+        >
+          <form-input-text-re
+            label="Apellido materno"
+            [(value)]="inputs.ApeMaterno"
+          ></form-input-text-re>
+        </div>
+        <div class="buttons-end">
+          <button
+            [style.background]="
+              listActions?.BUSCAR_DOC_CLIENT == 'TRUE' ? '#27246D' : '#8385B4'
+            "
+            [disabled]="listActions.BUSCAR_DOC_CLIENT == 'TRUE' ? false : true"
+            (click)="filter()"
+            class="button-re"
+          >
+            <span>Buscar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="container-two-section">
+      <div>
+        <input
+          [disabled]="listActions.FBUSCAR_DOC_CLIENT == 'TRUE' ? false : true"
+          class="search"
+          type="text"
+          placeholder="Buscar"
+          [(ngModel)]="searchQuery"
+          (input)="filterClients()"
+        />
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="t-head">
+            <tr class="grid-title">
+              <td class="grid-title-item"></td>
+              <td class="grid-title-item">Tipo de documento</td>
+              <td class="grid-title-item">Nº de documento</td>
+              <td class="grid-title-item">Razón social/ Nombres y apellidos</td>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tbody>
+            <ng-container
+              *ngFor="let client of displayedClients; let i = index"
+            >
+              <tr class="grid-title row-item">
+                <td class="grid-item">
+                  <input
+                    type="radio"
+                    class="accent-orange"
+                    [name]="'clientRadio'"
+                    [value]="i"
+                    [(ngModel)]="selectedClientIndex"
+                    (change)="seleccionarCliente(client)"
+                  />
+                </td>
+                <td class="grid-item">{{ client.STYPCLIENTDOC }}</td>
+                <td class="grid-item">{{ client.SCLINUMDOCU }}</td>
+                <td class="grid-item">{{ client.SCLIENAME }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div class="container-pagination" *ngIf="showPagination">
+          <label class="labelPagination" for="itemsPerPage"
+            >Registros por página:</label
+          >
+          <input
+            class="paginationInput"
+            type="number"
+            id="itemsPerPage"
+            [(ngModel)]="itemsPerPage"
+            (change)="changeItemsPerPage()"
+          />
+          <span class="labelPagination"
+            >1 - {{ currentPage }} de {{ totalPage }}</span
+          >
+          <button
+            class="containerArrow"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            [style.background]="currentPage === 1 ? '#E6E7FF' : '#27246D'"
+          >
+            <img
+              src="assets/rentas/arrow_back_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              alt="more_vert"
+            />
+          </button>
+          <button
+            class="containerArrow"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage * pageSize >= totalClients"
+            [style.background]="
+              currentPage * pageSize >= totalClients ? '#E6E7FF' : '#27246D'
+            "
+          >
+            <img
+              src="assets/rentas/arrow_forward_ios_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              alt="more_vert"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer border-none">
+      <button
+        [style.background]="
+          listActions?.CANCELAR_CLIENT == 'TRUE' ? '#fff' : '#8385B4'
+        "
+        [disabled]="listActions.CANCELAR_CLIENT == 'TRUE' ? false : true"
+        class="button-cancelar"
+        (click)="formModalReference.dismiss()"
+      >
+        <span>Cancelar</span>
+      </button>
+      <button
+        [style.background]="
+          listActions?.SELECCIONAR_CLIENT == 'TRUE' ? '#79CB33' : '#8385B4'
+        "
+        [disabled]="listActions.SELECCIONAR_CLIENT == 'TRUE' ? false : true"
+        class="button-Guardar"
+        (click)="select()"
+      >
+        <span>Seleccionar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pantalla de carga -->
+  <div [hidden]="!isLoading" class="loadingScreen">
+    <div style="display: flex; height: 100%; width: 100%">
+      <i
+        style="margin: auto; font-size: 50px"
+        class="fa fa-spinner fa-spin"
+      ></i>
+    </div>
+  </div>
+</div>

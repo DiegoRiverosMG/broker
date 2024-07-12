@@ -1,0 +1,313 @@
+<!--**********************************************************************************************/
+/*  NOMBRE              :   creditNote.component.html                                            */
+/*  DESCRIPCION         :   Capa components                                                      */
+/*  AUTOR               :   MATERIAGRIS - FRANCISCO AQUIÑO RAMIREZ                               */
+/*  FECHA               :   20-12-2021                                                           */
+/*  VERSION             :   1.0 - Generación de NC - PD                                          */
+/************************************************************************************************-->
+
+<title></title>
+    <!-- Ignite UI for jQuery Required Combined CSS Files -->
+    <link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+    <link href="http://cdn-na.infragistics.com/igniteui/2021.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+
+    <script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+    <!-- Ignite UI for jQuery Required Combined JavaScript Files -->
+    <script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.core.js"></script>
+    <script src="http://cdn-na.infragistics.com/igniteui/2021.2/latest/js/infragistics.lob.js"></script>
+
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+      <div class="container-fluid ">
+        <div class="filter">
+         <!--  <form [formGroup]="filterFormN"> -->
+                <a >VALIDAR PAGOS DE BANCOS</a>      
+                  <div class="card">
+                    <div class="row m-2" [formGroup]="filterFormN">           
+                      <!--Filtro de fechas-->
+                      <div class="col-sm-3">
+                        <span>FECHA DE INICIO</span>
+                          <!-- <input type="text" #dp="bsDatepicker" formControlName="fechaInicio" [bsConfig]="bsConfig" bsDatepicker  readonly > -->
+                          <input class="form-control" type="date" formControlName="fechaInicio" max="{{ diaActual.toString() | date:'yyyy-MM-dd' }}"
+                            [ngClass]="{'error-validate': submitted && (!filterFormN.controls.fechaInicio.valid || filterFormN.hasError('datesNotSortedCorrectly'))}">
+                            <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterFormN.controls.fechaInicio.valid || filterFormN.hasError('datesNotSortedCorrectly')) && !filterFormN.valid">
+                              <span *ngSwitchCase="filterFormN.get('fechaInicio').hasError('required')" class="mensaje-error-control">
+                                  La fecha inicial es requerida.
+                              </span>
+                              <span *ngSwitchCase="!filterFormN.controls.fechaInicio.valid && !filterFormN.get('fechaInicio').hasError('required')" class="mensaje-error-control">
+                                  La fecha inicial no es válida.
+                              </span>
+                              <span *ngSwitchCase="filterFormN.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                                  La fecha inicial debe ser menor a la fecha final.
+                              </span>
+                          </ng-container>
+                      </div>
+                      <div class="col-sm-3">
+                        <span>FECHA DE FIN</span>
+                        <!-- <input type="text" #dp="bsDatepicker" formControlName="fechaFin" [bsConfig]="bsConfig" bsDatepicker  readonly > -->
+                        <input class="form-control" type="date" formControlName="fechaFin" max="{{ diaActual.toString() | date:'yyyy-MM-dd' }}"
+                          [ngClass]="{'error-validate': submitted && (!filterFormN.controls.fechaFin.valid || filterFormN.hasError('datesNotSortedCorrectly'))}">
+                          <ng-container [ngSwitch]="true" *ngIf="submitted && (!filterFormN.controls.fechaFin.valid || filterFormN.hasError('datesNotSortedCorrectly')) && !filterFormN.valid">
+                            <span *ngSwitchCase="filterFormN.get('fechaFin').hasError('required')" class="mensaje-error-control">
+                                La fecha final es requerida.
+                            </span>
+                            <span *ngSwitchCase="!filterFormN.controls.fechaFin.valid && !filterFormN.get('fechaFin').hasError('required')" class="mensaje-error-control">
+                                La fecha final no es válida.
+                            </span>
+                            <span *ngSwitchCase="filterFormN.hasError('datesNotSortedCorrectly')" class="mensaje-error-control">
+                                La fecha final debe ser mayor a la fecha inicial.
+                            </span>
+                        </ng-container>
+                      </div>
+                      <div class="col-sm-3">
+                        <span>&nbsp;</span>
+                        <button class="full-color" (click)="buscarFechas()" [disabled]="" >
+                          <span>BUSCAR</span>
+                        </button>
+                      </div>
+                      <div class="col-sm-3">      </div>
+                      <div class="col-sm-3">             
+                        <span>HORAS</span><!-- Listamos los RAMOS -->
+                        <select 
+                          class="minimal" (change)="horaFechaEnvio()" 
+                          formControlName="dfmovimiento">
+                          <option value="null" disabled>SELECCIONE</option>
+                          <option *ngFor="let item of filtroFechas" value="{{item.dfmovimientoValue}}">
+                              {{item.dfmovimientoDesc}}</option> 
+                      </select>           
+                    </div> 
+
+                    </div>
+
+                  </div>
+                    <div class="card">
+                      <div class="m-4">
+                        <nav ngbNav #nav="ngbNav" class="nav-tabs">
+                          <ng-container ngbNavItem>
+                            <a ngbNavLink>Correo</a>
+                            <ng-template ngbNavContent>
+                              <div class="grid form-group">
+                                <table id="table1" class="table">
+                                    <thead>
+                                      <tr class="grid-title">
+                                        <td style="display:none;"></td>
+                                        <td class="grid-title-item">NRO CUENTA</td>
+                                        <td class="grid-title-item">CLIENTE</td>
+                                        <td class="grid-title-item">CORREO</td>
+                                        <td class="grid-title-item">TRANSFERENCIA</td>
+                                      </tr>
+                                    </thead>
+                                    <ng-container
+                                      *ngIf="listCorreosResults.length ==0; then hideGrid else showGrid">
+                                    </ng-container>
+                                    <ng-template #hideGrid>
+                                        <tbody>
+                                          <tr>
+                                            <td class="text-center" colspan="4">No se encontraron registros.</td>
+                                          </tr>
+                                        </tbody>
+                                    </ng-template>
+                                    <ng-template #showGrid>
+                                        <tbody *ngFor="let gri1 of listToShow; let indice=index"
+                                        style="cursor: pointer;">
+                                          <tr>
+                                            <td style="display:none;">     {{gri1.NIDDEV}}          </td>
+                                            <td class="data-table-tr-td" > {{gri1.SCUENTACLIENTE}}  </td>
+                                            <td class="data-table-tr-td">  {{gri1.SCLIENAME}}       </td>
+                                            <td class="data-table-tr-td">  {{gri1.SCORREOCLI}}      </td>
+                                            <td class="data-table-tr-td">  <button class="full-color" style="height:40px !important;" (click)="mostrarModal(content,gri1,indice)" [disabled]="" >
+                                            Detalle
+                                            </button>    
+                                           </td>
+                                          </tr>
+                                      
+                                      
+                                        </tbody>
+  
+  
+                                      
+                                          <div class="row mt-4">
+                                              <div class="col-sm-12">
+                                                  <ngb-pagination  [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalItems"
+                                                      (pageChange)="pageChanged(currentPage)">
+                                                      <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                                      <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                                  </ngb-pagination>
+                                              </div>
+                                          </div>
+                                    
+                                    </ng-template> 
+                                </table>                    
+                              </div>
+                            </ng-template>
+                          </ng-container>
+  
+  
+                          <ng-container ngbNavItem>
+                            <a ngbNavLink>Seleccionados  <label class="cantidad-carrito">{{selecionadosCarrito}}</label></a>
+                              <ng-template ngbNavContent>
+                                <div class="grid form-group">
+                                  <div class="table-responsive">
+                                    <table id="table1" class="table">
+                                      <thead>
+                                        <tr class="grid-title">
+                                            <td style="display:none;"></td>
+                                            <td class="grid-title-item">NRO CUENTA</td>
+                                            <td class="grid-title-item">CLIENTE</td>
+                                            <td class="grid-title-item">CORREO</td>
+                                            <td class="text-center">TRANSFERENCIA</td>
+                                            <td class="text-center">CHECK BOX</td>
+                                        </tr>
+                                      </thead>
+                                      <ng-container
+                                        *ngIf="listCorreosResultsCarrito.length ==0; then hideGrid else showGrid">
+                                      </ng-container>
+              
+                                    </table>
+                                    <ng-template #hideGrid>
+                                      <tbody>
+                                        <tr>
+                                          <td class="text-center"  colspan="5">No se encontraron registros.</td>
+                                        </tr>
+                                      </tbody>
+                                    
+                                    </ng-template>
+                                    <ng-template #showGrid>
+    
+                                      <tbody *ngFor="let gri1 of listCorreosResultsCarrito; let indice=index"
+                                       style="cursor: pointer;">
+                                        <tr>
+                                          <td style="display:none;">     {{gri1.NIDDEV}}          </td>
+                                          <td class="data-table-tr-td" > {{gri1.SCUENTACLIENTE}}  </td>
+                                          <td class="data-table-tr-td">  {{gri1.SCLIENAME}}       </td>
+                                          <td class="data-table-tr-td">  {{gri1.SCORREOCLI}}      </td>
+                                          <td class="text-center">  
+                                            <img *ngIf="gri1.STRANSFERENCIA == ''"
+                                                   src="assets/icons/warntc.png"
+                                                   title="Sin datos"
+                                                   alt="Sin datos" />            
+                                              <img *ngIf="gri1.STRANSFERENCIA == '1'"
+                                                   src="assets/icons/verifyct.png"
+                                                   title="Finalizado"
+                                                   alt="Finalizado" />
+                                              <img *ngIf="gri1.STRANSFERENCIA == '2'"
+                                                   src="assets/icons/incorrecttc.png"
+                                                   title="Incorrecto"
+                                                   alt="Incorrecto" />                               
+                                          </td>
+                                          <td class="text-center"> 
+                                              <input type="checkbox" [checked]="gri1.IS_SELECT" (value)="gri1.IS_SELECT"  (click)="onRowClick(indice,gri1);"
+                                              
+                                              style="width: 20px;height: 20px;"
+                                              />
+                         
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    
+                                    </ng-template>
+
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-sm-10">
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <span>&nbsp;</span>
+                                    <button class="full-color" (click)="enviarCorreos()" [disabled]="" >
+                                      <span>ENVIAR CORREOS</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </ng-template>
+                           
+                          </ng-container>                    
+                        </nav>
+                        
+                        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+                      </div>                  
+                    </div>          
+        </div>
+      </div>
+   </div>
+   
+</div>
+
+<!-- Pantalla de carga -->
+<div [hidden]="isLoading==false" class="loadingScreen">
+  <div style="display:flex;height: 100%;width:100%">
+    <i style="margin:auto;font-size: 50px" class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">DESCRIPCION DE CORREO</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-6">
+          TRANSFERENCIA
+          <br>
+
+          	<div *ngFor="let option of options">
+              <div class="radio">
+                <input type="radio"
+                         name="radio"
+                         id="radio-{{option.id}}"
+                         [value]="option.value"
+                         [(ngModel)]="modalCorreoResults.STRANSFERENCIA"
+                         (change)="transferencia()"
+                         />
+          
+                  <label for="radio-{{option.id}}">{{option.id}}
+                  </label>
+          
+              </div>
+          </div>
+
+        </div>
+        <div class="col-6" *ngIf="this.modalCorreoResults.STRANSFERENCIA">
+          BANCO : <!-- {{}} -->
+          <br>
+          NUMERO DE OPERACION
+          <input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="modalCorreoResults.SNUMERO_OPERACION" placeholder="Numero de Operacion ...." (keypress)="soloNumeros($event)" maxlength="15">
+        </div>
+
+
+        <div class="col-12 form-group" *ngIf="!this.modalCorreoResults.STRANSFERENCIA">
+          <label for="exampleFormControlTextarea1">DETALLE DE CORREO AL CLIENTE   </label>
+          <textarea class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="modalCorreoResults.SDETALLE_CORREO" placeholder="Detalle del Correo  ...." id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+
+        
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="modalCancelar()">Cancelar</button>
+    <button type="button" class="btn btn-success ml-2" (click)="modalAceptar()">Aceptar</button>
+  </div>
+</ng-template>
+
+
+
+
+<script type="text/javascript">
+  function metchec(nom){
+    alert(nom);
+        nom.checked = checked;
+    
+  }
+</script>

@@ -1,0 +1,757 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 no-left">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-md-9 body-qr">
+      <div class="row group1">
+        <h1 class="title">Generación de QR</h1>
+        <div class="container-btn">
+          <button class="full-color btn-add-planilla mx-0 maxbutton"
+                  (click)="mostrarModalQr()">
+            <img alt=""
+                 src="assets/icons/add.png" />
+            <span>Agregar QR</span>
+          </button>
+          <button class="full-color btn-export-excel mx-0 maxbutton2"
+                  (click)="descargarDatosQR()">
+            <img alt=""
+                 src="assets/icons/download2.png"
+                 class="img-excel" />
+            <span class="span-excel">Descargar Excel</span>
+          </button>
+        </div>
+      </div>
+      <form class="row group2"
+            [formGroup]="formQRFiltros">
+        <div class="inputs">
+          <div class="conten-input input-1">
+            <label for="id_process"
+                   class="filter-text">ID PROCESO:</label>
+            <input type="number"
+                   class="filter"
+                   id="id_process"
+                   formControlName="idProceso" />
+          </div>
+          <div class="conten-input input-2">
+            <label for="fecha"
+                   class="filter-text">FECHA DE REGISTRO:</label>
+            <input type="text"
+                   class="filter"
+                   id="fecha"
+                   #dp="bsDatepicker"
+                   [bsConfig]="bsConfig"
+                   bsDatepicker
+                   formControlName="fechaInicio" />
+          </div>
+          <div class="conten-input input-3">
+            <input type="text"
+                   class="filter"
+                   id="fecha"
+                   #dp="bsDatepicker"
+                   [bsConfig]="bsConfig"
+                   bsDatepicker
+                   formControlName="fechaFin" />
+          </div>
+          <div class="conten-input input-4">
+            <label for="estado"
+                   class="filter-text">ESTADO:</label>
+            <select class="filter"
+                    formControlName="idEstado">
+              <option value="0">TODOS</option>
+              <option value="1">PROCESADO</option>
+              <option value="2">GENERADO</option>
+              <option value="3">ANULADO</option>
+            </select>
+          </div>
+        </div>
+        <div class="conten-input">
+          <label style="color: transparent !important">Buscar</label>
+          <button (click)="listarQR()"
+                  class="btn_buscar btn_uno">
+            Buscar
+          </button>
+          <label style="color: transparent !important">Limpiar</label>
+          <button (click)="limpiar()"
+                  class="btn_buscar btn_dos">
+            Limpiar
+          </button>
+        </div>
+      </form>
+      <div class="row group3">
+        <a (click)="descargarFormatoExcelQR()"
+           role="button"
+           class="download-manual d-flex align-items-center mx-0 download-qr">
+          <i class="fa fa-download mr-2"></i>
+          <span>Descargar Formato</span>
+        </a>
+      </div>
+      <div class="grid form-group row">
+        <div class="table-responsive"
+             id="table-scroll">
+          <table class="table">
+            <thead>
+              <tr class="grid-title">
+                <td class="grid-title-item uno">ID Proceso</td>
+                <td class="grid-title-item dos">Cantidad de Trabajadores</td>
+                <td class="grid-title-item tres">Fecha de Registro</td>
+                <td class="grid-title-item cuatro">Usuario</td>
+                <td class="grid-title-item cinco">Estado</td>
+                <td class="grid-title-item siete seis">Acciones</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="grid-body"
+                  *ngFor="let data of dataGeneracionQR; let index = index"
+                  [id]="'row' + data.idProceso">
+                <td class="grid-title-item">{{ data.idProceso }}</td>
+                <td class="grid-title-item">{{ data.cantidadTrabajadores }}</td>
+                <td class="grid-title-item">{{ data.fechaRegistro }}</td>
+                <td class="grid-title-item">{{ data.usuario }}</td>
+                <td class="grid-title-item">{{ data.estado }}</td>
+                <td class="grid-title-item col-actions-masiva">
+                  <button class="showActionsCargaMasiva"
+                          (click)="showActionsCargaMasiva(data.idProceso, index)">
+                    <i class="fa fa-ellipsis-v"
+                       aria-hidden="true"></i>
+                  </button>
+                  <div class="cotent-actions-masiva"
+                       [id]="'actions' + data.idProceso"
+                       hidden>
+                    <a role="button"
+                       class="op-action-masiva"
+                       (click)="historialQR(data.idProceso)">
+                      <i title="Ver historial"
+                         style="cursor: pointer"
+                         class="fa fa-search fa-lg ml-1"
+                         style="margin-left: 5px"></i>
+                      Ver Historial
+                    </a>
+                    <a role="button"
+                       class="op-action-masiva"
+                       (click)="descargarReporte(data.idProceso)">
+                      <i title="Descargar Excel"
+                         class="fa fa-file-excel-o fa-lg ml-1"></i>
+                      Descargar Reporte
+                    </a>
+                    <a role="button"
+                       class="op-action-masiva"
+                       *ngIf="data.estado == 'GENERADO'"
+                       (click)="descargarQR(data.idProceso)">
+                      <i title="Descargar QR"
+                         class="fa fa-file-archive-o fa-lg ml-1"></i>
+                      Descargar QR
+                    </a>
+                    <a role="button"
+                       class="op-action-masiva"
+                       style="margin-left: 5px"
+                       *ngIf="data.estado !== 'ANULADO'"
+                       (click)="verModalConfirmarAnular(true, data.idProceso)">
+                      <i title="Anular"
+                         class="fa fa-trash fa-lg"></i>
+                      Anular
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalqr="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document"
+       id="myModal">
+    <form class="modal-content"
+          [formGroup]="formTipoQR">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Agregar QR</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalQr()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Desea generar QR de tipo:
+        <div class="radio-btns d-flex flex-row mt-3 align-items-center">
+          <label for="ind"
+                 class="mb-0 mr-3">
+            <input type="radio"
+                   value="1"
+                   formControlName="type"
+                   id="group" />
+            Individual
+          </label>
+          <label for="group"
+                 class="mb-0">
+            <input type="radio"
+                   value="2"
+                   formControlName="type"
+                   id="group" />
+            Grupal
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="ocultarModalQr()">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="modalQRseleccionado()">
+          Aceptar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalqrindividual="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content individual">
+      <div class="modal-header">
+        <h5 class="u-modal__header--title titulo-qr-individual">
+          Generacion de QR
+        </h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalQRIndividual()">
+          <span aria-hidden="true"
+                class="x">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="u-modal__body--form"
+              [formGroup]="formQRIndi">
+          <label class="ctn-in placeholder"
+                 for="nombres"
+                 aria-placeholder="Nombres"
+                 [class.placeholder-active]="fc.nombres.value"
+                 [class.in-disabled]="fc['nombres'].disabled">
+            <input type="text"
+                   id="nombres"
+                   class="ctn-in--item mayusculas"
+                   formControlName="nombres"
+                   [maxlength]="20"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['nombres'].value" />
+            <span class="error"
+                  *ngIf="
+                fc['nombres'].hasError('required') && fc['nombres'].touched
+              ">
+              *Este campo es obligatorio
+            </span>
+          </label>
+          <label class="ctn-in placeholder"
+                 for="telefono_fijo"
+                 aria-placeholder="Teléfono Fijo"
+                 [class.placeholder-active]="fc.telefono_fijo.value"
+                 [class.in-disabled]="fc['telefono_fijo'].disabled">
+            <input type="text"
+                   id="telefono_fijo"
+                   class="ctn-in--item"
+                   formControlName="telefono_fijo"
+                   [minlength]="7"
+                   [maxlength]="7"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['telefono_fijo'].value" />
+          </label>
+          <label class="ctn-in placeholder"
+                 for="apellido_paterno"
+                 aria-placeholder="Apellido Paterno"
+                 [class.placeholder-active]="fc.apellido_paterno.value"
+                 [class.in-disabled]="fc['apellido_paterno'].disabled">
+            <input type="text"
+                   id="apellido_paterno"
+                   class="ctn-in--item mayusculas"
+                   formControlName="apellido_paterno"
+                   [maxlength]="20"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['apellido_paterno'].value" />
+            <span class="error"
+                  *ngIf="
+                fc['apellido_paterno'].hasError('required') &&
+                fc['apellido_paterno'].touched
+              ">
+              *Este campo es obligatorio
+            </span>
+          </label>
+          <label class="ctn-in placeholder"
+                 for="anexo"
+                 aria-placeholder="Anexo"
+                 [class.placeholder-active]="fc.anexo.value"
+                 [class.in-disabled]="fc['anexo'].disabled">
+            <input type="text"
+                   id="anexo"
+                   class="ctn-in--item"
+                   formControlName="anexo"
+                   [maxlength]="5"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['anexo'].value" />
+            <!--<span
+              class="error"
+              *ngIf="fc['anexo'].hasError('required') && fc['anexo'].touched"
+            >
+              *Este campo no es válido
+            </span>-->
+          </label>
+          <label class="ctn-in placeholder"
+                 for="apellido_materno"
+                 aria-placeholder="Apellido Materno"
+                 [class.placeholder-active]="fc.apellido_materno.value"
+                 [class.in-disabled]="fc['apellido_materno'].disabled">
+            <input type="text"
+                   class="ctn-in--item mayusculas"
+                   id="apellido_materno"
+                   formControlName="apellido_materno"
+                   autocomplete="off"
+                   [maxlength]="20"
+                   [class.input_with_data]="!!fc['apellido_materno'].value" />
+          </label>
+          <label class="ctn-in placeholder"
+                 for="telefono_celular"
+                 aria-placeholder="Teléfono Celular"
+                 [class.placeholder-active]="fc.telefono_celular.value"
+                 [class.in-disabled]="fc['telefono_celular'].disabled">
+            <input type="text"
+                   id="telefono_celular"
+                   class="ctn-in--item"
+                   formControlName="telefono_celular"
+                   [minlength]="9"
+                   [maxlength]="9"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['telefono_celular'].value" />
+            <!--<span
+              class="error"
+              *ngIf="
+                fc['telefono_celular'].hasError('required') &&
+                fc['telefono_celular'].touched
+              "
+            >
+              *Este campo no es válido
+            </span>-->
+          </label>
+          <label class="ctn-in placeholder"
+                 for="email"
+                 aria-placeholder="Correo Electrónico"
+                 [class.placeholder-active]="fc.email.value"
+                 [class.in-disabled]="fc['email'].disabled">
+            <input type="text"
+                   class="ctn-in--item mayusculas"
+                   id="email"
+                   formControlName="email"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['email'].value" />
+            <span class="error"
+                  *ngIf="hasErrorEmail !== null">
+              {{ hasErrorEmail }}
+            </span>
+          </label>
+          <label class="ctn-in placeholder"
+                 for="cargo"
+                 aria-placeholder="Cargo"
+                 [class.placeholder-active]="fc.cargo.value"
+                 [class.in-disabled]="fc['cargo'].disabled">
+            <input type="text"
+                   class="ctn-in--item mayusculas"
+                   id="cargo"
+                   formControlName="cargo"
+                   autocomplete="off"
+                   [class.input_with_data]="!!fc['cargo'].value" />
+            <span class="error"
+                  *ngIf="fc['cargo'].hasError('required') && fc['cargo'].touched">
+              *Este campo es obligatorio
+            </span>
+          </label>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="conten-input-modal">
+          <button type="button"
+                  class="btn btn-secondary btn-close-modal"
+                  data-dismiss="modal"
+                  (click)="ocultarModalQRGrupal()">
+            Cancelar
+          </button>
+          <button type="submit"
+                  class="btn full-color btn-aceptar-modal"
+                  (click)="verModalConfirmarGenerar()"
+                  [disabled]="formQRIndi.invalid || validarTelefonosG">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalqrgrupal="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">Generación de QR</h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalQRGrupal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="u-modal__body--form modales"
+              [formGroup]="formQRGru">
+          <div class="row d-flex align-items-center">
+            <div class="col-4">
+              <label for="upload-file-modal"
+                     class="filter-text upload_file">Adjuntar archivo</label>
+              <input type="file"
+                     id="upload-file-modal"
+                     hidden
+                     (change)="archivoSubido($event)"
+                     formControlName="archivo" />
+            </div>
+            <div class="col-8 px-0">
+              <span><small style="margin-left: 40px">{{
+                  nombreArchivoSubido
+                  }}</small></span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="conten-input-modal">
+          <button type="button"
+                  class="btn btn-secondary btn-close-modal"
+                  data-dismiss="modal"
+                  (click)="ocultarModalQRGrupal()">
+            Cancelar
+          </button>
+          <button type="submit"
+                  class="btn full-color btn-aceptar-modal"
+                  [disabled]="guardarExcel == null"
+                  (click)="verModalConfirmarGenerar()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalConfirmacion="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarConfirmacion()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <div class="check-emitido">
+          <img src="assets/backoffice/check-success.png"
+               class="icon-check" />
+        </div>
+        <h4>Su QR ha sido generado correctamente.</h4>
+      </div>
+      <div class="
+          modal-footer modal-foot-confirm
+          d-flex
+          align-items-center
+          justify-content-center
+        ">
+        <button type="button"
+                class="btn full-color btn-aceptar-modal"
+                (click)="ocultarConfirmacion()">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"
+     bsModal
+     #modalHistorial="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog modal-ver-detalle"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">
+          Historial de Generación QR: {{ ID_PROCCESS }}
+        </h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalHistorial()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form class="modal-body mx-3 px-0 mb-3 py-0">
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-history">
+          <thead class="thead">
+            <tr class="grid-title">
+              <td class="grid-title-item">Secuencia</td>
+              <td class="grid-title-item">Estado</td>
+              <td class="grid-title-item">Fecha</td>
+              <td class="grid-title-item">Usuario</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grid-body"></tr>
+            <tr class="grid-body"
+                *ngFor="let data of dataHistorialQR; let secuencia = index">
+              <td class="grid-body-item">{{ secuencia + 1 }}</td>
+              <td class="grid-body-item">{{ data.estado }}</td>
+              <td class="grid-body-item">{{ data.fechaRegistro }}</td>
+              <td class="grid-body-item">{{ data.usuario }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="full-color btn-export-excel mx-0"
+                (click)="ocultarModalHistorial()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalConfirmarAnular="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">
+          Mensaje de Confirmación
+        </h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="verModalConfirmarAnular(false)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <label for=""> ¿Estás seguro que desea anular? </label>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn full-color btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="verModalConfirmarAnular(false)">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="anularQR()">
+          Si
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalConfirmacionAnular="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content anular">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarConfirmacionAnular()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <div class="check-emitido">
+          <img src="assets/backoffice/check-success.png"
+               class="icon-check" />
+        </div>
+        <h4 class="textanular">
+          El proceso {{ ID_PROCCESS }} ha sido anulado correctamente
+        </h4>
+      </div>
+      <div class="
+          modal-footer modal-foot-confirm
+          d-flex
+          align-items-center
+          justify-content-center
+        ">
+        <button type="button"
+                class="btn full-color btn-aceptar-modal"
+                (click)="ocultarConfirmacionAnular()">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalError="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog modal-ver-detalle"
+       role="document">
+    <div class="modal-content modalerror">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">
+          Error de Generación QR
+        </h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalError()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form class="modal-body mx-3 px-0 mb-3 py-0">
+        <table class="table table-info-soat table-group-soat mx-0 mt-3 table-history">
+          <thead class="thead">
+            <tr class="grid-title">
+              <td class="grid-title-item fila"
+                  style="max-width: 10px">
+                N° Fila
+              </td>
+              <td class="grid-title-item">Mensaje</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grid-body"></tr>
+            <tr class="grid-body"
+                *ngFor="let data of dataErrorQR; let secuencia = index">
+              <td class="grid-body-item">{{ data.registro }}</td>
+              <td class="grid-body-item"
+                  style="text-align: left">
+                {{ data.mensaje }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="full-color btn-export-excel mx-0"
+                (click)="ocultarModalError()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+     bsModal
+     #modalConfirmarGenerar="bs-modal"
+     [config]="{
+    backdrop: 'static'
+  }">
+  <div class="modal-dialog"
+       role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"
+            id="exampleModalLabel">
+          Mensaje de Confirmación
+        </h5>
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                (click)="ocultarModalConfirmarGenerar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-emitido">
+        <label for=""> ¿Estás seguro que desea generar el QR? </label>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button"
+                class="btn full-color btn-secondary btn-close-modal"
+                data-dismiss="modal"
+                (click)="ocultarModalConfirmarGenerar()">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="btn full-color btn-aceptar-modal"
+                (click)="generarQR()">
+          Si
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+  value="1" individual
+         2  grupal
+
+  (click)="changeTipoGeneracion($event.target.value)"
+
+  inputradio
+-->

@@ -1,0 +1,1644 @@
+<div class="form-group row">
+  <div class="col-lg-3">
+    <app-nav-menuprod></app-nav-menuprod>
+  </div>
+  <div class="col-lg-9">
+    <div class="container-fluid">
+      <div class="form-group row hidden-xs-down">
+        <div class="col-lg-12">
+          <div class="creaunsoatmanual">
+            <a>{{ mainTitle }}</a>
+          </div>
+        </div>
+      </div>
+      <hr class="linea" />
+
+      <div class="form-group row form-group-sm">
+        <div class="col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-8">
+              <app-title-step
+                actual="1"
+                titulo="Ingresa la placa del contratante"
+                [anterior]="false"
+              ></app-title-step>
+            </div>
+            <div class="col-lg-4">
+              <div class="bottom-new-mobile tophidden-new-mobile"></div>
+              <button
+                type="button"
+                [disabled]="!deshabilitarNuevoSoat"
+                [ngClass]="{ 'deshabilitado-boton': !deshabilitarNuevoSoat }"
+                class="btn btn-siguiente bottom-new-mobile nuevosoat"
+                (click)="nuevoSOAT()"
+              >
+                NUEVO SOAT
+              </button>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <div class="form-group row">
+                <div class="col-lg-4">
+                  <div class="d-row">
+                    <div class="app-input-date">
+                      <div class="form-group input-group">
+                        <input
+                          [(ngModel)]="placa"
+                          [ngClass]="{ deshabilitado: bLock01 }"
+                          class="form-control input-text-formulario input-placa"
+                          maxlength="{{ longitudPlaca }}"
+                          placeholder="XXX XXX"
+                          type="text"
+                          (paste)="onPaste($event)"
+                          [disabled]="bValidar"
+                          (keyup.enter)="validarPlaca()"
+                          (keypress)="omit_special_char($event)"
+                          (blur)="validarPlaca()"
+                        />
+                        <div class="input-group-addon">
+                          <img
+                            *ngIf="!bLock01"
+                            alt=""
+                            (click)="validarPlaca()"
+                            src="assets/icons/buscar_certificado.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="show-mensaje-error">
+                      <span
+                        *ngIf="bValidado && !bValido"
+                        class="mensaje-error-control new-error"
+                        >{{ mensaje }}
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                  <div class="tipo-vehiculo">
+                    <div class="botones">
+                      <button
+                        type="button"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        [ngClass]="{
+                          'deshabilitado-boton': !deshabilitarNuevoSoat
+                        }"
+                        class="btn btn-siguiente top-new-mobile nuevosoat"
+                        (click)="nuevoSOAT()"
+                      >
+                        NUEVO SOAT
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-8">
+              <app-title-step
+                actual="2"
+                titulo="Datos del Veh&iacute;culo"
+                [anterior]="false"
+              ></app-title-step>
+            </div>
+            <div class="col-lg-4"></div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <ng-container *ngIf="auto.p_ORIGIN && !isTeleMarketing">
+                <p class="change-info-auto">
+                  Si necesitas ayuda para actualizar la marca y modelo de tu
+                  vehículo.
+                  <a role="button" (click)="showModalUpdateBrandAuto()"
+                    ><b>Presiona aquí.</b></a
+                  >
+                </p>
+              </ng-container>
+              <form [formGroup]="vehiculoForm">
+                <div class="form-group row">
+                  <!-- /// MARCA /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >MARCA DE VEHÍCULO*</label
+                      >
+                      <select
+                        formControlName="marcacodigo"
+                        [class.deshabilitado]="
+                          bLock02 || vehiculoForm.get('marcacodigo').disabled
+                        "
+                        class="form-control select-formulario"
+                        [(ngModel)]="auto.p_NVEHBRAND"
+                        (change)="setMarca($event.target.value)"
+                        [ngClass]="{
+                          'error-validate':
+                            vehiculoForm.get('marcacodigo').invalid &&
+                            vehiculoForm.get('marcacodigo').touched
+                        }"
+                      >
+                        <option value="" disabled selected>
+                          Seleccione la marca
+                        </option>
+                        <option
+                          *ngFor="let marca of marcas"
+                          value="{{ marca.nvehbrand }}"
+                        >
+                          {{ marca.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          vehiculoForm.get('marcacodigo').invalid &&
+                          vehiculoForm.get('marcacodigo').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer la marca de tu veh&iacute;culo.
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- /// MODELO  /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >MODELO DEL VEHÍCULO*</label
+                      >
+                      <select
+                        formControlName="modelo"
+                        [class.deshabilitado]="
+                          bLock02 || vehiculoForm.get('modelo').disabled
+                        "
+                        class="form-control select-formulario"
+                        [(ngModel)]="auto.p_SNAME_VEHMODEL"
+                        (change)="setModelo($event.target.value)"
+                        [ngClass]="{
+                          'error-validate':
+                            vehiculoForm.get('modelo').invalid &&
+                            vehiculoForm.get('modelo').touched
+                        }"
+                      >
+                        <option value="" disabled selected>
+                          Seleccione el modelo
+                        </option>
+
+                        <option
+                          *ngFor="let modelo of modelos"
+                          value="{{ modelo.sdescript }}"
+                        >
+                          {{ modelo.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          vehiculoForm.get('modeloprincipal').invalid &&
+                          vehiculoForm.get('modeloprincipal').touched
+                        "
+                        class="mensaje-error-control new-error"
+                      >
+                        Necesitamos conocer el modelo de tu veh&iacute;culo.
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- /// CLASE /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >CLASE DE VEHÍCULO*</label
+                      >
+                      <select
+                        formControlName="clasecodigo"
+                        [ngClass]="{ deshabilitado: bLock02 }"
+                        class="form-control select-formulario"
+                        [(ngModel)]="auto.p_NIDCLASE"
+                        (change)="setClase($event.target.value)"
+                        [ngClass]="{
+                          'error-validate':
+                            !vehiculoForm.get('clasecodigo').valid &&
+                            vehiculoForm.get('clasecodigo').touched
+                        }"
+                      >
+                        <option value="0" disabled selected>
+                          Seleccione la Clase
+                        </option>
+                        <option
+                          *ngFor="let clase of clases"
+                          value="{{ clase.nvehclass }}"
+                        >
+                          {{ clase.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !vehiculoForm.get('clasecodigo').valid &&
+                          vehiculoForm.get('clasecodigo').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer la clase de tu veh&iacute;culo.
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <!-- /// USO /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >USO*</label
+                      >
+                      <select
+                        formControlName="uso"
+                        [ngClass]="{ deshabilitado: bLock02 }"
+                        class="form-control select-formulario"
+                        [(ngModel)]="auto.p_NIDUSO"
+                        (change)="setUso($event.target.value)"
+                        [ngClass]="{
+                          'error-validate':
+                            !vehiculoForm.get('uso').valid &&
+                            vehiculoForm.get('uso').touched
+                        }"
+                      >
+                        <option value="" disabled selected>
+                          Seleccione el tipo de uso
+                        </option>
+                        <option
+                          *ngFor="let uso of usos"
+                          value="{{ uso.niduso }}"
+                        >
+                          {{ uso.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !vehiculoForm.get('uso').valid &&
+                          vehiculoForm.get('uso').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer el uso de tu veh&iacute;culo.
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <!-- /// SERIE  /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >NRO. DE SERIE*</label
+                      >
+                      <input
+                        [(ngModel)]="auto.p_SNUMSERIE"
+                        [ngClass]="{ deshabilitado: bLock02 }"
+                        type="text"
+                        formControlName="serie"
+                        maxlength="30"
+                        minlength="10"
+                        class="form-control input-text-formulario"
+                        placeholder="Ingresar el nro. de serie"
+                        [ngClass]="{
+                          'error-validate':
+                            !vehiculoForm.get('serie').valid &&
+                            vehiculoForm.get('serie').touched
+                        }"
+                        value=""
+                      />
+                      <div
+                        class="mensaje-error-control new-error"
+                        *ngIf="
+                          !vehiculoForm.get('serie').valid &&
+                          vehiculoForm.get('serie').touched
+                        "
+                      >
+                        <ng-container
+                          *ngIf="vehiculoForm.get('serie').errors.required"
+                        >
+                          <i></i
+                          ><span
+                            >Necesitamos conocer la serie de tu vehículo</span
+                          >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            vehiculoForm.get('serie').errors.pattern &&
+                            !vehiculoForm.get('serie').errors.minlength &&
+                            !vehiculoForm.get('serie').errors.letraNumeroReq
+                          "
+                        >
+                          <i></i
+                          ><span
+                        >El número de serie no puede iniciar con 0</span
+                        >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="vehiculoForm.get('serie').errors.minlength"
+                        >
+                          <i></i
+                          ><span
+                        >La serie de tu vehículo, debe tener mínimo 10
+                            dígitos</span
+                          >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            vehiculoForm.get('serie').errors.letrasRepetidas &&
+                            !vehiculoForm.get('serie').errors.minlength
+                          "
+                        >
+                          <i></i
+                          ><span
+                        >No se permiten más de 5 letras consecutivas
+                            iguales</span
+                        >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            vehiculoForm.get('serie').errors.numerosRepetidos &&
+                            !vehiculoForm.get('serie').errors.minlength
+                          "
+                        >
+                          <i></i
+                          ><span
+                        >No se permiten más de 5 números consecutivos
+                            iguales</span
+                        >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            vehiculoForm.get('serie').errors.letraNumeroReq &&
+                            !vehiculoForm.get('serie').errors.minlength &&
+                            !vehiculoForm.get('serie').errors.required
+                          "
+                        >
+                          <i></i><span>Formato no válido</span>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- /// ASIENTOS  /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput"
+                             class="label-formulario">
+                        NRO. DE ASIENTOS*
+                        <span class="tooltip-container">
+                          <i
+                            class="fa fa-info-circle fa-lg ml-2"
+                            aria-hidden="true"
+                          ></i>
+                          <div class="tooltip">
+                            Si no encuentras el número de asientos de tu
+                            vehículo escríbenos a
+                            <span>soatoperaciones@protectasecurity.pe</span>
+                          </div>
+                        </span>
+                      </label>
+                      <select
+                        formControlName="asientos"
+                        [ngClass]="{ deshabilitado: bLock02 }"
+                        class="form-control select-formulario"
+                        [(ngModel)]="auto.p_SEATNUMBER"
+                        (change)="setAsientos($event.target.value)"
+                        [ngClass]="{
+                          'error-validate':
+                            !vehiculoForm.get('asientos').valid &&
+                            vehiculoForm.get('asientos').touched
+                        }"
+                      >
+                        <option value=""
+                                disabled
+                                selected>
+                          Seleccione el nro. de asientos
+                        </option>
+                        <option
+                          *ngFor="let asiento of listaAsientos"
+                          value="{{ asiento }}"
+                        >
+                          {{ asiento }}
+                        </option>
+                      </select>
+                      <div
+                        class="mensaje-error-control new-error"
+                        *ngIf="
+                          !vehiculoForm.get('asientos').valid &&
+                          vehiculoForm.get('asientos').touched
+                        "
+                      >
+                        <ng-container
+                          *ngIf="vehiculoForm.get('asientos').errors.required"
+                        >
+                          <i></i
+                          ><span
+                            >Necesitamos conocer la cantidad de asientos que
+                            tiene tu veh&iacute;culo.</span
+                          >
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            vehiculoForm.get('asientos').errors.pattern ||
+                            vehiculoForm.get('asientos').errors.min
+                          "
+                        >
+                          <i></i
+                          ><span
+                            >Por favor ingresar solo dígitos mayores a 0</span
+                          >
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <!-- /// AÑO  /// -->
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >AÑO DEL VEHÍCULO*</label
+                      >
+                      <input
+                        [(ngModel)]="auto.p_NYEAR"
+                        [ngClass]="{ deshabilitado: bLock02 }"
+                        type="text"
+                        formControlName="anho"
+                        (keypress)="soloNumeros($event)"
+                        maxlength="4"
+                        min="1950"
+                        class="form-control input-text-formulario"
+                        [ngClass]="{
+                          'error-validate':
+                            !vehiculoForm.get('anho').valid &&
+                            (vehiculoForm.get('anho').dirty ||
+                              vehiculoForm.get('anho').touched)
+                        }"
+                        placeholder="Ingrese el año del vehículo"
+                        value=""
+                      />
+                      <div
+                        *ngIf="
+                          !vehiculoForm.get('anho').valid &&
+                          (vehiculoForm.get('anho').dirty ||
+                            vehiculoForm.get('anho').touched)
+                        "
+                        class="mensaje-error-control new-error"
+                      >
+                        <span *ngIf="vehiculoForm.get('anho').errors.required">
+                          <i></i
+                          ><span
+                            >Necesitamos conocer el año de tu
+                            veh&iacute;culo.</span
+                          >
+                          <br />
+                        </span>
+
+                        <span
+                          *ngIf="
+                            vehiculoForm.get('anho').errors.min ||
+                            vehiculoForm.get('anho').errors.max
+                          "
+                        >
+                          <i></i
+                          ><span
+                            >El año no puede ser mayor a 2 años ni menor a
+                            1950.</span
+                          >
+                        </span>
+                        <!-- <span *ngIf="vehiculoForm.get('anho').valid && byear"
+                              class="mensaje-error-control new-error">El año de tu veh&iacute;culo no puede ser mayor a
+                          2 años
+                          <br />
+                        </span> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4" *ngIf="IS_FLUJO_USOS">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >ZONA DE CIRCULACIÓN*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: bLock03 }"
+                        formControlName="zonaCirculacion"
+                        (change)="changeZonaCirculacion($event.target.value)"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione el departamento
+                        </option>
+                        <option
+                          *ngFor="let departamento of departamentos"
+                          value="{{ departamento.nprovince }}"
+                        >
+                          {{ departamento.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          (vehiculoForm.get('zonaCirculacion').value == '' ||
+                            vehiculoForm.get('zonaCirculacion').value ==
+                              undefined) &&
+                          vehiculoForm.get('zonaCirculacion').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer tu zona de circulación
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row"></div>
+                  </div>
+
+                  <div class="col-lg-4"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-contrantante
+        #appasegurado
+        [cliente]="Cliente"
+        [bloqueado]="bLock03"
+        [collTipoDocumento]="documentTypes"
+        (clienteEstado)="setClienteEstado($event)"
+        actual="3"
+        titulo="Datos del Contratante"
+        (contratante)="bloquearCheckEnvioPromociones($event)"
+        (clienteResult)="assignAsegurado($event)"
+      ></app-contrantante>
+
+      <div class="form-group row chk-area">
+        <div class="col-lg-12">
+          <div class="checkboxes">
+            <label *ngIf="showchkFacturar" for="x"
+              ><input
+                [disabled]="true"
+                [ngClass]="{ deshabilitado: bLock03 }"
+                [checked]="true"
+                type="checkbox"
+                id="x"
+                (change)="generarFactura($event)"
+              />
+              <span>Generar comprobante</span></label
+            >
+            <label for="y"
+              ><input
+                [disabled]="!deshabilitarNuevoSoat"
+                [ngClass]="{ deshabilitado: bLock03 }"
+                type="checkbox"
+                [checked]="facturarContratante"
+                (change)="generarFacturaContratante($event)"
+                id="y"
+              />
+              <span>Comprobante a nombre de otro contratante</span></label
+            >
+          </div>
+        </div>
+      </div>
+
+      <div [hidden]="!facturarContratante">
+        <app-contrantante
+          #appcontrantante
+          [cliente]="ClienteFact"
+          [bloqueado]="bLock03"
+          [collTipoDocumento]="documentTypes"
+          [showempty]="true"
+          actual="3.1"
+          titulo="Contratante a facturar"
+          (clienteResult)="assignContratante($event)"
+        >
+        </app-contrantante>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-8">
+              <app-title-step
+                actual="4"
+                titulo="Datos del Certificado"
+                [anterior]="false"
+              ></app-title-step>
+            </div>
+            <div class="col-lg-4"></div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <form [formGroup]="certificadoForm">
+                <div class="form-group row">
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >FECHA DE INICIO DE VIGENCIA*</label
+                      >
+                      <app-input-date
+                        [inputValue]="fecha_vigencia"
+                        [inputHolder]="'DD/MM/YYYY*'"
+                        [iconFilter]="true"
+                        [returnString]="true"
+                        [returnFormat]="'yyyy-MM-dd'"
+                        [ngClass]="{ deshabilitado: bLock04 }"
+                        [inputStyle]="{ height: '35px' }"
+                        [minDate]="minDateEmission"
+                        (inputValueChange)="onFechaVigenciaChange($event)"
+                        #fv
+                      ></app-input-date>
+
+                      <span
+                        *ngIf="
+                          !certificadoForm.get('fechavigencia').valid &&
+                          certificadoForm.get('fechavigencia').touched
+                        "
+                        class="mensaje-error-control new-error-comp"
+                      >
+                        Ingresa una fecha valida para el inicio de vigencia de
+                        tu SOAT
+                        <br />
+                      </span>
+                      <span
+                        *ngIf="mensajeVigencia"
+                        class="mensaje-error-control new-error-comp"
+                        >{{ mensajeVigencia }}
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div *ngIf="bMostrar" class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >NRO. DE P&Oacute;LIZA</label
+                      >
+                      <div style="position: relative">
+                        <input
+                          class="form-control input-text-formulario"
+                          style="float: left"
+                          formControlName="poliza"
+                          type="text"
+                          readonly="readonly"
+                          placeholder="Ingresa el nro. de la p&oacute;liza"
+                          [(ngModel)]="Certificado.P_NPOLICY"
+                        />
+                        <a
+                          (click)="openNumerador()"
+                          style="
+                            position: absolute;
+                            float: right;
+                            top: 2px;
+                            margin-left: -26px;
+                          "
+                        >
+                          <img alt="" src="assets/icons/dropdown_icon.png" />
+                        </a>
+                        <span
+                          *ngIf="
+                            !certificadoForm.get('poliza').valid &&
+                            certificadoForm.get('poliza').touched
+                          "
+                          class="mensaje-error-control new-error"
+                          >Necesitamos conocer el número de P&oacute;liza
+                          <br />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!bMostrar" class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >NRO. DE P&Oacute;LIZA</label
+                      >
+                      <input
+                        class="form-control input-text-formulario"
+                        formControlName="poliza"
+                        type="text"
+                        readonly="readonly"
+                        placeholder="Ingresa el nro. de la p&oacute;liza"
+                        [(ngModel)]="Certificado.P_NPOLICY"
+                      />
+                      <span
+                        *ngIf="
+                          !certificadoForm.get('poliza').valid &&
+                          certificadoForm.get('poliza').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer el número de P&oacute;liza
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >TARIFARIO*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: bLock04 }"
+                        formControlName="plan"
+                        [(ngModel)]="Certificado.P_IDTARIFARIO"
+                        (change)="setTarifario($event.target.value)"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione su tarifario
+                        </option>
+                        <option
+                          *ngFor="let tarifa of lstTarifarios"
+                          value="{{ tarifa.id }}"
+                        >
+                          {{ tarifa.descripcion }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !certificadoForm.get('plan').valid &&
+                          certificadoForm.get('plan').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer el tarifario
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >PRECIO DEL SOAT*</label
+                      >
+                      <input
+                        type="text"
+                        formControlName="precio"
+                        [(ngModel)]="Certificado.P_NPREMIUM"
+                        min="1"
+                        [readonly]="bEditPrecio"
+                        (keypress)="soloNumeros($event)"
+                        maxlength="4"
+                        value=""
+                        class="form-control input-text-formulario"
+                        placeholder="Ingresa el valor total del SOAT"
+                        *ngIf="false"
+                      />
+                      <span class="form-control precio-soat">
+                        {{ Certificado.P_NPREMIUM }}
+                      </span>
+                      <span
+                        *ngIf="
+                          !certificadoForm.get('precio').valid &&
+                          certificadoForm.get('precio').touched &&
+                          certificadoForm.get('precio').hasError('min')
+                        "
+                        class="mensaje-error-control new-error"
+                        >El precio del SOAT debe ser mayor a 0
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div
+                    class="col-lg-4"
+                    class="stylePrimaR"
+                    *ngIf="primaRegular > 0"
+                  >
+                    <label style="margin-top: 40px">RENUEVA POR</label>
+                    <div class="primaR">S/{{ primaRegular }}</div>
+                  </div> -->
+                  <div
+                    class="col-lg-4"
+                    class="stylePrimaR"
+                    *ngIf="primaRegular > 0"
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 18px;
+                          margin-top: 25px;
+                          text-align: center;
+                          color: #2b0d61;
+                        "
+                      >
+                        Se obtuvo prima por renovación<br /><br />
+                        Precio Regular: S/{{ primaRegular }} - Precio Especial
+                        S/{{ Certificado.P_NPREMIUM }}
+                      </div>
+                    </div>
+                    <!-- <label style="margin-top: 40px; font-size: 25px"
+                      >Antes</label
+                    >
+                    <div class="primaR">S/{{ primaRegular }}</div> -->
+                  </div>
+                  <div class="col-lg-4 spiner">
+                    <img
+                      alt=""
+                      [hidden]="!bSpinner"
+                      src="assets/icons/loading.gif"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showSeccionEntrega" class="form-group row">
+        <div class="col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-8">
+              <app-title-step
+                actual="5"
+                titulo="Datos de Entrega."
+                [anterior]="false"
+              ></app-title-step>
+            </div>
+            <div class="col-lg-4"></div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12">
+              <form [formGroup]="datosEntregaForm">
+                <!-- DATOS DOCUMENTOS DEL CLIENTE -->
+                <div class="form-group row">
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >FECHA DE ENTREGA*</label
+                      >
+                      <app-input-date
+                        [inputValue]="fecha_entrega"
+                        [inputHolder]="'DD/MM/YYYY*'"
+                        [iconFilter]="true"
+                        [returnString]="true"
+                        [returnFormat]="'yyyy-MM-dd'"
+                        [ngClass]="{ deshabilitado: bLock04, inputdev: true }"
+                        [inputStyle]="{ height: '35px' }"
+                        [minDate]="minDateEntrega"
+                        (inputValueChange)="onFechaEntregaChange($event)"
+                        #fv
+                      ></app-input-date>
+
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('fechaentrega').valid &&
+                          datosEntregaForm.get('fechaentrega').touched
+                        "
+                        class="mensaje-error-control new-error-comp"
+                      >
+                        Ingresa una fecha de entrega válida
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >TURNO DE ENTREGA*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        formControlName="turnoentrega"
+                        [(ngModel)]="Certificado.P_STURNOENTREGADELIVERY"
+                        (change)="setTurnoEntrega($event.target.value)"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione su turno de entrega
+                        </option>
+                        <option
+                          *ngFor="let turno of turnos"
+                          value="{{ turno.id }}"
+                        >
+                          {{ turno.description }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('turnoentrega').valid &&
+                          datosEntregaForm.get('turnoentrega').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer el turno de entrega
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >FORMA DE PAGO*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="formapago"
+                        [(ngModel)]="Certificado.P_SFORMAPAGODELIVERY"
+                        (change)="setFormaPago($event.target.value)"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione la forma de pago
+                        </option>
+                        <option
+                          *ngFor="let fpago of formasDePago"
+                          value="{{ fpago.id }}"
+                        >
+                          {{ fpago.description }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('formapago').valid &&
+                          datosEntregaForm.get('formapago').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer la forma de pago
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <!-- DATOS NOMBRES DEL CLIENTE -->
+                <div class="form-group row">
+                  <div class="col-lg-8">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >DIRECCION DE ENTREGA*</label
+                      >
+                      <input
+                        [(ngModel)]="Certificado.P_SDIRECCIONENTREGADELIVERY"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="direccionentrega"
+                        maxlength="150"
+                        type="text"
+                        class="form-control input-text-formulario"
+                        m
+                        placeholder="Ingrese la dirección de entrega"
+                        [ngClass]="{
+                          'error-validate':
+                            !datosEntregaForm.get('direccionentrega').valid &&
+                            datosEntregaForm.get('direccionentrega').touched
+                        }"
+                        value=""
+                      />
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('direccionentrega').valid &&
+                          datosEntregaForm.get('direccionentrega').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer la dirección de entrega
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >COMENTARIO*</label
+                      >
+                      <input
+                        [(ngModel)]="Certificado.P_SCOMENTARIODELIVERY"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="comentario"
+                        maxlength="50"
+                        type="text"
+                        class="form-control input-text-formulario"
+                        placeholder="Ej. Altura cdra. 26"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- DATOS UBIGEO DEL CLIENTE -->
+                <div class="form-group row">
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >DEPARTAMENTO ENTREGA*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="departamentoentrega"
+                        [(ngModel)]="Certificado.P_NPROVINCEDELIVERY"
+                        (change)="
+                          listarProvinciasDelivery(
+                            $event.target.value,
+                            null,
+                            null
+                          )
+                        "
+                        [ngClass]="{
+                          'error-validate':
+                            !datosEntregaForm.get('departamentoentrega')
+                              .valid &&
+                            datosEntregaForm.get('departamentoentrega').touched
+                        }"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione departamento de entrega
+                        </option>
+                        <option
+                          *ngFor="let departamento of departamentos"
+                          value="{{ departamento.nprovince }}"
+                        >
+                          {{ departamento.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('departamentoentrega').valid &&
+                          datosEntregaForm.get('departamentoentrega').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer tu departamento de entrega
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >PROVINCIA ENTREGA*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="provinciaentrega"
+                        [(ngModel)]="Certificado.P_NLOCATDELIVERY"
+                        (change)="
+                          listarDistritosDelivery($event.target.value, null)
+                        "
+                        [ngClass]="{
+                          'error-validate':
+                            !datosEntregaForm.get('provinciaentrega').valid &&
+                            datosEntregaForm.get('provinciaentrega').touched
+                        }"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione la provincia
+                        </option>
+                        <option
+                          *ngFor="let provincia of provinciasDelivery"
+                          value="{{ provincia.nlocal }}"
+                        >
+                          {{ provincia.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('provinciaentrega').valid &&
+                          datosEntregaForm.get('provinciaentrega').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer tu provincia de entrega
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="d-row">
+                      <label for="disabledTextInput" class="label-formulario"
+                        >DISTRITO ENTREGA*</label
+                      >
+                      <select
+                        class="form-control select-formulario"
+                        [ngClass]="{ deshabilitado: !deshabilitarNuevoSoat }"
+                        [disabled]="!deshabilitarNuevoSoat"
+                        formControlName="distritoentrega"
+                        [(ngModel)]="Certificado.P_NMUNICIPALITYDELIVERY"
+                        [ngClass]="{
+                          'error-validate':
+                            !datosEntregaForm.get('distritoentrega').valid &&
+                            datosEntregaForm.get('distritoentrega').touched
+                        }"
+                      >
+                        <option value="undefined" disabled selected>
+                          Seleccione el distrito de entrega
+                        </option>
+                        <option
+                          *ngFor="let distrito of distritosDelivery"
+                          value="{{ distrito.nmunicipality }}"
+                        >
+                          {{ distrito.sdescript }}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="
+                          !datosEntregaForm.get('distritoentrega').valid &&
+                          datosEntregaForm.get('distritoentrega').touched
+                        "
+                        class="mensaje-error-control new-error"
+                        >Necesitamos conocer tu distrito de entrega
+                        <br />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-12">
+          <form class="form-group row" [formGroup]="formTerms">
+            <ng-container *ngIf="!isTeleMarketing">
+              <div class="content-terms">
+                <input
+                  type="checkbox"
+                  id="chk-terms1"
+                  class="chk"
+                  formControlName="aceptTerms"
+                />
+                <label for="chk-terms1" class="lbl-chk">
+                  Acepto los<a
+                    role="button"
+                    class="ml-1"
+                    (click)="showModalTerms()"
+                  >
+                    términos y condiciones</a
+                  >
+                </label>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isTeleMarketing">
+              <div class="content-terms mt-3">
+                <input
+                  type="checkbox"
+                  id="chk-terms2"
+                  class="chk"
+                  formControlName="aceptTerms"
+                />
+                <label for="chk-terms2" class="lbl-chk">
+                  Acepto la pol&iacute;tica de privacidad de datos personales
+                </label>
+              </div>
+              <div class="content-terms mt-3">
+                <input
+                  type="checkbox"
+                  id="chk-publicity"
+                  class="chk"
+                  formControlName="aceptPrivacy"
+                />
+                <label for="chk-publicity" class="lbl-chk">
+                  Acepto el env&iacute;o de comunicaciones comerciales y
+                  publicidad
+                </label>
+              </div>
+            </ng-container>
+            <div class="col-lg-4">
+              <button
+                type="button"
+                class="btn btn-siguiente resumen button"
+                [disabled]="
+                  !deshabilitarNuevoSoat ||
+                  !ft['aceptTerms'].value ||
+                  clienteDeudaEstado ||
+                  !isValidBrand
+                "
+                (click)="guardarIrResumen()"
+              >
+                Ir al Resumen
+              </button>
+              <img alt="" *ngIf="bSpinner2" src="assets/icons/loading.gif" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-modal #modalPolizas [close]="true">
+  <div class="m-body">
+    <div class="titulo">
+      <h4>Selecciona tu certificado</h4>
+      <h5 class="soats-disponibles">{{ this.totalSoats }} SOATS disponibles</h5>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-lg-12">
+        <input
+          type="text"
+          class="input-search"
+          placeholder="Busca el número del certificado SOAT..."
+          (input)="searchCertificado($event.target.value)"
+          (keypress)="soloNumeros($event)"
+        />
+      </div>
+    </div>
+    <hr />
+    <!--Lista de Polizas -->
+    <div class="lista-polizas">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="text-center">NROS DE SOATS</th>
+            <th class="text-center">TIPO DE PAPEL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="lstPolizasFilter.length === 0">
+            <td colspan="2">No existen SOATs para listar</td>
+          </tr>
+          <tr *ngFor="let item of lstPolizasFilter">
+            <td class="text-center">
+              <label for="{{ item.npolesP_COMP }}">
+                <input
+                  id="{{ item.npolesP_COMP }}"
+                  [value]="item.npolesP_COMP"
+                  (click)="setPoliza(item)"
+                  type="radio"
+                  name="polizas"
+                />
+                {{ item.npolesP_COMP }}
+              </label>
+            </td>
+            <td class="text-center">
+              <label for="{{ item.ntippoldes }}">
+                {{ item.ntippoldes }}
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="botones">
+      <button
+        type="button"
+        class="btn btn-escoge"
+        (click)="modalPolizas.hide()"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal #modalError [close]="false">
+  <div class="m-body">
+    <hr />
+    <div class="row">
+      <div class="col-lg-12">
+        Ocurrió un error al procesar tu transacción, por favor intenta
+        nuevamente en unos minutos.
+      </div>
+    </div>
+    <hr />
+    <div class="botones">
+      <button type="button" class="btn btn-escoge" (click)="modalError.hide()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</app-modal>
+<div class="modal fade" bsModal #modalErrorValidarPlaca="bs-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Mensaje de Error</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-body-error">
+        <img src="assets/backoffice/check-error.png" alt="" />
+        <label for="">
+          {{ MESSAGE_ERROR_VALIDAR_PLACA }}
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn full-color btn-aceptar-modal btn-aceptar-message-modal"
+          (click)="hideModalErrorValidarPlaca()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalTerms>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Nuestros Términos y Condiciones</h6>
+        <button class="modal__header--close" (click)="hideModals()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="modal__body--desc">
+          <b class="d-block">Términos y condiciones:</b>
+          Declaro en mi calidad de Corredor de Seguros o Comercializador, que he
+          cumplido con brindar la información relevante ​ ​del Certificado Soat
+          Electrónico al contratante y/o asegurado, quien ha manifestado su
+          consentimiento para contratar ​ el Certificado Soat Electrónico y para
+          que se le remita al correo electrónico que indique en la presente
+          página web, el ​Certificado S​oat ​Electrónico ​y los términos y
+          condiciones de los cuales acepta haber tomado conocimiento​.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-primary-e" (click)="hideModals()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #modalDeudaEstado>
+  <div class="content-modal-u">
+    <div class="modal-u">
+      <div class="modal__header">
+        <h6 class="modal__header--title">Mensaje</h6>
+        <button class="modal__header--close" (click)="hideModals()">
+          &times;
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="moda__body--desc">
+          El cliente es del estado, por favor intente con un nuevo numero de
+          documento.
+        </p>
+      </div>
+      <div class="modal__footer">
+        <button class="soat-button ripple stretch" (click)="hideModals()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalUpdateBrandAuto>
+  <div class="content-modal">
+    <section class="modal-update-info-auto">
+      <div class="modal-header">
+        <h6>Actualizar datos del vehículo - Placa: {{ placa | uppercase }}</h6>
+        <button (click)="closeModalBrandAuto()">&times;</button>
+      </div>
+      <form class="modal-body info-auto" [formGroup]="formUpdateInfoAuto">
+        <section class="info-auto__item shadow">
+          <div class="content-table">
+            <table class="table info-auto">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Datos actuales</th>
+                  <th>Datos solicitados</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Marca</td>
+                  <td>{{ auto.p_SNAME_VEHBRAND }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="input-cell upper"
+                      [class.has-change]="
+                        isEqualString(
+                          'brand',
+                          auto.p_SNAME_VEHBRAND,
+                          formUpdateInfoAutoControl['brand'].value
+                        )
+                      "
+                      maxlength="20"
+                      formControlName="brand"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Modelo</td>
+                  <td>{{ auto.p_SNAME_VEHMODEL }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="input-cell upper"
+                      [class.has-change]="
+                        isEqualString(
+                          'model',
+                          auto.p_SNAME_VEHMODEL,
+                          formUpdateInfoAutoControl['model'].value
+                        )
+                      "
+                      maxlength="20"
+                      formControlName="model"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Versión</td>
+                  <td>{{ auto.versionName }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="input-cell version"
+                      [class.has-change]="
+                        isEqualString(
+                          'version',
+                          auto.versionName,
+                          formUpdateInfoAutoControl['version'].value
+                        )
+                      "
+                      maxlength="20"
+                      formControlName="version"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Clase</td>
+                  <td>{{ auto.p_SNAMECLASE }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="input-cell upper"
+                      [class.has-change]="
+                        isEqualString(
+                          'class',
+                          auto.p_SNAMECLASE,
+                          formUpdateInfoAutoControl['class'].value
+                        )
+                      "
+                      maxlength="20"
+                      formControlName="class"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <h6 class="info-auto__item--title">Datos adjuntos</h6>
+        <section class="info-auto__item shadow">
+          <div class="content-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Tipo de documento</th>
+                  <th>Obligatorio</th>
+                  <th>Documento</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container
+                  *ngFor="
+                    let formDocument of formAutoDocumentList.controls;
+                    let index = index
+                  "
+                >
+                  <tr [formGroup]="formDocument">
+                    <td>{{ formDocument.get("documentTypeLabel").value }}</td>
+                    <td>
+                      {{ formDocument.get("required").value ? "SI" : "NO" }}
+                    </td>
+                    <td>{{ attachedFiles[index]?.name || "-" }}</td>
+                    <td>
+                      <div class="content-upload-file">
+                        <input
+                          type="file"
+                          [id]="'attachment-' + index"
+                          hidden
+                          formControlName="file"
+                          (change)="attachedFile($event, index)"
+                        />
+                        <ng-container *ngIf="!attachedFiles[index]?.name">
+                          <label
+                            class="button primary fit button-small"
+                            [for]="'attachment-' + index"
+                          >
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            Adjuntar archivo
+                          </label>
+                        </ng-container>
+                        <ng-container *ngIf="attachedFiles[index]?.name">
+                          <button
+                            class="remove-file"
+                            (click)="removeUploadedFile(formDocument, index)"
+                          >
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                          </button>
+                        </ng-container>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <h6 class="info-auto__item--title">Comentarios</h6>
+        <section class="info-auto__item comment">
+          <textarea
+            placeholder="Comentario"
+            maxlength="1000"
+            formControlName="comment"
+          ></textarea>
+        </section>
+      </form>
+      <div class="modal-footer">
+        <button class="button secondary fit" (click)="closeModalBrandAuto()">
+          Cancelar
+        </button>
+        <button
+          class="button primary fit"
+          [disabled]="isInvalidFormUpdateAuto"
+          (click)="showModalConfirmUpdateAuto()"
+        >
+          Generar solicitud
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalCornfirmUpdateAuto>
+  <div class="content-modal">
+    <section class="modal-confirm-update-auto">
+      <div class="modal-header">
+        <h6>Mensaje de confirmación</h6>
+      </div>
+      <div class="modal-body">
+        <p class="text">¿Está seguro que desea generar la solicitud?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="button secondary fit" (click)="cancelUpdateAuto()">
+          Cancelar
+        </button>
+        <button class="button primary fit" (click)="acceptUpdateBrandAuto()">
+          Continuar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalErrorUpdateAuto>
+  <div class="content-modal">
+    <section class="modal-error-update-auto">
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+      </div>
+      <div class="modal-body">
+        <img src="./assets/backoffice/check-error.png" />
+        <p class="text">
+          La placa {{ this.placa | uppercase }} ya se encuentra dentro de una
+          solicitud pendiente
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button primary fit" (click)="closeModalBrandAuto()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #modalSuccessRequestUpdateAuto>
+  <div class="content-modal">
+    <section class="modal-success-update-auto">
+      <div class="modal-header">
+        <h6>Mensaje</h6>
+        <button (click)="successRequestUpdateAuto()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img src="./assets/backoffice/check-success.png" />
+        <p class="text">
+          Se ha generado correctamente la solicitud N° {{ requestIdResponse }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="button primary fit" (click)="successRequestUpdateAuto()">
+          Aceptar
+        </button>
+      </div>
+    </section>
+  </div>
+</ng-template>

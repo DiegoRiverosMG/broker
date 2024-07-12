@@ -1,0 +1,2036 @@
+<div class="form-group row">
+    <div class="col-lg-3">
+      <app-nav-menuprod></app-nav-menuprod>
+    </div>
+    <div class="col-lg-9">
+        <div class="container-fluid">
+            <div class="header-content mb-3">
+                <div class="containt-item">
+                    <!--Gestión de Trámite EHH-->
+                    <div class="header-item" *ngIf="isTransact || isPolizaMatriz || flagGobiernoIniciado || emitirCertificadoOperaciones || emitirPolizaOperaciones || procesarPolizaOperaciones">
+                        <span class="title">{{ titleTransact }} | Trámite N° {{ transactNumber }}</span>
+                        <span class="title">
+                            <h6>Cotización N° {{ quotationNumber }} | Fecha Cotización: {{ inputsQuotation.Date | date: "dd/MM/yyyy" }}</h6>
+                        </span>
+                    </div>
+                    <div class="header-item" *ngIf="!isTransact && !isPolizaMatriz && !flagGobiernoIniciado && !emitirCertificadoOperaciones && !emitirPolizaOperaciones && !procesarPolizaOperaciones">
+                        <span class="title">Detalle de Cotización N° {{ quotationNumber }} | {{ TitleOperacion }}</span>
+                        <span class="title">
+                            <h6>Fecha Cotización: {{ inputsQuotation.Date | date: "dd/MM/yyyy" }}</h6>
+                        </span>
+                    </div>
+                </div>
+                <p class="eps-title">{{ lblProducto }}</p>
+            </div>
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="contratante" />
+                    <label class="collapse-btn title" for="contratante">
+                        DATOS DEL CONTRATANTE
+                        <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                    </label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>TIPO DOCUMENTO (*)</span>
+                                    <select disabled [(ngModel)]="inputsQuotation.DocumentTypeId" class="minimal">
+                                        <option value="{{ inputsQuotation.DocumentTypeId }}">
+                                            {{ inputsQuotation.DocumentTypeName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>NRO DE DOCUMENTO (*)</span>
+                                    <input
+                                    type="text"
+                                    placeholder="Nro Documento"
+                                    [(ngModel)]="inputsQuotation.DocumentNumber"
+                                    disabled
+                                    value="{{ inputsQuotation.DocumentNumber }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <span>NOMBRES Y APELLIDOS / RAZÓN SOCIAL</span>
+                                    <input
+                                    type="text"
+                                    placeholder="Nombres"
+                                    disabled
+                                    [(ngModel)]="inputsQuotation.P_SNOMBRES"
+                                    />
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>TIPO DE CUENTA</span>
+                                    <input 
+                                    type="text" 
+                                    placeholder="Tipo de Cuenta" 
+                                    [disabled]="!flagGBD" 
+                                    [value]="inputsQuotation.P_SISCLIENT_GBD === '1' ? 'GOBIERNO' : inputsQuotation.P_SISCLIENT_GBD === '2' ? 'PRIVADO' : 'NO REGISTRA'"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span>DIRECCIÓN</span>
+                                    <input
+                                    type="text"
+                                    placeholder="Dirección"
+                                    disabled
+                                    [(ngModel)]="inputsQuotation.P_SDESDIREBUSQ"
+                                    />
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>CORREO ELECTRÓNICO</span>
+                                    <input
+                                    type="text"
+                                    placeholder="Correo Electrónico"
+                                    [disabled]="!flagEmail"
+                                    [(ngModel)]="inputsQuotation.P_SE_MAIL"
+                                    />
+                                </div>
+                                <div class="col-sm-3" *ngIf="this.flagClienteNuevo !== 1"> <!--AVS - INTERCONEXION SABSA-->
+                                    <span style="color: green;margin-top: 45px;">CLIENTE: {{ this.flagClienteNuevo === 0 ? 'NUEVO' : '' }}</span>
+                                </div>                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Agregar Contacto -->
+            <div class="collapse-list" *ngIf="contractingdata != null && flagContact && template.ins_addContact">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="contactos" />
+                    <label class="collapse-btn title" for="contactos">
+                        Datos de contacto del cliente
+                        <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                    </label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row">
+                                <div class="col-sm-12 mt-15">
+                                    <button
+                                        *ngIf="contactList.length == 0"
+                                        class="pull-right"
+                                        (click)="openModal('add-contact')"
+                                        style="margin: 0"
+                                    >
+                                        <span span>Agregar Contacto</span>
+                                    </button>
+                                    <table class="table table-borderless riesgo tblbroker" style="margin-top: 60px">
+                                        <thead>
+                                            <tr class="d-flex">
+                                                <td class="col-sm text-center">N°</td>
+                                                <td class="col-sm text-center">Parentesco</td>
+                                                <td class="col-sm text-center">Nombres y Apellidos</td>
+                                                <td class="col-sm text-center">Teléfono</td>
+                                                <td class="col-sm text-center">Correo Electrónico</td>
+                                                <td class="col-sm text-center">Acciones</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let contacto of contactList; let row = index">
+                                            <tr class="d-flex">
+                                                <td class="col-sm text-center">{{ row + 1 }}</td>
+                                                <td class="col-sm text-center">{{ contacto.P_DESTICONTACTO }}</td>
+                                                <td class="col-sm text-center">{{ contacto.P_SNOMBRES }} {{ contacto.P_SAPEPAT }} {{ contacto.P_SAPEMAT }}</td>
+                                                <td class="col-sm text-center">{{ contacto.P_SPHONE }}</td>
+                                                <td class="col-sm text-center">{{ contacto.P_SE_MAIL }}</td>
+                                                <td class="col-sm text-center">
+                                                    <img
+                                                    *ngIf="contacto.P_CLASS == ''"
+                                                    src="assets/icons/editar.png"
+                                                    (click)="editContact(contacto.P_NROW)"
+                                                    title="Editar"
+                                                    alt="Editar"
+                                                    />
+                                                    &nbsp;
+                                                    <img
+                                                    *ngIf="contacto.P_CLASS == ''"
+                                                    src="assets/icons/anular.png"
+                                                    (click)="deleteContact(row)"
+                                                    title="Eliminar"
+                                                    alt="Eliminar"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="contactList.length == 0">
+                                            <tr class="d-flex">
+                                                <td class="col-sm text-center">No tiene Contactos</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Agregar Contacto -->
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="comercializador" />
+                    <label class="collapse-btn title" for="comercializador">
+                        DATOS DE BROKERS
+                        <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                    </label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row" style="margin-top: 20px">
+                                <div
+                                    class="col-sm-12"
+                                    *ngIf="inputsQuotation.SecondaryBrokerList != null && inputsQuotation.SecondaryBrokerList.length > 0">
+                                    <table class="table table-borderless riesgo tblbroker">
+                                        <thead>
+                                            <tr class="d-flex">
+                                                <th class="col-sm text-center">
+                                                    <label>Tipo Documento</label>
+                                                </th>
+                                                <th class="col-sm text-center">
+                                                    <label>Nro Documento</label>
+                                                </th>
+                                                <th class="col-sm text-center">
+                                                    <label>Nombres y Apellidos / Razón Social </label>
+                                                </th>
+                                                <th class="col-sm text-center" *ngIf="isTransact && nTransac == 13">
+                                                    <label>Tipo de Contrantante </label>
+                                                </th>
+                                                <th class="col-sm text-center" *ngIf="isTransact && nTransac == 13">
+                                                    <label>Coódigo SBS</label>
+                                                </th>
+                                                <ng-container *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && template.ins_comSalud">
+                                                    <th class="col-sm text-center">
+                                                        <label>{{ variable.var_desComisionSalud }}</label>
+                                                    </th>
+                                                    <th class="col-sm text-center ctasa" *ngIf="template.ins_comSaludPro">
+                                                        <label>
+                                                            <input *ngIf="mode == 'Recotizar' && template.ins_recotizarSalud"
+                                                            [disabled]="true"
+                                                            type="checkbox"
+                                                            [checked]="false"
+                                                            class="checkbox"
+                                                            [(ngModel)]="enabledHealthSecondaryPropCommission"
+                                                            (ngModelChange)="switchHealthSecondaryPropCommissionValue()"/>
+                                                            <span class="schk">{{variable.var_desComisionSaludPro}}</span>
+                                                        </label>
+                                                    </th>
+                                                    <th class="col-sm text-center ctasa" *ngIf="mode != 'Recotizar'">
+                                                        <label>
+                                                            <input
+                                                            *ngIf="mode == 'Evaluar' && canProposeRate && template.ins_comSaludProCheck"
+                                                            type="checkbox"
+                                                            [disabled]="this.epsItem.NCODE == 3"
+                                                            [checked]="false"
+                                                            class="checkbox"
+                                                            [(ngModel)]="enabledHealthSecondaryAuthCommission"
+                                                            (ngModelChange)="switchHealthSecondaryAuthCommissionValue()"/>
+                                                            <span class="schk"> Autorizada</span>
+                                                        </label>
+                                                    </th>
+                                                </ng-container>
+                                                <ng-container *ngIf="inputsQuotation.PensionDetailsList?.length > 0 && template.ins_comPension">
+                                                    <th class="col-sm text-center">
+                                                        <label>{{ variable.var_desComisionPension }}</label>
+                                                    </th>
+                                                    <th class="col-sm text-center ctasa" *ngIf="template.ins_comPensionPro">
+                                                        <label>
+                                                            <input
+                                                            *ngIf="mode == 'Recotizar' && template.ins_recotizarPension"
+                                                            [disabled]="mode != 'Recotizar'"
+                                                            type="checkbox"
+                                                            [checked]="false"
+                                                            class="checkbox"
+                                                            [(ngModel)]="enabledPensionSecondaryPropCommission"
+                                                            (ngModelChange)="switchPensionSecondaryPropCommissionValue()"/>
+                                                            <span class="schk">
+                                                            {{ variable.var_desComisionPensionPro }}
+                                                            </span>
+                                                        </label>
+                                                    </th>
+                                                    <th class="col-sm text-center ctasa" *ngIf="mode != 'Recotizar'">
+                                                        <label>
+                                                            <input
+                                                            *ngIf="mode == 'Evaluar' && canProposeRate && template.ins_comPensionProCheck"
+                                                            type="checkbox"
+                                                            [checked]="false"
+                                                            class="checkbox"
+                                                            [(ngModel)]="enabledPensionSecondaryAuthCommission"
+                                                            (ngModelChange)="switchPensionSecondaryAuthCommissionValue()"/>
+                                                            <span class="schk"> Autorizada</span>
+                                                        </label>
+                                                    </th>
+                                                </ng-container>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let item of inputsQuotation.SecondaryBrokerList">
+                                            <tr class="d-flex">
+                                                <td class="col-sm text-center">
+                                                    <span>{{ item.DES_DOC_COMER }}</span>
+                                                </td>
+                                                <td class="col-sm text-center">
+                                                    <span>{{ item.DOC_COMER }}</span>
+                                                </td>
+                                                <td class="col-sm text-center">
+                                                    <span>{{ item.COMERCIALIZADOR }}</span>
+                                                </td>
+                                                <td class="col-sm text-center" *ngIf="isTransact && nTransac == 13">
+                                                    <span>{{ item.TYPE_INTERMEDIARY }}</span>
+                                                </td>
+                                                <td class="col-sm text-center" *ngIf="isTransact && nTransac == 13">
+                                                    <span>{{ item.CODE_SBS }}</span>
+                                                </td>
+                                                <ng-container *ngIf="inputsQuotation.SaludDetailsList?.length > 0 && template.ins_comSalud">
+                                                    <td class="col-sm text-center">
+                                                        <span>{{ item.COMISION_SALUD }} %</span>
+                                                    </td>
+                                                    <td class="col-sm">
+                                                        <input
+                                                            *ngIf="item.COMISION_SALUD != 0"
+                                                            type="text"
+                                                            placeholder="0"
+                                                            maxlength="5"
+                                                            class="text-center"
+                                                            [disabled]="mode != 'Recotizar' || !enabledHealthSecondaryPropCommission"
+                                                            [(ngModel)]="item.COMISION_SALUD_PRO"
+                                                            [ngClass]="{'error-validate': item.valItemSalPr}"
+                                                            (ngModelChange)="changeSaludPropuestaPr($event, item.DOC_COMER)"
+                                                            FloatDirective/>
+                                                        <span class="porcentaje">%</span>
+                                                        <input
+                                                            *ngIf="item.COMISION_SALUD == 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            placeholder="0"
+                                                            disabled/>
+                                                        <span class="porcentaje">%</span>
+                                                    </td>
+                                                    <td class="col-sm" *ngIf="mode != 'Recotizar'">
+                                                        <input
+                                                            *ngIf="item.COMISION_SALUD != 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            [ngClass]="{ 'error-validate': item.valItemSal }"
+                                                            maxlength="5"
+                                                            [disabled]="!enabledHealthSecondaryAuthCommission"
+                                                            [(ngModel)]="item.COMISION_SALUD_AUT"
+                                                            (ngModelChange)="changeSaludPropuesta($event, item.DOC_COMER)"
+                                                            FloatDirective/>
+                                                        <span class="porcentaje">%</span>
+
+                                                        <input
+                                                            *ngIf="item.COMISION_SALUD == 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            placeholder="0"
+                                                            disabled
+                                                        />
+                                                        <span class="porcentaje">%</span>
+                                                    </td>
+                                                </ng-container>
+                                                <ng-container *ngIf="inputsQuotation.PensionDetailsList?.length > 0 && template.ins_comPension">
+                                                    <td class="col-sm text-center">
+                                                        <span>{{ item.COMISION_PENSION }} %</span>
+                                                    </td>
+                                                    <td class="col-sm">
+                                                        <input
+                                                            *ngIf="item.COMISION_PENSION != 0"
+                                                            type="text"
+                                                            placeholder="0"
+                                                            maxlength="5"
+                                                            class="text-center"
+                                                            [ngClass]="{'error-validate': item.valItemPenPr}"
+                                                            [disabled]="mode != 'Recotizar' || !enabledPensionSecondaryPropCommission"
+                                                            [(ngModel)]="item.COMISION_PENSION_PRO"
+                                                            FloatDirective
+                                                            (ngModelChange)="changePensionPropuestaPr($event, item.DOC_COMER)"
+                                                        />
+                                                        <span class="porcentaje">%</span>
+
+                                                        <input
+                                                            *ngIf="item.COMISION_PENSION == 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            placeholder="0"
+                                                            disabled
+                                                        />
+                                                        <span class="porcentaje">%</span>
+
+                                                    </td>
+                                                    <td *ngIf="mode != 'Recotizar'" class="col-sm">
+                                                        <input
+                                                            *ngIf="item.COMISION_PENSION != 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            [ngClass]="{ 'error-validate': item.valItemPen }"
+                                                            [disabled]="!enabledPensionSecondaryAuthCommission"
+                                                            maxlength="5"
+                                                            FloatDirective
+                                                            [(ngModel)]="item.COMISION_PENSION_AUT"
+                                                            (ngModelChange)="changePensionPropuesta($event, item.DOC_COMER)"/>
+                                                        <span class="porcentaje">%</span>
+
+                                                        <input
+                                                            *ngIf="item.COMISION_PENSION == 0"
+                                                            type="text"
+                                                            class="text-center"
+                                                            placeholder="0"
+                                                            disabled/>
+                                                        <span class="porcentaje">%</span>
+
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse-list">
+                <div>
+                    <input class="collapse-open" type="checkbox" id="cotizacion" />
+                    <label class="collapse-btn title" for="cotizacion">
+                        {{ variable.var_seccionDatos }}
+                        <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                    </label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <ng-container *ngIf="codProducto == 2">
+                                <div class="row">
+                                    <div class="col-sm-3" *ngIf="template.ins_tipRenovacion">
+                                        <span>TIPO RENOVACIÓN</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.tipoRenovacion"
+                                            class="minimal"
+                                            disabled
+                                        >
+                                            <option value="{{ inputsQuotation.tipoRenovacion }}">
+                                            {{ inputsQuotation.desTipoRenovacion }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="template.ins_iniVigencia">
+                                        <span>INICIO VIGENCIA</span>
+                                        <input
+                                            type="text"
+                                            #dp="bsDatepicker"
+                                            (ngModelChange)="validarTipoRenovacion($event)"
+                                            [bsConfig]="bsConfig"
+                                            bsDatepicker
+                                            [(bsValue)]="inputsQuotation.inicioVigencia"
+                                            [(ngModel)]="inputsQuotation.inicioVigencia"
+                                            name="bsValueIni"
+                                            [(minDate)]="inputsQuotation.inicioVigenciaIni"
+                                            [(maxDate)]="inputsQuotation.inicioVigenciaFin"
+                                            disabled
+                                            readonly
+                                            #desde
+                                        />
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="template.ins_finVigencia">
+                                        <span>FIN VIGENCIA</span>
+                                        <input
+                                            type="text"
+                                            #dp="bsDatepicker"
+                                            [bsConfig]="bsConfig"
+                                            bsDatepicker
+                                            [(bsValue)]="inputsQuotation.finVigencia"
+                                            [(ngModel)]="inputsQuotation.finVigencia"
+                                            name="bsValueFin"
+                                            disabled
+                                            readonly
+                                            #hasta
+                                        />
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="template.ins_frecPago">
+                                        <span>FRECUENCIA PAGO</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.frecuenciaPago"
+                                            class="minimal"
+                                            disabled
+                                        >
+                                            <option value="{{ inputsQuotation.frecuenciaPago }}">
+                                            {{ inputsQuotation.desFrecuenciaPago }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <span>MONEDA</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.CurrencyId"
+                                            disabled
+                                            class="minimal"
+                                        >
+                                            <option value="{{ inputsQuotation.CurrencyId }}">
+                                            {{ inputsQuotation.CurrencyName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="template.ins_sede" class="col-sm-3">
+                                        <span>SEDE</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.LocationId"
+                                            disabled
+                                            class="minimal"
+                                        >
+                                            <option value="{{ inputsQuotation.LocationId }}">
+                                            {{ inputsQuotation.LocationName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="template.ins_mina">
+                                        <span>&nbsp;</span>
+                                        <label *ngIf="!inputsQuotation.HasDelimiter" style="width: 100%; margin-bottom: 0">
+                                            <span></span>
+                                        </label>
+                                        <label *ngIf="inputsQuotation.HasDelimiter && ((inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length != 0) || categoryList?.length > 0) && (inputsQuotation.SaludDetailsList.length<= 0 )" style="width: 100%; margin-bottom: 0">
+                                            <span class="spn-delimiter">* La actividad cuenta con delimitación</span>
+                                        </label>
+                                        <label *ngIf="inputsQuotation.HasDelimiter &&  (inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0) && ((inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length != 0) || categoryList?.length > 0)" style="width: 100%; margin-bottom: 0">
+                                            <span class="spn-delimiter">* La actividad cuenta con delimitación (Para Pensión)</span>
+                                        </label>
+                                        <label style="width: 100%; margin-bottom: 0"
+                                        *ngIf="epsItem.NCODE == 3 && this.idProductoCabecera == 1">
+                                            <input
+                                                disabled
+                                                type="checkbox"
+                                                [(ngModel)]="inputsQuotation.IsMining"
+                                                class="checkbox"
+                                            />
+                                            <span class="schk chk-mina">¿Trabajos en mina?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6" *ngIf="template.ins_actRealizar">
+                                        <span>ACTIVIDAD A REALIZAR</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.TechnicalActivityId"
+                                            disabled
+                                            class="minimal"
+                                            title="{{ inputsQuotation.TechnicalActivityName }}"
+                                        >
+                                            <option value="{{ inputsQuotation.TechnicalActivityId }}">
+                                            {{ inputsQuotation.TechnicalActivityName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6" *ngIf="template.ins_subActividad">
+                                        <span>SUB-ACTIVIDADES</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.EconomicActivityId"
+                                            disabled
+                                            class="minimal"
+                                            title="{{ inputsQuotation.EconomicActivityName }}"
+                                        >
+                                            <option value="{{ inputsQuotation.EconomicActivityId }}">
+                                            {{ inputsQuotation.EconomicActivityName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="template.ins_tipoCuenta">
+                                        <span>TIPO DE CUENTA</span>
+                                        <select [(ngModel)]="inputsQuotation.P_SISCLIENT_GBD" [disabled]="true" class="minimal">
+                                            <option value="2">PRIVADO</option>
+                                            <option value="1">GOBIERNO</option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="template.ins_departamento" class="col-sm-3">
+                                        <span>DEPARTAMENTO (*)</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.DepartmentId"
+                                            disabled
+                                            class="minimal"
+                                        >
+                                            <option value="{{ inputsQuotation.DepartmentId }}">
+                                            {{ inputsQuotation.DepartmentName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="template.ins_provincia" class="col-sm-3">
+                                        <span>PROVINCIA (*)</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.ProvinceId"
+                                            disabled
+                                            class="minimal"
+                                        >
+                                            <option value="{{ inputsQuotation.ProvinceId }}" selected>
+                                            {{ inputsQuotation.ProvinceName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="template.ins_distrito" class="col-sm-3">
+                                        <span>DISTRITO (*)</span>
+                                        <select
+                                            [(ngModel)]="inputsQuotation.DistrictId"
+                                            disabled
+                                            class="minimal"
+                                        >
+                                            <option value="{{ inputsQuotation.DistrictId }}" selected>
+                                            {{ inputsQuotation.DistrictName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse-list">
+                <div *ngIf="!isTransact && (this.typeTran != 'Emisión Póliza Matriz' && !( this.typeTran == '' &&  this.mode=='Visualizar' && flagGobiernoMatriz ) )">
+                    <input class="collapse-open" type="checkbox" id="calculadora" />
+                    <label class="collapse-btn title" for="calculadora">
+                        COTIZADOR
+                        <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                    </label>
+                    <div class="collapse-panel">
+                        <div class="collapse-inner collapse-border">
+                            <div class="row mt-3" *ngIf="template.ins_mostrarTasas">
+                                <div class="col-sm-6">
+                                    <table class="table table-borderless riesgo">
+                                        <thead>
+                                            <tr class="d-flex" style="border-bottom: 1px solid #ddd">
+                                                <th class="col-sm-4">
+                                                    <label style="font-weight: 100">Categoría</label>
+                                                </th>
+                                                <th class="col-sm-4">
+                                                    <label style="font-weight: 100"
+                                                    >Total Trabajadores</label
+                                                    >
+                                                </th>
+                                                <th class="col-sm-4">
+                                                    <label style="font-weight: 100">Monto Planilla</label>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="d-flex" *ngFor="let item of this.inputsQuotation.SharedDetailsList">
+                                                <td class="col-sm-4">
+                                                    <span>{{ item.RiskTypeName }}</span>
+                                                </td>
+                                                <td class="col-sm-4">
+                                                    <input
+                                                    disabled
+                                                    type="text"
+                                                    placeholder="0"
+                                                    value="{{ item.WorkersCount }}"
+                                                    />
+                                                </td>
+                                                <td class="col-sm-4">
+                                                    <input
+                                                    disabled
+                                                    type="text"
+                                                    placeholder="0"
+                                                    value="{{ item.PayrollAmount | prettyNumber: 2 }}"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 15px">
+                                <div [hidden]="hiddenPolizaMatriz" *ngIf="template.ins_categoriaList" class="col-sm-12">
+                                    <div class="row">
+                                        <div *ngIf="categoryList.length > 0" [ngClass]="mode != 'Autorizar' ? 'col-sm-6' : 'col-sm-8'">
+                                            <table class="table table-borderless riesgo">
+                                                <thead>
+                                                    <tr class="d-flex" style="border-bottom: 1px solid #ddd">
+                                                        <th class="col-sm">
+                                                            <label style="font-weight: 100">Categoría</label>
+                                                        </th>
+                                                        <th class="col-sm text-center">
+                                                            <label style="font-weight: 100">Total Trabajadores</label>
+                                                        </th>
+                                                        <th class="col-sm text-center">
+                                                            <label style="font-weight: 100">Monto Planilla</label>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="d-flex" *ngIf="categoryList.length == 0">
+                                                        <td class="col-sm text-center">No hay tasas</td>
+                                                    </tr>
+                                                    <tr class="d-flex" *ngFor="let item of categoryList; let i = index">
+                                                        <td class="col-sm">
+                                                            <span>{{ item.SCATEGORIA }}</span>
+                                                        </td>
+                                                        <td class="col-sm text-center">
+                                                            <span>{{ item.NCOUNT }}</span>
+                                                        </td>
+                                                        <td class="col-sm text-center">
+                                                            <span>{{item.NTOTAL_PLANILLA | number: "1.2-2"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- <div class="col-sm-5" *ngIf="mode == 'Recotizar' && typeTran == 'Inclusión'">
+                                            <span style="margin-top: 0">COMENTARIO INCLUSIÓN</span>
+                                            <textarea
+                                                class="form-control"
+                                                cols="40"
+                                                rows="5"
+                                                style="width: 100%"
+                                                placeholder="Comentario"
+                                                [(ngModel)]="commentTran"
+                                                maxlength="4000"
+                                            >
+                                            </textarea>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 pr-0 pl-0">
+                                    <div class="col-sm-12" style="margin-top: 15px" *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0">
+                                        <div class="row">
+                                            <div class="col-sm-3" *ngIf="template.ins_primaSaludMin">
+                                                <label class="mb-0"><span>{{variable.var_primaMinimaSalud}}</span></label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    disabled
+                                                    [(ngModel)]="inputsQuotation.SaludMinPremium"
+                                                />
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="template.ins_primaSaludMinPro">
+                                                <label class="mb-0">
+                                                    <span>
+                                                        <input
+                                                            *ngIf="mode == 'Recotizar' && template.ins_recotizarSalud"
+                                                            type="checkbox"
+                                                            id=""
+                                                            style="top: 3px"
+                                                            class="checkbox"
+                                                            [(ngModel)]="enabledHealthMinPropPremium"
+                                                            [checked]="false"
+                                                            (ngModelChange)="switchHealthMinPropPremiumValue()"
+                                                            [disabled]="mode != 'Recotizar'"
+                                                        />
+                                                        PRIMA MÍNIMA PROPUESTA
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    maxlength="12"
+                                                    style="margin-top: 4px !important"
+                                                    [disabled]="mode != 'Recotizar' || !enabledHealthMinPropPremium"
+                                                    [(ngModel)]="inputsQuotation.SaludPropMinPremium"
+                                                    (ngModelChange)="checkMinimunPremiumForOriginals(healthProductId.id,$event)"
+                                                    FloatDirective
+                                                />
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="mode != 'Recotizar' && template.ins_primaSaludAut">
+                                                <label class="mb-0">
+                                                    <span>
+                                                        <input
+                                                            *ngIf="mode == 'Evaluar' && canProposeRate && template.ins_evaluarSalud"
+                                                            type="checkbox"
+                                                            class="checkbox"
+                                                            [checked]="false"
+                                                            [(ngModel)]="enabledHealthAuthorizedPremium"
+                                                            style="top: 3px"
+                                                            (ngModelChange)="switchHealthMinAuthPremiumValue()"
+                                                            [disabled]="this.epsItem.NCODE == 3"
+                                                        />
+                                                        PRIMA MÍNIMA AUTORIZADA
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    maxlength="12"
+                                                    [disabled]="!enabledHealthAuthorizedPremium"
+                                                    [(ngModel)]="inputsQuotation.HealthAuthMinPremium"
+                                                    style="margin-top: 3px !important"
+                                                    (ngModelChange)="checkMinimunPremiumForAuthorizedAmounts(healthProductId.id,$event)"
+                                                    FloatDirective
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && this.valCIPSCTR_EPS == 23 && (this.tipo_pago_SAL == '3' || this.tipo_pago_SAL == '2')">
+                                                <div class="row">
+                                                    <button class="btn-link-full-color">
+                                                        <i class="fa fa-check white-icon" aria-hidden="true"></i>
+                                                        <p *ngIf="this.tipo_pago_SAL == '3'">Link de pago enviado</p>
+                                                        <p *ngIf="this.tipo_pago_SAL == '2'">PDF de pago enviado</p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && this.valCIPSCTR_EPS == 22 && (this.tipo_pago_SAL == '3')">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="openLink('2')">
+                                                        <i class="fa fa-link white-icon" aria-hidden="true"></i>
+                                                        <p>Abrir link de pago</p>
+                                                    </button>
+                                                    <button class="btn-copy-link-full-color" (click)="copyLink('2')" title="Copiar enlace">
+                                                        <i class="fa fa-clone white-icon" aria-hidden="true"></i>
+                                                    </button>
+                                                    <div class="div-info-red">
+                                                        <i class="fa fa-info-circle red-icon" aria-hidden="true"></i>
+                                                        <p>El link tiene una vigencia de 48 horas y al darle click al botón "Pagar Monto PEN" la vigencia es de 2 horas para el código.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && this.valCIPSCTR_EPS == 21 && this.tipo_pago_SAL == '3' && this.valMixSAPSA == 0">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_EPS, 2, 0)">
+                                                        <i class="fa fa-link white-icon" aria-hidden="true"></i>
+                                                        <p>Crear link de pago</p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && this.valCIPSCTR_EPS == 22 && this.tipo_pago_SAL == '2'">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="descargarPDF('2')">
+                                                        <i class="fa fa-download white-icon" aria-hidden="true"></i>
+                                                        <p>Descargar PDF de pago</p>
+                                                    </button>
+                                                    <div class="div-info-red">
+                                                        <i class="fa fa-info-circle red-icon" aria-hidden="true"></i>
+                                                        <p>El código de pago indicado en el PDF tiene una vigencia de 48 horas.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length > 0 && this.valCIPSCTR_EPS == 21 && this.tipo_pago_SAL == '2' && this.valMixSAPSA == 0">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_EPS, 2, 0)">
+                                                        <i class="fa fa-file-o white-icon" aria-hidden="true"></i>
+                                                        <p>Crear PDF de pago</p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="this.valCIPSCTR_EPS == 21 && this.valCIPSCTR_PEN == 21 && this.valMixSAPSA == 1">
+                                                <div class="row">
+                                                    <button *ngIf="this.tipo_pago_SAL == '3' && this.tipo_pago_PEN == '3'" class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_PEN, 0, 1)">
+                                                        <i class="fa fa-link white-icon" aria-hidden="true"></i>
+                                                        <p>Crear link de pago</p>
+                                                    </button>
+                                                    <button *ngIf="this.tipo_pago_SAL == '2' && this.tipo_pago_PEN == '2'" class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_PEN, 0, 1)">
+                                                        <i class="fa fa-file-o white-icon" aria-hidden="true"></i>
+                                                        <p>Crear PDF de pago</p>
+                                                    </button>
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                        <div>
+                                            <div class="card mt-3" [ngClass]="{'card-0-SALUD': this.valCIPSCTR_EPS == 0,'card-21': this.valCIPSCTR_EPS == 21,'card-22': this.valCIPSCTR_EPS == 22,'card-23': this.valCIPSCTR_EPS == 23}">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm">
+                                                            <h5 [ngClass]="{'titulo-salud': this.valCIPSCTR_EPS != 21,'titulo-21': this.valCIPSCTR_EPS == 21}">
+                                                            <img *ngIf="valCIPSCTR_EPS != 21" src="assets/images/SCTR_SALUD.png" alt="sctrSALUD" style="width: 36px;"/>
+                                                            <img *ngIf="valCIPSCTR_EPS == 21" src="assets/images/SCTR_SALUD_VENCIDO.png" alt="sctrSALUD" style="width: 36px;"/>                                  
+                                                            SCTR SALUD
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div *ngIf="this.valCIPSCTR_EPS === 21 && this.valCIPSCTR_PEN != 21 && (this.tipo_pago_SAL != 3 && this.tipo_pago_SAL != 2)" style="position: absolute; top: 380px; left: 20px; z-index: 1;">
+                                                            <button class="container-vencido" [ngClass]="{'relanzar': valCIPSCTR_EPS === 21}"
+                                                                style="border: 1px solid #553d81; padding: 5px; display: inline-block;"
+                                                                (click)="RelanzarCip(this.codCIP_EPS, 2, 0)">
+                                                                <img alt="" src="assets/icons/icon_cip.png" style="position: relative; right: 24px; width: 43px; top: -12px;">
+                                                                <p style="color: #553d81; font-size: 19px; position: relative; margin: 0; left: -19px;">GENERAR CIP</p>
+                                                            </button>
+                                                        </div>
+                                                        <div *ngIf="this.valCIPSCTR_EPS === 21 && (this.tipo_pago_SAL != 3 && this.tipo_pago_SAL != 2)" style="position: absolute; top: 482px; left: 20px; z-index: 1;">
+                                                            <div class="container-vencido" [ngClass]="{'background-vencido': valCIPSCTR_EPS === 21}">
+                                                                <p class="mensaje-vencido">RECHAZADO</p>
+                                                            </div>
+                                                        </div>
+                                                        <div style="position: absolute; top: 380px; left: 20px; z-index: 1;">
+                                                            <div class="copy-container-eps" [ngClass]="{'background-pagado': valCIPSCTR_EPS === 23, 'background-pendiente': valCIPSCTR_EPS === 22, 'hidden': valCIPSCTR_EPS !== 23 && valCIPSCTR_EPS !== 22 || (this.tipo_pago_SAL == '2' || this.tipo_pago_SAL == '3')}">
+                                                                <img alt="" src="assets/icons/icon_cip.png" class="cip-icon-eps">
+                                                                <p class="cod-cip-eps" [ngClass]="{'color-pagado': valCIPSCTR_EPS === 23, 'color-pendiente': valCIPSCTR_EPS === 22, 'hidden': valCIPSCTR_EPS !== 23 && valCIPSCTR_EPS !== 22, 'position-relative': valCIPSCTR_EPS === 23 || valCIPSCTR_EPS === 22}">{{ this.codCIP_EPS }}</p>
+                                                                <button (click)="copyCodCIP(2)" class="copy-button-eps">
+                                                                    <i class="fa fa-files-o" [ngClass]="{'copy-icon-eps': true,'color-pagado': valCIPSCTR_EPS === 23,'color-pendiente': valCIPSCTR_EPS === 22,'hidden': valCIPSCTR_EPS !== 23 && valCIPSCTR_EPS !== 22}"></i>
+                                                                </button>
+                                                                <p *ngIf="copiedMessage" class="copy-messageSALUD">{{ copiedMessage }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div style="position: absolute; top: 431px; left: 20px; z-index: 1;">
+                                                            <div class="col-sm text-right estado-eps" [ngClass]="{'vencido': valCIPSCTR_EPS === 21, 'pagado': valCIPSCTR_EPS === 23, 'pendiente': valCIPSCTR_EPS === 22}">
+                                                                <img alt="" *ngIf="valCIPSCTR_EPS === 21" class="imagen-estado imagen-estado-vencido">
+                                                                <img alt="" *ngIf="valCIPSCTR_EPS === 22" class="imagen-estado imagen-estado-pendiente">
+                                                                <img alt="" *ngIf="valCIPSCTR_EPS === 23" class="imagen-estado imagen-estado-pagado">
+                                                                <p *ngIf="valCIPSCTR_EPS === 21" class="parrafo-estado-21 parrafo-estado-vencido">VENCIDO</p>
+                                                                <p *ngIf="valCIPSCTR_EPS === 22" class="parrafo-estado parrafo-estado-pendiente">PENDIENTE DE PAGO</p>
+                                                                <p *ngIf="valCIPSCTR_EPS === 23" class="parrafo-estado parrafo-estado-pagado">PAGADO</p>                                  
+                                                            </div>
+                                                        </div> 
+
+                                                        <table class="table table-borderless riesgo tblTasas" style="border-collapse: separate;">
+                                                            <thead>
+                                                                <tr class="d-flex">
+                                                                    <th class="col-sm text-center">
+                                                                        <label>Categoría</label>
+                                                                    </th>
+                                                                    <th *ngIf="canSeeRiskRate" class="col-sm text-center">
+                                                                        <label>Tasa Riesgo</label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center">
+                                                                        <label>{{ variable.var_tasaNeta }}</label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center ctasa">
+                                                                        <label>
+                                                                            <input *ngIf="mode == 'Recotizar' && template.ins_recotizarSalud"
+                                                                                [disabled]="mode != 'Recotizar'"
+                                                                                type="checkbox"
+                                                                                [checked]="false"
+                                                                                class="checkbox"
+                                                                                [(ngModel)]="enabledHealthProposedRate"
+                                                                                (ngModelChange)="switchHealthProposedRateValues()"
+                                                                            />
+                                                                            <span class="schk">Propuesta (%)</span>
+                                                                        </label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center">
+                                                                        <label>Prima Mensual</label>
+                                                                    </th>
+                                                                    <th *ngIf="mode != 'Recotizar'" class="col-sm text-center ctasa"> <!--AVS - INTERCONEXION SABSA-->
+                                                                        <label [class.checkboxAut-label]="this.codProfile === '137'">
+                                                                            <input
+                                                                            *ngIf="mode == 'Evaluar' && template.ins_evaluarSalud"
+                                                                            type="checkbox"
+                                                                            class="checkbox"
+                                                                            [disabled]="this.epsItem.NCODE == 3"
+                                                                            [(ngModel)]="enabledHealthAuthorizedRate"
+                                                                            (ngModelChange)="switchHealthAuthorizedRateValues()"/>
+                                                                            <span class="schk">{{ this.codProfile === '137' ? 'AUTORIZAR OTRA TASA' : 'AUTORIZADA %' }}</span>  
+                                                                        </label>
+                                                                    </th>
+                                                                    <th *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                        <label>Nueva Prima Mensual</label>
+                                                                    </th>
+                                                                </tr>
+                                                                <hr [ngClass]="{'card-border-21-SALUD': this.valCIPSCTR_EPS == 0,'card-border-21': this.valCIPSCTR_EPS == 21,'card-border-22': this.valCIPSCTR_EPS == 22,'card-border-23': this.valCIPSCTR_EPS == 23}"/>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr class="d-flex" *ngIf="inputsQuotation.SaludDetailsList == null ||inputsQuotation.SaludDetailsList.length == 0">
+                                                                    <td class="col-sm text-center">No hay tasas asociadas</td>
+                                                                </tr>
+                                                                <tr class="d-flex" *ngFor="let item of inputsQuotation.SaludDetailsList;let row = index">
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{ item.RiskTypeName }}</span>
+                                                                    </td>
+                                                                    <td *ngIf="canSeeRiskRate" class="col-sm text-center">
+                                                                        <span>{{ item.RiskRate }} %</span>
+                                                                    </td>
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{ item.Rate }} %</span>
+                                                                    </td>
+                                                                    <td class="col-sm">
+                                                                        <input
+                                                                            type="text"
+                                                                            class="text-center"
+                                                                            [checked]="false"
+                                                                            [disabled]="!enabledHealthProposedRate"
+                                                                            placeholder="0"
+                                                                            [(ngModel)]="inputsQuotation.SaludDetailsList[row].ProposedRate"
+                                                                            (ngModelChange)="changeTasaPropuestaSalud($event,item.RiskTypeId)"
+                                                                            (mouseup)="$event.target.select()"
+                                                                            FloatSixDirective
+                                                                            [ngClass]="{'card-cuadros-21-SALUD': this.valCIPSCTR_EPS == 0,'card-cuadros-21': this.valCIPSCTR_EPS == 21,'card-cuadros-22': this.valCIPSCTR_EPS == 22,'card-cuadros-23': this.valCIPSCTR_EPS == 23,'error-validate': item.valItemPr}"
+                                                                        />
+                                                                        <span class="porcentaje">%</span>
+                                                                    </td>
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{item.Premium | prettyNumber: 2}}</span>
+                                                                    </td>
+                                                                    <td *ngIf="mode != 'Recotizar'" class="col-sm"> <!--AVS - INTERCONEXION SABSA-->
+                                                                        <ng-container *ngIf="this.codProfile === '137' else elseBlock"> <!--PERFIL TECNICA-->
+                                                                            <!--[disabled]="!enabledHealthAuthorizedRate"-->
+                                                                            <input
+                                                                                [hidden]="this.hideBoxSalud"
+                                                                                type="text"
+                                                                                class="text-center"
+                                                                                [disabled]="!enabledHealthAuthorizedRate"
+                                                                                placeholder="0"
+                                                                                [(ngModel)]="inputsQuotation.SaludDetailsList[row].AuthorizedRate"
+                                                                                (ngModelChange)="calculateNewPremiums($event,item.RiskTypeId,healthProductId.id)"
+                                                                                (mouseup)="$event.target.select()"
+                                                                                FloatSixDirective
+                                                                                [ngClass]="{'card-cuadros-21-SALUD': this.valCIPSCTR_EPS == 0,'card-cuadros-21': this.valCIPSCTR_EPS == 21,'card-cuadros-22': this.valCIPSCTR_EPS == 22,'card-cuadros-23': this.valCIPSCTR_EPS == 23,'error-validate': item.valItemAu}"
+                                                                            />
+                                                                            <span [hidden]="this.hideBoxSalud" class="porcentaje">%</span>
+                                                                        </ng-container>
+                                                                        <ng-template #elseBlock>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="text-center"
+                                                                                [disabled]="!enabledHealthAuthorizedRate"
+                                                                                placeholder="0"
+                                                                                [(ngModel)]="inputsQuotation.SaludDetailsList[row].AuthorizedRate"
+                                                                                (ngModelChange)="calculateNewPremiums($event,item.RiskTypeId,healthProductId.id)"
+                                                                                (mouseup)="$event.target.select()"
+                                                                                FloatSixDirective
+                                                                                [ngClass]="{'card-cuadros-21-SALUD': this.valCIPSCTR_EPS == 0,'card-cuadros-21': this.valCIPSCTR_EPS == 21,'card-cuadros-22': this.valCIPSCTR_EPS == 22,'card-cuadros-23': this.valCIPSCTR_EPS == 23,'error-validate': item.valItemAu}"
+                                                                            />
+                                                                            <span class="porcentaje">%</span>
+                                                                        </ng-template>
+                                                                    </td> 
+                                                                    <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                        <span>{{item.NewPremium | prettyNumber: 2}}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <ng-container *ngIf="inputsQuotation.SaludDetailsList != null && inputsQuotation.SaludDetailsList.length != 0">
+                                                                    <hr style="margin-bottom: 0" [ngClass]="{'card-border-21-SALUD': this.valCIPSCTR_EPS == 0,'card-border-21': this.valCIPSCTR_EPS == 21,'card-border-22': this.valCIPSCTR_EPS == 22,'card-border-23': this.valCIPSCTR_EPS == 23}"/>
+                                                                    <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-rigth" style="text-align: right">
+                                                                            <span>{{ variable.var_primaNeta }}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludNetAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludNewNetAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        </tr>
+                                                                        <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-rigth" style="text-align: right">
+                                                                            <span>{{variable.var_primaComercial}}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludPrimaComercial| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludNewPrimaComercial| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        </tr>
+                                                                        <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right">
+                                                                            <span>{{ variable.var_igv }}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludCalculatedIGV| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludNewCalculatedIGV| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        </tr>
+                                                                        <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right">
+                                                                            <span>{{variable.var_primaComercialTotal}}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludGrossAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.SaludNewGrossAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </ng-container>
+                                                            </tbody> 
+                                                        </table>       
+                                                        <div class="col-sm-12" style="top: 26px;">
+                                                            <p class="msg-error">{{ healthMessage }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div [ngClass]="template.ins_pensionWithEvaluar ? 'col-sm-12' : 'col-sm-6'"
+                                        style="margin-top: 15px"
+                                        *ngIf="(inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length != 0) || categoryList?.length > 0">
+                                        <div [hidden]="hiddenPolizaMatriz" class="row">
+                                            <div class="col-sm-3" *ngIf="template.ins_primaPensionMin">
+                                                <label class="mb-0">
+                                                    <span>{{inputsQuotation.primaMinimaPension}}</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    disabled
+                                                    [(ngModel)]="inputsQuotation.PensionMinPremium"
+                                                />
+                                            </div>
+                                            <div *ngIf="template.ins_primaPensionMinPro" class="col-sm-3">
+                                                <label class="mb-0">
+                                                    <span>
+                                                        <input
+                                                        *ngIf="mode == 'Recotizar' && template.ins_recotizarPension"
+                                                        type="checkbox"
+                                                        style="top: 3px"
+                                                        class="checkbox"
+                                                        [disabled]="mode != 'Recotizar'"
+                                                        [checked]="false"
+                                                        [(ngModel)]="enabledPensionMinPropPremium"
+                                                        (ngModelChange)="switchPensionMinPropPremiumValue()"/>
+                                                        PRIMA MÍNIMA PROPUESTA
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    maxlength="12"
+                                                    style="margin-top: 4px !important"
+                                                    [disabled]="mode != 'Recotizar' || !enabledPensionMinPropPremium"
+                                                    [(ngModel)]="inputsQuotation.PensionPropMinPremium"
+                                                    (ngModelChange)="checkMinimunPremiumForOriginals(pensionProductId.id,$event)"
+                                                    FloatDirective
+                                                />
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="mode != 'Recotizar' && template.ins_primaPensionAut">
+                                                <label class="mb-0">
+                                                    <span>
+                                                        <input
+                                                            *ngIf="mode == 'Evaluar' && canProposeRate && template.ins_evaluarPension"
+                                                            type="checkbox"
+                                                            class="checkbox"
+                                                            [checked]="false"
+                                                            [(ngModel)]="enabledPensionAuthorizedPremium"
+                                                            style="top: 3px"
+                                                            (ngModelChange)="switchPensionMinAuthPremiumValue()"
+                                                        />
+                                                        PRIMA MÍNIMA AUTORIZADA
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    style="margin-top: 3px !important"
+                                                    maxlength="12"
+                                                    [disabled]="!enabledPensionAuthorizedPremium"
+                                                    [(ngModel)]="inputsQuotation.PensionAuthMinPremium"
+                                                    (ngModelChange)="checkMinimunPremiumForAuthorizedAmounts(pensionProductId.id,$event)"
+                                                    FloatDirective
+                                                />
+                                            </div>
+                                            <div *ngIf="template.ins_plan" class="col-sm-3">
+                                                <label class="mb-0">
+                                                    <span>{{ variable.var_desPlan }}</span>
+                                                </label>
+                                                <select
+                                                    [(ngModel)]="inputsQuotation.desTipoPlan"
+                                                    class="minimal"
+                                                    disabled>
+                                                    <option value="{{ inputsQuotation.desTipoPlan }}">
+                                                    {{ inputsQuotation.desTipoPlan }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <!--Ini - Marcos Silverio-->
+                                            <div *ngIf="template.ins_plan && inputsQuotation.desTipoPlan == 'Plan Maestro'" class="col-sm-1">
+                                                <label class="mb-0"><span>Coberturas</span></label>
+                                                <br />
+                                                <a class="col-sm-12" (click)="seeCovers(quotationNumber)">
+                                                    <img
+                                                    alt="Ver planes"
+                                                    src="assets/icons/see.svg"
+                                                    style="
+                                                        cursor: pointer;
+                                                        height: 24px;
+                                                        margin-left: 10px;
+                                                    "
+                                                    />
+                                                </a>
+                                            </div>
+                                            <!--Fin - Marcos Silverio-->
+                                            <div class="col-sm-3" *ngIf="template.ins_comisionPro">
+                                                <label class="mb-0"><span>COMISIÓN PROPUESTA</span></label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    style="margin-top: 4px !important"
+                                                    [disabled]="!template.ins_comisionPro"
+                                                    maxlength="12"
+                                                    [(ngModel)]="inputsQuotation.comisionPro"
+                                                    FloatDirective
+                                                />
+                                            </div>
+                                            <div class="col-sm-3" *ngIf="template.ins_comisionAut">
+                                                <label class="mb-0">
+                                                    <span>
+                                                        <input
+                                                            type="checkbox"
+                                                            style="top: 3px"
+                                                            class="checkbox"
+                                                            [(ngModel)]="comisionAut"
+                                                        />
+                                                        COMISIÓN AUTORIZADA
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    style="margin-top: 4px !important"
+                                                    [disabled]="!comisionAut"
+                                                    maxlength="12"
+                                                    [(ngModel)]="inputsQuotation.comisionAut"
+                                                    FloatSixDirective
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2 && this.valCIPSCTR_PEN == 23 && (this.tipo_pago_PEN == '2' || this.tipo_pago_PEN == '3')">
+                                                <div class="row">
+                                                    <button class="btn-link-full-color">
+                                                        <i class="fa fa-check white-icon" aria-hidden="true"></i>
+                                                        <p *ngIf="this.tipo_pago_PEN == '3'">Link de pago enviado</p>
+                                                        <p *ngIf="this.tipo_pago_PEN == '2'">PDF de pago enviado</p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2 && this.valCIPSCTR_PEN == 22 && this.tipo_pago_PEN == '3'">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="openLink('1')">
+                                                        <i class="fa fa-link white-icon" aria-hidden="true"></i>
+                                                        <p>Abrir link de pago</p>
+                                                    </button>
+                                                    <button class="btn-copy-link-full-color" (click)="copyLink('1')" title="Copiar enlace">
+                                                        <i class="fa fa-clone white-icon" aria-hidden="true"></i>
+                                                    </button>
+                                                    <div class="div-info-red">
+                                                        <i class="fa fa-info-circle red-icon" aria-hidden="true"></i>
+                                                        <p>El link tiene una vigencia de 48 horas y al darle click al botón "Pagar Monto PEN" la vigencia es de 2 horas para el código.</p>
+                                                    </div>
+                                                </div>                                                                                            
+                                            </div>
+                                            <div *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2 && this.valCIPSCTR_PEN == 21 && this.tipo_pago_PEN == '3' && this.valMixSAPSA == 0">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_PEN, 1, 0)">
+                                                        <i class="fa fa-link white-icon" aria-hidden="true"></i>
+                                                        <p>Crear link de pago</p>
+                                                    </button>
+                                                </div>                                                                                            
+                                            </div>
+                                            <div *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2 && this.valCIPSCTR_PEN == 22 && this.tipo_pago_PEN == '2'">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="descargarPDF('1')">
+                                                        <i class="fa fa-download white-icon" aria-hidden="true"></i>
+                                                        <p>Descargar PDF de pago</p>
+                                                    </button>
+                                                    <div class="div-info-red">
+                                                        <i class="fa fa-info-circle red-icon" aria-hidden="true"></i>
+                                                        <p>El código de pago indicado en el PDF tiene una vigencia de 48 horas.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2 && this.valCIPSCTR_PEN == 21 && this.tipo_pago_PEN == '2' && this.valMixSAPSA == 0">
+                                                <div class="row">
+                                                    <button class="btn-link-pdf-full-color" (click)="crearLink(this.codCIP_PEN, 1, 0)">
+                                                        <i class="fa fa-file-o white-icon" aria-hidden="true"></i>
+                                                        <p>Crear PDF de pago</p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="card mt-3" *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0 && codProducto == 2" [ngClass]="{'card-21-PENSION': this.valCIPSCTR_PEN == 0,'card-21': this.valCIPSCTR_PEN == 21,'card-22': this.valCIPSCTR_PEN == 22,'card-23': this.valCIPSCTR_PEN == 23}">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm">
+                                                            <h5 [ngClass]="{'titulo-pension': this.valCIPSCTR_PEN != 21,'titulo-21': this.valCIPSCTR_PEN == 21}">
+                                                                <img *ngIf="valCIPSCTR_PEN != 21" src="assets/images/SCTR_PENSION.png" alt="sctrPENSION" style="width: 34px;"/>
+                                                                <img *ngIf="valCIPSCTR_PEN == 21" src="assets/images/SCTR_PENSION_VENCIDO.png" alt="sctrPENSION" style="width: 34px;"/>                                  
+                                                                {{ variable.var_nomSubProducto }}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                    <!--PENSION-->
+                                                    <div class="row">
+                                                        <table class="table table-borderless riesgo tblTasas" style="border-collapse: separate;">
+                                                            <thead>
+                                                                <tr class="d-flex">
+                                                                    <th class="col-sm text-center">
+                                                                        <label>Categoría</label>
+                                                                    </th>
+                                                                    <th *ngIf="canSeeRiskRate" class="col-sm text-center">
+                                                                        <label>Tasa Riesgo</label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center">
+                                                                        <label>{{ variable.var_tasaNeta }}</label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center ctasa">
+                                                                        <label>
+                                                                            <input
+                                                                            *ngIf="mode == 'Recotizar' && template.ins_recotizarPension"
+                                                                            [disabled]="mode != 'Recotizar'"
+                                                                            type="checkbox"
+                                                                            [checked]="false"
+                                                                            class="checkbox"
+                                                                            [(ngModel)]="enabledPensionProposedRate"
+                                                                            (ngModelChange)="switchPensionProposedRateValues()"/>
+                                                                            <span class="schk">Propuesta (%)</span>
+                                                                        </label>
+                                                                    </th>
+                                                                    <th class="col-sm text-center">
+                                                                        <label>Prima Mensual</label>
+                                                                    </th>
+                                                                    <th *ngIf="mode != 'Recotizar'" class="col-sm text-center ctasa"> <!--AVS - INTERCONEXION SABSA-->
+                                                                        <label [class.checkboxAut-label]="this.codProfile === '137'">
+                                                                            <input
+                                                                                *ngIf="mode == 'Evaluar' && template.ins_evaluarPension"
+                                                                                [disabled]="!canProposeRate"
+                                                                                type="checkbox"
+                                                                                class="checkbox"
+                                                                                [(ngModel)]="enabledPensionAuthorizedRate"
+                                                                                (ngModelChange)="switchPensionAuthorizedRateValues()"/>
+                                                                                <span class="schk">{{ this.codProfile === '137' ? 'AUTORIZAR OTRA TASA' : 'AUTORIZADA %' }}</span>  
+                                                                        </label>
+                                                                    </th>   
+                                                                    <th *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                        <label>Nueva Prima Mensual</label>
+                                                                    </th>
+                                                                </tr>
+                                                                <hr [ngClass]="{'card-border-21-PENSION': this.valCIPSCTR_PEN == 0,'card-border-22': this.valCIPSCTR_PEN == 22,'card-border-23': this.valCIPSCTR_PEN == 23}"/>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr class="d-flex" *ngIf="inputsQuotation.PensionDetailsList == null || inputsQuotation.PensionDetailsList.length == 0">
+                                                                    <td colspan="4" class="col-sm text-center">No hay tasas asociadas</td>
+                                                                </tr>
+                                                                <tr class="d-flex" *ngFor="let item of inputsQuotation.PensionDetailsList;let row = index">
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{ item.RiskTypeName }}</span>
+                                                                    </td>
+                                                                    <td *ngIf="canSeeRiskRate" class="col-sm text-center">
+                                                                        <span>{{ item.RiskRate }} %</span>
+                                                                    </td>
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{ item.Rate }} %</span>
+                                                                    </td>
+                                                                    <td class="col-sm">
+                                                                        <input
+                                                                            type="text"
+                                                                            class="text-center"
+                                                                            FloatDirective
+                                                                            [disabled]="!enabledPensionProposedRate"
+                                                                            placeholder="0"
+                                                                            [(ngModel)]="inputsQuotation.PensionDetailsList[row].ProposedRate"
+                                                                            (mouseup)="$event.target.select()"
+                                                                            (ngModelChange)="changeTasaPropuestaPension($event,item.RiskTypeId)"
+                                                                            FloatSixDirective
+                                                                            [ngClass]="{'card-cuadros-21-PENSION': this.valCIPSCTR_PEN == 0,'card-cuadros-22': this.valCIPSCTR_PEN == 22,'card-cuadros-23': this.valCIPSCTR_PEN == 23,'error-validate': item.valItemPr}"
+                                                                        />
+                                                                        <span class="porcentaje">%</span>
+                                                                    </td>
+                                                                    <td class="col-sm text-center">
+                                                                        <span>{{item.Premium | prettyNumber: 2}}</span>
+                                                                    </td>
+                                                                    <td *ngIf="mode != 'Recotizar'" class="col-sm"> <!--AVS - INTERCONEXION SABSA-->
+                                                                        <ng-container *ngIf="this.codProfile === '137' else elseBlock">
+                                                                            <input
+                                                                                [hidden]="this.hideBoxPension" 
+                                                                                type="text"
+                                                                                class="text-center"
+                                                                                [checked]="false"
+                                                                                [disabled]="!enabledPensionAuthorizedRate"
+                                                                                placeholder="0"
+                                                                                [(ngModel)]="inputsQuotation.PensionDetailsList[row].AuthorizedRate"
+                                                                                (mouseup)="$event.target.select()"
+                                                                                (ngModelChange)="calculateNewPremiums($event,item.RiskTypeId,pensionProductId.id)"
+                                                                                FloatSixDirective
+                                                                                [ngClass]="{'card-cuadros-21-PENSION': this.valCIPSCTR_PEN == 0,'card-cuadros-22': this.valCIPSCTR_PEN == 22,'card-cuadros-23': this.valCIPSCTR_PEN == 23,'error-validate': item.valItemAu}"
+                                                                            />
+                                                                            <span [hidden]="this.hideBoxPension" class="porcentaje">%</span>
+                                                                        </ng-container>
+                                                                        <ng-template #elseBlock>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="text-center"
+                                                                                [checked]="false"
+                                                                                [disabled]="!enabledPensionAuthorizedRate"
+                                                                                placeholder="0"
+                                                                                [(ngModel)]="inputsQuotation.PensionDetailsList[row].AuthorizedRate"
+                                                                                (mouseup)="$event.target.select()"
+                                                                                (ngModelChange)="calculateNewPremiums($event,item.RiskTypeId,pensionProductId.id)"
+                                                                                FloatSixDirective
+                                                                                [ngClass]="{'card-cuadros-21-PENSION': this.valCIPSCTR_PEN == 0,'card-cuadros-22': this.valCIPSCTR_PEN == 22,'card-cuadros-23': this.valCIPSCTR_PEN == 23,'error-validate': item.valItemAu}"
+                                                                            />
+                                                                            <span class="porcentaje">%</span>
+                                                                        </ng-template>
+                                                                    </td>                                    
+                                                                    <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                        <span>{{item.NewPremium | prettyNumber: 2}}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <ng-container *ngIf="inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length != 0">
+                                                                    <hr style="margin-bottom: 0" [ngClass]="{'card-border-21-PENSION': this.valCIPSCTR_PEN == 0,'card-border-22': this.valCIPSCTR_PEN == 22,'card-border-23': this.valCIPSCTR_PEN == 23}"/>
+                                                                    <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right" style="text-align: right">
+                                                                            <span>{{ variable.var_primaNeta }}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionNetAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionNewNetAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        </tr>
+                                                                        <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right" style="text-align: right">
+                                                                            <span>{{variable.var_primaComercial}}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionPrimaComercial| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionNewPrimaComercial| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right">
+                                                                            <span>{{ variable.var_igv }}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionCalculatedIGV| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionNewCalculatedIGV| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="d-flex">
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td *ngIf="canSeeRiskRate" class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-center"></td>
+                                                                        <td class="col-sm text-right">
+                                                                            <span>{{variable.var_primaComercialTotal}}</span>
+                                                                        </td>
+                                                                        <td class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionGrossAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                        <td *ngIf="mode != 'Recotizar'" class="col-sm text-center"></td>
+                                                                        <td *ngIf="mode != 'Recotizar' && cotEstado != 2" class="col-sm text-center">
+                                                                            <span>{{inputsQuotation.PensionNewGrossAmount| prettyNumber: 2}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </ng-container>
+                                                            </tbody>
+                                                        </table>
+                                                        <div *ngIf="this.valCIPSCTR_PEN === 21 && this.valCIPSCTR_EPS != 21 && (this.tipo_pago_PEN != 3 && this.tipo_pago_PEN != 2)" style="position: absolute; top: 380px; left: 20px; z-index: 1;">
+                                                            <button class="container-vencido" [ngClass]="{'relanzar': valCIPSCTR_PEN === 21}"
+                                                                style="border: 1px solid #553d81; padding: 5px; display: inline-block;"
+                                                                (click)="RelanzarCip(this.codCIP_PEN, 1, 0)">
+                                                                <img alt="" src="assets/icons/icon_cip.png" style="position: relative; right: 24px; width: 43px; top: -12px;">
+                                                                <p style="color: #553d81; font-size: 19px; position: relative; margin: 0; left: -19px;">GENERAR CIP</p>
+                                                            </button>
+                                                        </div>
+                                                        <div *ngIf="this.valCIPSCTR_PEN === 21 && (this.tipo_pago_PEN != 3 && this.tipo_pago_PEN != 2)" style="position: absolute; top: 483px; left: 20px; z-index: 1;">
+                                                            <div class="container-vencido" [ngClass]="{'background-vencido': valCIPSCTR_PEN === 21}">
+                                                                <p class="mensaje-vencido">RECHAZADO</p>
+                                                            </div>
+                                                        </div>
+                                                        <div style="position: absolute; top: 380px; left: 20px; z-index: 1;">
+                                                            <div class="copy-container-eps" [ngClass]="{'background-pagado': valCIPSCTR_PEN === 23, 'background-pendiente': valCIPSCTR_PEN === 22, 'hidden': valCIPSCTR_PEN !== 23 && valCIPSCTR_PEN !== 22 || (tipo_pago_PEN == '3' || tipo_pago_PEN == '2')}">
+                                                                <img alt="" src="assets/icons/icon_cip.png" class="cip-icon-eps">
+                                                                <p class="cod-cip-eps" [ngClass]="{'color-pagado': valCIPSCTR_PEN === 23, 'color-pendiente': valCIPSCTR_PEN === 22, 'hidden': valCIPSCTR_PEN !== 23 && valCIPSCTR_PEN !== 22, 'position-relative': valCIPSCTR_PEN === 23 || valCIPSCTR_PEN === 22}">{{ this.codCIP_PEN }}</p>
+                                                                <button (click)="copyCodCIP(1)" class="copy-button-eps">
+                                                                    <i class="fa fa-files-o" [ngClass]="{'copy-icon-eps': true,'color-pagado': valCIPSCTR_PEN === 23,'color-pendiente': valCIPSCTR_PEN === 22,'hidden': valCIPSCTR_PEN !== 23 && valCIPSCTR_PEN !== 22}"></i>
+                                                                </button>
+                                                                <p *ngIf="copiedMessage" class="copy-messagePENSION">{{ copiedMessage }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div style="position: absolute; top: 431px; left: 20px; z-index: 1;">
+                                                            <div class="col-sm text-right estado-eps" [ngClass]="{'vencido': valCIPSCTR_PEN === 21, 'pagado': valCIPSCTR_PEN === 23, 'pendiente': valCIPSCTR_PEN === 22}">
+                                                                <img alt="" *ngIf="valCIPSCTR_PEN === 21" class="imagen-estado imagen-estado-vencido">
+                                                                <img alt="" *ngIf="valCIPSCTR_PEN === 22" class="imagen-estado-pen imagen-estado-pendiente">
+                                                                <img alt="" *ngIf="valCIPSCTR_PEN === 23" class="imagen-estado-pen imagen-estado-pagado">
+                                                                <p *ngIf="valCIPSCTR_PEN === 21" class="parrafo-estado-21 parrafo-estado-vencido">VENCIDO</p>
+                                                                <p *ngIf="valCIPSCTR_PEN === 22" class="parrafo-estado-pen parrafo-estado-pendiente">PENDIENTE DE PAGO</p>
+                                                                <p *ngIf="valCIPSCTR_PEN === 23" class="parrafo-estado-pen parrafo-estado-pagado">PAGADO</p>
+                                                            </div>
+                                                        </div>      
+                                                        <div class="col-sm-12" style="top: 26px;">
+                                                            <p class="msg-error">{{ pensionMessage }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row" *ngIf="isPolizaMatriz">
+                                        <span>
+                                            * SE REQUIERE ENVIAR EL TRAMITE AL CLIENTE PARA SU
+                                            EVALUACION, FAVOR DE ACTIVAR EL INDICADOR "APROBACIÓN DE
+                                            CLIENTE"
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row" *ngIf="isPolizaMatriz">
+                                        <label style="width: 100%; margin-bottom: 0">
+                                            <input
+                                            type="checkbox"
+                                            [(ngModel)]="inputsQuotation.P_APROB_CLI"
+                                            (change)="aprobacionCliente($event)"
+                                            class="checkbox"
+                                            disabled
+                                            />
+                                            <span class="schk chk-mina">APROBACIÓN DE CLIENTE</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" [ngStyle]="{'margin-top.px': valCIPSCTR_PEN === 21 ? 38 : 0}" >
+                                    <div *ngIf="valCIPSCTR_PEN === 21 && valCIPSCTR_EPS === 21 && (this.tipo_pago_PEN != 3 && this.tipo_pago_PEN != 2 && this.tipo_pago_SAL != 3 && this.tipo_pago_SAL != 2)" style="position: absolute; top: -28px; right: 12px; z-index: 1;">
+                                        <button class="container-vencido" [ngClass]="{'relanzar': valCIPSCTR_PEN === 21}"
+                                            style="border: 1px solid #553d81; padding: 5px; display: inline-block;"
+                                            (click)="RelanzarCip(codCIP_PEN, 0, 1)">
+                                            <img alt="" src="assets/icons/icon_cip.png" style="position: relative; right: 24px; width: 43px; top: -12px;">
+                                            <p style="color: #553d81; font-size: 19px; position: relative; margin: 0; left: -19px;">GENERAR CIP</p>
+                                        </button>
+                                    </div>
+                                    <div class="row" style="margin-top: 25px">
+                                        <div class="col-sm-6">
+                                            <h5 style="font-size: 14px">ARCHIVO ADJUNTOS</h5>
+                                            <table class="table table-borderless riesgo tblbroker">
+                                                <thead>
+                                                    <tr class="d-flex">
+                                                        <th class="col-sm text-center">
+                                                            <label>Nombre del archivo</label>
+                                                        </th>
+                                                        <th class="col-sm text-center">
+                                                            <label>Descargar</label>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody *ngIf="inputsQuotation.FilePathList != null && inputsQuotation.FilePathList.length > 0">
+                                                    <tr *ngFor="let item of inputsQuotation.FilePathList" class="d-flex">
+                                                        <td class="col-sm text-center">
+                                                            <span>{{ item | fileName }}</span>
+                                                        </td>
+                                                        <td class="col-sm text-center">
+                                                            <a (click)="downloadFile(item)">
+                                                                <img
+                                                                src="assets/icons/imprimir.png"
+                                                                title="Descargar"
+                                                                style="cursor: pointer"
+                                                                alt="Descargar"/>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody *ngIf="inputsQuotation.FilePathList == null || inputsQuotation.FilePathList.length == 0">
+                                                    <tr class="d-flex">
+                                                        <td colspan="2" class="col-sm text-center">
+                                                            <span>No se encontraron archivos</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <span style="margin-top: 0">COMENTARIO 1</span>
+                                            <textarea
+                                            class="form-control"
+                                            cols="40"
+                                            rows="5"
+                                            style="width: 100%"
+                                            placeholder="Comentario"
+                                            maxlength="4000"
+                                            disabled
+                                            >{{ inputsQuotation.Comment }}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="codProducto == 2">
+                    <ng-container *ngIf="!template.ins_mapfre || (template.ins_mapfre && inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList.length > 0)">
+                        <div [formGroup]="mainFormGroup" class="collapse-list" *ngIf="mode != 'Visualizar' && mode != 'Emitir'">
+                            <div>
+                                <input class="collapse-open" type="checkbox" id="evaluation" />
+                                <label class="collapse-btn title" for="evaluation">
+                                    {{ evaluationLabel }}
+                                    <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                                </label>
+                                <div class="collapse-panel">
+                                    <div class="collapse-inner collapse-border">
+                                        <div *ngIf="mode != 'Recotizar'" class="row">
+                                            <div class="col-sm-3">
+                                                <span>ESTADO</span>
+                                                <select
+                                                    formControlName="status"
+                                                    (change)="getReasonList($event)"
+                                                    class="minimal"
+                                                    [ngClass]="{'error-validate': !mainFormGroup.get('status').valid && mainFormGroup.get('status').touched}"
+                                                >
+                                                    <option disabled value="">Seleccione</option>
+                                                    <option *ngFor="let item of statusList" value="{{ item.Id }}">
+                                                    {{ item.Name }}
+                                                    </option>
+                                                </select>
+                                                <span *ngIf="mainFormGroup.get('status').errors != null && mainFormGroup.get('status').touched" class="mensaje-error-control">
+                                                    <ng-container *ngIf="mainFormGroup.get('status').hasError('required'); then required_status; else invalid_status">
+                                                    </ng-container>
+                                                    <ng-template #required_status>El estado es requerido.</ng-template>
+                                                    <ng-template #invalid_status>El estado no es válido.</ng-template>
+                                                </span>
+                                            </div>
+                                            <div *ngIf="reasonList != null && reasonList.length > 0" class="col-sm-3">
+                                                <span>MOTIVO</span>
+                                                <select formControlName="reason" class="minimal">
+                                                    <option value="">Seleccione</option>
+                                                    <option *ngFor="let item of reasonList" value="{{ item.Id }}">
+                                                        {{ item.Name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <span>COMENTARIO</span>
+                                                <textarea
+                                                    class="form-control"
+                                                    rows="4"
+                                                    placeholder="Comentario"
+                                                    formControlName="comment"
+                                                    (keypress)="textValidate($event, 4)"
+                                                    maxlength="4000"
+                                                >
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button type="button" (click)="fileInput.click()" style="margin: 15px 0">
+                                                    <span>Seleccionar Archivo</span>
+                                                </button>
+                                                <input
+                                                    hidden
+                                                    #fileInput
+                                                    ngfSelect
+                                                    multiple
+                                                    type="file"
+                                                    [(files)]="files"
+                                                    [maxSize]="filesMaxSize"
+                                                    (filesChange)="lastFileAt = getDate()"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div *ngIf="files.length > 0">
+                                                    <div style="margin-bottom: 0px">
+                                                        <h6>Archivos Seleccionados ({{ files.length }})</h6>
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th class="text-center">Tamaño</th>
+                                                                    <th class="text-center">Acción</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let item of files; let i = index">
+                                                                    <td><strong>{{ item.name }}</strong></td>
+                                                                    <td class="text-center">{{ item.size / 1024 / 1024 | number: ".2" }}MB</td>
+                                                                    <td class="text-center">
+                                                                        <img
+                                                                            src="assets/icons/anular.png"
+                                                                            (click)="files.splice(i, 1)"
+                                                                            title="Eliminar"
+                                                                            alt="Eliminar"
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Mejora SCTR  -->
+                                        <div *ngIf="mode == 'Evaluar'" class="row">
+                                            <div class="col-sm-6">
+                                                <span>GLOSA DE CONSTANCIA</span>
+                                                <select formControlName="gloss" class="minimal" (change)="glossChanged()">
+                                                    <option value="">Seleccione</option>
+                                                    <option *ngFor="let item of glossList" value="{{ item.idGloss }}">
+                                                        {{ item.desGloss }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="mainFormGroup.controls.gloss.value == '99'" class="row">
+                                            <div class="col-sm-12">
+                                                <textarea
+                                                    class="form-control"
+                                                    rows="4"
+                                                    placeholder="GLOSA DE CONSTANCIA"
+                                                    formControlName="glossComent"
+                                                    maxlength="200"
+                                                    (keypress)="textValidate($event, 4)"
+                                                >
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="collapse-list" *ngIf="isTransact && nTransac == 13">
+                    <div>
+                        <input class="collapse-open" type="checkbox" id="carta" />
+                        <label class="collapse-btn title" for="carta">
+                            Carta de Agenciamiento
+                            <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                        </label>
+                        <div class="collapse-panel">
+                            <div class="collapse-inner collapse-border">
+                                <div>
+                                    <span>ARCHIVO CARTA DE AGENCIAMIENTO (*)</span>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <span>Ver Archivos &nbsp;
+                                                <a
+                                                    (click)="
+                                                    openFilePicker(this.infoTransact.PATHS_FILES_LETTER)
+                                                    "
+                                                    ><img
+                                                    alt="Ver movimientos"
+                                                    src="assets/icons/preview_soat_box.png"
+                                                    title="Ver movimientos"
+                                                    style="cursor: pointer; height: 24px"
+                                                /></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="collapse-list" *ngIf="isTransact">
+                    <div>
+                        <input class="collapse-open" type="checkbox" id="history" />
+                        <label class="collapse-btn title" for="history">
+                            Historial de Trámite
+                            <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                        </label>
+                        <div class="collapse-panel">
+                            <div class="collapse-inner collapse-border">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title">
+                                                    <th *ngIf="codProducto == 3" style="text-align: center" class="grid-title-item">Número</th>
+                                                    <th style="text-align: center" class="grid-title-item">Estado</th>
+                                                    <th style="text-align: center" class="grid-title-item">Usuario asignado</th>
+                                                    <th style="text-align: center" class="grid-title-item">Perfil</th>
+                                                    <th style="text-align: center" class="grid-title-item">Asignado por</th>
+                                                    <th style="text-align: center" class="grid-title-item">Fecha</th>
+                                                    <th style="text-align: center" class="grid-title-item">Comentario</th>
+                                                    <th style="text-align: center" class="grid-title-item">Archivos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="statusChangeList == null || statusChangeList.length == 0">
+                                                <tr>
+                                                    <td colspan="7">No se encontraron registros.</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody *ngIf="statusChangeList != null && statusChangeList.length > 0">
+                                                <tr *ngFor="let item of listToShow; let i = index">
+                                                    <td *ngIf="codProducto == 3">{{ item.LINEA }}</td>
+                                                    <td>{{ item.DES_ESTADO }}</td>
+                                                    <td>{{ item.USUARIO_ASSIGNED }}</td>
+                                                    <td>{{ item.SPERFIL }}</td>
+                                                    <td>{{ item.USUARIO_ASSIGNOR }}</td>
+                                                    <td>{{ item.DFEC_REG | date: "dd/MM/yyyy, h:mm:ss a" }}</td>
+                                                    <td>{{ item.SCOMMENT }}</td>
+                                                    <ng-container *ngIf="item.PATHS_FILES != null && item.PATHS_FILES.length > 0; then showButton; else hideButton">
+                                                    </ng-container>
+                                                    <ng-template #showButton>
+                                                        <td>
+                                                            <a (click)="openFilePicker(item.PATHS_FILES)">
+                                                                <img
+                                                                alt="Ver movimientos"
+                                                                src="assets/icons/preview_soat_box.png"
+                                                                title="Ver movimientos"
+                                                                style="cursor: pointer; height: 24px"
+                                                            />
+                                                            </a>
+                                                        </td>
+                                                    </ng-template>
+                                                    <ng-template #hideButton>
+                                                        <td>Sin Archivos</td>
+                                                    </ng-template>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="statusChangeList != null && statusChangeList.length > 0" class="row" style="display: flex">
+                                    <div class="col-sm-12">
+                                        <ngb-pagination
+                                            [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)"
+                                        >
+                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="collapse-list" *ngIf="!isTransact">
+                    <div>
+                        <input class="collapse-open" type="checkbox" id="history" />
+                        <label class="collapse-btn title" for="history">
+                            Historial de Evaluaciones
+                            <i class="fa fa-angle-down pull-right" style="position: relative; top: 4px"></i>
+                        </label>
+                        <div class="collapse-panel">
+                            <div class="collapse-inner collapse-border">
+                                <div class="grid form-group">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="grid-title">
+                                                    <th *ngIf="codProducto == 3" style="text-align: center" class="grid-title-item">Número</th>
+                                                    <th style="text-align: center" class="grid-title-item">Estado</th>
+                                                    <th style="text-align: center" class="grid-title-item">Vigencia</th>
+                                                    <th style="text-align: center" class="grid-title-item">Motivo</th>
+                                                    <th style="text-align: center" class="grid-title-item">Usuario</th>
+                                                    <th style="text-align: center" class="grid-title-item">Perfil</th>
+                                                    <th style="text-align: center" class="grid-title-item">Fecha</th>
+                                                    <th style="text-align: center" class="grid-title-item">Comentario</th>
+                                                    <th style="text-align: center" class="grid-title-item">Archivos</th>
+                                                    <th *ngIf="codProducto == 3" style="text-align: center" class="grid-title-item">Trama</th>
+                                                    <th *ngIf="codProducto == 2" style="text-align: center" class="grid-title-item">Trama</th>
+                                                    <th *ngIf="inputsQuotation.reverseFlag" style="text-align: center" class="grid-title-item">Reversar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="statusChangeList == null || statusChangeList.length == 0">
+                                                <tr>
+                                                    <td colspan="7">No se encontraron registros.</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody *ngIf="statusChangeList != null && statusChangeList.length > 0">
+                                                <tr *ngFor="let item of listToShow; let i = index">
+                                                    <td *ngIf="codProducto == 3">{{ item.linea }}</td>
+                                                    <td>{{ item.Status }}</td>
+                                                    <td>{{ item.Vigencia }}</td>
+                                                    <td>{{ item.Reason }}</td>
+                                                    <td>{{ item.User }}</td>
+                                                    <td>{{ item.Profile }}</td>
+                                                    <td>{{ item.EventDate | date: "dd/MM/yyyy, h:mm a" }}</td>
+                                                    <td>{{ item.Comment }}</td>
+                                                    <ng-container *ngIf="item.FilePathList != null && item.FilePathList.length > 0; then showButton; else hideButton">
+                                                    </ng-container>
+                                                    <ng-template #showButton>
+                                                        <td>
+                                                            <a (click)="openFilePicker(item.FilePathList)">
+                                                                <img
+                                                                alt="Ver movimientos"
+                                                                src="assets/icons/preview_soat_box.png"
+                                                                title="Ver movimientos"
+                                                                style="cursor: pointer; height: 24px"
+                                                            /></a>
+                                                        </td>
+                                                    </ng-template>
+                                                    <ng-template #hideButton>
+                                                        <td>Sin Archivos</td>
+                                                    </ng-template>
+                                                    <td *ngIf="item.codProceso != '' && codProducto == 3">
+                                                        <a (click)="getTramaFile(item)">
+                                                            <img
+                                                            alt="descargar"
+                                                            src="assets/icons/download2.png"
+                                                            title="descargar"
+                                                            style="cursor: pointer; height: 24px"
+                                                        /></a>
+                                                    </td>
+                                                    <td *ngIf="item.codProceso == '' && codProducto == 3">Sin Trama</td>
+                                                    <td *ngIf="item.codProceso != '' && codProducto == 2">
+                                                        <a (click)="getTramaFileSCTR(item)"><img alt="descargar" src="assets/icons/download2.png"
+                                                            title="descargar" style="cursor: pointer; height: 24px" /></a>
+                                                    </td>
+                                                    <td *ngIf="item.codProceso == '' && codProducto == 2">Sin Trama</td>
+                                                    <td *ngIf="inputsQuotation.reverseFlag">
+                                                        <a
+                                                            *ngIf="item.reverse == 1"
+                                                            (click)="reverseMovementIncomplete()"
+                                                            ><img
+                                                            alt="Reversar"
+                                                            src="assets/icons/anular.png"
+                                                            title="Reversar"
+                                                            style="cursor: pointer; height: 24px"
+                                                        /></a>
+                                                        <span *ngIf="item.reverse == 0">--</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="statusChangeList != null && statusChangeList.length > 0" class="row" style="display: flex">
+                                    <div class="col-sm-12">
+                                        <ngb-pagination
+                                            [(page)]="currentPage"
+                                            [pageSize]="itemsPerPage"
+                                            [collectionSize]="totalItems"
+                                            [maxSize]="maxSize"
+                                            (pageChange)="pageChanged(currentPage)">
+                                            <ng-template ngbPaginationPrevious>ANTERIOR</ng-template>
+                                            <ng-template ngbPaginationNext>SIGUIENTE</ng-template>
+                                        </ngb-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-2" style="width: 100%">
+                    <ng-container *ngIf="!template.ins_mapfre">
+                        <ng-container *ngIf="cotEstado != 3">
+                            <button *ngIf="codProducto == 2 && (mode !== 'Visualizar' && this.flagCipEmit == 1 || status === 'APROBADO' && perfil != 137 && perfil != 153 && this.flagCipEmit == 1)"
+                                class="pull-right full-color"
+                                (click)="manageOperation()" >
+                                <span>{{ buttonName }}</span>
+                            </button>
+                        </ng-container>
+                        <!-- <button *ngIf="isPolizaMatriz && !flagAprobCli && !flagRechazoPol && !(this.flagGobiernoEstado && this.flagGobiernoMatriz)"
+                            class="pull-right full-color"
+                            (click)="EmitCertificado()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf="mode == 'EmitirC' && emitirCertificadoTecnica == true"
+                            class="pull-right full-color"
+                            (click)="EmitCertificadoTecnica()">
+                            <span>{{ buttonName }} </span>
+                        </button> -->
+                        <!-- <button *ngIf="flagGobiernoIniciado && !flagRechazoPol && !(this.flagGobiernoEstado && this.flagGobiernoMatriz)"
+                            class="pull-right full-color"
+                            (click)="EmisionPolizaEstado()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf="(flagGobiernoIniciado && !flagRechazoPol && inputsQuotation.SPolMatriz) || iniciadoPolizaMatrizTramiteEstado"
+                            class="pull-right full-color"
+                            (click)="EmisionPolizaEstadoSinTrama()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf="emitirPolizaMatrizTramiteEstado"
+                            class="pull-right full-color"
+                            (click)="EmisionPolizaMatrizTEstado()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf="emitirPolizaOperaciones && !flagRechazoPol &&!emitirCertificadoTecnica"
+                            class="pull-right full-color"
+                            (click)="EmisionPolizaEstadoOperaciones()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- Boton para procesar  otras ransacciones sin envio al ejecutivo despues de la aprobación de técnica EmisionPolizaEstadoOperaciones-->
+                        <!-- <button *ngIf="procesarPolizaOperaciones && !flagRechazoPol"
+                            class="pull-right full-color"
+                            (click)="procesarPolizaEstadoOperaciones()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf=" (mode == 'Asignar' && !flagRechazoPol) || (flagGobiernoEstado && mode == 'Asignar') || (flagGobiernoIniciado && flagRechazoPol)"
+                            class="pull-right full-color"
+                            (click)="AsignarTramite()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf=" mode == 'Evaluar Tramite' || mode == 'Continuar' || (mode == 'Enviar')"
+                            class="pull-right full-color"
+                            (click)="ContinuarTramite()">
+                            <span>{{ buttonName }}</span>
+                        </button> -->
+                        <!-- <button *ngIf="from == 'transact1'"
+                            class="pull-right"
+                            [routerLink]="['/extranet/tray-transact/1']">
+                            <span>Cancelar</span>
+                        </button> -->
+                        <!-- <button *ngIf="from == 'transact2'"
+                            class="pull-right"
+                            [routerLink]="['/extranet/tray-transact/2']">
+                            <span>Cancelar</span>
+                        </button> -->
+                        <button
+                            *ngIf="from == ''"
+                            class="pull-right"
+                            [routerLink]="['/extranet/sctr/consulta-cotizacion']"
+                        >
+                            <span>Cancelar</span>
+                        </button>
+                        <!-- <button
+                            *ngIf="from == 'BANDEJA'"
+                            class="pull-right"
+                            [routerLink]="['/extranet/bandeja']"
+                        >
+                            <span>Cancelar</span>
+                        </button>  -->
+                        <!-- ac modal pagos 20201105-->
+                        <panel-info-pago
+                            [(abrir)]="modal.pagos"
+                            [cotizacion]="cotizacion"
+                            (confirmar)="formaPagoElegido()"
+                            [(isLoading)]="isLoading" >
+                        </panel-info-pago>
+                        <!-- ac modal pagos 20201105-->
+                    </ng-container>
+                    <ng-container *ngIf="template.ins_mapfre">
+                        <button *ngIf="(inputsQuotation.PensionDetailsList != null && inputsQuotation.PensionDetailsList?.length > 0 && mode == 'Evaluar') || status == 'APROBADO'"
+                            class="pull-right full-color"
+                            (click)="manageOperation()"
+                        >
+                            <span>{{ buttonName }}</span>
+                        </button>
+                        <button
+                            class="pull-right"
+                            [routerLink]="['/extranet/consulta-cotizacion']"
+                        >
+                            <span>Cancelar</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pantalla de carga -->
+    <div [hidden]="!isLoading" class="loadingScreen">
+        <div style="display: flex; height: 100%; width: 100%">
+            <i style="margin: auto; font-size: 50px" class="fa fa-spinner fa-spin"></i>
+        </div>
+    </div>
+</div>
+  

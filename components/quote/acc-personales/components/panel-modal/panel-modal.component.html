@@ -1,0 +1,29 @@
+<div class="panel-modal">
+  <ng-template #modal>
+    <div class="modal-header {{classHeader}}">
+      <h4 class="modal-title pull-left {{classTitle}}">{{title}}</h4>
+      <button type="button" class="close pull-right" (click)="omitirClick()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body {{classBody}}">
+      <ng-template [ngTemplateOutlet]="templateBody"></ng-template>
+    </div>
+    <div class="modal-footer {{classFooter}}">
+      <ng-template [ngTemplateOutlet]="templateFooterAntes"></ng-template>
+      <form-button
+        *ngIf="!!btnCancelLabel"
+        (onClick)="hideModal(true)"
+        [label]="btnCancelLabel || 'Cerrar'"
+      ></form-button>
+      <form-button *ngIf="btnConfirmLabel != 'externo'"
+        (onClick)="confirm()"
+        btnClass="btn-primary"
+        [hidden]="confirmar"
+        [label]="btnConfirmLabel || 'Confirmar'"
+        [disabled]="disabled"
+      ></form-button>
+      <ng-template [ngTemplateOutlet]="templateFooterDespues"></ng-template>
+    </div>
+  </ng-template>
+</div>
