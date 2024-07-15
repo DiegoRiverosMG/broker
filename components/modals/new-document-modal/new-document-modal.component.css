@@ -1,7 +1,6 @@
 .container-modal {
-  padding: 4px;
   margin: 0 auto;
-  padding: 40px 0 40px 0;
+  padding: 40px 0;
 }
 
 .container-title-modal {
@@ -45,7 +44,6 @@
 
 .button {
   color: #ffffff;
-  font-family: "Bliss Pro";
   background-color: #ed6e00;
   border-radius: 6px;
   text-align: center;

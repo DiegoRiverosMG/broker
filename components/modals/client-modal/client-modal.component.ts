@@ -333,4 +333,10 @@ export class ClientModalComponent implements OnInit {
     }
     return [parts[0] as SweetAlertIcon, parts[1], parts[2]];
   }
+  handleKeyPress(event: KeyboardEvent, number:number) {
+    if (event.key === 'Enter') {
+      this.onSelectTypeSearch(number);
+    }
+  }
+  
 }

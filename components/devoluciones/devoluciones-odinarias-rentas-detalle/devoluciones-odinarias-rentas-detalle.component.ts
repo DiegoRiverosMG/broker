@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RentasService } from '../../../../backoffice/services/rentas/rentas.service';
 import { OthersService } from '../../../services/shared/others.service';
@@ -117,8 +116,6 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
         this.totalStatusHistory = this.historyStatus.length;
         this.paginateTickets();
         this.showPagination = true;
-
-
       },
       error: (error) => {
         console.error(error);
@@ -128,9 +125,15 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
 
   paginateTickets() {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.totalStatusHistory);
-    this.displayedStatusHistory = this.historyStatus.slice(startIndex, endIndex);
-    console.log(this.displayedStatusHistory)
+    const endIndex = Math.min(
+      startIndex + this.pageSize,
+      this.totalStatusHistory
+    );
+    this.displayedStatusHistory = this.historyStatus.slice(
+      startIndex,
+      endIndex
+    );
+    console.log(this.displayedStatusHistory);
     this.getTotalPages();
   }
 
@@ -147,40 +150,47 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
 
   getTotalPages() {
     this.totalPage = Math.ceil(this.totalStatusHistory / this.itemsPerPage);
-    console.log(this.totalPage)
+    console.log(this.totalPage);
   }
 
   //FUNCION PARA DESCARGAR ARCHIVOS
   async downloadFile(filePath: string) {
     const mensaje = await this.getMessage(1);
-    const mensajeParts: [SweetAlertIcon, string, string] = this.separateString(mensaje);
-  
+    const mensajeParts: [SweetAlertIcon, string, string] =
+      this.separateString(mensaje);
+
     console.log(filePath);
     this.othersService.downloadFile(filePath).subscribe(
       (res) => {
         if (res.StatusCode == 1) {
-          Swal.fire('Información', this.listToString(res.ErrorMessageList), 'error');
+          Swal.fire(
+            'Información',
+            this.listToString(res.ErrorMessageList),
+            'error'
+          );
         } else {
           const newBlob = new Blob([res], { type: 'application/pdf' });
-          
+
           const navigator: any = window.navigator;
-          if (navigator && navigator.msSaveOrOpenBlob) {
+          if (navigator?.msSaveOrOpenBlob) {
             navigator.msSaveOrOpenBlob(newBlob);
             return;
           }
-  
+
           const data = window.URL.createObjectURL(newBlob);
-  
+
           const link = document.createElement('a');
           link.href = data;
-  
+
           link.download = filePath.substring(filePath.lastIndexOf('\\') + 1);
-          link.dispatchEvent(new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-          }));
-  
+          link.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+            })
+          );
+
           setTimeout(() => {
             window.URL.revokeObjectURL(data);
             link.remove();
@@ -197,9 +207,8 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
       }
     );
   }
-  
 
-  listToString(list: String[]): string {
+  listToString(list: string[]): string {
     let output = '';
     if (list != null) {
       list.forEach(function (item) {
@@ -426,19 +435,11 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
           next: (response) => {
             const mensajeParts: [SweetAlertIcon, string, string] =
               this.separateString(response.P_SMESSAGE);
-            if (response.P_NCODE == 0) {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            } else {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            }
+            Swal.fire({
+              icon: mensajeParts[0],
+              title: mensajeParts[1],
+              text: mensajeParts[2],
+            });
           },
           error: (error) => {
             console.error(error);
@@ -477,20 +478,11 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
           next: (response) => {
             const mensajeParts: [SweetAlertIcon, string, string] =
               this.separateString(response.P_SMESSAGE);
-
-            if (response.P_NCODE == 0) {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            } else {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            }
+            Swal.fire({
+              icon: mensajeParts[0],
+              title: mensajeParts[1],
+              text: mensajeParts[2],
+            });
           },
           error: (error) => {
             console.error(error);
@@ -761,19 +753,11 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
         const mensajeParts: [SweetAlertIcon, string, string] =
           this.separateString(res.P_SMESSAGE);
 
-        if (res.P_NCODE == 0) {
-          Swal.fire({
-            icon: mensajeParts[0],
-            title: mensajeParts[1],
-            text: mensajeParts[2],
-          });
-        } else {
-          Swal.fire({
-            icon: mensajeParts[0],
-            title: mensajeParts[1],
-            text: mensajeParts[2],
-          });
-        }
+        Swal.fire({
+          icon: mensajeParts[0],
+          title: mensajeParts[1],
+          text: mensajeParts[2],
+        });
       },
       error: (error) => {
         console.error(error);
@@ -846,22 +830,15 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
       next: (res) => {
         const mensajeParts: [SweetAlertIcon, string, string] =
           this.separateString(res.P_SMESSAGE);
-
+        Swal.fire({
+          icon: mensajeParts[0],
+          title: mensajeParts[1],
+          text: mensajeParts[2],
+        });
         if (res.P_NCODE == 0) {
-          Swal.fire({
-            icon: mensajeParts[0],
-            title: mensajeParts[1],
-            text: mensajeParts[2],
-          });
           this.ticket.MOTIVO = this.inputs.P_NMOTIVO.valor;
           this.ticket.SUBMOTIVO = this.inputs.P_SSUBMOTIVO.valor;
           this.edit2 = false;
-        } else {
-          Swal.fire({
-            icon: mensajeParts[0],
-            title: mensajeParts[1],
-            text: mensajeParts[2],
-          });
         }
       },
       error: (error) => {
@@ -950,4 +927,10 @@ export class DevolucionesOdinariasRentasDetalleComponent implements OnInit {
     }
     return [parts[0] as SweetAlertIcon, parts[1], parts[2]];
   }
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.atras();
+    }
+  }
+  
 }

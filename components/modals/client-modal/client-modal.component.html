@@ -27,6 +27,7 @@
             type="radio"
             checked="checked"
             name="radio"
+            (keypress)="handleKeyPress($event,1)"
           />
           <span class="checkmark"></span>
         </label>
@@ -39,6 +40,8 @@
             value="2"
             type="radio"
             name="radio"
+            (keypress)="handleKeyPress($event,2)"
+
           />
           <span class="checkmark"></span>
         </label>
@@ -143,10 +146,10 @@
         <table class="table">
           <thead class="t-head">
             <tr class="grid-title">
-              <td class="grid-title-item"></td>
-              <td class="grid-title-item">Tipo de documento</td>
-              <td class="grid-title-item">Nº de documento</td>
-              <td class="grid-title-item">Razón social/ Nombres y apellidos</td>
+              <th class="grid-title-item"></th>
+              <th class="grid-title-item">Tipo de documento</th>
+              <th class="grid-title-item">Nº de documento</th>
+              <th class="grid-title-item">Razón social/ Nombres y apellidos</th>
             </tr>
           </thead>
           <tbody></tbody>

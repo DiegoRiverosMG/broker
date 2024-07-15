@@ -1,6 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal,NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ListadoModalComponent } from '../../modals/listado-modal/listado-modal.component';
 import { ClientModalComponent } from '../../modals/client-modal/client-modal.component';
 import { EjecutivoModalComponent } from '../../modals/ejecutivo-modal/ejecutivo-modal.component';
@@ -15,7 +14,6 @@ import { ConfirmModalComponent } from '../../modals/confirm-modal/confirm-modal.
   selector: 'app-devoluciones-odinarias-rentas',
   templateUrl: './devoluciones-odinarias-rentas.component.html',
   styleUrls: ['./devoluciones-odinarias-rentas.component.css'],
-
   providers: [NgbModalConfig, NgbModal],
 })
 export class DevolucionesOdinariasRentasComponent implements OnInit {
@@ -34,7 +32,7 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
   colorParts: string[] = [];
   popupData: number;
 
-  showMenu: boolean[] = [];
+  showMenu: { [key: string]: boolean } = {};
   productCanal: number;
   listActions: any = [];
   listActionsticked: any = [];
@@ -205,9 +203,12 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClick(event: any) {
-    this.showMenu = this.showMenu.map(() => false);
+    Object.keys(this.showMenu).forEach(key => {
+      this.showMenu[key] = false;
+    });
     this.showMenuColumn = false;
   }
+  
   //FUNCION PARA ABRIR EL MODAL DE EDITAR LISTADO
   editList(event) {
     let modalRef = this.modalService.open(ListadoModalComponent, {

@@ -11,7 +11,7 @@
   background: #8385b4 0% 0% no-repeat padding-box;
   border-radius: 15px;
   border: none;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   color: #ffffff;
   height: 30px;
   min-width: 100px;
@@ -20,14 +20,14 @@
 
 .title-re {
   text-align: left;
-  font: normal normal normal 24px/29px Bliss Pro;
+  font: normal normal normal 24px/29px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   opacity: 1;
 }
 
 .subtitle-re {
-  font: normal normal normal 18px/21px Bliss Pro;
+  font: normal normal normal 18px/21px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #8385b4;
 }
@@ -39,7 +39,7 @@
 .button-cancelar {
   border: 1px solid #27246d;
   border-radius: 5px;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   text-align: center;
@@ -52,7 +52,7 @@
   background: #79cb33 0% 0% no-repeat padding-box;
   border-radius: 5px;
   text-align: center;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #ffffff;
   width: 135px;
@@ -67,7 +67,7 @@
   gap: 10px;
 
   padding: 20px 0 20px 0;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #707070;
 }
@@ -163,7 +163,7 @@
   border-radius: 5px;
   opacity: 1;
   text-align: center;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   color: #ffffff;
   width: 135px;
   height: 45px;
@@ -183,7 +183,7 @@
   width: 330px;
   height: 45px;
   outline: none;
-  font: normal normal normal 18px/21px Bliss Pro;
+  font: normal normal normal 18px/21px 'Bliss Pro', sans-serif;
   color: #b4b5d9;
   margin: 20px 0;
   padding-left: 24px; /* Ajusta este valor según sea necesario para que la imagen no se solape con el texto */
@@ -200,12 +200,12 @@
 }
 
 .labelPagination {
-  font: normal normal normal 12px/14px Bliss Pro;
+  font: normal normal normal 12px/14px 'Bliss Pro', sans-serif;
   color: #707072;
 }
 
 .paginationInput {
-  font: normal normal normal 12px / 14px Bliss Pro;
+  font: normal normal normal 12px / 14px 'Bliss Pro', sans-serif;
   color: #212121;
   width: 40px;
   border: none;

@@ -6,13 +6,17 @@
     <div class="header-content mb-3 mt-3">
       <div class="containt-item">
         <div class="headiter-em">
-          <span  class="atras-re" (click)="atras()"
-            ><img
+          <span
+            class="atras-re"
+            (click)="atras()"
+            (keydown)="handleKeyDown($event)"
+          >
+            <img
               src="assets/rentas/arrow_back_20dp_FILL1_wght400_GRAD0_opsz20.svg"
               alt="autorenew"
             />
-            Atras</span
-          >
+            Atras
+          </span>
         </div>
         <div class="container-buttons">
           <button
@@ -31,7 +35,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'APROBAR', ticket)"
             [class.disabled]="items.APROBAR !== 'TRUE'"
-
             [style.background]="
               items.APROBAR == 'TRUE' && listActions.APROBAR == 'TRUE'
                 ? '#79CB33'
@@ -48,7 +51,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'RECHAZAR', ticket)"
             [class.disabled]="items.RECHAZAR !== 'TRUE'"
-
             [style.background]="
               items.RECHAZAR == 'TRUE' && listActions.RECHAZAR == 'TRUE'
                 ? '#DB4343'
@@ -65,7 +67,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'CONFIRMAR', ticket)"
             [class.disabled]="items.CONFIRMAR !== 'TRUE'"
-
             [style.background]="
               items.CONFIRMAR == 'TRUE' && listActions.CONFIRMAR == 'TRUE'
                 ? '#79CB33'
@@ -82,7 +83,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'CANCELAR', ticket)"
             [class.disabled]="items.CANCELAR !== 'TRUE'"
-
             [style.background]="
               items.CANCELAR == 'TRUE' && listActions.CANCELAR == 'TRUE'
                 ? '#DB4343'
@@ -99,7 +99,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'OBSERVAR', ticket)"
             [class.disabled]="items.OBSERVAR !== 'TRUE'"
-
             [style.background]="
               items.OBSERVAR == 'TRUE' && listActions.OBSERVAR == 'TRUE'
                 ? '#27246D'
@@ -113,7 +112,6 @@
           <button
             (click)="calcular()"
             [class.disabled]="items.CALCULAR !== 'TRUE'"
-
             [style.background]="
               items.CALCULAR == 'TRUE' && listActions.CALCULAR == 'TRUE'
                 ? '#27246D'
@@ -130,7 +128,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'DERIVAR', ticket)"
             [class.disabled]="items.DERIVAR !== 'TRUE'"
-
             [style.background]="
               items.DERIVAR == 'TRUE' && listActions.DERIVAR == 'TRUE'
                 ? '#27246D'
@@ -147,7 +144,6 @@
           <button
             (click)="updStatusTicket(ticket.SCODE_JIRA, 'CERRAR', ticket)"
             [class.disabled]="items.CERRAR !== 'TRUE'"
-
             [style.background]="
               items.CERRAR == 'TRUE' && listActions.CERRAR == 'TRUE'
                 ? '#DB4343'
@@ -171,6 +167,7 @@
     <div class="pestanas">
       <ul>
         <li
+          (keypress)="handleKeyDown($event)"
           class="tab-title"
           [class.active]="pestaActiva === 1"
           (click)="cambiarPestana(1)"
@@ -178,7 +175,7 @@
           Detalle del ticket
         </li>
         <li
-        
+          (keypress)="handleKeyDown($event)"
           class="tab-title"
           [class.active]="pestaActiva === 2"
           (click)="cambiarPestana(2)"
@@ -186,6 +183,7 @@
           Detalle de la póliza/ contrante
         </li>
         <li
+          (keypress)="handleKeyDown($event)"
           class="tab-title"
           [class.active]="pestaActiva === 3"
           (click)="cambiarPestana(3)"
@@ -193,6 +191,7 @@
           Datos del pago
         </li>
         <li
+          (keypress)="handleKeyDown($event)"
           class="tab-title"
           [class.active]="pestaActiva === 4"
           (click)="cambiarPestana(4)"
@@ -200,6 +199,7 @@
           Historial de estados
         </li>
         <li
+          (keypress)="handleKeyDown($event)"
           class="tab-title"
           [class.active]="pestaActiva === 5"
           (click)="cambiarPestana(5)"
@@ -332,6 +332,7 @@
               </div>
               <div class="edit">
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{ disabled: listActions?.EDITAR_MOT !== 'TRUE' }"
                   *ngIf="!edit2"
                   class="clickable"
@@ -341,6 +342,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_MOT_OK !== 'TRUE'
                   }"
@@ -352,6 +354,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{ disabled: listActions?.EDITAR_MOT_X !== 'TRUE' }"
                   *ngIf="edit2"
                   class="clickable"
@@ -411,6 +414,7 @@
               </div>
               <div class="edit">
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_DESCRIPCION !== 'TRUE'
                   }"
@@ -431,6 +435,7 @@
                   title="Confirmar"
                   src="assets/rentas/check_circle.svg"
                   alt="autorenew"
+                  (keypress)="handleKeyDown($event)"
                 />
                 <img
                   [ngClass]="{
@@ -442,6 +447,7 @@
                   title="Cancelar"
                   src="assets/rentas/cancel.svg"
                   alt="autorenew"
+                  (keypress)="handleKeyDown($event)"
                 />
               </div>
             </div>
@@ -466,9 +472,9 @@
                 <table class="table mb-none">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Documento</td>
-                      <td class="grid-title-item">Tamaño</td>
-                      <td class="grid-title-item">Acciones</td>
+                      <th class="grid-title-item">Documento</th>
+                      <th class="grid-title-item">Tamaño</th>
+                      <th class="grid-title-item">Acciones</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -526,6 +532,7 @@
                   </tbody>
                 </table>
                 <div
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.ADJUNTAR_ARCHIVO !== 'TRUE'
                   }"
@@ -838,10 +845,10 @@
                 <table class="table">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Nombres</td>
-                      <td class="grid-title-item">Nº identidad</td>
-                      <td class="grid-title-item">Parentesco</td>
-                      <td class="grid-title-item">% pensión</td>
+                      <th class="grid-title-item">Nombres</th>
+                      <th class="grid-title-item">Nº identidad</th>
+                      <th class="grid-title-item">Parentesco</th>
+                      <th class="grid-title-item">% pensión</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -887,10 +894,10 @@
                 <table class="table">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Índice</td>
-                      <td class="grid-title-item">Fecha</td>
-                      <td class="grid-title-item">Estado</td>
-                      <td class="grid-title-item">Usuario</td>
+                      <th class="grid-title-item">Índice</th>
+                      <th class="grid-title-item">Fecha</th>
+                      <th class="grid-title-item">Estado</th>
+                      <th class="grid-title-item">Usuario</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -948,6 +955,7 @@
               </div>
               <div class="edit">
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO !== 'TRUE'
                   }"
@@ -959,6 +967,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO_OK !== 'TRUE'
                   }"
@@ -970,6 +979,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO_X !== 'TRUE'
                   }"
@@ -1046,8 +1056,8 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <td class="h-text">Guardado</td>
-                      <td class="h-text">Confirmar</td>
+                      <th class="h-text">Guardado</th>
+                      <th class="h-text">Confirmar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1100,19 +1110,19 @@
                 <table class="table">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Nombres</td>
-                      <td class="grid-title-item">Nº identidad</td>
-                      <td class="grid-title-item">Parentesco</td>
-                      <td class="grid-title-item">% pensión</td>
-                      <td class="grid-title-item">Tipo de Pago</td>
-                      <td class="grid-title-item">Banco de origen</td>
-                      <td class="grid-title-item">Tipo de cuenta</td>
-                      <td class="grid-title-item">Cuenta Bancaria</td>
-                      <td class="grid-title-item">CCI</td>
-                      <td class="grid-title-item">Titular de la cuenta</td>
-                      <td class="grid-title-item">Nº identidad Titular</td>
-                      <td class="grid-title-item">Guardado</td>
-                      <td class="grid-title-item">Confirmar</td>
+                      <th class="grid-title-item">Nombres</th>
+                      <th class="grid-title-item">Nº identidad</th>
+                      <th class="grid-title-item">Parentesco</th>
+                      <th class="grid-title-item">% pensión</th>
+                      <th class="grid-title-item">Tipo de Pago</th>
+                      <th class="grid-title-item">Banco de origen</th>
+                      <th class="grid-title-item">Tipo de cuenta</th>
+                      <th class="grid-title-item">Cuenta Bancaria</th>
+                      <th class="grid-title-item">CCI</th>
+                      <th class="grid-title-item">Titular de la cuenta</th>
+                      <th class="grid-title-item">Nº identidad Titular</th>
+                      <th class="grid-title-item">Guardado</th>
+                      <th class="grid-title-item">Confirmar</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -1223,19 +1233,19 @@
                 <table class="table">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Nombres</td>
-                      <td class="grid-title-item">Nº identidad</td>
-                      <td class="grid-title-item">Parentesco</td>
-                      <td class="grid-title-item">% pensión</td>
-                      <td class="grid-title-item">Tipo de Pago</td>
-                      <td class="grid-title-item">Banco de origen</td>
-                      <td class="grid-title-item">Tipo de cuenta</td>
-                      <td class="grid-title-item">Cuenta Bancaria</td>
-                      <td class="grid-title-item">CCI</td>
-                      <td class="grid-title-item">Titular de la cuenta</td>
-                      <td class="grid-title-item">Nº identidad Titular</td>
-                      <td class="grid-title-item">Guardado</td>
-                      <td class="grid-title-item">Confirmar</td>
+                      <th class="grid-title-item">Nombres</th>
+                      <th class="grid-title-item">Nº identidad</th>
+                      <th class="grid-title-item">Parentesco</th>
+                      <th class="grid-title-item">% pensión</th>
+                      <th class="grid-title-item">Tipo de Pago</th>
+                      <th class="grid-title-item">Banco de origen</th>
+                      <th class="grid-title-item">Tipo de cuenta</th>
+                      <th class="grid-title-item">Cuenta Bancaria</th>
+                      <th class="grid-title-item">CCI</th>
+                      <th class="grid-title-item">Titular de la cuenta</th>
+                      <th class="grid-title-item">Nº identidad Titular</th>
+                      <th class="grid-title-item">Guardado</th>
+                      <th class="grid-title-item">Confirmar</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -1326,7 +1336,11 @@
               </div>
             </div>
           </div>
-          <div class="new-document clickable" (click)="fileInput.click()">
+          <div
+            (keypress)="handleKeyDown($event)"
+            class="new-document clickable"
+            (click)="fileInput.click()"
+          >
             Confirmar datos de pago
           </div>
         </div>
@@ -1335,13 +1349,13 @@
             <table class="table">
               <thead class="t-head">
                 <tr class="grid-title">
-                  <td class="grid-title-item">Numero de secuencia</td>
-                  <td class="grid-title-item">Estado</td>
-                  <td class="grid-title-item">Fecha</td>
-                  <td class="grid-title-item">Usuario</td>
-                  <td class="grid-title-item">Tipo de comentario</td>
-                  <td class="grid-title-item">Comentario</td>
-                  <td class="grid-title-item">Intervalo días</td>
+                  <th class="grid-title-item">Numero de secuencia</th>
+                  <th class="grid-title-item">Estado</th>
+                  <th class="grid-title-item">Fecha</th>
+                  <th class="grid-title-item">Usuario</th>
+                  <th class="grid-title-item">Tipo de comentario</th>
+                  <th class="grid-title-item">Comentario</th>
+                  <th class="grid-title-item">Intervalo días</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -1484,6 +1498,7 @@
                 />
 
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO !== 'TRUE'
                   }"
@@ -1495,6 +1510,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO_OK !== 'TRUE'
                   }"
@@ -1506,6 +1522,7 @@
                   alt="autorenew"
                 />
                 <img
+                  (keypress)="handleKeyDown($event)"
                   [ngClass]="{
                     disabled: listActions?.EDITAR_FECHA_PAGO_X !== 'TRUE'
                   }"
@@ -1543,18 +1560,18 @@
                 <table class="table">
                   <thead class="t-head">
                     <tr class="grid-title">
-                      <td class="grid-title-item">Tipo Receptor</td>
-                      <td class="grid-title-item">Nombres</td>
-                      <td class="grid-title-item">Documento de identidad</td>
-                      <td class="grid-title-item">Parentesco</td>
-                      <td class="grid-title-item">% pensión</td>
-                      <td class="grid-title-item">Tipo de Pago</td>
-                      <td class="grid-title-item">Banco de origen</td>
-                      <td class="grid-title-item">Tipo de cuenta</td>
-                      <td class="grid-title-item">Cuenta Bancaria</td>
-                      <td class="grid-title-item">CCI</td>
-                      <td class="grid-title-item">Titular de la cuenta</td>
-                      <td class="grid-title-item">Nº identidad Titular</td>
+                      <th class="grid-title-item">Tipo Receptor</th>
+                      <th class="grid-title-item">Nombres</th>
+                      <th class="grid-title-item">Documento de identidad</th>
+                      <th class="grid-title-item">Parentesco</th>
+                      <th class="grid-title-item">% pensión</th>
+                      <th class="grid-title-item">Tipo de Pago</th>
+                      <th class="grid-title-item">Banco de origen</th>
+                      <th class="grid-title-item">Tipo de cuenta</th>
+                      <th class="grid-title-item">Cuenta Bancaria</th>
+                      <th class="grid-title-item">CCI</th>
+                      <th class="grid-title-item">Titular de la cuenta</th>
+                      <th class="grid-title-item">Nº identidad Titular</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -1608,7 +1625,11 @@
               </div>
             </div>
           </div>
-          <div class="new-document clickable" (click)="fileInput.click()">
+          <div
+            (keypress)="handleKeyDown($event)"
+            class="new-document clickable"
+            (click)="fileInput.click()"
+          >
             Confirmar datos de pago
           </div>
         </div>

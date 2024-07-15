@@ -11,7 +11,7 @@
   background: #8385b4 0% 0% no-repeat padding-box;
   border-radius: 15px;
   border: none;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   color: #ffffff;
   height: 30px;
   min-width: 100px;
@@ -20,14 +20,14 @@
 
 .title-re {
   text-align: left;
-  font: normal normal normal 24px/29px Bliss Pro;
+  font: normal normal normal 24px/29px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   opacity: 1;
 }
 
 .subtitle-re {
-  font: normal normal normal 18px/21px Bliss Pro;
+  font: normal normal normal 18px/21px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #8385b4;
 }
@@ -39,7 +39,7 @@
 .button-cancelar {
   border: 1px solid #27246d;
   border-radius: 5px;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   text-align: center;
@@ -52,7 +52,7 @@
   background: #79cb33 0% 0% no-repeat padding-box;
   border-radius: 5px;
   text-align: center;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #ffffff;
   width: 135px;
@@ -67,7 +67,7 @@
   gap: 10px;
 
   padding: 20px 0 20px 0;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #707070;
 }
@@ -82,7 +82,7 @@
 }
 
 .label-input {
-  font: normal normal normal 18px/21px Bliss Pro;
+  font: normal normal normal 18px/21px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #707070;
 }
@@ -171,7 +171,7 @@
   border-radius: 5px;
   opacity: 1;
   text-align: center;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #ffffff;
   width: 135px;
@@ -268,21 +268,17 @@
 
 .multi-select {
   width: 100%;
-  border: none;
   display: block;
   line-height: 1.5em;
   padding: 4px 5px 0px 5px;
-  border: 1px solid rgb(146, 138, 163);
-  border-radius: 2px;
   color: rgb(146, 138, 163);
-  font-family: "Bliss Pro";
+  font-family: 'Bliss Pro', sans-serif;
   font-size: 14px;
   padding-left: 12px;
   font-weight: 300;
   border: 1px solid #b4b5d9;
   border-radius: 5px;
   opacity: 1;
-  background-color: white;
   text-transform: uppercase;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -322,7 +318,7 @@
   margin: 0.7em 0 0.7em 0;
   display: block;
   text-align: left;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #8385b4;
 }

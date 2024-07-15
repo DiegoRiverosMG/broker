@@ -11,7 +11,7 @@
   background: #8385b4 0% 0% no-repeat padding-box;
   border-radius: 15px;
   border: none;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   color: #ffffff;
   height: 30px;
   min-width: 100px;
@@ -20,14 +20,14 @@
 
 .title-re {
   text-align: left;
-  font: normal normal normal 24px/29px Bliss Pro;
+  font: normal normal normal 24px/29px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   opacity: 1;
 }
 
 .subtitle-re {
-  font: normal normal normal 18px/21px Bliss Pro;
+  font: normal normal normal 18px/21px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #8385b4;
 }
@@ -39,7 +39,7 @@
 .button-cancelar {
   border: 1px solid #27246d;
   border-radius: 5px;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #27246d;
   text-align: center;
@@ -52,7 +52,7 @@
   background: #79cb33 0% 0% no-repeat padding-box;
   border-radius: 5px;
   text-align: center;
-  font: normal normal bold 14px/16px Bliss Pro;
+  font: normal normal bold 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #ffffff;
   width: 135px;
@@ -67,7 +67,7 @@
   gap: 10px;
   border-bottom: 1px solid #e6e7ff;
   padding: 20px 0 20px 0;
-  font: normal normal normal 14px/16px Bliss Pro;
+  font: normal normal normal 14px/16px 'Bliss Pro', sans-serif;
   letter-spacing: 0px;
   color: #707070;
 }
