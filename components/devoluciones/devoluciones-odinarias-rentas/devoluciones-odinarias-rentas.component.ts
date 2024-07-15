@@ -724,19 +724,11 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
           next: (response) => {
             const mensajeParts: [SweetAlertIcon, string, string] =
               this.separateString(response.P_SMESSAGE);
-            if (response.P_NCODE == 0) {
               Swal.fire({
                 icon: mensajeParts[0],
                 title: mensajeParts[1],
                 text: mensajeParts[2],
               });
-            } else {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            }
           },
           error: (error) => {
             console.error(error);
@@ -780,18 +772,12 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
                 console.log(commentData);
                 this.insDataEmail(commentData);
               }
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            } else {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
             }
+              Swal.fire({
+                icon: mensajeParts[0],
+                title: mensajeParts[1],
+                text: mensajeParts[2],
+              });
           },
           error: (error) => {
             console.error(error);
@@ -903,19 +889,11 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
             const mensajeParts: [SweetAlertIcon, string, string] =
               this.separateString(response.P_SMESSAGE);
               console.log(mensajeParts);
-            if (response.P_NCODE == 0) {
               Swal.fire({
                 icon: mensajeParts[0],
                 title: mensajeParts[1],
                 text: mensajeParts[2],
               });
-            } else {
-              Swal.fire({
-                icon: mensajeParts[0],
-                title: mensajeParts[1],
-                text: mensajeParts[2],
-              });
-            }
           },
           error: (error) => {
             console.error(error);
@@ -964,72 +942,56 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
   // Método para cargar los filtros desde localStorage
   loadFilters() {
     this.isLoading = true;
-    const P_DATEINI = localStorage.getItem('P_DATEINI');
-    const P_DATEEND = localStorage.getItem('P_DATEEND');
-    const P_NPRODUCT = localStorage.getItem('P_NPRODUCT');
-    const P_NPOLICY = localStorage.getItem('P_NPOLICY');
-    const P_NMOTIVO = localStorage.getItem('P_NMOTIVO');
-    const P_SSUBMOTIVO = localStorage.getItem('P_SSUBMOTIVO');
-    const P_SCODE_JIRA = localStorage.getItem('P_SCODE_JIRA');
-    const P_SCUSPP = localStorage.getItem('P_SCUSPP');
-    const P_NSTATE = localStorage.getItem('P_NSTATE');
-    const SCLIENAME = localStorage.getItem('SCLIENAME');
-    const P_SCLIENT = localStorage.getItem('P_SCLIENT');
-    const P_NUSERCODE_RE = localStorage.getItem('P_NUSERCODE_RE');
-
-    localStorage.removeItem('P_DATEINI');
-    localStorage.removeItem('P_DATEEND');
-    localStorage.removeItem('P_NPRODUCT');
-    localStorage.removeItem('P_NPOLICY');
-    localStorage.removeItem('P_NMOTIVO');
-    localStorage.removeItem('P_SSUBMOTIVO');
-    localStorage.removeItem('P_SCODE_JIRA');
-    localStorage.removeItem('P_SCUSPP');
-    localStorage.removeItem('P_NSTATE');
-    localStorage.removeItem('SCLIENAME');
-    localStorage.removeItem('P_SCLIENT');
-    localStorage.removeItem('P_NUSERCODE_RE');
-
+  
+    const localStorageKeys = [
+      'P_DATEINI', 'P_DATEEND', 'P_NPRODUCT', 'P_NPOLICY', 'P_NMOTIVO',
+      'P_SSUBMOTIVO', 'P_SCODE_JIRA', 'P_SCUSPP', 'P_NSTATE', 'SCLIENAME',
+      'P_SCLIENT', 'P_NUSERCODE_RE'
+    ];
+  
+    // Obtener y eliminar los valores del localStorage
+    const localStorageValues = {};
+    localStorageKeys.forEach(key => {
+      localStorageValues[key] = localStorage.getItem(key);
+      localStorage.removeItem(key);
+    });
+  
+    // Asignación de valores a propiedades, verificando si son undefined
     this.inputs.P_DATEINI =
-      P_DATEINI == 'undefined' ? undefined : new Date(JSON.parse(P_DATEINI));
+    localStorageValues['P_DATEINI'] == 'undefined' ? undefined : new Date(JSON.parse(localStorageValues['P_DATEINI']));
     this.inputs.P_DATEEND =
-      P_DATEEND == 'undefined' ? undefined : new Date(JSON.parse(P_DATEEND));
+    localStorageValues['P_DATEEND'] == 'undefined' ? undefined : new Date(JSON.parse(localStorageValues['P_DATEEND']));
     this.inputs.P_NPOLICY =
-      P_NPOLICY == 'undefined' ? undefined : JSON.parse(P_NPOLICY);
+    localStorageValues['P_NPOLICY']? undefined : JSON.parse(localStorageValues['P_NPOLICY'] || 'null');
     this.inputs.P_SCODE_JIRA =
-      P_SCODE_JIRA == 'undefined' ? '' : JSON.parse(P_SCODE_JIRA);
-    this.inputs.P_SCUSPP = P_SCUSPP == 'undefined' ? '' : JSON.parse(P_SCUSPP);
+    localStorageValues['P_SCODE_JIRA'] ? '' : JSON.parse(localStorageValues['P_SCODE_JIRA'] || '""');
+    this.inputs.P_SCUSPP = localStorageValues['P_SCUSPP'] ? '' : JSON.parse(localStorageValues['P_SCUSPP'] || '""');
     this.client.SCLIENAME =
-      SCLIENAME == 'undefined' ? '' : JSON.parse(SCLIENAME);
-    this.client.SCLIENT = P_SCLIENT == 'undefined' ? '' : JSON.parse(P_SCLIENT);
-    this.inputs.P_NSTATE.codigo = JSON.parse(P_NSTATE);
+    localStorageValues['SCLIENAME'] ? '' : JSON.parse(localStorageValues['SCLIENAME'] || '""');
+    this.client.SCLIENT = localStorageValues['P_SCLIENT'] == 'undefined' ? '' : JSON.parse(localStorageValues['P_SCLIENT'] || '""');
+    this.inputs.P_NSTATE.codigo = JSON.parse(localStorageValues['P_NSTATE']);
 
-    if (P_NMOTIVO != '""') {
-      this.inputs.P_NMOTIVO = this.inputs.P_NMOTIVO || {};
-      this.inputs.P_NMOTIVO.codigo =
-        P_NMOTIVO == '' ? 0 : JSON.parse(P_NMOTIVO);
-      this.getSubMotivos(JSON.parse(P_NMOTIVO));
+    if (localStorageValues['P_NMOTIVO'] !== '""' && localStorageValues['P_NMOTIVO'] !== undefined) {
+      this.inputs.P_NMOTIVO = { codigo: JSON.parse(localStorageValues['P_NMOTIVO']) };
+      this.getSubMotivos(JSON.parse(localStorageValues['P_NMOTIVO']));
     }
-
-    if (P_SSUBMOTIVO != '""') {
-      this.inputs.P_SSUBMOTIVO = this.inputs.P_SSUBMOTIVO || {};
-      this.inputs.P_SSUBMOTIVO.codigo =
-        P_SSUBMOTIVO == '' ? 0 : JSON.parse(P_SSUBMOTIVO);
+  
+    if (localStorageValues['P_SSUBMOTIVO'] !== '""' && localStorageValues['P_SSUBMOTIVO'] !== undefined) {
+      this.inputs.P_SSUBMOTIVO = { codigo: JSON.parse(localStorageValues['P_SSUBMOTIVO']) };
     }
-
-    if (P_NPRODUCT != '""') {
-      this.inputs.P_NPRODUCT = this.inputs.P_NPRODUCT || {};
-      this.inputs.P_NPRODUCT.codigo =
-        P_NPRODUCT == '' ? 0 : JSON.parse(P_NPRODUCT);
+  
+    if (localStorageValues['P_NPRODUCT'] !== '""' && localStorageValues['P_NPRODUCT'] !== undefined) {
+      this.inputs.P_NPRODUCT = { codigo: JSON.parse(localStorageValues['P_NPRODUCT']) };
       const codigo = this.inputs.P_NPRODUCT?.codigo.split('-');
       this.branch = codigo[0];
       this.product = codigo[1];
     }
-    if (P_NUSERCODE_RE != '""') {
-      this.inputs.P_NUSERCODE_RE = this.inputs.P_NUSERCODE_RE || {};
-      this.inputs.P_NUSERCODE_RE.codigo =
-        P_NUSERCODE_RE == '' ? 0 : JSON.parse(P_NUSERCODE_RE);
+  
+    if (localStorageValues['P_NUSERCODE_RE'] !== '""' && localStorageValues['P_NUSERCODE_RE'] !== undefined) {
+      this.inputs.P_NUSERCODE_RE = { codigo: JSON.parse(localStorageValues['P_NUSERCODE_RE']) };
     }
+  
+    // Construcción de los filtros
     if (this.client.SCLIENT) {
       this.filters = {
         P_DATEINI: this.inputs.P_DATEINI,
@@ -1061,9 +1023,20 @@ export class DevolucionesOdinariasRentasComponent implements OnInit {
         P_NUSERCODE_RE: this.inputs.P_NUSERCODE_RE?.codigo,
       };
     }
+  
+    // Obtener tickets y mostrar paginación
     this.getTickets(this.filters);
     this.showPagination = true;
   }
+  
+  parseDate(dateString: string): Date | undefined {
+    if (dateString && dateString !== 'undefined') {
+      return new Date(JSON.parse(dateString));
+    }
+    return undefined;
+  }
+  
+  
 
   ngOnDestroy() {
     this.saveFilters();
